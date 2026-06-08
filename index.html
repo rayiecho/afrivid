@@ -25,7 +25,7 @@
 
   // BETA LIMIT: 10 videos per user during testing
   const BETA_LIMIT = 10;
-  const ADMIN_EMAILS = ['youngafricansn@gmail.com', 'r.ayiecho@alustudent.com'];
+  const ADMIN_EMAILS = ['hello@afrivid.com', 'r.ayiecho@alustudent.com'];
 
   let currentUser = null;
   let userProfile = null;
@@ -101,7 +101,7 @@
     if (ADMIN_EMAILS.includes(currentUser.email)) return true;
     const used = userProfile?.videosGenerated || 0;
     if (used >= BETA_LIMIT) {
-      alert(`You have reached the beta limit of ${BETA_LIMIT} videos. Thank you for testing YAN Studio! Full access coming soon.`);
+      alert(`You have reached the beta limit of ${BETA_LIMIT} videos. Thank you for testing AfriVid Studio! Full access coming soon.`);
       return false;
     }
     return true;
@@ -849,8 +849,8 @@
       <span style="font-size:0.85rem;color:rgba(255,255,255,0.4);">© 2026 AfriVid Studio · Built in Africa</span>
     </div>
     <div style="display:flex;gap:1.5rem;">
-      <a href="https://youngafricansnetwork.org" style="font-size:0.82rem;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Young Africans Network</a>
-      <a href="mailto:youngafricansn@gmail.com" style="font-size:0.82rem;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Contact</a>
+      <a href="https://afrivid.com" style="font-size:0.82rem;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">AfriVid</a>
+      <a href="mailto:hello@afrivid.com" style="font-size:0.82rem;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Contact</a>
     </div>
   </div>
 
@@ -932,7 +932,7 @@
 <div id="feedback-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;padding:2rem;">
   <div style="background:var(--navy2);border:1px solid var(--border);border-radius:20px;padding:2rem;width:100%;max-width:480px;">
     <div style="font-size:1.2rem;font-weight:800;margin-bottom:0.5rem;">Share Your Feedback</div>
-    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;font-family:var(--font-mono);">Help us improve YAN Studio during beta</div>
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;font-family:var(--font-mono);">Help us improve AfriVid Studio during beta</div>
     <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem;">
       <button class="star-btn" data-rating="1" onclick="selectStar(1)" style="flex:1;background:var(--navy3);border:1px solid var(--border);color:var(--muted);padding:0.75rem;border-radius:8px;font-size:1.2rem;cursor:pointer;">⭐</button>
       <button class="star-btn" data-rating="2" onclick="selectStar(2)" style="flex:1;background:var(--navy3);border:1px solid var(--border);color:var(--muted);padding:0.75rem;border-radius:8px;font-size:1.2rem;cursor:pointer;">⭐</button>
@@ -1019,7 +1019,7 @@ async function structureOwnScript() {
   const scenes = parseInt(duration) <= 30 ? 3 : parseInt(duration) <= 60 ? 4 : parseInt(duration) <= 90 ? 5 : parseInt(duration) <= 120 ? 6 : parseInt(duration) <= 180 ? 8 : parseInt(duration) <= 300 ? 12 : parseInt(duration) <= 600 ? 20 : parseInt(duration) <= 900 ? 28 : 35;
   const words = Math.round((parseInt(duration) / 60) * 130);
 
-  const prompt = `You are YAN Studio. Structure the following content into a ${duration}-second video script for AfriVid Studio.
+  const prompt = `You are AfriVid Studio. Structure the following content into a ${duration}-second video script for AfriVid Studio.
 
 Content to structure:
 ${ownScript}
@@ -1097,7 +1097,7 @@ async function generateScript() {
   const words = Math.round((parseInt(duration) / 60) * 130);
   const scenes = parseInt(duration) <= 30 ? 3 : parseInt(duration) <= 60 ? 4 : parseInt(duration) <= 90 ? 5 : parseInt(duration) <= 120 ? 6 : parseInt(duration) <= 180 ? 8 : parseInt(duration) <= 300 ? 12 : parseInt(duration) <= 600 ? 20 : parseInt(duration) <= 900 ? 28 : 35;
 
-  const prompt = `You are YAN Studio, an AI video script generator for AfriVid Studio (YAN), a pan-African youth organization based in Kenya.
+  const prompt = `You are AfriVid Studio, an AI video script generator for AfriVid Studio (YAN), a pan-African youth organization based in Kenya.
 
 Generate a complete video script for the following:
 - Topic: ${topic}
@@ -1598,7 +1598,7 @@ function drawChartScene(canvas, scene, progress, currentWord = -1) {
     ctx.fillText(d.label, x + barW/2, chartY + 20);
   });
   
-  // YAN branding
+  // AfriVid branding
   ctx.fillStyle = '#F5A623';
   ctx.font = 'bold 11px Space Mono, monospace';
   ctx.textAlign = 'left';
@@ -1752,7 +1752,7 @@ function drawCinematicScene(canvas, scene, progress, currentWord = -1) {
     ctx.fill();
   }
 
-  // YAN branding
+  // AfriVid branding
   ctx.fillStyle = 'rgba(245,166,35,0.6)';
   ctx.font = '11px Space Mono, monospace';
   ctx.textAlign = 'left';
@@ -1853,7 +1853,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   ctx.fillStyle = grd;
   ctx.fillRect(0, 0, W, H);
 
-  // YAN Logo area - top left
+  // AfriVid Logo area - top left
   ctx.fillStyle = 'rgba(245,166,35,0.1)';
   ctx.beginPath(); ctx.arc(60, 50, 24, 0, Math.PI*2); ctx.fill();
   ctx.strokeStyle = colors.accent;
@@ -2018,7 +2018,7 @@ function drawPhotoBgScene(canvas, scene, progress, currentWord = -1, bgImg = nul
   ctx.fillStyle = overlay;
   ctx.fillRect(0, 0, W, H);
 
-  // YAN branding
+  // AfriVid branding
   ctx.fillStyle = 'rgba(245,166,35,0.9)';
   ctx.font = 'bold 13px Space Mono, monospace';
   ctx.textAlign = 'left';
@@ -3027,7 +3027,7 @@ Return ONLY the JSON array, nothing else.`;
 const originalStartEnhancing = window.startEnhancing;
 
 function shareEnhancedWhatsApp() {
-  const text = `🎬 Check out this enhanced video!\n\nEnhanced with YAN Studio — AI Video Tool\n\n🌍 afrivid.com\n\n#YAN #YoungAfricansNetwork`;
+  const text = `🎬 Check out this enhanced video!\n\nEnhanced with AfriVid Studio — AI Video Tool\n\n🌍 afrivid.com\n\n#YAN #YoungAfricansNetwork`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
@@ -3470,7 +3470,7 @@ function makeAnother() {
   document.getElementById('video-topic').value = '';
   document.getElementById('video-content').value = '';
   document.getElementById('script-output').innerHTML = '';
-  document.getElementById('status-log').innerHTML = '<span class="log-line info">// YAN Studio ready. Press Start Recording to generate your video.</span>';
+  document.getElementById('status-log').innerHTML = '<span class="log-line info">// AfriVid Studio ready. Press Start Recording to generate your video.</span>';
   document.getElementById('canvas-overlay').style.display = 'flex';
   document.getElementById('btn-record').style.display = 'inline-flex';
   document.getElementById('progress-wrap').style.display = 'none';
