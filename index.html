@@ -4911,7 +4911,6 @@ async function _combineVideos() {
 
     // Create concat file
     const concatContent = fileList.join('\n');
-');
     await ffmpeg.writeFile('concat.txt', concatContent);
     addCombineLog('info', '[link] Combining videos...');
 
