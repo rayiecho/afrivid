@@ -1474,6 +1474,7 @@ window.loadAdminDashboard = function(){ console.log('admin called'); };
               <option value="900">15 minutes</option>
               <option value="1200">20 minutes</option>
             </select>
+            <div id="duration-warning" style="display:none;margin-top:0.5rem;padding:0.6rem 0.85rem;border-radius:8px;font-size:0.78rem;font-family:var(--font-mono);"></div>
           </div>
           <div class="form-group">
             <label class="form-label">Video Style</label>
@@ -5320,6 +5321,27 @@ Make it professional and visually striking. Max 10 elements.`
 }
 
 // Initialize design canvas when tab is opened
+
+function updateDurationWarning() {
+  const dur = parseInt(document.getElementById('video-duration')?.value || 0);
+  const warn = document.getElementById('duration-warning');
+  if (!warn) return;
+  if (dur <= 300) {
+    warn.style.display = 'none';
+  } else if (dur <= 600) {
+    warn.style.display = 'block';
+    warn.style.background = 'rgba(245,166,35,0.1)';
+    warn.style.border = '1px solid rgba(245,166,35,0.3)';
+    warn.style.color = '#F5A623';
+    warn.textContent = '⏱ ' + (dur/60) + '-min video will take ~' + (dur/60) + ' min to generate. Recommended: under 5 min.';
+  } else {
+    warn.style.display = 'block';
+    warn.style.background = 'rgba(230,51,41,0.1)';
+    warn.style.border = '1px solid rgba(230,51,41,0.3)';
+    warn.style.color = '#E63329';
+    warn.textContent = '⚠ ' + (dur/60) + '-min video takes ' + (dur/60) + '+ minutes to generate. Consider splitting into shorter videos for better experience.';
+  }
+}
 
 function makeAnother() {
   scriptData = null;
