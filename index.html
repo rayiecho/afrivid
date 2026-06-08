@@ -870,6 +870,25 @@
 </div><!-- end app-content -->
 </div><!-- end app-layout -->
 
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-item active" id="mobile-create" onclick="switchTab('create')">
+    <span class="nav-icon">🎬</span>Create
+  </button>
+  <button class="mobile-nav-item" id="mobile-enhance" onclick="switchTab('enhance')">
+    <span class="nav-icon">✂️</span>Edit
+  </button>
+  <button class="mobile-nav-item" id="mobile-photo" onclick="switchTab('photo')">
+    <span class="nav-icon">🖼</span>Photo
+  </button>
+  <button class="mobile-nav-item" id="mobile-library" onclick="switchTab('library')">
+    <span class="nav-icon">📚</span>Library
+  </button>
+  <button class="mobile-nav-item" onclick="openFeedback()">
+    <span class="nav-icon">💬</span>More
+  </button>
+</nav>
+
 <!-- FEEDBACK MODAL -->
     <div class="login-error" id="login-error">⚠ Error. Please try again.</div>
     <div style="font-size:0.72rem;color:var(--muted);margin-top:1rem;font-family:var(--font-mono);">Beta v1.0 — Free during testing period</div>
@@ -931,6 +950,20 @@
 
   <!-- MAIN CONTENT -->
   <div class="app-content">
+
+  <!-- MOBILE TOP BAR -->
+  <div style="display:none;" class="mobile-topbar" id="mobile-topbar">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:var(--navy2);border-bottom:1px solid var(--border2);margin:-1rem -0.75rem 1rem;position:sticky;top:0;z-index:50;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.8rem;color:#050A14;">A</div>
+        <span style="font-size:0.95rem;font-weight:800;color:#fff;">AfriVid <span style="color:var(--gold);">Studio</span></span>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.75rem;font-weight:600;color:#fff;" id="mobile-user-name"></div>
+        <div style="font-size:0.65rem;color:var(--gold);font-family:var(--font-mono);" id="mobile-videos-remaining"></div>
+      </div>
+    </div>
+  </div>
   <!-- HEADER (hidden - sidebar replaces it) -->
   <header class="header" style="display:none;">
     <div class="header-brand">
@@ -3241,11 +3274,26 @@ function switchTab(tab) {
     const sec = document.getElementById('section-'+t);
     if (sec) sec.classList.toggle('active', t === tab);
   });
-  // Update sidebar active state
+  // Update sidebar
   ['create','enhance','library','photo','admin'].forEach(t => {
     const btn = document.getElementById('sidebar-'+t);
     if (btn) btn.classList.toggle('active', t === tab);
   });
+  // Update mobile nav
+  ['create','enhance','library','photo'].forEach(t => {
+    const btn = document.getElementById('mobile-'+t);
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  // Sync mobile user info
+  const mun = document.getElementById('mobile-user-name');
+  const mur = document.getElementById('mobile-videos-remaining');
+  const un = document.getElementById('user-name-display');
+  const ur = document.getElementById('user-videos-remaining');
+  if (mun && un) mun.textContent = un.textContent;
+  if (mur && ur) mur.textContent = ur.textContent;
+  // Show mobile topbar on mobile
+  const topbar = document.getElementById('mobile-topbar');
+  if (topbar && window.innerWidth <= 768) topbar.style.display = 'block';
 }
 
 // ── ENHANCER ──
