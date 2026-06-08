@@ -3627,7 +3627,7 @@ async function startRecording() {
   const audioBuffers = await Promise.all(
     scriptData.scenes.map(async (scene, i) => {
       try {
-        const res = await fetch('https://yan-studio-worker.youngafricansn.workers.dev/tts', {
+        const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: scene.voiceover, voice: document.getElementById('voice-select').value })
