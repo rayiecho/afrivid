@@ -3246,6 +3246,11 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   const sceneType = detectSceneType((scene.voiceover || '') + ' ' + (scene.slideTitle || ''));
   if (style === 'slides' && sceneType === 'code') { drawCodeScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'slides' && sceneType === 'chart') { drawChartScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
+  if (style === 'slides_light' || style === 'slides_dark' || style === 'slides_gold' || style === 'slides') {
+    drawPowerPointSlide(canvas, scene, progress, currentWord, style);
+    applyTransition(canvas);
+    return;
+  }
   if (style === 'whiteboard') { drawWhiteboardScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'cinematic') { drawCinematicScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'photobg') {
