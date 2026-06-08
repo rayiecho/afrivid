@@ -167,6 +167,14 @@
     document.getElementById('login-screen').style.display = 'none';
   };
 
+  window.showLogin = function() {
+    document.getElementById('landing-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  };
+  window.showLanding = function() {
+    document.getElementById('landing-screen').style.display = 'flex';
+    document.getElementById('login-screen').style.display = 'none';
+  };
   window.showAuthTab = function(tab) {
     document.getElementById('auth-login-form').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'block' : 'none';
@@ -644,951 +652,194 @@
 <body>
 
 <!-- LANDING PAGE -->
-<div id="landing-screen" style="position:fixed;inset:0;z-index:999;background:var(--navy);overflow-y:auto;display:flex;flex-direction:column;">
-  
-  <!-- NAV -->
-  <nav style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;background:rgba(10,22,40,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);position:sticky;top:0;z-index:10;">
+<div id="landing-screen" style="position:fixed;inset:0;z-index:999;overflow-y:auto;background:#050A14;font-family:'Syne',sans-serif;">
+
+  <div style="position:fixed;inset:0;pointer-events:none;z-index:0;">
+    <div style="position:absolute;top:0;left:0;width:50%;height:100%;background:url('https://images.unsplash.com/photo-1547658719-da2b51169166?w=1920&q=80') center/cover no-repeat;opacity:0.35;"></div>
+    <div style="position:absolute;top:0;right:0;width:50%;height:100%;background:url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1920&q=80') center/cover no-repeat;opacity:0.35;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,10,20,0.65) 0%,rgba(5,10,20,0.45) 50%,rgba(5,10,20,0.65) 100%);"></div>
+    <div style="position:absolute;inset:0;background-image:radial-gradient(rgba(245,166,35,0.04) 1px,transparent 1px);background-size:40px 40px;"></div>
+    <div style="position:absolute;top:0;left:50%;width:1px;height:100%;background:linear-gradient(180deg,transparent,rgba(245,166,35,0.15),transparent);"></div>
+  </div>
+
+  <style>
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(245,166,35,0.3)}50%{box-shadow:0 0 40px rgba(245,166,35,0.6)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
+    .land-btn-primary{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:1rem 2.5rem;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;font-family:'Syne',sans-serif;}
+    .land-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,166,35,0.4);}
+    .land-btn-secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.2);padding:1rem 2.5rem;border-radius:12px;font-weight:600;font-size:1rem;cursor:pointer;transition:all 0.3s;font-family:'Syne',sans-serif;}
+    .land-btn-secondary:hover{border-color:rgba(245,166,35,0.5);background:rgba(245,166,35,0.05);}
+    .feature-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;transition:all 0.3s;}
+    .feature-card:hover{background:rgba(245,166,35,0.05);border-color:rgba(245,166,35,0.2);transform:translateY(-4px);}
+    .stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#F5A623,#74C69D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  </style>
+
+  <nav style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 4rem;background:rgba(5,10,20,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);">
     <div style="display:flex;align-items:center;gap:12px;">
-      <img src="https://rayiecho.github.io/afrivid/images/logo.jpeg" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);">
-      <span style="font-size:1.1rem;font-weight:800;">AfriVid <span style="color:var(--gold);">Studio</span></span>
-      <span style="font-size:0.68rem;background:rgba(245,166,35,0.12);border:1px solid var(--border);color:var(--gold);padding:0.2rem 0.6rem;border-radius:50px;font-family:var(--font-mono);">BETA</span>
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#050A14;animation:glow 3s ease-in-out infinite;">A</div>
+      <span style="font-size:1.1rem;font-weight:800;color:#fff;">AfriVid</span>
+      <span style="font-size:1.1rem;font-weight:800;color:#F5A623;">Studio</span>
+      <span style="font-size:0.65rem;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;">BETA</span>
     </div>
-    <div style="display:flex;gap:1rem;align-items:center;">
-      <a href="https://rayiecho.github.io/afrivid" style="color:var(--muted);text-decoration:none;font-size:0.82rem;">← YAN Home</a>
-      <button onclick="showLogin()" style="background:var(--gold);color:var(--navy);border:none;padding:0.6rem 1.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;">Get Started Free</button>
+    <div style="display:flex;gap:2rem;align-items:center;">
+      <a href="#features" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.88rem;">Features</a>
+      <a href="#pricing" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.88rem;">Pricing</a>
+      <button onclick="showLogin()" style="background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.6rem 1.5rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;">Sign In</button>
+      <button onclick="showLogin()" class="land-btn-primary" style="padding:0.6rem 1.5rem;font-size:0.85rem;">Get Started Free →</button>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <div style="text-align:center;padding:5rem 2rem 3rem;max-width:900px;margin:0 auto;">
-    <div style="font-size:0.75rem;letter-spacing:3px;color:var(--gold);font-family:var(--font-mono);margin-bottom:1.5rem;">POWERED BY CLAUDE AI + CLOUDFLARE</div>
-    <h1 style="font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.1;margin-bottom:1.5rem;">
-      Generate Professional<br><span style="color:var(--gold);">African Videos</span> with AI
+  <div style="position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:7rem 4rem 5rem;text-align:center;">
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);border-radius:50px;padding:0.4rem 1rem;margin-bottom:2rem;">
+      <span style="width:8px;height:8px;border-radius:50%;background:#F5A623;animation:blink 2s ease-in-out infinite;display:inline-block;"></span>
+      <span style="font-size:0.75rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;">AI VIDEO CREATION PLATFORM</span>
+    </div>
+    <h1 style="font-size:clamp(3rem,7vw,5.5rem);font-weight:800;line-height:1.05;margin-bottom:1.5rem;color:#fff;">
+      Create <span style="background:linear-gradient(135deg,#F5A623,#74C69D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Professional</span><br>
+      Videos with <span style="background:linear-gradient(135deg,#F5A623,#74C69D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AI</span>
     </h1>
-    <p style="font-size:1.1rem;color:var(--muted);max-width:600px;margin:0 auto 2.5rem;line-height:1.8;">Type a topic. Get a complete video with AI voice, animated slides, background music and subtitles — in minutes. No camera. No editing. No cost.</p>
+    <p style="font-size:1.15rem;color:rgba(255,255,255,0.55);max-width:580px;margin:0 auto 3rem;line-height:1.8;">Type a topic. Get a complete video with AI voice, animated slides, background music and subtitles — in minutes. Built in Africa, for the world.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-      <button onclick="showLogin()" style="background:var(--gold);color:var(--navy);border:none;padding:1rem 2.5rem;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;">🚀 Start Creating Free</button>
-      <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})" style="background:transparent;border:1px solid var(--border);color:var(--white);padding:1rem 2.5rem;border-radius:10px;font-weight:600;font-size:1rem;cursor:pointer;">See Features ↓</button>
+      <button onclick="showLogin()" class="land-btn-primary">🚀 Start Creating Free</button>
+      <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})" class="land-btn-secondary">See Features ↓</button>
     </div>
-    <div style="margin-top:1.5rem;font-size:0.78rem;color:var(--muted);font-family:var(--font-mono);">✓ Free during beta &nbsp;·&nbsp; ✓ No credit card &nbsp;·&nbsp; ✓ Built for Africa</div>
+    <div style="margin-top:2rem;display:flex;align-items:center;justify-content:center;gap:2rem;">
+      <span style="font-size:0.78rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;">✓ Free during beta</span>
+      <span style="font-size:0.78rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;">✓ No credit card</span>
+      <span style="font-size:0.78rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;">✓ Built for Africa</span>
+    </div>
   </div>
 
-  <!-- DEMO VIDEO PREVIEW -->
-  <div style="max-width:800px;margin:0 auto 4rem;padding:0 2rem;">
-    <div style="background:var(--navy2);border:1px solid var(--border);border-radius:16px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;">
-      <div style="text-align:center;">
-        <div style="font-size:4rem;margin-bottom:1rem;">🎬</div>
-        <div style="font-size:1rem;color:var(--muted);">Your video will look like this</div>
-        <div style="font-size:0.78rem;color:var(--gold);font-family:var(--font-mono);margin-top:0.5rem;">AI-generated slides + voice + music</div>
+  <div style="position:relative;z-index:1;max-width:900px;margin:0 auto 6rem;padding:0 4rem;">
+    <div style="border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);box-shadow:0 40px 80px rgba(0,0,0,0.4);">
+      <div style="background:rgba(255,255,255,0.04);padding:0.75rem 1rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="width:10px;height:10px;border-radius:50%;background:#ff5f56;"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#27c93f;"></div>
+        <div style="flex:1;background:rgba(255,255,255,0.06);border-radius:4px;padding:0.3rem 1rem;margin:0 1rem;font-size:0.72rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;">afrivid.studio</div>
       </div>
-      <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),#74C69D,var(--gold));"></div>
+      <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#0A1628,#0D2B1A);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:2rem;">
+        <div style="text-align:center;">
+          <div style="font-size:3rem;margin-bottom:0.5rem;">🎬</div>
+          <div style="font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">What is Leadership?</div>
+          <div style="font-size:0.82rem;color:#F5A623;font-family:'Space Mono',monospace;">▶ AI voice + music playing...</div>
+        </div>
+        <div style="position:absolute;top:15%;left:5%;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.7);">Leadership</div>
+        <div style="position:absolute;top:27%;left:8%;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.6);">starts with</div>
+        <div style="position:absolute;top:39%;left:5%;font-size:1.2rem;font-weight:700;color:#F5A623;">vision</div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#F5A623,#74C69D);"></div>
+      </div>
     </div>
   </div>
 
-  <!-- FEATURES -->
-  <div id="features" style="max-width:1100px;margin:0 auto;padding:0 2rem 4rem;">
+  <div style="position:relative;z-index:1;max-width:900px;margin:0 auto 6rem;padding:0 4rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;">
+      <div style="background:#050A14;padding:2rem;text-align:center;"><div class="stat-num">12</div><div style="font-size:0.78rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-top:0.25rem;">AI VOICES</div></div>
+      <div style="background:#050A14;padding:2rem;text-align:center;"><div class="stat-num">4</div><div style="font-size:0.78rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-top:0.25rem;">VIDEO STYLES</div></div>
+      <div style="background:#050A14;padding:2rem;text-align:center;"><div class="stat-num">20</div><div style="font-size:0.78rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-top:0.25rem;">MIN MAX LENGTH</div></div>
+      <div style="background:#050A14;padding:2rem;text-align:center;"><div class="stat-num">$0</div><div style="font-size:0.78rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-top:0.25rem;">DURING BETA</div></div>
+    </div>
+  </div>
+
+  <div id="features" style="position:relative;z-index:1;max-width:1100px;margin:0 auto 6rem;padding:0 4rem;">
     <div style="text-align:center;margin-bottom:3rem;">
-      <div style="font-size:0.72rem;letter-spacing:3px;color:var(--gold);font-family:var(--font-mono);margin-bottom:0.75rem;">EVERYTHING YOU NEED</div>
-      <h2 style="font-size:2.2rem;font-weight:800;">One tool. Complete videos.</h2>
+      <div style="font-size:0.72rem;letter-spacing:3px;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">EVERYTHING YOU NEED</div>
+      <h2 style="font-size:2.5rem;font-weight:800;color:#fff;">One platform. Complete videos.</h2>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
-      ${[
-        ['🤖','AI Script Generator','Type a topic — Claude AI writes a complete script with scenes, voiceover and slides automatically'],
-        ['🎤','Real AI Voice','Choose from 12 voices. Natural speech generated by Cloudflare AI — no recording needed'],
-        ['🎬','4 Video Styles','Slides, Whiteboard, Cinematic or Photo Background — each scene auto-matches your content'],
-        ['🎵','Background Music','4 music styles generated automatically and mixed under your voice at the right volume'],
-        ['📝','Rolling Subtitles','Words appear on screen as they are spoken — top to bottom, perfectly synchronized'],
-        ['✂️','Video Enhancer','Upload any existing video and enhance it — brightness, subtitles, watermark, music'],
-        ['📚','Video Library','Every video you create is saved automatically — download or reshare anytime'],
-        ['▶️','YouTube Upload','Upload directly to any YouTube channel with one click after generating'],
-        ['💬','WhatsApp Share','Share your video link directly to WhatsApp with one tap']
-      ].map(([icon, title, desc]) => `
-        <div style="background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;">
-          <div style="font-size:2rem;margin-bottom:0.75rem;">${icon}</div>
-          <div style="font-weight:700;margin-bottom:0.5rem;">${title}</div>
-          <div style="font-size:0.82rem;color:var(--muted);line-height:1.6;">${desc}</div>
-        </div>
-      `).join('')}
+      <div class="feature-card"><div style="font-size:2rem;margin-bottom:1rem;">🤖</div><div style="font-weight:700;color:#fff;margin-bottom:0.5rem;">AI Script Generator</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;">Type a topic — AI writes a complete script with scenes and voiceover automatically</div></div>
+      <div class="feature-card"><div style="font-size:2rem;margin-bottom:1rem;">🎤</div><div style="font-weight:700;color:#fff;margin-bottom:0.5rem;">12 AI Voices</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;">Natural speech with male and female voices. No recording equipment needed</div></div>
+      <div class="feature-card"><div style="font-size:2rem;margin-bottom:1rem;">🎬</div><div style="font-weight:700;color:#fff;margin-bottom:0.5rem;">4 Video Styles</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;">Slides, Whiteboard, Cinematic or Photo Background — each auto-matches your content</div></div>
+      <div class="feature-card"><div style="font-size:2rem;margin-bottom:1rem;">✂️</div><div style="font-weight:700;color:#fff;margin-bottom:0.5rem;">Video Enhancer</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;">Upload any video — enhance quality, remove noise, trim clips, add subtitles</div></div>
+      <div class="feature-card"><div style="font-size:2rem;margin-bottom:1rem;">🖼</div><div style="font-weight:700;color:#fff;margin-bottom:0.5rem;">Photo Editor</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;">Edit photos with AI instructions or manual controls. Remove backgrounds instantly</div></div>
+      <div class="feature-card"><div style="font-size:2rem;margin-bottom:1rem;">▶️</div><div style="font-weight:700;color:#fff;margin-bottom:0.5rem;">YouTube Upload</div><div style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;">Upload directly to any YouTube channel with one click after generating</div></div>
     </div>
   </div>
 
-  <!-- PRICING -->
-  <div style="max-width:800px;margin:0 auto;padding:0 2rem 4rem;text-align:center;">
-    <div style="font-size:0.72rem;letter-spacing:3px;color:var(--gold);font-family:var(--font-mono);margin-bottom:0.75rem;">SIMPLE PRICING</div>
-    <h2 style="font-size:2.2rem;font-weight:800;margin-bottom:3rem;">Free during beta</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:600px;margin:0 auto;">
-      <div style="background:var(--navy2);border:1px solid var(--border2);border-radius:16px;padding:2rem;">
-        <div style="font-size:0.78rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">BETA</div>
-        <div style="font-size:2.5rem;font-weight:800;margin-bottom:0.25rem;">Free</div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;">During testing period</div>
-        <div style="font-size:0.82rem;color:var(--muted);line-height:2;">✓ 10 videos<br>✓ All styles<br>✓ AI voice<br>✓ Video enhancer</div>
-        <button onclick="showLogin()" style="width:100%;margin-top:1.5rem;background:var(--gold);color:var(--navy);border:none;padding:0.85rem;border-radius:8px;font-weight:700;cursor:pointer;">Get Started Free</button>
+  <div id="pricing" style="position:relative;z-index:1;max-width:700px;margin:0 auto 6rem;padding:0 4rem;text-align:center;">
+    <div style="font-size:0.72rem;letter-spacing:3px;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">PRICING</div>
+    <h2 style="font-size:2.5rem;font-weight:800;color:#fff;margin-bottom:3rem;">Free during beta</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;text-align:left;">
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">BETA</div>
+        <div style="font-size:3rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">Free</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;">During testing period</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:2.2;"><div>✓ 10 videos</div><div>✓ All styles</div><div>✓ AI voice</div><div>✓ Video enhancer</div><div>✓ Photo editor</div></div>
+        <button onclick="showLogin()" class="land-btn-primary" style="width:100%;margin-top:1.5rem;">Get Started Free</button>
       </div>
-      <div style="background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(27,67,50,0.2));border:1px solid var(--gold);border-radius:16px;padding:2rem;">
-        <div style="font-size:0.78rem;color:var(--gold);font-family:var(--font-mono);margin-bottom:0.5rem;">COMING SOON</div>
-        <div style="font-size:2.5rem;font-weight:800;margin-bottom:0.25rem;">$5<span style="font-size:1rem;color:var(--muted);">/mo</span></div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;">After beta period</div>
-        <div style="font-size:0.82rem;color:var(--muted);line-height:2;">✓ Unlimited videos<br>✓ Priority voice<br>✓ No watermark<br>✓ Team access</div>
-        <button disabled style="width:100%;margin-top:1.5rem;background:var(--border2);color:var(--muted);border:none;padding:0.85rem;border-radius:8px;font-weight:700;cursor:not-allowed;">Coming Soon</button>
+      <div style="background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(116,198,157,0.08));border:1px solid rgba(245,166,35,0.3);border-radius:20px;padding:2rem;text-align:left;">
+        <div style="font-size:0.72rem;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">COMING SOON</div>
+        <div style="font-size:3rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">$5<span style="font-size:1rem;color:rgba(255,255,255,0.4);">/mo</span></div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;">After beta period</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:2.2;"><div>✓ Unlimited videos</div><div>✓ Priority voice</div><div>✓ No watermark</div><div>✓ Team access</div><div>✓ Priority support</div></div>
+        <button disabled style="width:100%;margin-top:1.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);padding:0.85rem;border-radius:10px;font-weight:700;cursor:not-allowed;font-family:'Syne',sans-serif;">Coming Soon</button>
       </div>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <div style="border-top:1px solid var(--border2);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
-    <div style="font-size:0.82rem;color:var(--muted);">© 2026 AfriVid · AfriVid Studio Beta</div>
-    <div style="display:flex;gap:1.5rem;">
-      <a href="https://rayiecho.github.io/afrivid" style="font-size:0.82rem;color:var(--muted);text-decoration:none;">rayiecho.github.io/afrivid</a>
-      <a href="https://rayiecho.github.io/afrivid/contact.html" style="font-size:0.82rem;color:var(--muted);text-decoration:none;">Contact</a>
+  <div style="position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.06);padding:2rem 4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;color:#050A14;">A</div>
+      <span style="font-size:0.85rem;color:rgba(255,255,255,0.4);">© 2026 AfriVid Studio · Built in Africa</span>
     </div>
+    <a href="mailto:youngafricansn@gmail.com" style="font-size:0.82rem;color:rgba(255,255,255,0.3);text-decoration:none;">Contact</a>
   </div>
 
 </div>
 
 <!-- LOGIN -->
-<div id="login-screen" style="display:none;">
-  <div class="login-box">
-    <div class="login-logo">
-      <img src="https://rayiecho.github.io/afrivid/images/logo.jpeg" alt="YAN" onerror="this.style.display='none'">
-    </div>
-    <div class="login-title">AfriVid <span>Studio</span></div>
-    <div class="login-sub">// AI VIDEO CREATION PLATFORM — BETA</div>
-    
-    <!-- AUTH TABS -->
-    <div style="display:flex;margin-bottom:1.5rem;border:1px solid var(--border);border-radius:8px;overflow:hidden;">
-      <button id="auth-tab-login" onclick="showAuthTab('login')" style="flex:1;padding:0.7rem;background:var(--gold);color:var(--navy);border:none;font-family:var(--font-display);font-weight:700;cursor:pointer;font-size:0.85rem;">Sign In</button>
-      <button id="auth-tab-signup" onclick="showAuthTab('signup')" style="flex:1;padding:0.7rem;background:transparent;color:var(--muted);border:none;font-family:var(--font-display);font-weight:700;cursor:pointer;font-size:0.85rem;">Sign Up</button>
-    </div>
-
-    <!-- LOGIN FORM -->
-    <div id="auth-login-form">
-      <input type="email" id="login-email" class="login-input" placeholder="Email address" style="letter-spacing:0;margin-bottom:0.75rem;">
-      <input type="password" id="login-password" class="login-input" placeholder="Password" style="letter-spacing:0;" onkeydown="if(event.key==='Enter')signIn()">
-      <button class="login-btn" onclick="signIn()">Sign In →</button>
-      
-    </div>
-
-    <!-- SIGNUP FORM -->
-    <div id="auth-signup-form" style="display:none;">
-      <input type="text" id="signup-name" class="login-input" placeholder="Full name" style="letter-spacing:0;margin-bottom:0.75rem;">
-      <input type="email" id="signup-email" class="login-input" placeholder="Email address" style="letter-spacing:0;margin-bottom:0.75rem;">
-      <input type="password" id="signup-password" class="login-input" placeholder="Password (min 6 chars)" style="letter-spacing:0;" onkeydown="if(event.key==='Enter')signUp()">
-      <button class="login-btn" onclick="signUp()" style="margin-top:0.75rem;">Create Account →</button>
-      
-    </div>
-
-    <div class="login-error" id="login-error">⚠ Error. Please try again.</div>
-    <div style="font-size:0.72rem;color:var(--muted);margin-top:1rem;font-family:var(--font-mono);">Beta v1.0 · Free during testing · afrivid</div>
+<div id="login-screen" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:#050A14;padding:2rem;">
+  <div style="position:fixed;inset:0;pointer-events:none;">
+    <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1920&q=80') center/cover no-repeat;opacity:0.25;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,10,20,0.80),rgba(5,10,20,0.70));"></div>
+    <div style="position:absolute;inset:0;background-image:radial-gradient(rgba(245,166,35,0.03) 1px,transparent 1px);background-size:40px 40px;"></div>
+    <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(245,166,35,0.06),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
   </div>
-</div>
-
-<!-- APP -->
-<div id="app">
-  <!-- HEADER -->
-  <header class="header">
-    <div class="header-brand">
-      <div class="header-logo">
-        <img src="https://rayiecho.github.io/afrivid/images/logo.jpeg" alt="YAN" onerror="this.style.display='none'">
-      </div>
-      <div class="header-title">AfriVid <span>Studio</span></div>
-      <div class="header-badge">AI VIDEO GENERATOR</div>
+  <div style="position:relative;z-index:1;width:100%;max-width:420px;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.5rem;color:#050A14;margin:0 auto 1rem;box-shadow:0 0 30px rgba(245,166,35,0.3);">A</div>
+      <div style="font-size:1.5rem;font-weight:800;color:#fff;">AfriVid <span style="color:#F5A623;">Studio</span></div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;margin-top:0.25rem;letter-spacing:2px;">AI VIDEO CREATION PLATFORM</div>
     </div>
-    <div style="display:flex;align-items:center;gap:1rem;">
-      <div style="text-align:right;">
-        <div style="font-size:0.82rem;font-weight:600;" id="user-name-display">Loading...</div>
-        <div style="font-size:0.7rem;color:var(--gold);font-family:var(--font-mono);" id="user-videos-remaining"></div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;backdrop-filter:blur(20px);">
+      <div style="display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.75rem;">
+        <button id="auth-tab-login" onclick="showAuthTab('login')" style="flex:1;padding:0.65rem;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;">Sign In</button>
+        <button id="auth-tab-signup" onclick="showAuthTab('signup')" style="flex:1;padding:0.65rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;">Sign Up</button>
       </div>
-      <button onclick="openFeedback()" style="background:rgba(245,166,35,0.12);border:1px solid var(--border);color:var(--gold);padding:0.4rem 1rem;border-radius:8px;font-family:var(--font-display);font-size:0.78rem;cursor:pointer;">💬 Feedback</button>
-      <button class="header-logout" onclick="logout()">Sign Out</button>
-    </div>
-  </header>
-
-  <div class="main">
-    <!-- MAIN TABS -->
-    <div class="main-tabs" id="main-tabs">
-      <button class="main-tab active" id="tab-create" onclick="switchTab('create')">🎬 Create Video</button>
-      <button class="main-tab" id="tab-enhance" onclick="switchTab('enhance')">✂️ Enhance Video</button>
-      <button class="main-tab" id="tab-library" onclick="switchTab('library')">📚 Video Library</button>
-      <button class="main-tab" id="tab-photo" onclick="switchTab('photo')">🖼 Photo Editor</button>
-    </div>
-
-    <!-- CREATE SECTION -->
-    <div class="main-section active" id="section-create">
-
-    <!-- STEPS -->
-    <div class="steps-bar">
-      <div class="step-item active" id="step-1">
-        <div class="step-num">1</div>
-        <div class="step-label">Video Details</div>
+      <div id="auth-login-form">
+        <div style="margin-bottom:1rem;">
+          <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;">EMAIL</label>
+          <input type="email" id="login-email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="you@example.com" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;">PASSWORD</label>
+          <input type="password" id="login-password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="••••••••" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')signIn()">
+        </div>
+        <button onclick="signIn()" style="width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.9rem;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;">Sign In →</button>
       </div>
-      <div class="step-item" id="step-2">
-        <div class="step-num">2</div>
-        <div class="step-label">Review Script</div>
+      <div id="auth-signup-form" style="display:none;">
+        <div style="margin-bottom:1rem;">
+          <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;">FULL NAME</label>
+          <input type="text" id="signup-name" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="Your full name" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;">EMAIL</label>
+          <input type="email" id="signup-email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="you@example.com" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;">PASSWORD</label>
+          <input type="password" id="signup-password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="Min 6 characters" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')signUp()">
+        </div>
+        <button onclick="signUp()" style="width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.9rem;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;">Create Account →</button>
       </div>
-      <div class="step-item" id="step-3">
-        <div class="step-num">3</div>
-        <div class="step-label">Generate Video</div>
-      </div>
-      <div class="step-item" id="step-4">
-        <div class="step-num">4</div>
-        <div class="step-label">Download</div>
+      <div class="login-error" id="login-error" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.82rem;color:#ff6b6b;"></div>
+      <div style="text-align:center;margin-top:1.25rem;">
+        <button onclick="showLanding()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;">← Back to home</button>
       </div>
     </div>
-
-    <!-- PANEL 1: INPUT -->
-    <div class="panel active" id="panel-1">
-      <div class="card">
-        <div class="card-title">
-          <div class="card-title-icon">📝</div>
-          Video Details
-        </div>
-        <!-- MODE TOGGLE -->
-        <div class="mode-toggle" style="margin-bottom:1.5rem;">
-          <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">🤖 AI Generate Script</button>
-          <button class="mode-btn" id="mode-own" onclick="setMode('own')">✍️ Use My Own Script</button>
-        </div>
-
-        <!-- AI MODE FIELDS -->
-        <div id="ai-fields">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Video Topic / Title</label>
-            <input type="text" id="video-topic" class="form-input" placeholder="e.g. How to Apply for Scholarships in Africa">
-            <span class="form-hint">What is this video about?</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Target Audience</label>
-            <select id="video-audience" class="form-select">
-              <option value="African students aged 16-25">Students (16-25)</option>
-              <option value="African graduates and young professionals aged 22-35">Graduates & Young Professionals</option>
-              <option value="African youth entrepreneurs aged 18-35">Young Entrepreneurs</option>
-              <option value="African youth leaders aged 18-30">Youth Leaders</option>
-              <option value="All African youth aged 16-35">All African Youth</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Video Duration</label>
-            <select id="video-duration" class="form-select">
-              <option value="30">30 seconds</option>
-              <option value="60" selected>1 minute</option>
-              <option value="90">90 seconds</option>
-              <option value="120">2 minutes</option>
-              <option value="180">3 minutes</option>
-              <option value="300">5 minutes</option>
-              <option value="600">10 minutes</option>
-              <option value="900">15 minutes</option>
-              <option value="1200">20 minutes</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Video Style</label>
-            <select id="video-style" class="form-select">
-              <option value="educational and informative">Educational</option>
-              <option value="motivational and inspiring">Motivational</option>
-              <option value="promotional and engaging">Promotional</option>
-              <option value="news and announcement style">Announcement</option>
-              <option value="storytelling and narrative">Storytelling</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Video Style</label>
-            <select id="video-visual-style" class="form-select">
-              <option value="slides">🖥 Slides (Default)</option>
-              <option value="whiteboard">🖊 Whiteboard</option>
-              <option value="cinematic">🎬 Cinematic</option>
-              <option value="photobg">🌍 Photo Background</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Presenter Photo</label>
-            <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
-              <input type="file" id="presenter-photo" accept="image/*" style="display:none" onchange="loadPresenterPhoto(event)">
-              <button onclick="document.getElementById('presenter-photo').click()" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.65rem 1rem;border-radius:8px;font-size:0.82rem;cursor:pointer;">📷 Upload Photo</button>
-              <span id="presenter-photo-name" style="font-size:0.75rem;color:var(--muted);font-family:var(--font-mono);">No photo</span>
-              <button id="presenter-clear-btn" onclick="clearPresenterPhoto()" style="display:none;background:none;border:none;color:var(--red);cursor:pointer;">✕</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Photo Position</label>
-            <select id="presenter-position" class="form-select">
-              <option value="br">Bottom Right</option>
-              <option value="bl">Bottom Left</option>
-              <option value="tr">Top Right</option>
-              <option value="tl">Top Left</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Photo Shape</label>
-            <select id="presenter-shape" class="form-select">
-              <option value="circle">Circle</option>
-              <option value="square">Rounded Square</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Background Theme</label>
-            <select id="bg-theme" class="form-select">
-              <option value="africa">🌍 Africa</option>
-              <option value="education">📚 Education</option>
-              <option value="technology">💻 Technology</option>
-              <option value="nature">🌿 Nature</option>
-              <option value="youth">👥 Youth</option>
-              <option value="city">🏙 City</option>
-              <option value="abstract">✨ Abstract</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">YAN Program</label>
-            <select id="video-program" class="form-select">
-              <option value="General YAN content">General YAN</option>
-              <option value="IT Training & Digital Skills">IT Training</option>
-              <option value="Scholarships & Global Opportunities">Scholarships</option>
-              <option value="Career Development & Public Speaking">Career Development</option>
-              <option value="Leadership & 21st Century Skills">Leadership</option>
-              <option value="Community Impact & Giving Back">Community Impact</option>
-              <option value="Mental Health & Wellbeing">Mental Health</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Background Music</label>
-            <select id="bg-music" class="form-select">
-              <option value="none">🔇 No Music</option>
-              <option value="inspirational">🌍 Inspirational (Africa)</option>
-              <option value="upbeat">⚡ Upbeat & Energetic</option>
-              <option value="calm">🌊 Calm & Focus</option>
-              <option value="corporate">💼 Corporate & Professional</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Scene Transition</label>
-            <select id="scene-transition" class="form-select">
-              <option value="fade">✨ Fade</option>
-              <option value="slide">➡ Slide Left</option>
-              <option value="zoom">🔍 Zoom In</option>
-              <option value="none">⚡ Cut (No Transition)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Voice</label>
-            <select id="voice-select" class="form-select">
-              <optgroup label="Female Voices">
-                <option value="asteria">Asteria — Warm Female</option>
-                <option value="athena">Athena — Clear Female</option>
-                <option value="hera">Hera — Strong Female</option>
-                <option value="luna">Luna — Soft Female</option>
-                <option value="stella">Stella — Bright Female</option>
-              </optgroup>
-              <optgroup label="Male Voices">
-                <option value="orion" selected>Orion — Deep Male</option>
-                <option value="zeus">Zeus — Powerful Male</option>
-                <option value="orpheus">Orpheus — Smooth Male</option>
-                <option value="angus">Angus — Warm Male</option>
-                <option value="arcas">Arcas — Clear Male</option>
-                <option value="perseus">Perseus — Strong Male</option>
-                <option value="helios">Helios — Energetic Male</option>
-              </optgroup>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Voice Speed</label>
-            <select id="voice-speed" class="form-select">
-              <option value="0.85">Slow & Clear</option>
-              <option value="0.95" selected>Normal</option>
-              <option value="1.05">Slightly Fast</option>
-            </select>
-          </div>
-          <div class="form-group full">
-            <label class="form-label">Additional Content / Notes (Optional)</label>
-            <textarea id="video-content" class="form-textarea" placeholder="Paste any additional text, key points, statistics or specific information you want included in the video..."></textarea>
-            <span class="form-hint">This helps the AI generate more accurate and specific content</span>
-          </div>
-        </div>
-        </div><!-- end form-grid -->
-        </div><!-- end ai-fields -->
-
-        <!-- OWN SCRIPT MODE -->
-        <div id="own-fields" style="display:none;">
-          <div class="form-group full" style="margin-bottom:1.25rem;">
-            <label class="form-label">Your Script / Content</label>
-            <textarea id="own-script" class="form-textarea" style="min-height:250px;" placeholder="Paste your full script here...
-
-Example:
-Scene 1: Introduction
-Welcome to AfriVid. We are a pan-African organization...
-
-Scene 2: Our Programs
-We offer 6 programs including IT Training, Scholarships...
-
-Or just paste your raw content and we will structure it into scenes automatically."></textarea>
-            <span class="form-hint">Paste your script, article, notes or any content. AI will structure it into video scenes.</span>
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Video Duration</label>
-              <select id="own-duration" class="form-select">
-                <option value="30">30 seconds</option>
-                <option value="60" selected>1 minute</option>
-                <option value="90">90 seconds</option>
-                <option value="120">2 minutes</option>
-                <option value="180">3 minutes</option>
-                <option value="300">5 minutes</option>
-                <option value="600">10 minutes</option>
-                <option value="900">15 minutes</option>
-                <option value="1200">20 minutes</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Voice Speed</label>
-              <select id="own-voice-speed" class="form-select">
-                <option value="0.85">Slow & Clear</option>
-                <option value="0.95" selected>Normal</option>
-                <option value="1.05">Slightly Fast</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn btn-gold" id="btn-generate" onclick="generateScript()">
-            ✨ Generate Script
-          </button>
-        </div>
-      </div>
-
-      <!-- LOADING -->
-      <div class="loading-state" id="loading-script">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Generating your video script...</div>
-        <div class="loading-sub">Claude AI is writing scenes, voiceover and slide content</div>
-      </div>
-    </div>
-
-    <!-- PANEL 2: SCRIPT REVIEW -->
-    <div class="panel" id="panel-2">
-      <div class="card">
-        <div class="card-title">
-          <div class="card-title-icon">🎬</div>
-          <span id="script-title-display">Video Script</span>
-          <span class="tag tag-gold" id="script-duration-tag">1 min</span>
-        </div>
-        <div id="script-output"></div>
-        <div class="btn-row">
-          <button class="btn btn-gold" onclick="goToStep(3)">✅ Approve & Generate Video</button>
-          <button class="btn btn-outline" onclick="goToStep(1)">← Edit Details</button>
-          <button class="btn btn-outline" onclick="generateScript()">🔄 Regenerate Script</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL 3: VIDEO GENERATION -->
-    <div class="panel" id="panel-3">
-      <div class="card">
-        <div class="card-title">
-          <div class="card-title-icon">🎥</div>
-          Video Preview
-        </div>
-
-        <div id="canvas-container">
-          <canvas id="video-canvas"></canvas>
-          <div class="canvas-overlay" id="canvas-overlay">
-            <div class="canvas-overlay-icon">🎬</div>
-            <div>Click "Start Recording" to begin</div>
-          </div>
-        </div>
-
-        <div class="progress-wrap" id="progress-wrap" style="display:none;">
-          <div class="progress-label">
-            <span id="progress-label-text">Rendering...</span>
-            <span id="progress-pct">0%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-        </div>
-
-        <div class="status-log" id="status-log">
-          <span class="log-line info">// AfriVid Studio ready. Press Start Recording to generate your video.</span>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn btn-gold" id="btn-record" onclick="startRecording()">▶ Start Recording</button>
-          <button class="btn btn-gold" id="btn-record-go" onclick="startRecording()" style="display:none;">▶ Start Recording</button>
-          <button class="btn btn-red" id="btn-stop" onclick="stopRecording()" style="display:none;">⏹ Stop</button>
-          <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL 4: DOWNLOAD -->
-    <div class="panel" id="panel-4">
-      <div class="download-card">
-        <div class="download-icon">🎉</div>
-        <div class="download-title">Your Video is Ready!</div>
-        <div class="download-sub" id="download-info">Your YAN training video has been generated successfully.</div>
-        <div class="btn-row" style="justify-content:center;">
-          <button class="btn btn-green" id="btn-download" onclick="downloadVideo()">⬇ Download WebM</button>
-          <button class="btn btn-gold" onclick="downloadMP4()">🎬 Download MP4</button>
-          <button class="btn btn-outline" onclick="shareWhatsApp()" style="background:#25D366;border-color:#25D366;color:#fff;">💬 Share on WhatsApp</button>
-          <button class="btn btn-outline" onclick="uploadToYouTube()" style="background:#FF0000;border-color:#FF0000;color:#fff;">▶ Upload to YouTube</button>
-          <button class="btn btn-outline" onclick="makeAnother()">+ Make Another Video</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">
-          <div class="card-title-icon">📋</div>
-          Video Details
-        </div>
-        <div id="final-details" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--muted);line-height:2;"></div>
-      </div>
-    </div>
+    <div style="text-align:center;margin-top:1rem;font-size:0.72rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;">Beta v1.0 · Free during testing</div>
   </div>
-  </div><!-- end section-create -->
-
-  <!-- ENHANCE SECTION -->
-  <div class="main-section" id="section-enhance">
-    
-    <!-- UPLOAD -->
-    <div class="card" id="enhancer-upload-card">
-      <div class="card-title">
-        <div class="card-title-icon">📁</div>
-        Upload Your Video
-      </div>
-      <div class="upload-zone" onclick="document.getElementById('video-file-input').click()" id="upload-zone">
-        <input type="file" id="video-file-input" accept="video/*" style="display:none" onchange="loadVideoFile(event)">
-        <div class="upload-zone-icon">🎥</div>
-        <div class="upload-zone-text">Click to upload your video</div>
-        <div class="upload-zone-sub">MP4, MOV, AVI, WebM supported</div>
-      </div>
-    </div>
-
-    <!-- EDITOR (hidden until video loaded) -->
-    <div id="enhancer-editor" style="display:none;">
-      
-      <!-- PREVIEW -->
-      <div class="card">
-        <div class="card-title">
-          <div class="card-title-icon">👁</div>
-          Preview
-          <span class="tag tag-gold" id="enhance-filename">video.mp4</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div>
-            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">ORIGINAL</div>
-            <div class="enhance-preview">
-              <video id="original-video" controls></video>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">ENHANCED PREVIEW</div>
-            <div class="enhance-preview">
-              <canvas id="enhance-canvas" style="width:100%;height:100%;"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADJUSTMENTS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">🎨</div>Visual Adjustments</div>
-        <div class="enhance-grid">
-          <div class="form-group">
-            <label class="form-label">Brightness</label>
-            <input type="range" class="filter-slider" id="adj-brightness" min="50" max="200" value="100" oninput="updatePreview()">
-            <span class="form-hint" id="brightness-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Contrast</label>
-            <input type="range" class="filter-slider" id="adj-contrast" min="50" max="200" value="100" oninput="updatePreview()">
-            <span class="form-hint" id="contrast-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Saturation</label>
-            <input type="range" class="filter-slider" id="adj-saturation" min="0" max="200" value="100" oninput="updatePreview()">
-            <span class="form-hint" id="saturation-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Sharpness</label>
-            <input type="range" class="filter-slider" id="adj-sharpness" min="0" max="5" value="0" step="0.5" oninput="updatePreview()">
-            <span class="form-hint" id="sharpness-val">0</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- QUALITY PRESETS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">✨</div>Quality Presets</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;">
-          <button onclick="applyQualityPreset('iphone')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">📱 iPhone Look</button>
-          <button onclick="applyQualityPreset('dslr')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">📷 DSLR Look</button>
-          <button onclick="applyQualityPreset('cinema')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">🎬 Cinema</button>
-          <button onclick="applyQualityPreset('broadcast')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">📺 Broadcast</button>
-          <button onclick="applyQualityPreset('auto')" style="background:linear-gradient(135deg,rgba(245,166,35,0.2),rgba(45,138,94,0.2));border:1px solid var(--gold);color:var(--gold);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:700;">✨ Auto Enhance</button>
-          <button onclick="applyQualityPreset('reset')" style="background:var(--navy3);border:1px solid var(--border);color:var(--muted);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;">↺ Reset</button>
-        </div>
-        <div id="preset-applied" style="display:none;font-size:0.75rem;color:#74C69D;font-family:var(--font-mono);margin-top:0.5rem;"></div>
-      </div>
-
-      <!-- AUDIO ENHANCEMENT -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">🎙</div>Audio Enhancement</div>
-        <div class="enhance-grid">
-          <div class="form-group">
-            <label class="form-label">Noise Reduction</label>
-            <input type="range" class="filter-slider" id="noise-reduction" min="0" max="100" value="0" oninput="document.getElementById('noise-val').textContent=this.value+'%'">
-            <span class="form-hint" id="noise-val">0%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Voice Boost</label>
-            <input type="range" class="filter-slider" id="voice-boost" min="0" max="100" value="0" oninput="document.getElementById('voice-val').textContent=this.value+'%'">
-            <span class="form-hint" id="voice-val">0%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Echo Removal</label>
-            <input type="range" class="filter-slider" id="echo-removal" min="0" max="100" value="0" oninput="document.getElementById('echo-val').textContent=this.value+'%'">
-            <span class="form-hint" id="echo-val">0%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Wind/Rumble Filter</label>
-            <input type="range" class="filter-slider" id="wind-filter" min="0" max="100" value="0" oninput="document.getElementById('wind-val').textContent=this.value+'%'">
-            <span class="form-hint" id="wind-val">0%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Quick Preset</label>
-            <select id="audio-preset" class="form-select" onchange="applyAudioPreset()">
-              <option value="none">Custom</option>
-              <option value="crowd">🎤 Crowd/Event Noise</option>
-              <option value="outdoor">🌬 Outdoor/Wind</option>
-              <option value="room">🏠 Room Echo</option>
-              <option value="phone">📱 Phone Quality Fix</option>
-              <option value="studio">🎙 Studio Clean</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Volume</label>
-            <input type="range" class="filter-slider" id="audio-volume" min="0" max="300" value="100" oninput="document.getElementById('volume-val').textContent=this.value+'%'">
-            <span class="form-hint" id="volume-val">100%</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ENHANCEMENTS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">✨</div>Enhancements</div>
-        <div class="enhance-grid">
-          <div class="form-group">
-            <label class="form-label">Add Subtitles</label>
-            <select id="enhance-subtitles" class="form-select">
-              <option value="none">No Subtitles</option>
-              <option value="auto">Auto Generate (AI)</option>
-              <option value="manual">Manual Text</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Background Music</label>
-            <select id="enhance-music" class="form-select">
-              <option value="none">No Music</option>
-              <option value="inspirational">🌍 Inspirational</option>
-              <option value="upbeat">⚡ Upbeat</option>
-              <option value="calm">🌊 Calm</option>
-              <option value="corporate">💼 Corporate</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">YAN Intro</label>
-            <select id="enhance-intro" class="form-select">
-              <option value="none">No Intro</option>
-              <option value="yan">YAN Branded Intro (3s)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">YAN Outro</label>
-            <select id="enhance-outro" class="form-select">
-              <option value="none">No Outro</option>
-              <option value="yan">YAN Branded Outro (3s)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Watermark</label>
-            <select id="enhance-watermark" class="form-select">
-              <option value="none">No Watermark</option>
-              <option value="yan-tl">YAN Logo — Top Left</option>
-              <option value="yan-tr">YAN Logo — Top Right</option>
-              <option value="yan-br">YAN Logo — Bottom Right</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Video Filter</label>
-            <select id="enhance-filter" class="form-select" onchange="updatePreview()">
-              <option value="none">None</option>
-              <option value="vivid">🌈 Vivid</option>
-              <option value="warm">🌅 Warm</option>
-              <option value="cool">❄️ Cool</option>
-              <option value="bw">⚫ Black & White</option>
-              <option value="cinematic">🎬 Cinematic</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- MANUAL SUBTITLE TEXT -->
-      <div class="card" id="manual-subtitle-card" style="display:none;">
-        <div class="card-title"><div class="card-title-icon">💬</div>Subtitle Text</div>
-        <div class="form-group">
-          <label class="form-label">Enter Subtitles</label>
-          <textarea id="manual-subtitle-text" class="form-textarea" placeholder="Type your subtitle text here. It will appear at the bottom of the video throughout."></textarea>
-        </div>
-      </div>
-
-      <!-- TRIM & AI EDIT -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">✂️</div>Trim & AI Edit</div>
-        
-        <!-- AI INSTRUCTIONS -->
-        <div class="form-group" style="margin-bottom:1.25rem;">
-          <label class="form-label">AI Edit Instructions</label>
-          <textarea id="ai-edit-instructions" class="form-textarea" style="min-height:80px;" placeholder="Type instructions in plain English:
-- Keep only 1:30 to 4:00
-- Remove the first 30 seconds
-- Cut everything after 5 minutes
-- Keep from 2:00 to 3:30 and 7:00 to 9:00"></textarea>
-          <button onclick="applyAIEdit()" class="btn btn-gold" style="margin-top:0.75rem;padding:0.65rem 1.5rem;font-size:0.85rem;">🤖 Apply AI Edit</button>
-        </div>
-
-        <!-- MANUAL TIMELINE -->
-        <div class="form-label" style="margin-bottom:0.5rem;">Manual Trim</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
-          <div class="form-group">
-            <label class="form-label">Start Time</label>
-            <input type="text" id="trim-start" class="form-input" placeholder="0:00" oninput="updateTrimPreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">End Time</label>
-            <input type="text" id="trim-end" class="form-input" placeholder="0:30" oninput="updateTrimPreview()">
-          </div>
-        </div>
-        
-        <!-- TIMELINE VISUAL -->
-        <div class="timeline-wrap" id="trim-timeline" onclick="seekToPosition(event)">
-          <div class="timeline-track">
-            <div class="timeline-bar" id="timeline-bar">
-              <div class="timeline-segment" id="timeline-segment"></div>
-              <div class="timeline-handle left" id="handle-left" onmousedown="startDrag('left', event)"></div>
-              <div class="timeline-handle right" id="handle-right" onmousedown="startDrag('right', event)"></div>
-            </div>
-          </div>
-          <div id="timeline-playhead" style="position:absolute;top:0;bottom:0;width:2px;background:#fff;left:0;pointer-events:none;"></div>
-          <div id="timeline-time" style="position:absolute;bottom:4px;left:8px;font-size:0.68rem;font-family:var(--font-mono);color:var(--muted);">0:00 / 0:00</div>
-        </div>
-
-        <!-- CLIPS LIST -->
-        <div id="clips-list" style="margin-top:1rem;"></div>
-        
-        <div class="btn-row" style="margin-top:1rem;">
-          <button onclick="addClip()" class="btn btn-outline" style="font-size:0.85rem;">+ Add Clip</button>
-          <button onclick="clearClips()" class="btn btn-outline" style="font-size:0.85rem;color:var(--red);border-color:var(--red);">✕ Clear All</button>
-        </div>
-      </div>
-
-      <!-- ACTIONS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">⚡</div>Export</div>
-        <div class="btn-row">
-          <button class="btn btn-gold" onclick="startEnhancing()">✨ Enhance & Export</button>
-          <button class="btn btn-outline" onclick="resetEnhancer()">↺ Reset</button>
-        </div>
-        <div id="enhance-export-btns" style="display:none;" class="btn-row">
-          <button class="btn btn-green" onclick="downloadEnhanced()">⬇ Download Enhanced</button>
-          <button onclick="uploadEnhancedToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.85rem 2rem;border-radius:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;">▶ Upload to YouTube</button>
-          <button onclick="shareEnhancedWhatsApp()" style="background:#25D366;border:none;color:#fff;padding:0.85rem 2rem;border-radius:10px;font-weight:700;cursor:pointer;">💬 WhatsApp</button>
-        </div>
-        <div class="status-log" id="enhance-log" style="margin-top:1rem;">
-          <span class="log-line info">// Upload a video to get started.</span>
-        </div>
-        <div class="progress-wrap" id="enhance-progress" style="display:none;margin-top:1rem;">
-          <div class="progress-label">
-            <span id="enhance-progress-label">Processing...</span>
-            <span id="enhance-progress-pct">0%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="enhance-progress-fill"></div></div>
-        </div>
-      </div>
-
-    </div><!-- end enhancer-editor -->
-  </div><!-- end section-enhance -->
-
-  <!-- PHOTO EDITOR SECTION -->
-  <div class="main-section" id="section-photo">
-
-    <!-- UPLOAD -->
-    <div class="card" id="photo-upload-card">
-      <div class="card-title"><div class="card-title-icon">🖼</div>Photo Editor</div>
-      <div class="upload-zone" onclick="document.getElementById('photo-file-input').click()">
-        <input type="file" id="photo-file-input" accept="image/*" style="display:none" onchange="loadPhotoFile(event)">
-        <div class="upload-zone-icon">🖼</div>
-        <div class="upload-zone-text">Click to upload your photo</div>
-        <div class="upload-zone-sub">JPG, PNG, WEBP supported</div>
-      </div>
-    </div>
-
-    <!-- EDITOR -->
-    <div id="photo-editor" style="display:none;">
-
-      <!-- PREVIEW -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">👁</div>Preview
-          <span class="tag tag-gold" id="photo-filename">photo.jpg</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div>
-            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">ORIGINAL</div>
-            <div style="border-radius:12px;overflow:hidden;background:#000;max-height:300px;display:flex;align-items:center;justify-content:center;">
-              <img id="original-photo" style="max-width:100%;max-height:300px;object-fit:contain;">
-            </div>
-          </div>
-          <div>
-            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">EDITED</div>
-            <div style="border-radius:12px;overflow:hidden;background:#000;max-height:300px;display:flex;align-items:center;justify-content:center;">
-              <canvas id="photo-canvas" style="max-width:100%;max-height:300px;object-fit:contain;"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI INSTRUCTIONS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">🤖</div>AI Edit Instructions</div>
-        <div class="form-group">
-          <textarea id="photo-ai-instructions" class="form-textarea" style="min-height:80px;" placeholder="Type what you want:
-- Make it look professional
-- Brighten it up
-- Make it look like iPhone photo
-- Add warm filter
-- Make it black and white
-- Sharpen and enhance quality
-- Add YAN watermark"></textarea>
-          <button onclick="applyPhotoAIEdit()" class="btn btn-gold" style="margin-top:0.75rem;padding:0.65rem 1.5rem;font-size:0.85rem;">🤖 Apply AI Edit</button>
-        </div>
-      </div>
-
-      <!-- QUALITY PRESETS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">✨</div>Quick Presets</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;">
-          <button onclick="applyPhotoPreset('iphone')" class="preset-btn">📱 iPhone</button>
-          <button onclick="applyPhotoPreset('dslr')" class="preset-btn">📷 DSLR</button>
-          <button onclick="applyPhotoPreset('cinema')" class="preset-btn">🎬 Cinema</button>
-          <button onclick="applyPhotoPreset('portrait')" class="preset-btn">👤 Portrait</button>
-          <button onclick="applyPhotoPreset('vivid')" class="preset-btn">🌈 Vivid</button>
-          <button onclick="applyPhotoPreset('bw')" class="preset-btn">⚫ B&W</button>
-          <button onclick="applyPhotoPreset('warm')" class="preset-btn">🌅 Warm</button>
-          <button onclick="applyPhotoPreset('cool')" class="preset-btn">❄️ Cool</button>
-          <button onclick="applyPhotoPreset('reset')" class="preset-btn" style="color:var(--muted);">↺ Reset</button>
-        </div>
-      </div>
-
-      <!-- MANUAL ADJUSTMENTS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">🎨</div>Manual Adjustments</div>
-        <div class="enhance-grid">
-          <div class="form-group">
-            <label class="form-label">Brightness</label>
-            <input type="range" class="filter-slider" id="photo-brightness" min="0" max="300" value="100" oninput="updatePhotoPreview();document.getElementById('pb-val').textContent=this.value+'%'">
-            <span class="form-hint" id="pb-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Contrast</label>
-            <input type="range" class="filter-slider" id="photo-contrast" min="0" max="300" value="100" oninput="updatePhotoPreview();document.getElementById('pc-val').textContent=this.value+'%'">
-            <span class="form-hint" id="pc-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Saturation</label>
-            <input type="range" class="filter-slider" id="photo-saturation" min="0" max="300" value="100" oninput="updatePhotoPreview();document.getElementById('ps-val').textContent=this.value+'%'">
-            <span class="form-hint" id="ps-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Sharpness</label>
-            <input type="range" class="filter-slider" id="photo-sharpness" min="0" max="10" value="0" step="0.5" oninput="updatePhotoPreview();document.getElementById('psh-val').textContent=this.value">
-            <span class="form-hint" id="psh-val">0</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Warmth</label>
-            <input type="range" class="filter-slider" id="photo-warmth" min="-100" max="100" value="0" oninput="updatePhotoPreview();document.getElementById('pw-val').textContent=this.value">
-            <span class="form-hint" id="pw-val">0</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Rotate</label>
-            <input type="range" class="filter-slider" id="photo-rotate" min="-180" max="180" value="0" oninput="updatePhotoPreview();document.getElementById('pr-val').textContent=this.value+'°'">
-            <span class="form-hint" id="pr-val">0°</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEXT OVERLAY -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">💬</div>Text & Watermark</div>
-        <div class="enhance-grid">
-          <div class="form-group full">
-            <label class="form-label">Add Text</label>
-            <input type="text" id="photo-text" class="form-input" placeholder="e.g. AfriVid" oninput="updatePhotoPreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Text Position</label>
-            <select id="photo-text-pos" class="form-select" onchange="updatePhotoPreview()">
-              <option value="none">No Text</option>
-              <option value="bottom">Bottom Center</option>
-              <option value="top">Top Center</option>
-              <option value="br">Bottom Right</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">YAN Watermark</label>
-            <select id="photo-watermark" class="form-select" onchange="updatePhotoPreview()">
-              <option value="none">No Watermark</option>
-              <option value="br">YAN — Bottom Right</option>
-              <option value="bl">YAN — Bottom Left</option>
-              <option value="tr">YAN — Top Right</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXPORT -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">⚡</div>Download</div>
-        <div class="form-group" style="margin-bottom:1rem;">
-          <label class="form-label">Format</label>
-          <select id="photo-format" class="form-select">
-            <option value="jpeg">JPEG (smaller file)</option>
-            <option value="png">PNG (better quality)</option>
-            <option value="webp">WebP (best compression)</option>
-          </select>
-        </div>
-        <div class="btn-row">
-          <button onclick="downloadPhoto()" class="btn btn-green">⬇ Download Photo</button>
-          <button onclick="removeBackground()" class="btn btn-gold" id="bg-remove-btn">🗑 Remove Background</button>
-          <button onclick="resetPhotoEditor()" class="btn btn-outline">↺ Reset</button>
-        </div>
-        <div id="bg-remove-status" style="display:none;margin-top:0.75rem;font-size:0.78rem;font-family:var(--font-mono);color:var(--gold);">
-          ⏳ AI removing background...
-        </div>
-        <div class="status-log" id="photo-log" style="margin-top:1rem;">
-          <span class="log-line info">// Upload a photo to get started.</span>
-        </div>
-      </div>
-
-    </div><!-- end photo-editor -->
-  </div><!-- end section-photo -->
-
-  <!-- LIBRARY SECTION -->
-  <div class="main-section" id="section-library">
-    <div class="card">
-      <div class="card-title"><div class="card-title-icon">📚</div>Your Video Library</div>
-      <div id="library-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem;">
-        <div style="text-align:center;color:var(--muted);padding:3rem;grid-column:span 3;font-family:var(--font-mono);font-size:0.82rem;">
-          // No videos saved yet. Generate a video and save it to your library.
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <!-- FEEDBACK MODAL -->
