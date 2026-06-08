@@ -3534,6 +3534,145 @@ function applyTransition(canvas) {
   }
 }
 
+
+function drawPowerPointSlide(canvas, scene, progress, currentWord, theme) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+  const themes = {
+    slides_light: { bg: '#F8F9FC', text: '#0D1117', accent: '#F5A623', accent2: '#2D8A5E', sub: '#444444' },
+    slides_dark:  { bg: '#0D1117', text: '#FFFFFF', accent: '#F5A623', accent2: '#74C69D', sub: '#8B949E' },
+    slides_gold:  { bg: '#050A14', text: '#FFFFFF', accent: '#F5A623', accent2: '#74C69D', sub: '#9BA8C0' },
+    slides:       { bg: '#F8F9FC', text: '#0D1117', accent: '#F5A623', accent2: '#2D8A5E', sub: '#444444' }
+  };
+  const t = themes[theme] || themes.slides_light;
+  const isLight = theme === 'slides_light' || theme === 'slides';
+
+  // Full background
+  ctx.fillStyle = t.bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Gradient overlay
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, isLight ? 'rgba(245,166,35,0.04)' : 'rgba(245,166,35,0.06)');
+  grad.addColorStop(1, isLight ? 'rgba(45,138,94,0.03)' : 'rgba(116,198,157,0.04)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Left accent stripe
+  ctx.fillStyle = t.accent;
+  ctx.fillRect(0, 0, W * 0.012, H);
+
+  // Bottom accent stripe
+  ctx.fillStyle = t.accent2;
+  ctx.fillRect(0, H - H*0.012, W, H*0.012);
+
+  // Scene number top right
+  ctx.fillStyle = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+  ctx.fillRect(W * 0.86, 0, W * 0.14, H * 0.1);
+  ctx.fillStyle = t.accent;
+  ctx.font = `800 ${H*0.05}px Syne, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(String(scene.sceneNumber || 1).padStart(2,'0'), W * 0.93, H * 0.068);
+
+  // Logo bottom left
+  ctx.fillStyle = t.accent;
+  ctx.font = `700 ${H*0.022}px Syne, sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.fillText('AfriVid Studio', W * 0.03, H * 0.96);
+
+  // Main title - large
+  const titleSize = H * 0.1;
+  ctx.fillStyle = t.text;
+  ctx.font = `800 ${titleSize}px Syne, sans-serif`;
+  ctx.textAlign = 'left';
+  const titleX = W * 0.06;
+  const maxTitleW = W * 0.82;
+  const titleWords = (scene.slideTitle || '').split(' ');
+  let titleLine = '';
+  let titleY = H * 0.22;
+  const titleLines = [];
+  titleWords.forEach((word, i) => {
+    const test = titleLine + word + ' ';
+    if (ctx.measureText(test).width > maxTitleW && titleLine) {
+      titleLines.push(titleLine.trim());
+      titleLine = word + ' ';
+    } else { titleLine = test; }
+    if (i === titleWords.length - 1) titleLines.push(titleLine.trim());
+  });
+  titleLines.forEach((line, i) => ctx.fillText(line, titleX, titleY + i * titleSize * 1.15));
+  const afterTitle = titleY + titleLines.length * titleSize * 1.15;
+
+  // Subtitle
+  ctx.fillStyle = t.accent;
+  ctx.font = `600 ${H*0.038}px Syne, sans-serif`;
+  ctx.fillText(scene.slideSubtitle || '', titleX, afterTitle + H*0.02);
+
+  // Divider
+  ctx.fillStyle = t.accent;
+  ctx.globalAlpha = 0.3;
+  ctx.fillRect(titleX, afterTitle + H*0.07, W * 0.15, 3);
+  ctx.globalAlpha = 1;
+
+  // Bullet points appearing as voice speaks
+  if (scene.voiceover) {
+    const sentences = scene.voiceover.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 10).slice(0, 4);
+    const totalWords = scene.voiceover.split(' ').length;
+    const wordsPerSentence = Math.max(1, totalWords / sentences.length);
+    const currentSentence = currentWord >= 0 ? Math.min(Math.floor(currentWord / wordsPerSentence), sentences.length - 1) : -1;
+    const bulletStartY = afterTitle + H * 0.12;
+    const lineSpacing = H * 0.13;
+    const bSize = H * 0.032;
+
+    sentences.forEach((sentence, idx) => {
+      if (currentWord >= 0 && idx > currentSentence) return;
+      const y = bulletStartY + idx * lineSpacing;
+      const isActive = idx === currentSentence && currentWord >= 0;
+      ctx.globalAlpha = isActive ? 1 : 0.5;
+
+      if (isActive) {
+        ctx.fillStyle = isLight ? 'rgba(245,166,35,0.08)' : 'rgba(245,166,35,0.1)';
+        ctx.globalAlpha = 1;
+        ctx.fillRect(titleX - W*0.01, y - bSize*1.1, W*0.88, bSize*1.8);
+      }
+
+      ctx.fillStyle = isActive ? t.accent : t.accent2;
+      ctx.globalAlpha = isActive ? 1 : 0.5;
+      ctx.beginPath();
+      ctx.arc(titleX + bSize*0.4, y - bSize*0.3, isActive ? bSize*0.35 : bSize*0.25, 0, Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle = isActive ? t.text : t.sub;
+      ctx.font = `${isActive ? '600' : '400'} ${bSize}px Syne, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.globalAlpha = isActive ? 1 : 0.5;
+
+      const bWords = sentence.split(' ');
+      let bLine = '', bY = y;
+      const bX = titleX + bSize*1.1;
+      const maxBW = W * 0.84;
+      bWords.forEach((w, wi) => {
+        const test = bLine + w + ' ';
+        if (ctx.measureText(test).width > maxBW && bLine) {
+          ctx.fillText(bLine.trim(), bX, bY);
+          bLine = w + ' ';
+          bY += bSize * 1.4;
+        } else { bLine = test; }
+        if (wi === bWords.length - 1) ctx.fillText(bLine.trim(), bX, bY);
+      });
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  // Progress bar
+  ctx.fillStyle = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+  ctx.fillRect(0, H*0.988, W, H*0.012);
+  ctx.fillStyle = t.accent;
+  ctx.fillRect(0, H*0.988, W*progress, H*0.012);
+
+  drawPresenterPhoto(ctx, W, H);
+}
+
 function wrapText(ctx, text, x, y, maxW, lineH) {
   if (!text) return;
   const words = text.split(' ');
