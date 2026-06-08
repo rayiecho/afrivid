@@ -864,7 +864,7 @@
 
 <script>
 // ── AUTH ──
-const PASSWORD = 'YAN@Admin2026';
+const PASSWORD = 'AfriVid@Admin2026';
 
 function checkPassword() {
   const pwd = document.getElementById('pwd-input').value;
@@ -1018,7 +1018,7 @@ Generate a complete video script for the following:
 - Audience: ${audience}
 - Duration: ${duration} seconds (approximately ${words} words total)
 - Style: ${style}
-- YAN Program: ${program}
+- Program: ${program}
 ${content ? `- Additional content: ${content}` : ''}
 
 Return ONLY a JSON object with this exact structure, no other text:
@@ -1390,7 +1390,7 @@ function drawCodeScene(canvas, scene, progress, currentWord = -1) {
   ctx.fillStyle = '#F5A623';
   ctx.font = 'bold 11px Space Mono, monospace';
   ctx.textAlign = 'right';
-  ctx.fillText('YAN STUDIO', W - 20, 26);
+  ctx.fillText('AfriVid Studio', W - 20, 26);
   
   // Line numbers column
   ctx.fillStyle = '#21262d';
@@ -1516,7 +1516,7 @@ function drawChartScene(canvas, scene, progress, currentWord = -1) {
   ctx.fillStyle = '#F5A623';
   ctx.font = 'bold 11px Space Mono, monospace';
   ctx.textAlign = 'left';
-  ctx.fillText('YAN STUDIO', 20, H - 15);
+  ctx.fillText('AfriVid Studio', 20, H - 15);
   
   // Progress bar
   ctx.fillStyle = 'rgba(255,255,255,0.06)';
@@ -1561,7 +1561,7 @@ function drawWhiteboardScene(canvas, scene, progress, currentWord = -1) {
   ctx.fillStyle = 'rgba(255,255,255,0.7)';
   ctx.font = 'bold 13px Space Mono, monospace';
   ctx.textAlign = 'left';
-  ctx.fillText('YAN STUDIO', 30, 36);
+  ctx.fillText('AfriVid Studio', 30, 36);
 
   // Draw title with chalk effect (appears progressively)
   const titleProgress = Math.min(progress * 3, 1);
@@ -1776,7 +1776,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   ctx.fillStyle = colors.accent;
   ctx.font = 'bold 11px Syne, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('YAN', 60, 54);
+  ctx.fillText('AfriVid', 60, 54);
 
   // Brand name
   ctx.fillStyle = colors.text;
@@ -2308,7 +2308,7 @@ function downloadFromLibrary(id) {
   if (!entry) return;
   const a = document.createElement('a');
   a.href = entry.data;
-  a.download = `YAN-${entry.title.replace(/[^a-z0-9]/gi,'-')}.webm`;
+  a.download = `AfriVid-${entry.title.replace(/[^a-z0-9]/gi,'-')}.webm`;
   a.click();
 }
 
@@ -2402,7 +2402,7 @@ function updatePreview() {
     ctx.textAlign = wm.includes('r') ? 'right' : 'left';
     const x = wm.includes('r') ? canvas.width - 16 : 16;
     const y = wm.includes('t') ? 30 : canvas.height - 16;
-    ctx.fillText('YAN', x, y);
+    ctx.fillText('AfriVid', x, y);
   }
   
   // Subtitles
@@ -2513,7 +2513,7 @@ async function startEnhancing() {
       ctx.textAlign = wm.includes('r') ? 'right' : 'left';
       const x = wm.includes('r') ? canvas.width - 20 : 20;
       const y = wm.includes('t') ? 36 : canvas.height - 20;
-      ctx.fillText('YAN', x, y);
+      ctx.fillText('AfriVid', x, y);
     }
     
     // Subtitles
@@ -2743,7 +2743,7 @@ function downloadEnhanced() {
   const url = URL.createObjectURL(enhancedBlob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `YAN-Enhanced-${Date.now()}.webm`;
+  a.download = `AfriVid-Enhanced-${Date.now()}.webm`;
   a.click();
   URL.revokeObjectURL(url);
   addEnhanceLog('success', '⬇ Downloaded!');
@@ -3019,7 +3019,7 @@ AfriVid
 https://rayiecho.github.io/afrivid
 
 ${(scriptData.hashtags || []).join(' ')}`,
-        tags: ['YAN', 'YoungAfricansNetwork', 'Africa', 'Education'],
+        tags: ['AfriVid', 'AfriVidStudio', 'Africa', 'AIVideo'],
         categoryId: '27' // Education
       },
       status: {
@@ -3253,7 +3253,7 @@ function downloadPhoto() {
   const url = canvas.toDataURL(`image/${format}`, quality);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `YAN-Photo-${Date.now()}.${format}`;
+  a.download = `AfriVid-Photo-${Date.now()}.${format}`;
   a.click();
   addPhotoLog('success', '⬇ Photo downloaded!');
 }
