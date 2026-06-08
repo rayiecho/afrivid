@@ -5203,12 +5203,16 @@ function loadTemplate(type) {
 
   const templates = {
     logo: {
-      bg: '#050A14', size: '800x800',
+      bg: 'linear-gradient(135deg,#050A14,#0D1F35)', size: '800x800',
       elements: [
-        { type: 'circle', x: 400, y: 340, r: 120, color: '#F5A623' },
-        { type: 'text', text: 'A', x: 355, y: 380, color: '#050A14', size: 120, font: 'Syne', weight: 900 },
-        { type: 'text', text: 'AfriVid Studio', x: 400, y: 520, color: '#ffffff', size: 52, font: 'Syne', weight: 800, align: 'center' },
-        { type: 'text', text: "AFRICA'S FIRST AI VIDEO SUITE", x: 400, y: 570, color: '#F5A623', size: 18, font: 'Space Mono', weight: 400, align: 'center' },
+        { type: 'circle', x: 400, y: 300, r: 160, color: 'rgba(245,166,35,0.12)' },
+        { type: 'circle', x: 400, y: 300, r: 130, color: 'rgba(245,166,35,0.15)' },
+        { type: 'circle', x: 400, y: 300, r: 105, color: '#F5A623' },
+        { type: 'text', text: 'A', x: 356, y: 352, color: '#050A14', size: 130, font: 'Syne', weight: 900 },
+        { type: 'rect', x: 320, y: 430, w: 160, h: 4, color: '#74C69D' },
+        { type: 'text', text: 'AfriVid', x: 400, y: 510, color: '#ffffff', size: 68, font: 'Syne', weight: 800, align: 'center' },
+        { type: 'text', text: 'STUDIO', x: 400, y: 570, color: '#F5A623', size: 32, font: 'Syne', weight: 700, align: 'center' },
+        { type: 'text', text: "AFRICA'S FIRST AI VIDEO SUITE", x: 400, y: 620, color: 'rgba(255,255,255,0.4)', size: 16, font: 'Space Mono', weight: 400, align: 'center' },
       ]
     },
     poster: {
