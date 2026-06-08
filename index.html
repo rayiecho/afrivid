@@ -3584,18 +3584,18 @@ function drawPowerPointSlide(canvas, scene, progress, currentWord, theme) {
   ctx.fillStyle = t.accent;
   ctx.font = `700 ${H*0.022}px Syne, sans-serif`;
   ctx.textAlign = 'left';
-  ctx.fillText('AfriVid Studio', W * 0.03, H * 0.96);
+  ctx.fillText('AfriVid Studio', W * 0.03, H * 0.975);
 
   // Main title - large
-  const titleSize = H * 0.1;
+  const titleSize = H * 0.072;
   ctx.fillStyle = t.text;
   ctx.font = `800 ${titleSize}px Syne, sans-serif`;
   ctx.textAlign = 'left';
   const titleX = W * 0.06;
-  const maxTitleW = W * 0.82;
+  const maxTitleW = W * 0.78;
   const titleWords = (scene.slideTitle || '').split(' ');
   let titleLine = '';
-  let titleY = H * 0.22;
+  let titleY = H * 0.18;
   const titleLines = [];
   titleWords.forEach((word, i) => {
     const test = titleLine + word + ' ';
@@ -3625,9 +3625,9 @@ function drawPowerPointSlide(canvas, scene, progress, currentWord, theme) {
     const totalWords = scene.voiceover.split(' ').length;
     const wordsPerSentence = Math.max(1, totalWords / sentences.length);
     const currentSentence = currentWord >= 0 ? Math.min(Math.floor(currentWord / wordsPerSentence), sentences.length - 1) : -1;
-    const bulletStartY = afterTitle + H * 0.12;
-    const lineSpacing = H * 0.13;
-    const bSize = H * 0.032;
+    const bulletStartY = afterTitle + H * 0.08;
+    const lineSpacing = H * 0.115;
+    const bSize = H * 0.028;
 
     sentences.forEach((sentence, idx) => {
       if (currentWord >= 0 && idx > currentSentence) return;
