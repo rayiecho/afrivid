@@ -4210,6 +4210,28 @@ async function startEnhancing() {
   const useClips = clips && clips.length > 0;
   let clipIndex = 0;
 
+  // Apply aspect ratio crop
+  const enhanceAR = document.getElementById('enhance-aspect')?.value || 'original';
+  if (enhanceAR !== 'original') {
+    const arParts = enhanceAR.split(':');
+    const targetAR = parseInt(arParts[0]) / parseInt(arParts[1]);
+    const videoAR = video.videoWidth / video.videoHeight;
+    if (Math.abs(targetAR - videoAR) > 0.01) {
+      if (targetAR > videoAR) {
+        canvas.width = video.videoWidth;
+        canvas.height = Math.round(video.videoWidth / targetAR);
+      } else {
+        canvas.height = video.videoHeight;
+        canvas.width = Math.round(video.videoHeight * targetAR);
+      }
+      addEnhanceLog('info', `✓ Aspect ratio: ${enhanceAR} (${canvas.width}x${canvas.height})`);
+    }
+  }
+
+  // Apply quality bitrate
+  const quality = document.getElementById('enhance-quality')?.value || 'medium';
+  const bitrates = { high: 6000000, medium: 3000000, low: 1000000 };
+
   video.currentTime = useClips ? clips[0].start : 0;
   video.play();
   addEnhanceLog('success', useClips ? `✓ Processing ${clips.length} clip(s)...` : '✓ Processing video frames...');
@@ -4451,17 +4473,71 @@ function buildAudioChain(audioCtx, source, dest) {
   return gainNode;
 }
 
-function finishEnhancing() {
+async function finishEnhancing() {
   enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
   const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
   addEnhanceLog('success', `✓ Enhanced video ready! Size: ${sizeMB}MB`);
 
-  // Show download + YouTube buttons
-  document.getElementById('enhance-export-btns').style.display = 'flex';
-  
+  const format = document.getElementById('enhance-format')?.value || 'webm';
+
+  if (format === 'mp4') {
+    addEnhanceLog('info', '🔄 Converting to MP4 via FFmpeg...');
+    try {
+      await convertToMP4(enhancedBlob);
+      addEnhanceLog('success', '✓ MP4 conversion complete!');
+    } catch(e) {
+      addEnhanceLog('error', '✗ MP4 conversion failed, downloading as WebM');
+      downloadEnhanced();
+    }
+  } else {
+    document.getElementById('enhance-export-btns').style.display = 'flex';
+  }
+
   document.getElementById('enhance-progress-label').textContent = 'Done!';
   document.getElementById('enhance-progress-pct').textContent = '100%';
   document.getElementById('enhance-progress-fill').style.width = '100%';
+}
+
+async function convertToMP4(webmBlob) {
+  // Dynamically load FFmpeg
+  addEnhanceLog('info', '📦 Loading FFmpeg (first time may take 30s)...');
+  
+  const { FFmpeg } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js');
+  const { fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+  
+  const ffmpeg = new FFmpeg();
+  ffmpeg.on('progress', ({ progress }) => {
+    const pct = Math.round(progress * 100);
+    addEnhanceLog('info', `🔄 Converting: ${pct}%`);
+  });
+  
+  await ffmpeg.load();
+  addEnhanceLog('success', '✓ FFmpeg loaded!');
+
+  const quality = document.getElementById('enhance-quality')?.value || 'medium';
+  const crf = quality === 'high' ? '18' : quality === 'medium' ? '23' : '28';
+
+  await ffmpeg.writeFile('input.webm', await fetchFile(webmBlob));
+  await ffmpeg.exec([
+    '-i', 'input.webm',
+    '-c:v', 'libx264',
+    '-crf', crf,
+    '-preset', 'fast',
+    '-c:a', 'aac',
+    '-b:a', '128k',
+    'output.mp4'
+  ]);
+
+  const data = await ffmpeg.readFile('output.mp4');
+  const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
+  const url = URL.createObjectURL(mp4Blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `AfriVid-Enhanced-${Date.now()}.mp4`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  document.getElementById('enhance-export-btns').style.display = 'flex';
 }
 
 function downloadEnhanced() {
