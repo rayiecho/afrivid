@@ -3599,27 +3599,25 @@ async function startRecording() {
   }
   addLog('info', '🎤 Generating voiceover audio...');
   // Music will start after AudioContext is set up
-
-  // Generate all scene audio first
-  const audioBuffers = [];
-  for (let i = 0; i < scriptData.scenes.length; i++) {
-    const scene = scriptData.scenes[i];
-    try {
-      const res = await fetch('https://yan-studio-worker.youngafricansn.workers.dev/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: scene.voiceover, voice: document.getElementById('voice-select').value })
-      });
-      const blob = await res.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-      audioBuffers.push(arrayBuffer);
-      addLog('success', `✓ Audio generated: Scene ${scene.sceneNumber}`);
-    } catch(e) {
-      audioBuffers.push(null);
-      addLog('error', `✗ Audio failed: Scene ${scene.sceneNumber}`);
-    }
-  }
-
+  addLog('info', `🎤 Generating all voices in parallel...`);
+  const audioBuffers = await Promise.all(
+    scriptData.scenes.map(async (scene, i) => {
+      try {
+        const res = await fetch('https://yan-studio-worker.youngafricansn.workers.dev/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: scene.voiceover, voice: document.getElementById('voice-select').value })
+        });
+        const blob = await res.blob();
+        addLog('success', `✓ Scene ${i+1} voice ready`);
+        return await blob.arrayBuffer();
+      } catch(e) {
+        addLog('error', `✗ Scene ${i+1} failed`);
+        return null;
+      }
+    })
+  );
+  addLog('success', '✓ All voices generated in parallel!');
   // Setup AudioContext
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const dest = audioCtx.createMediaStreamDestination();
