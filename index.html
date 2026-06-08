@@ -1059,6 +1059,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
 </head>
 <body>
+<script>
+// Global stubs - real functions defined later
+function switchTab(t){if(window._switchTab)window._switchTab(t);}
+function toggleSidebar(){if(window._toggleSidebar)window._toggleSidebar();}
+function openFeedback(){if(window._openFeedback)window._openFeedback();}
+function logout(){if(window._logout)window._logout();}
+function loadAdminDashboard(){if(window._loadAdminDashboard)window._loadAdminDashboard();}
+</script>
 
 <!-- LANDING PAGE -->
 <div id="landing-screen" style="position:fixed;inset:0;z-index:999;overflow-y:auto;background:#050A14;font-family:'Syne',sans-serif;">
@@ -3805,7 +3813,7 @@ function deleteFromLibrary(id) {
 
 // ── SIDEBAR TOGGLE ──
 let sidebarCollapsed = false;
-function toggleSidebar() {
+window._toggleSidebar = function() {
   sidebarCollapsed = !sidebarCollapsed;
   const sidebar = document.getElementById('sidebar');
   const content = document.querySelector('.app-content');
@@ -3813,7 +3821,7 @@ function toggleSidebar() {
   if (content) content.classList.toggle('expanded', sidebarCollapsed);
 }
 
-function switchTab(tab) {
+window._switchTab = function(tab) {
   if (tab === 'design') {
     setTimeout(function() {
       if (typeof initDesignCanvas === 'function') {
