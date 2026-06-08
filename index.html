@@ -158,9 +158,10 @@
     await signOut(auth);
   };
 
-  window.showLogin = function() {
+  window.showLogin = function(tab) {
     document.getElementById('landing-screen').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
+    showAuthTab(tab || 'signup');
   };
 
   window.showLanding = function() {
@@ -168,9 +169,10 @@
     document.getElementById('login-screen').style.display = 'none';
   };
 
-  window.showLogin = function() {
+  window.showLogin = function(tab) {
     document.getElementById('landing-screen').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
+    showAuthTab(tab || 'signup');
   };
   window.showLanding = function() {
     document.getElementById('landing-screen').style.display = 'flex';
@@ -179,10 +181,11 @@
   window.showAuthTab = function(tab) {
     document.getElementById('auth-login-form').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'block' : 'none';
-    document.getElementById('auth-tab-login').style.background = tab === 'login' ? 'var(--gold)' : 'transparent';
-    document.getElementById('auth-tab-login').style.color = tab === 'login' ? 'var(--navy)' : 'var(--muted)';
-    document.getElementById('auth-tab-signup').style.background = tab === 'signup' ? 'var(--gold)' : 'transparent';
-    document.getElementById('auth-tab-signup').style.color = tab === 'signup' ? 'var(--navy)' : 'var(--muted)';
+    document.getElementById('auth-tab-login').style.background = tab === 'login' ? 'linear-gradient(135deg,#F5A623,#E8931A)' : 'transparent';
+    document.getElementById('auth-tab-login').style.color = tab === 'login' ? '#050A14' : 'rgba(255,255,255,0.4)';
+    document.getElementById('auth-tab-signup').style.background = tab === 'signup' ? 'linear-gradient(135deg,#F5A623,#E8931A)' : 'transparent';
+    document.getElementById('auth-tab-signup').style.color = tab === 'signup' ? '#050A14' : 'rgba(255,255,255,0.4)';
+    document.getElementById('login-error').style.display = 'none';
   };
 
   window.trackVideoGeneration = trackVideoGeneration;
@@ -1131,10 +1134,10 @@
     </div>
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;backdrop-filter:blur(20px);">
       <div style="display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.75rem;">
-        <button id="auth-tab-login" onclick="showAuthTab('login')" style="flex:1;padding:0.65rem;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;">Sign In</button>
-        <button id="auth-tab-signup" onclick="showAuthTab('signup')" style="flex:1;padding:0.65rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;">Sign Up</button>
+        <button id="auth-tab-login" onclick="showAuthTab('login')" style="flex:1;padding:0.65rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;">Sign In</button>
+        <button id="auth-tab-signup" onclick="showAuthTab('signup')" style="flex:1;padding:0.65rem;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;">Sign Up</button>
       </div>
-      <div id="auth-login-form">
+      <div id="auth-login-form" style="display:none;">
         <div style="margin-bottom:1rem;">
           <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;">EMAIL</label>
           <input type="email" id="login-email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="you@example.com" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
@@ -1144,8 +1147,9 @@
           <input type="password" id="login-password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="••••••••" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')signIn()">
         </div>
         <button onclick="signIn()" style="width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.9rem;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;">Sign In →</button>
+      <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Don't have an account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </div>
-      <div id="auth-signup-form" style="display:none;">
+      <div id="auth-signup-form">
         <div style="margin-bottom:1rem;">
           <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;">FULL NAME</label>
           <input type="text" id="signup-name" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="Your full name" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
@@ -1159,6 +1163,7 @@
           <input type="password" id="signup-password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;" placeholder="Min 6 characters" onfocus="this.style.borderColor='rgba(245,166,35,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')signUp()">
         </div>
         <button onclick="signUp()" style="width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.9rem;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;">Create Account →</button>
+      <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Already have an account? <button onclick="showAuthTab('login')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </div>
       <div class="login-error" id="login-error" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.82rem;color:#ff6b6b;"></div>
       <div style="text-align:center;margin-top:1.25rem;">
