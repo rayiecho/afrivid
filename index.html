@@ -219,15 +219,8 @@
     document.getElementById('login-screen').style.display = 'none';
   };
 
-  window.showLogin = function(tab) {
-    document.getElementById('landing-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-    showAuthTab(tab || 'signup');
-  };
-  window.showLanding = function() {
-    document.getElementById('landing-screen').style.display = 'flex';
-    document.getElementById('login-screen').style.display = 'none';
-  };
+  
+  
   window.showAuthTab = function(tab) {
     document.getElementById('auth-login-form').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'block' : 'none';
