@@ -254,7 +254,7 @@
   window.loadAdminDashboard = async function() {
     ['create','enhance','library','photo'].forEach(t => {
       const s = document.getElementById('section-'+t);
-      if(s) s.classList.remove('active');
+      if(s) { s.classList.remove('active'); s.style.display = 'none'; }
     });
     ['create','enhance','library','photo','admin'].forEach(t => {
       const b = document.getElementById('sidebar-'+t);
@@ -264,12 +264,11 @@
     let adminSection = document.getElementById('section-admin');
     if (!adminSection) {
       adminSection = document.createElement('div');
-      adminSection.className = 'main-section active';
       adminSection.id = 'section-admin';
       document.querySelector('.main').appendChild(adminSection);
-    } else {
-      adminSection.className = 'main-section active';
     }
+    adminSection.style.display = 'block';
+    adminSection.className = 'main-section active';
 
     adminSection.innerHTML = `
       <div class="card">
@@ -296,12 +295,13 @@
     if (!container) return;
 
     try {
-      const [usersSnap, videosSnap, feedbackSnap, configSnap] = await Promise.all([
+      const [usersSnap, videosSnap, feedbackSnap] = await Promise.all([
         getDocs(query(collection(db, 'studio_users'), orderBy('videosGenerated', 'desc'), limit(100))),
         getDocs(query(collection(db, 'studio_videos'), orderBy('createdAt', 'desc'), limit(100))),
-        getDocs(query(collection(db, 'studio_feedback'), orderBy('createdAt', 'desc'), limit(50))),
-        getDoc(doc(db, 'studio_config', 'settings')).catch(() => null)
+        getDocs(query(collection(db, 'studio_feedback'), orderBy('createdAt', 'desc'), limit(50)))
       ]);
+      let configSnap = null;
+      try { configSnap = await getDoc(doc(db, 'studio_config', 'settings')); } catch(e) {}
 
       // Load config
       const config = configSnap?.exists() ? configSnap.data() : {};
@@ -3671,7 +3671,7 @@ function switchTab(tab) {
   if (tab === 'admin') { loadAdminDashboard(); return; }
   ['create','enhance','library','photo'].forEach(t => {
     const sec = document.getElementById('section-'+t);
-    if (sec) sec.classList.toggle('active', t === tab);
+    if (sec) { sec.classList.toggle('active', t === tab); sec.style.display = t === tab ? 'block' : 'none'; }
   });
   // Update sidebar
   ['create','enhance','library','photo','admin'].forEach(t => {
