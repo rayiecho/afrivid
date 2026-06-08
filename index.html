@@ -557,69 +557,6 @@
     } catch(e) { alert('Failed: ' + e.message); }
   };
 
-  window.loadAdminDashboard = async function() {
-    // Switch to admin section
-    ['create','enhance','library','photo'].forEach(t => {
-      const s = document.getElementById('section-'+t);
-      const b = document.getElementById('tab-'+t);
-      if(s) s.classList.remove('active');
-      if(b) b.classList.remove('active');
-    });
-    document.getElementById('tab-admin').classList.add('active');
-
-    // Load stats
-    const usersSnap = await getDocs(query(collection(db, 'studio_users'), orderBy('videosGenerated', 'desc'), limit(50)));
-    const videosSnap = await getDocs(query(collection(db, 'studio_videos'), orderBy('createdAt', 'desc'), limit(20)));
-    const feedbackSnap = await getDocs(query(collection(db, 'studio_feedback'), orderBy('createdAt', 'desc'), limit(20)));
-
-    let adminHTML = `
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">⚙️</div>Admin Dashboard</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
-          <div style="background:var(--navy3);border-radius:12px;padding:1.5rem;text-align:center;">
-            <div style="font-size:2rem;font-weight:800;color:var(--gold);">${usersSnap.size}</div>
-            <div style="font-size:0.78rem;color:var(--muted);font-family:var(--font-mono);">TOTAL USERS</div>
-          </div>
-          <div style="background:var(--navy3);border-radius:12px;padding:1.5rem;text-align:center;">
-            <div style="font-size:2rem;font-weight:800;color:var(--gold);">${videosSnap.size}</div>
-            <div style="font-size:0.78rem;color:var(--muted);font-family:var(--font-mono);">VIDEOS MADE</div>
-          </div>
-          <div style="background:var(--navy3);border-radius:12px;padding:1.5rem;text-align:center;">
-            <div style="font-size:2rem;font-weight:800;color:var(--gold);">${feedbackSnap.size}</div>
-            <div style="font-size:0.78rem;color:var(--muted);font-family:var(--font-mono);">FEEDBACKS</div>
-          </div>
-        </div>
-
-        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem;color:var(--gold);font-family:var(--font-mono);">TOP USERS</div>
-        ${usersSnap.docs.map(d => {
-          const u = d.data();
-          return `<div style="display:flex;justify-content:space-between;padding:0.75rem;background:var(--navy3);border-radius:8px;margin-bottom:0.5rem;font-size:0.82rem;">
-            <span>${u.name || u.email}</span>
-            <span style="color:var(--gold);font-family:var(--font-mono);">${u.videosGenerated || 0} videos</span>
-          </div>`;
-        }).join('')}
-
-        <div style="font-size:0.88rem;font-weight:700;margin:1.5rem 0 1rem;color:var(--gold);font-family:var(--font-mono);">RECENT FEEDBACK</div>
-        ${feedbackSnap.docs.map(d => {
-          const f = d.data();
-          return `<div style="padding:0.75rem;background:var(--navy3);border-radius:8px;margin-bottom:0.5rem;font-size:0.82rem;">
-            <div style="color:var(--gold);margin-bottom:0.25rem;">${'⭐'.repeat(f.rating || 0)} — ${f.userEmail}</div>
-            <div style="color:var(--muted);">${f.message || ''}</div>
-          </div>`;
-        }).join('')}
-      </div>`;
-
-    let adminSection = document.getElementById('section-admin');
-    if (!adminSection) {
-      adminSection = document.createElement('div');
-      adminSection.className = 'main-section active';
-      adminSection.id = 'section-admin';
-      document.querySelector('.main').appendChild(adminSection);
-    } else {
-      adminSection.className = 'main-section active';
-    }
-    adminSection.innerHTML = adminHTML;
-  };
 
   // Feedback modal
   window.selectStar = function(n) {
