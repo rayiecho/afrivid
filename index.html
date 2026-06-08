@@ -2284,7 +2284,10 @@ Or just paste your raw content and we will structure it into scenes automaticall
           <div style="display:flex;flex-direction:column;gap:0.5rem;">
             <button onclick="downloadDesign('png')" class="btn btn-green" style="width:100%;">⬇ Download PNG</button>
             <button onclick="downloadDesign('jpeg')" class="btn btn-outline" style="width:100%;">⬇ Download JPG</button>
+            <button onclick="downloadDesignSVG()" class="btn btn-outline" style="width:100%;border-color:rgba(116,198,157,0.4);color:#74C69D;">⬇ Download SVG (Vector)</button>
+            <button onclick="downloadDesign('png', 4)" class="btn btn-outline" style="width:100%;font-size:0.78rem;">⬇ Download PNG 4x (High Res)</button>
           </div>
+          <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);margin-top:0.5rem;">SVG = scales to any size perfectly</div>
         </div>
 
       </div>
@@ -5354,15 +5357,75 @@ function undoDesign() {
   renderDesign();
 }
 
-function downloadDesign(format) {
+function downloadDesign(format, scale = 1) {
   const canvas = document.getElementById('design-canvas');
   selectedElement = null;
   renderDesign();
+
+  if (scale > 1) {
+    // High resolution export
+    const hiCanvas = document.createElement('canvas');
+    hiCanvas.width = canvas.width * scale;
+    hiCanvas.height = canvas.height * scale;
+    const hiCtx = hiCanvas.getContext('2d');
+    hiCtx.scale(scale, scale);
+    hiCtx.drawImage(canvas, 0, 0);
+    const url = hiCanvas.toDataURL(`image/${format}`, format === 'jpeg' ? 0.95 : 1);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AfriVid-Design-${canvas.width*scale}x${canvas.height*scale}.${format}`;
+    a.click();
+    return;
+  }
+
   const url = canvas.toDataURL(`image/${format}`, format === 'jpeg' ? 0.92 : 1);
   const a = document.createElement('a');
   a.href = url;
   a.download = `AfriVid-Design-${Date.now()}.${format}`;
   a.click();
+}
+
+function downloadDesignSVG() {
+  const W = designW;
+  const H = designH;
+  let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+
+  // Background
+  if (designBg.includes('gradient')) {
+    const colors = designBg.match(/#[a-fA-F0-9]{6}/g) || ['#050A14', '#0D1F35'];
+    svgContent += `<defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">`;
+    colors.forEach((c, i) => {
+      svgContent += `<stop offset="${i/(colors.length-1)*100}%" style="stop-color:${c}"/>`;
+    });
+    svgContent += `</linearGradient></defs>`;
+    svgContent += `<rect width="${W}" height="${H}" fill="url(#bg)"/>`;
+  } else {
+    svgContent += `<rect width="${W}" height="${H}" fill="${designBg}"/>`;
+  }
+
+  // Elements
+  designElements.forEach(el => {
+    if (el.type === 'text') {
+      svgContent += `<text x="${el.x}" y="${el.y}" font-family="${el.font || 'Syne'}, sans-serif" font-size="${el.size || 32}" font-weight="${el.weight || 700}" fill="${el.color || '#ffffff'}" text-anchor="${el.align === 'center' ? 'middle' : 'start'}">${el.text}</text>`;
+    } else if (el.type === 'rect') {
+      svgContent += `<rect x="${el.x}" y="${el.y}" width="${el.w || 200}" height="${el.h || 100}" fill="${el.color || '#F5A623'}"/>`;
+    } else if (el.type === 'circle') {
+      svgContent += `<circle cx="${el.x}" cy="${el.y}" r="${el.r || 50}" fill="${el.color || '#F5A623'}"/>`;
+    } else if (el.type === 'line') {
+      svgContent += `<line x1="${el.x}" y1="${el.y}" x2="${el.x2 || el.x+200}" y2="${el.y2 || el.y}" stroke="${el.color || '#F5A623'}" stroke-width="${el.size || 3}"/>`;
+    }
+    // Images can't be embedded in SVG easily - skip for now
+  });
+
+  svgContent += '</svg>';
+
+  const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `AfriVid-Design-${Date.now()}.svg`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function loadTemplate(type) {
