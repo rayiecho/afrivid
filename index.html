@@ -1060,25 +1060,40 @@
 </head>
 <body>
 <script>
-// Global stubs - filled in when scripts load
-window.switchTab = function(t){ console.log('switchTab called:', t); };
-window.toggleSidebar = function(){ console.log('toggleSidebar called'); };
-window.openFeedback = function(){ console.log('openFeedback called'); };
-window.loadAdminDashboard = function(){ console.log('admin called'); };
-window.setMode = function(m){ console.log('setMode called:', m); };
-window.goToStep = function(n){ console.log('goToStep called:', n); };
-window.generateScript = function(){ console.log('generateScript called'); };
-window.generateVideo = function(){ console.log('generateVideo called'); };
-window.downloadVideo = function(){ console.log('downloadVideo called'); };
-window.makeAnother = function(){ console.log('makeAnother called'); };
-window.startEnhancing = function(){ console.log('startEnhancing called'); };
-window.loadVideoFile = function(e){ console.log('loadVideoFile called'); };
-window.generateDesign = function(){ console.log('generateDesign called'); };
-window.generateAIImage = function(){ console.log('generateAIImage called'); };
-window.loadTemplate = function(t){ console.log('loadTemplate called:', t); };
-window.downloadDesign = function(f){ console.log('downloadDesign called:', f); };
-window.combineVideos = function(){ console.log('combineVideos called'); };
-window.setUploadMode = function(m){ console.log('setUploadMode called:', m); };
+// Route onclick calls to real functions defined later
+function switchTab(t){if(window._switchTab)window._switchTab(t);}
+function toggleSidebar(){if(window._toggleSidebar)window._toggleSidebar();}
+function setMode(m){if(window._setMode)window._setMode(m);}
+function goToStep(n){if(window._goToStep)window._goToStep(n);}
+function generateScript(){if(window._generateScript)window._generateScript();}
+function generateVideo(){if(window._generateVideo)window._generateVideo();}
+function downloadVideo(){if(window._downloadVideo)window._downloadVideo();}
+function makeAnother(){if(window._makeAnother)window._makeAnother();}
+function startEnhancing(){if(window._startEnhancing)window._startEnhancing();}
+function loadVideoFile(e){if(window._loadVideoFile)window._loadVideoFile(e);}
+function generateDesign(){if(window._generateDesign)window._generateDesign();}
+function generateAIImage(){if(window._generateAIImage)window._generateAIImage();}
+function loadTemplate(t){if(window._loadTemplate)window._loadTemplate(t);}
+function downloadDesign(f,s){if(window._downloadDesign)window._downloadDesign(f,s);}
+function combineVideos(){if(window._combineVideos)window._combineVideos();}
+function setUploadMode(m){if(window._setUploadMode)window._setUploadMode(m);}
+function downloadDesignSVG(){if(window._downloadDesignSVG)window._downloadDesignSVG();}
+function initDesignCanvas(){if(window._initDesignCanvas)window._initDesignCanvas();}
+function resizeCanvas(){if(window._resizeCanvas)window._resizeCanvas();}
+function addDesignText(){if(window._addDesignText)window._addDesignText();}
+function addDesignShape(t){if(window._addDesignShape)window._addDesignShape(t);}
+function clearDesignCanvas(){if(window._clearDesignCanvas)window._clearDesignCanvas();}
+function undoDesign(){if(window._undoDesign)window._undoDesign();}
+function deleteSelectedElement(){if(window._deleteSelectedElement)window._deleteSelectedElement();}
+function updateSelectedElement(p,v){if(window._updateSelectedElement)window._updateSelectedElement(p,v);}
+function resetEnhancer(){if(window._resetEnhancer)window._resetEnhancer();}
+function stopRecording(){if(window._stopRecording)window._stopRecording();}
+function shareWhatsApp(){if(window._shareWhatsApp)window._shareWhatsApp();}
+function uploadToYouTube(){if(window._uploadToYouTube)window._uploadToYouTube();}
+function sendToEditor(){if(window._sendToEditor)window._sendToEditor();}
+function downloadMP4(){if(window._downloadMP4)window._downloadMP4();}
+function openFeedback(){if(window._openFeedback)window._openFeedback();}
+function loadAdminDashboard(){if(window._loadAdminDashboard)window._loadAdminDashboard();}
 </script>
 
 <!-- LANDING PAGE -->
