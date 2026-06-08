@@ -1487,9 +1487,20 @@ window.loadAdminDashboard = function(){ console.log('admin called'); };
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Video Style</label>
+            <label class="form-label">Aspect Ratio</label>
+            <select id="video-aspect-ratio" class="form-select">
+              <option value="16:9">16:9 — Landscape (YouTube/Presentation)</option>
+              <option value="9:16">9:16 — Portrait (TikTok/Reels)</option>
+              <option value="1:1">1:1 — Square (Instagram)</option>
+              <option value="4:3">4:3 — Classic</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Slide Theme</label>
             <select id="video-visual-style" class="form-select">
-              <option value="slides">🖥 Slides (Default)</option>
+              <option value="slides_light">☀️ Light (Clean White)</option>
+              <option value="slides_dark">🌙 Dark (Professional)</option>
+              <option value="slides_gold">✨ Gold (AfriVid Brand)</option>
               <option value="whiteboard">🖊 Whiteboard</option>
               <option value="cinematic">🎬 Cinematic</option>
               <option value="photobg">🌍 Photo Background</option>
@@ -2714,7 +2725,7 @@ let bgMusicAudio = null;
 let transitionProgress = 0;
 let isTransitioning = false;
 let transitionStartTime = 0;
-const TRANSITION_DURATION = 250; // ms
+const TRANSITION_DURATION = 80; // ms - near instant
 
 function startTransition() {
   isTransitioning = true;
@@ -3586,8 +3597,13 @@ async function startRecording() {
   goToStep(3);
 
   const canvas = document.getElementById('video-canvas');
-  canvas.width = 1280;
-  canvas.height = 720;
+  // Set canvas size based on aspect ratio
+  const ar = document.getElementById('video-aspect-ratio')?.value || '16:9';
+  if (ar === '16:9') { canvas.width = 1920; canvas.height = 1080; }
+  else if (ar === '9:16') { canvas.width = 1080; canvas.height = 1920; }
+  else if (ar === '1:1') { canvas.width = 1080; canvas.height = 1080; }
+  else if (ar === '4:3') { canvas.width = 1440; canvas.height = 1080; }
+  else { canvas.width = 1920; canvas.height = 1080; }
 
   document.getElementById('canvas-overlay').style.display = 'none';
   document.getElementById('btn-record').style.display = 'none';
