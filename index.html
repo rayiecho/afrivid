@@ -1532,15 +1532,21 @@ window.loadAdminDashboard = function(){ console.log('admin called'); };
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">YAN Program</label>
+            <label class="form-label">Topic Category</label>
             <select id="video-program" class="form-select">
-              <option value="General YAN content">General YAN</option>
-              <option value="IT Training & Digital Skills">IT Training</option>
-              <option value="Scholarships & Global Opportunities">Scholarships</option>
-              <option value="Career Development & Public Speaking">Career Development</option>
-              <option value="Leadership & 21st Century Skills">Leadership</option>
-              <option value="Community Impact & Giving Back">Community Impact</option>
-              <option value="Mental Health & Wellbeing">Mental Health</option>
+              <option value="General knowledge and education">📚 General Education</option>
+              <option value="Artificial Intelligence and technology">🤖 Artificial Intelligence</option>
+              <option value="Finance money and financial literacy">💰 Finance & Money</option>
+              <option value="Business and entrepreneurship">📊 Business & Entrepreneurship</option>
+              <option value="IT Training and digital skills">💻 IT & Digital Skills</option>
+              <option value="Scholarships and global opportunities">🎓 Scholarships</option>
+              <option value="Career development and public speaking">💼 Career Development</option>
+              <option value="Leadership and 21st century skills">🎯 Leadership</option>
+              <option value="Community impact and social change">🌍 Community Impact</option>
+              <option value="Mental health and wellbeing">🧠 Mental Health</option>
+              <option value="Health and wellness">🏥 Health & Wellness</option>
+              <option value="Environment and climate change">🌿 Environment</option>
+              <option value="Arts culture and creativity">🎨 Arts & Culture</option>
             </select>
           </div>
           <div class="form-group">
@@ -3731,7 +3737,7 @@ function finishVideo() {
     Scenes: ${scriptData.scenes.length}<br>
     File size: ${sizeMB}MB<br>
     Format: WebM Video<br>
-    Program: ${document.getElementById('video-program').value}<br>
+    Category: ${document.getElementById('video-program').value}<br>
     Generated: ${new Date().toLocaleString()}
   `;
 
