@@ -1053,40 +1053,39 @@
 </head>
 <body>
 <script>
-// Route onclick calls - real functions in main script
-function switchTab(t){window._fn&&window._fn('switchTab',t);}
-function toggleSidebar(){window._fn&&window._fn('toggleSidebar');}
-function setMode(m){window._fn&&window._fn('setMode',m);}
-function goToStep(n){window._fn&&window._fn('goToStep',n);}
-function generateScript(){window._fn&&window._fn('generateScript');}
-function generateVideo(){window._fn&&window._fn('generateVideo');}
-function downloadVideo(){window._fn&&window._fn('downloadVideo');}
-function makeAnother(){window._fn&&window._fn('makeAnother');}
-function startEnhancing(){window._fn&&window._fn('startEnhancing');}
-function loadVideoFile(e){window._fn&&window._fn('loadVideoFile',e);}
-function generateDesign(){window._fn&&window._fn('generateDesign');}
-function generateAIImage(){window._fn&&window._fn('generateAIImage');}
-function loadTemplate(t){window._fn&&window._fn('loadTemplate',t);}
-function downloadDesign(f,s){window._fn&&window._fn('downloadDesign',f,s);}
-function combineVideos(){window._fn&&window._fn('combineVideos');}
-function setUploadMode(m){window._fn&&window._fn('setUploadMode',m);}
-function downloadDesignSVG(){window._fn&&window._fn('downloadDesignSVG');}
-function initDesignCanvas(){window._fn&&window._fn('initDesignCanvas');}
-function resizeCanvas(){window._fn&&window._fn('resizeCanvas');}
-function addDesignText(){window._fn&&window._fn('addDesignText');}
-function addDesignShape(t){window._fn&&window._fn('addDesignShape',t);}
-function clearDesignCanvas(){window._fn&&window._fn('clearDesignCanvas');}
-function undoDesign(){window._fn&&window._fn('undoDesign');}
-function deleteSelectedElement(){window._fn&&window._fn('deleteSelectedElement');}
-function updateSelectedElement(p,v){window._fn&&window._fn('updateSelectedElement',p,v);}
-function resetEnhancer(){window._fn&&window._fn('resetEnhancer');}
-function stopRecording(){window._fn&&window._fn('stopRecording');}
-function shareWhatsApp(){window._fn&&window._fn('shareWhatsApp');}
-function uploadToYouTube(){window._fn&&window._fn('uploadToYouTube');}
-function sendToEditor(){window._fn&&window._fn('sendToEditor');}
-function downloadMP4(){window._fn&&window._fn('downloadMP4');}
-function openFeedback(){window._fn&&window._fn('openFeedback');}
-function loadAdminDashboard(){window._fn&&window._fn('loadAdminDashboard');}
+// Simple stubs - delegate to real functions when ready
+function switchTab(t){setTimeout(function(){if(typeof _switchTab!=='undefined')_switchTab(t);},0);}
+function toggleSidebar(){setTimeout(function(){if(typeof _toggleSidebar!=='undefined')_toggleSidebar();},0);}
+function setMode(m){setTimeout(function(){if(typeof _setMode!=='undefined')_setMode(m);},0);}
+function goToStep(n){setTimeout(function(){if(typeof _goToStep!=='undefined')_goToStep(n);},0);}
+function generateScript(){setTimeout(function(){if(typeof _generateScript!=='undefined')_generateScript();},0);}
+function generateVideo(){setTimeout(function(){if(typeof _generateVideo!=='undefined')_generateVideo();},0);}
+function downloadVideo(){setTimeout(function(){if(typeof _downloadVideo!=='undefined')_downloadVideo();},0);}
+function makeAnother(){setTimeout(function(){if(typeof _makeAnother!=='undefined')_makeAnother();},0);}
+function startEnhancing(){setTimeout(function(){if(typeof _startEnhancing!=='undefined')_startEnhancing();},0);}
+function loadVideoFile(e){setTimeout(function(){if(typeof _loadVideoFile!=='undefined')_loadVideoFile(e);},0);}
+function generateDesign(){setTimeout(function(){if(typeof _generateDesign!=='undefined')_generateDesign();},0);}
+function generateAIImage(){setTimeout(function(){if(typeof _generateAIImage!=='undefined')_generateAIImage();},0);}
+function loadTemplate(t){setTimeout(function(){if(typeof _loadTemplate!=='undefined')_loadTemplate(t);},0);}
+function downloadDesign(f,s){setTimeout(function(){if(typeof _downloadDesign!=='undefined')_downloadDesign(f,s);},0);}
+function combineVideos(){setTimeout(function(){if(typeof _combineVideos!=='undefined')_combineVideos();},0);}
+function setUploadMode(m){setTimeout(function(){if(typeof _setUploadMode!=='undefined')_setUploadMode(m);},0);}
+function downloadDesignSVG(){setTimeout(function(){if(typeof _downloadDesignSVG!=='undefined')_downloadDesignSVG();},0);}
+function resetEnhancer(){setTimeout(function(){if(typeof _resetEnhancer!=='undefined')_resetEnhancer();},0);}
+function stopRecording(){setTimeout(function(){if(typeof _stopRecording!=='undefined')_stopRecording();},0);}
+function shareWhatsApp(){setTimeout(function(){if(typeof _shareWhatsApp!=='undefined')_shareWhatsApp();},0);}
+function uploadToYouTube(){setTimeout(function(){if(typeof _uploadToYouTube!=='undefined')_uploadToYouTube();},0);}
+function sendToEditor(){setTimeout(function(){if(typeof _sendToEditor!=='undefined')_sendToEditor();},0);}
+function downloadMP4(){setTimeout(function(){if(typeof _downloadMP4!=='undefined')_downloadMP4();},0);}
+function loadAdminDashboard(){setTimeout(function(){if(typeof _loadAdminDashboard!=='undefined')_loadAdminDashboard();},0);}
+function addDesignText(){setTimeout(function(){if(typeof _addDesignText!=='undefined')_addDesignText();},0);}
+function addDesignShape(t){setTimeout(function(){if(typeof _addDesignShape!=='undefined')_addDesignShape(t);},0);}
+function clearDesignCanvas(){setTimeout(function(){if(typeof _clearDesignCanvas!=='undefined')_clearDesignCanvas();},0);}
+function undoDesign(){setTimeout(function(){if(typeof _undoDesign!=='undefined')_undoDesign();},0);}
+function deleteSelectedElement(){setTimeout(function(){if(typeof _deleteSelectedElement!=='undefined')_deleteSelectedElement();},0);}
+function updateSelectedElement(p,v){setTimeout(function(){if(typeof _updateSelectedElement!=='undefined')_updateSelectedElement(p,v);},0);}
+function resizeCanvas(){setTimeout(function(){if(typeof _resizeCanvas!=='undefined')_resizeCanvas();},0);}
+function initDesignCanvas(){setTimeout(function(){if(typeof _initDesignCanvas!=='undefined')_initDesignCanvas();},0);}
 </script>
 
 <!-- LANDING PAGE -->
@@ -2403,22 +2402,6 @@ Or just paste your raw content and we will structure it into scenes automaticall
 </div>
 
 <script>
-// Central function dispatcher
-window._fn = function(name, ...args) {
-  const fns = {
-    switchTab, toggleSidebar, setMode, goToStep, generateScript,
-    generateVideo, downloadVideo, makeAnother, startEnhancing,
-    loadVideoFile, generateDesign, generateAIImage, loadTemplate,
-    downloadDesign, combineVideos, setUploadMode, downloadDesignSVG,
-    initDesignCanvas, resizeCanvas, addDesignText, addDesignShape,
-    clearDesignCanvas, undoDesign, deleteSelectedElement, updateSelectedElement,
-    resetEnhancer, stopRecording, shareWhatsApp, uploadToYouTube,
-    sendToEditor, downloadMP4, openFeedback, loadAdminDashboard
-  };
-  if (fns[name]) return fns[name](...args);
-  console.warn('Function not found:', name);
-};
-
 // -- AUTH --
 const PASSWORD = 'AfriVid@Admin2026';
 
@@ -2452,7 +2435,7 @@ let animFrame = null;
 // -- MODE --
 let currentMode = 'ai';
 
-window.setMode = function setMode(mode) {
+function _setMode(mode) {
   currentMode = mode;
   document.getElementById('ai-fields').style.display = mode === 'ai' ? 'block' : 'none';
   document.getElementById('own-fields').style.display = mode === 'own' ? 'block' : 'none';
@@ -2462,7 +2445,7 @@ window.setMode = function setMode(mode) {
 }
 
 // -- STEPS --
-window.goToStep = function goToStep(n) {
+function _goToStep(n) {
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`panel-${i}`).classList.toggle('active', i === n);
     const s = document.getElementById(`step-${i}`);
@@ -2544,7 +2527,7 @@ Make exactly ${scenes} scenes. Use the provided content for voiceover text - do 
   }
 }
 
-async window.generateScript = function generateScript() {
+async function _generateScript() {
   // Check beta limit
   if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
 
@@ -3970,7 +3953,7 @@ function finishVideo() {
   goToStep(4);
 }
 
-window.downloadVideo = function downloadVideo() {
+function _downloadVideo() {
   if (!videoBlob) { alert('No video to download yet.'); return; }
   const url = URL.createObjectURL(videoBlob);
   const a = document.createElement('a');
@@ -4042,7 +4025,7 @@ function deleteFromLibrary(id) {
 
 // -- SIDEBAR TOGGLE --
 let sidebarCollapsed = false;
-window.toggleSidebar = function() {
+function _toggleSidebar() {
   sidebarCollapsed = !sidebarCollapsed;
   const sidebar = document.getElementById('sidebar');
   const content = document.querySelector('.app-content');
@@ -4050,7 +4033,7 @@ window.toggleSidebar = function() {
   if (content) content.classList.toggle('expanded', sidebarCollapsed);
 }
 
-window.switchTab = function(tab) {
+function _switchTab(tab) {
   if (tab === 'design') {
     setTimeout(function() {
       if (typeof initDesignCanvas === 'function') {
@@ -4092,7 +4075,7 @@ let enhanceVideo = null;
 let enhanceRecordedChunks = [];
 let enhanceMediaRecorder = null;
 
-window.loadVideoFile = function loadVideoFile(event) {
+function _loadVideoFile(event) {
   const file = event.target.files[0];
   if (!file) return;
   enhanceVideo = file;
@@ -4197,7 +4180,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-async window.startEnhancing = function startEnhancing() {
+async function _startEnhancing() {
   if (!enhanceVideo) { alert('Please upload a video first.'); return; }
   
   addEnhanceLog('info', '[>] Starting enhancement...');
@@ -4794,7 +4777,7 @@ function addEnhanceLog(type, msg) {
 let uploadMode = 'single';
 let multiVideos = []; // Array of {file, url, name, duration}
 
-window.setUploadMode = function setUploadMode(mode) {
+function _setUploadMode(mode) {
   uploadMode = mode;
   document.getElementById('single-upload-zone').style.display = mode === 'single' ? 'block' : 'none';
   document.getElementById('multi-upload-zone').style.display = mode === 'multi' ? 'block' : 'none';
@@ -4888,7 +4871,7 @@ function addCombineLog(type, msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-window.combineVideos = async function combineVideos() {
+async function _combineVideos() {
   if (multiVideos.length < 2) { alert('Please upload at least 2 videos to combine'); return; }
 
   addCombineLog('info', `[vid] Combining ${multiVideos.length} videos...`);
@@ -5642,7 +5625,7 @@ function undoDesign() {
   renderDesign();
 }
 
-window.downloadDesign = function downloadDesign(format, scale = 1) {
+function _downloadDesign(format, scale = 1) {
   const canvas = document.getElementById('design-canvas');
   selectedElement = null;
   renderDesign();
@@ -5713,7 +5696,7 @@ function downloadDesignSVG() {
   URL.revokeObjectURL(url);
 }
 
-window.loadTemplate = function loadTemplate(type) {
+function _loadTemplate(type) {
   designElements = [];
   selectedElement = null;
 
@@ -5805,7 +5788,7 @@ window.loadTemplate = function loadTemplate(type) {
   renderDesign();
 }
 
-window.generateAIImage = async function generateAIImage() {
+async function _generateAIImage() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   const type = document.getElementById('design-type').value;
   if (!prompt) { alert('Describe what you want to generate'); return; }
@@ -5871,7 +5854,7 @@ window.generateAIImage = async function generateAIImage() {
   btn.disabled = false;
 }
 
-window.generateDesign = async function generateDesign() {
+async function _generateDesign() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   if (!prompt) { alert('Describe your design first'); return; }
 
@@ -6001,7 +5984,7 @@ function checkResumePrompt() {
   } catch(e) {}
 }
 
-window.makeAnother = function makeAnother() {
+function _makeAnother() {
   scriptData = null;
   videoBlob = null;
   recordedChunks = [];
