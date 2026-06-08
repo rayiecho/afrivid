@@ -3655,6 +3655,25 @@ async function startRecording() {
   // Play audio for first scene
   async function playSceneAudio(index) {
     if (!audioBuffers[index]) return;
+
+    // Handle browser TTS fallback
+    if (typeof audioBuffers[index] === 'string' && audioBuffers[index].startsWith('BROWSER_TTS_')) {
+      const scene = scriptData.scenes[index];
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utt = new SpeechSynthesisUtterance(scene.voiceover);
+        utt.rate = 0.95;
+        utt.pitch = 1;
+        utt.volume = 0.9;
+        // Try to find a good voice
+        const voices = window.speechSynthesis.getVoices();
+        const preferred = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'));
+        if (preferred) utt.voice = preferred;
+        window.speechSynthesis.speak(utt);
+      }
+      return;
+    }
+
     try {
       const decoded = await audioCtx.decodeAudioData(audioBuffers[index].slice(0));
       const source = audioCtx.createBufferSource();
@@ -5343,12 +5362,41 @@ function updateDurationWarning() {
   }
 }
 
+function saveGenerationProgress() {
+  if (!scriptData) return;
+  try {
+    localStorage.setItem('afrivid_last_script', JSON.stringify({
+      title: scriptData.title,
+      duration: scriptData.duration,
+      sceneCount: scriptData.scenes.length,
+      savedAt: Date.now()
+    }));
+  } catch(e) {}
+}
+
+function checkResumePrompt() {
+  try {
+    const saved = localStorage.getItem('afrivid_last_script');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    const age = Date.now() - data.savedAt;
+    if (age < 3600000) { // Less than 1 hour old
+      const resumeDiv = document.createElement('div');
+      resumeDiv.style.cssText = 'padding:0.75rem 1rem;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:8px;margin-bottom:1rem;font-size:0.82rem;display:flex;justify-content:space-between;align-items:center;';
+      resumeDiv.innerHTML = `<span style="color:var(--gold);">↺ Resume: "${data.title}" (${data.sceneCount} scenes)</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;">✕</button>`;
+      const form = document.querySelector('#panel-1 .card');
+      if (form) form.prepend(resumeDiv);
+    }
+  } catch(e) {}
+}
+
 function makeAnother() {
   scriptData = null;
   videoBlob = null;
   recordedChunks = [];
-  window.cachedAudioBuffers = null; // Clear voice cache for new video
+  window.cachedAudioBuffers = null;
   window.lastCompletedScene = 0;
+  localStorage.removeItem('afrivid_last_script');
   document.getElementById('video-topic').value = '';
   document.getElementById('video-content').value = '';
   document.getElementById('script-output').innerHTML = '';
