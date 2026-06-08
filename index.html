@@ -1065,6 +1065,20 @@ window.switchTab = function(t){ console.log('switchTab called:', t); };
 window.toggleSidebar = function(){ console.log('toggleSidebar called'); };
 window.openFeedback = function(){ console.log('openFeedback called'); };
 window.loadAdminDashboard = function(){ console.log('admin called'); };
+window.setMode = function(m){ console.log('setMode called:', m); };
+window.goToStep = function(n){ console.log('goToStep called:', n); };
+window.generateScript = function(){ console.log('generateScript called'); };
+window.generateVideo = function(){ console.log('generateVideo called'); };
+window.downloadVideo = function(){ console.log('downloadVideo called'); };
+window.makeAnother = function(){ console.log('makeAnother called'); };
+window.startEnhancing = function(){ console.log('startEnhancing called'); };
+window.loadVideoFile = function(e){ console.log('loadVideoFile called'); };
+window.generateDesign = function(){ console.log('generateDesign called'); };
+window.generateAIImage = function(){ console.log('generateAIImage called'); };
+window.loadTemplate = function(t){ console.log('loadTemplate called:', t); };
+window.downloadDesign = function(f){ console.log('downloadDesign called:', f); };
+window.combineVideos = function(){ console.log('combineVideos called'); };
+window.setUploadMode = function(m){ console.log('setUploadMode called:', m); };
 </script>
 
 <!-- LANDING PAGE -->
@@ -2417,7 +2431,7 @@ let animFrame = null;
 // ── MODE ──
 let currentMode = 'ai';
 
-function setMode(mode) {
+window.setMode = function setMode(mode) {
   currentMode = mode;
   document.getElementById('ai-fields').style.display = mode === 'ai' ? 'block' : 'none';
   document.getElementById('own-fields').style.display = mode === 'own' ? 'block' : 'none';
@@ -2427,7 +2441,7 @@ function setMode(mode) {
 }
 
 // ── STEPS ──
-function goToStep(n) {
+window.goToStep = function goToStep(n) {
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`panel-${i}`).classList.toggle('active', i === n);
     const s = document.getElementById(`step-${i}`);
@@ -2509,7 +2523,7 @@ Make exactly ${scenes} scenes. Use the provided content for voiceover text — d
   }
 }
 
-async function generateScript() {
+async window.generateScript = function generateScript() {
   // Check beta limit
   if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
 
@@ -3935,7 +3949,7 @@ function finishVideo() {
   goToStep(4);
 }
 
-function downloadVideo() {
+window.downloadVideo = function downloadVideo() {
   if (!videoBlob) { alert('No video to download yet.'); return; }
   const url = URL.createObjectURL(videoBlob);
   const a = document.createElement('a');
@@ -4057,7 +4071,7 @@ let enhanceVideo = null;
 let enhanceRecordedChunks = [];
 let enhanceMediaRecorder = null;
 
-function loadVideoFile(event) {
+window.loadVideoFile = function loadVideoFile(event) {
   const file = event.target.files[0];
   if (!file) return;
   enhanceVideo = file;
@@ -4162,7 +4176,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-async function startEnhancing() {
+async window.startEnhancing = function startEnhancing() {
   if (!enhanceVideo) { alert('Please upload a video first.'); return; }
   
   addEnhanceLog('info', '▶ Starting enhancement...');
@@ -4759,7 +4773,7 @@ function addEnhanceLog(type, msg) {
 let uploadMode = 'single';
 let multiVideos = []; // Array of {file, url, name, duration}
 
-function setUploadMode(mode) {
+window.setUploadMode = function setUploadMode(mode) {
   uploadMode = mode;
   document.getElementById('single-upload-zone').style.display = mode === 'single' ? 'block' : 'none';
   document.getElementById('multi-upload-zone').style.display = mode === 'multi' ? 'block' : 'none';
@@ -4853,7 +4867,7 @@ function addCombineLog(type, msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-async function combineVideos() {
+window.combineVideos = async function combineVideos() {
   if (multiVideos.length < 2) { alert('Please upload at least 2 videos to combine'); return; }
 
   addCombineLog('info', `🎬 Combining ${multiVideos.length} videos...`);
@@ -5607,7 +5621,7 @@ function undoDesign() {
   renderDesign();
 }
 
-function downloadDesign(format, scale = 1) {
+window.downloadDesign = function downloadDesign(format, scale = 1) {
   const canvas = document.getElementById('design-canvas');
   selectedElement = null;
   renderDesign();
@@ -5678,7 +5692,7 @@ function downloadDesignSVG() {
   URL.revokeObjectURL(url);
 }
 
-function loadTemplate(type) {
+window.loadTemplate = function loadTemplate(type) {
   designElements = [];
   selectedElement = null;
 
@@ -5770,7 +5784,7 @@ function loadTemplate(type) {
   renderDesign();
 }
 
-async function generateAIImage() {
+window.generateAIImage = async function generateAIImage() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   const type = document.getElementById('design-type').value;
   if (!prompt) { alert('Describe what you want to generate'); return; }
@@ -5836,7 +5850,7 @@ async function generateAIImage() {
   btn.disabled = false;
 }
 
-async function generateDesign() {
+window.generateDesign = async function generateDesign() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   if (!prompt) { alert('Describe your design first'); return; }
 
@@ -5966,7 +5980,7 @@ function checkResumePrompt() {
   } catch(e) {}
 }
 
-function makeAnother() {
+window.makeAnother = function makeAnother() {
   scriptData = null;
   videoBlob = null;
   recordedChunks = [];
