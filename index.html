@@ -164,7 +164,7 @@
     try {
       await auth.currentUser.reload();
       if (auth.currentUser.emailVerified) {
-        msg.textContent = '✅ Verified! Loading studio...';
+        msg.textContent = '[ok] Verified! Loading studio...';
         msg.style.color = '#74C69D';
         // Trigger auth state change
         const user = auth.currentUser;
@@ -175,11 +175,11 @@
         updateUserUI();
         if (ADMIN_EMAILS.includes(user.email)) setTimeout(() => showAdminTab(), 500);
       } else {
-        msg.textContent = '⚠ Email not verified yet. Please check your inbox.';
+        msg.textContent = '[!] Email not verified yet. Please check your inbox.';
         msg.style.color = '#F5A623';
       }
     } catch(e) {
-      if (msg) msg.textContent = '✗ Error: ' + e.message;
+      if (msg) msg.textContent = '[x] Error: ' + e.message;
     }
   };
 
@@ -187,10 +187,10 @@
     const msg = document.getElementById('verify-msg');
     try {
       await sendEmailVerification(auth.currentUser);
-      msg.textContent = '✅ Verification email sent! Check your inbox.';
+      msg.textContent = '[ok] Verification email sent! Check your inbox.';
       msg.style.color = '#74C69D';
     } catch(e) {
-      msg.textContent = '✗ ' + e.message;
+      msg.textContent = '[x] ' + e.message;
       msg.style.color = '#E63329';
     }
   };
@@ -267,10 +267,10 @@
     adminSection.innerHTML = `
       <div class="card">
         <div class="card-title">
-          <div class="card-title-icon">⚙</div>Admin Dashboard
+          <div class="card-title-icon">[cog]</div>Admin Dashboard
           <div style="margin-left:auto;display:flex;gap:0.75rem;align-items:center;">
             <span id="admin-last-refresh" style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);"></span>
-            <button onclick="loadAdminDashboard()" style="background:rgba(245,166,35,0.1);border:1px solid var(--border);color:var(--gold);padding:0.35rem 0.75rem;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font-mono);">↺ Refresh</button>
+            <button onclick="loadAdminDashboard()" style="background:rgba(245,166,35,0.1);border:1px solid var(--border);color:var(--gold);padding:0.35rem 0.75rem;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font-mono);">[r] Refresh</button>
           </div>
         </div>
       </div>
@@ -306,7 +306,7 @@
       // Calculate stats
       const totalVideos = usersSnap.docs.reduce((s,d) => s + (d.data().videosGenerated||0), 0);
       const avgRating = feedbackSnap.docs.length ?
-        (feedbackSnap.docs.reduce((s,d) => s+(d.data().rating||0), 0) / feedbackSnap.docs.length).toFixed(1) : '—';
+        (feedbackSnap.docs.reduce((s,d) => s+(d.data().rating||0), 0) / feedbackSnap.docs.length).toFixed(1) : '-';
       const paidUsers = usersSnap.docs.filter(d => d.data().plan === 'paid').length;
       const today = new Date().toDateString();
       const activeToday = usersSnap.docs.filter(d => {
@@ -349,7 +349,7 @@
             <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);margin-top:0.25rem;">ACTIVE TODAY</div>
           </div>
           <div style="background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;text-align:center;">
-            <div style="font-size:2.2rem;font-weight:800;color:${avgRating >= 4 ? '#74C69D' : '#F5A623'};">${avgRating}⭐</div>
+            <div style="font-size:2.2rem;font-weight:800;color:${avgRating >= 4 ? '#74C69D' : '#F5A623'};">${avgRating}[star]</div>
             <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);margin-top:0.25rem;">AVG RATING</div>
           </div>
         </div>
@@ -380,7 +380,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem;background:var(--navy3);border-radius:10px;">
                 <div>
                   <div style="font-size:0.85rem;font-weight:700;color:var(--white);">Payment System</div>
-                  <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${paymentEnabled ? '✅ Enabled — users can pay' : '⏸ Disabled — beta mode'}</div>
+                  <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${paymentEnabled ? '[ok] Enabled - users can pay' : '[||] Disabled - beta mode'}</div>
                 </div>
                 <button onclick="togglePayment(${paymentEnabled})" style="padding:0.5rem 1rem;border-radius:8px;border:none;font-weight:700;font-size:0.78rem;cursor:pointer;font-family:var(--font-mono);background:${paymentEnabled ? 'rgba(230,51,41,0.2)' : 'rgba(116,198,157,0.2)'};color:${paymentEnabled ? '#E63329' : '#74C69D'};">
                   ${paymentEnabled ? 'DISABLE' : 'ENABLE'}
@@ -391,7 +391,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem;background:var(--navy3);border-radius:10px;">
                 <div>
                   <div style="font-size:0.85rem;font-weight:700;color:var(--white);">Maintenance Mode</div>
-                  <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${maintenanceMode ? '🔴 ON — users see maintenance page' : '🟢 OFF — platform is live'}</div>
+                  <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${maintenanceMode ? '🔴 ON - users see maintenance page' : '🟢 OFF - platform is live'}</div>
                 </div>
                 <button onclick="toggleMaintenance(${maintenanceMode})" style="padding:0.5rem 1rem;border-radius:8px;border:none;font-weight:700;font-size:0.78rem;cursor:pointer;font-family:var(--font-mono);background:${maintenanceMode ? 'rgba(230,51,41,0.2)' : 'rgba(245,166,35,0.1)'};color:${maintenanceMode ? '#E63329' : '#F5A623'};">
                   ${maintenanceMode ? 'TURN OFF' : 'TURN ON'}
@@ -405,7 +405,7 @@
                   <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">Videos per user during beta</div>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;">
-                  <button onclick="adjustGlobalLimit(${betaLimit}, -5)" style="background:var(--border2);border:none;color:var(--white);width:28px;height:28px;border-radius:6px;cursor:pointer;font-weight:700;">−</button>
+                  <button onclick="adjustGlobalLimit(${betaLimit}, -5)" style="background:var(--border2);border:none;color:var(--white);width:28px;height:28px;border-radius:6px;cursor:pointer;font-weight:700;">-</button>
                   <span style="font-family:var(--font-mono);font-size:1rem;font-weight:700;color:var(--gold);min-width:28px;text-align:center;">${betaLimit}</span>
                   <button onclick="adjustGlobalLimit(${betaLimit}, 5)" style="background:var(--gold);border:none;color:var(--navy);width:28px;height:28px;border-radius:6px;cursor:pointer;font-weight:700;">+</button>
                 </div>
@@ -418,7 +418,7 @@
         <!-- USERS TABLE -->
         <div class="card" style="margin-bottom:1.5rem;">
           <div class="card-title"><div class="card-title-icon">👥</div>Users
-            <span style="margin-left:auto;font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${usersSnap.size} registered · ${paidUsers} paid</span>
+            <span style="margin-left:auto;font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${usersSnap.size} registered . ${paidUsers} paid</span>
           </div>
           <div style="overflow-x:auto;">
             <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
@@ -441,10 +441,10 @@
                   const limit = u.betaLimit || betaLimit;
                   const pct = Math.min(Math.round((used/limit)*100), 100);
                   const barColor = pct >= 90 ? '#E63329' : pct >= 70 ? '#F5A623' : '#74C69D';
-                  const joined = u.joinedAt?.toDate?.()?.toLocaleDateString() || '—';
-                  const lastVideo = u.lastVideoAt?.toDate?.()?.toLocaleDateString() || '—';
+                  const joined = u.joinedAt?.toDate?.()?.toLocaleDateString() || '-';
+                  const lastVideo = u.lastVideoAt?.toDate?.()?.toLocaleDateString() || '-';
                   return `<tr style="border-bottom:1px solid rgba(255,255,255,0.03);" onmouseover="this.style.background='rgba(245,166,35,0.03)'" onmouseout="this.style.background='none'">
-                    <td style="padding:0.85rem 0.5rem;font-weight:600;color:var(--white);">${u.name || '—'}</td>
+                    <td style="padding:0.85rem 0.5rem;font-weight:600;color:var(--white);">${u.name || '-'}</td>
                     <td style="padding:0.85rem 0.5rem;color:var(--muted);font-size:0.75rem;">${u.email || ''}</td>
                     <td style="padding:0.85rem 0.5rem;text-align:center;">
                       <div style="font-weight:700;color:var(--gold);font-family:var(--font-mono);">${used}/${limit}</div>
@@ -452,7 +452,7 @@
                     </td>
                     <td style="padding:0.85rem 0.5rem;text-align:center;">
                       <div style="display:flex;align-items:center;gap:4px;justify-content:center;">
-                        <button onclick="adjustLimit('${uid}',${limit},-5)" style="background:var(--border2);border:none;color:var(--white);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:0.8rem;">−</button>
+                        <button onclick="adjustLimit('${uid}',${limit},-5)" style="background:var(--border2);border:none;color:var(--white);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:0.8rem;">-</button>
                         <span style="font-family:var(--font-mono);font-size:0.78rem;min-width:20px;text-align:center;color:var(--white);">${limit}</span>
                         <button onclick="adjustLimit('${uid}',${limit},5)" style="background:var(--gold);border:none;color:var(--navy);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:0.8rem;font-weight:700;">+</button>
                       </div>
@@ -483,7 +483,7 @@
             `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;">
               ${videosSnap.docs.slice(0,10).map(d => {
                 const v = d.data();
-                const date = v.createdAt?.toDate?.()?.toLocaleDateString() || '—';
+                const date = v.createdAt?.toDate?.()?.toLocaleDateString() || '-';
                 return `<div style="padding:0.85rem;background:var(--navy3);border-radius:10px;border:1px solid var(--border2);">
                   <div style="font-size:0.85rem;font-weight:600;color:var(--white);margin-bottom:4px;">${v.title || 'Untitled'}</div>
                   <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${v.userEmail||''}</div>
@@ -500,7 +500,7 @@
         <!-- PAYMENT SECTION -->
         <div class="card" style="margin-bottom:1.5rem;border:1px solid ${paymentEnabled ? 'rgba(116,198,157,0.3)' : 'var(--border2)'};">
           <div class="card-title"><div class="card-title-icon">💳</div>Payment System
-            <span style="margin-left:0.75rem;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:50px;font-family:var(--font-mono);background:${paymentEnabled ? 'rgba(116,198,157,0.15)' : 'rgba(245,166,35,0.1)'};color:${paymentEnabled ? '#74C69D' : '#F5A623'};">${paymentEnabled ? 'LIVE' : 'BETA — DISABLED'}</span>
+            <span style="margin-left:0.75rem;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:50px;font-family:var(--font-mono);background:${paymentEnabled ? 'rgba(116,198,157,0.15)' : 'rgba(245,166,35,0.1)'};color:${paymentEnabled ? '#74C69D' : '#F5A623'};">${paymentEnabled ? 'LIVE' : 'BETA - DISABLED'}</span>
           </div>
           ${paymentEnabled ? `
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
@@ -519,7 +519,7 @@
             </div>
           ` : `
             <div style="padding:1.5rem;background:var(--navy3);border-radius:12px;text-align:center;">
-              <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Payment is disabled during beta. Enable it when you're ready to charge users.<br>Plans: <strong style="color:var(--white);">Free (10 videos)</strong> · <strong style="color:var(--gold);">$5/month (unlimited)</strong></div>
+              <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Payment is disabled during beta. Enable it when you're ready to charge users.<br>Plans: <strong style="color:var(--white);">Free (10 videos)</strong> . <strong style="color:var(--gold);">$5/month (unlimited)</strong></div>
               <button onclick="togglePayment(false)" style="background:linear-gradient(135deg,#74C69D,#2D8A5E);border:none;color:#fff;padding:0.85rem 2rem;border-radius:10px;font-weight:700;cursor:pointer;font-family:var(--font-display);font-size:0.9rem;">🚀 Enable Payment System</button>
             </div>
           `}
@@ -528,7 +528,7 @@
         <!-- FEEDBACK -->
         <div class="card">
           <div class="card-title"><div class="card-title-icon">💬</div>Feedback
-            <span style="margin-left:auto;font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${feedbackSnap.size} responses · avg ${avgRating}⭐</span>
+            <span style="margin-left:auto;font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${feedbackSnap.size} responses . avg ${avgRating}[star]</span>
           </div>
           ${feedbackSnap.docs.length === 0 ?
             '<div style="text-align:center;color:var(--muted);padding:2rem;font-family:var(--font-mono);font-size:0.78rem;">// No feedback yet</div>' :
@@ -539,7 +539,7 @@
                 <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
                   <span style="font-size:0.82rem;font-weight:600;color:var(--white);">${f.userEmail||'Anonymous'}</span>
                   <div style="display:flex;align-items:center;gap:0.75rem;">
-                    <span style="font-size:0.82rem;">${'⭐'.repeat(f.rating||0)}</span>
+                    <span style="font-size:0.82rem;">${'[star]'.repeat(f.rating||0)}</span>
                     <span style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${date}</span>
                   </div>
                 </div>
@@ -2461,7 +2461,7 @@ window.setMode = function setMode(mode) {
   document.getElementById('own-fields').style.display = mode === 'own' ? 'block' : 'none';
   document.getElementById('mode-ai').classList.toggle('active', mode === 'ai');
   document.getElementById('mode-own').classList.toggle('active', mode === 'own');
-  document.getElementById('btn-generate').textContent = mode === 'ai' ? '✨ Generate Script' : '🎬 Structure My Script';
+  document.getElementById('btn-generate').textContent = mode === 'ai' ? '[*] Generate Script' : '🎬 Structure My Script';
 }
 
 // -- STEPS --
@@ -2516,7 +2516,7 @@ Return ONLY a JSON object:
   "hashtags": ["#AfriVid"]
 }
 
-Make exactly ${scenes} scenes. Use the provided content for voiceover text — do not invent new content. Do NOT add any promotional content, calls to action, or references to any platform or organization.`;
+Make exactly ${scenes} scenes. Use the provided content for voiceover text - do not invent new content. Do NOT add any promotional content, calls to action, or references to any platform or organization.`;
 
   try {
     const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
@@ -2640,7 +2640,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
   } catch (err) {
     document.getElementById('loading-script').style.display = 'none';
     document.querySelector('#panel-1 .card').style.display = 'block';
-    addLog('error', '✗ Error: ' + err.message);
+    addLog('error', '[x] Error: ' + err.message);
     alert('Error: ' + err.message);
   }
 }
@@ -2818,16 +2818,16 @@ async function downloadMP4() {
     URL.revokeObjectURL(url);
     
     document.getElementById('download-info').textContent = 'MP4 downloaded successfully!';
-    addLog('success', '✅ MP4 conversion complete!');
+    addLog('success', '[ok] MP4 conversion complete!');
   } catch(e) {
-    // Fallback — just download as WebM renamed to mp4
+    // Fallback - just download as WebM renamed to mp4
     const url = URL.createObjectURL(videoBlob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `YAN-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.mp4`;
     a.click();
     URL.revokeObjectURL(url);
-    document.getElementById('download-info').textContent = 'Downloaded! (WebM format — rename to .webm if MP4 doesn\'t play)';
+    document.getElementById('download-info').textContent = 'Downloaded! (WebM format - rename to .webm if MP4 doesn\'t play)';
     addLog('info', 'ℹ Direct download complete');
   }
 }
@@ -3570,7 +3570,7 @@ function drawPhotoBgScene(canvas, scene, progress, currentWord = -1, bgImg = nul
 // -- WHATSAPP SHARE --
 function shareWhatsApp() {
   if (!scriptData) return;
-  const text = `🎬 *${scriptData.title}*\n\nGenerated with AfriVid Studio — AI Video Generator\n\n🌍 afrivid.studio/yan-studio.html\n\n#YAN #YoungAfricansNetwork #AIVideo`;
+  const text = `🎬 *${scriptData.title}*\n\nGenerated with AfriVid Studio - AI Video Generator\n\n🌍 afrivid.studio/yan-studio.html\n\n#YAN #YoungAfricansNetwork #AIVideo`;
   const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 }
@@ -3778,7 +3778,7 @@ async function enableVoice() {
     document.getElementById("btn-record-go").style.display = "inline-flex";
     addLog("success", "🎤 Voice enabled! Now click Start Recording.");
   } catch(e) {
-    addLog("error", "⚠ Voice not enabled. Click Enable Voice First and allow tab audio.");
+    addLog("error", "[!] Voice not enabled. Click Enable Voice First and allow tab audio.");
     document.getElementById("btn-record-go").style.display = "inline-flex";
   }
 }
@@ -3811,7 +3811,7 @@ async function startRecording() {
     const theme = document.getElementById('bg-theme').value;
     addLog('info', '🖼 Loading background image...');
     await loadBgImage(theme);
-    addLog('success', '✓ Background image loaded');
+    addLog('success', '[ok] Background image loaded');
   }
   addLog('info', '🎤 Generating voiceover audio...');
   // Music will start after AudioContext is set up
@@ -3825,15 +3825,15 @@ async function startRecording() {
           body: JSON.stringify({ text: scene.voiceover, voice: document.getElementById('voice-select').value })
         });
         const blob = await res.blob();
-        addLog('success', `✓ Scene ${i+1} voice ready`);
+        addLog('success', `[ok] Scene ${i+1} voice ready`);
         return await blob.arrayBuffer();
       } catch(e) {
-        addLog('error', `✗ Scene ${i+1} failed`);
+        addLog('error', `[x] Scene ${i+1} failed`);
         return null;
       }
     })
   );
-  addLog('success', '✓ All voices generated in parallel!');
+  addLog('success', '[ok] All voices generated in parallel!');
   // Setup AudioContext
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const dest = audioCtx.createMediaStreamDestination();
@@ -3853,7 +3853,7 @@ async function startRecording() {
 
   // Start background music
   startBackgroundMusic(audioCtx, dest, document.getElementById('bg-music').value, scriptData.duration);
-  addLog('info', '▶ Recording video with voice...');
+  addLog('info', '[>] Recording video with voice...');
 
   const totalDuration = scriptData.duration * 1000;
   const sceneDurations = scriptData.scenes.map(s => s.duration * 1000);
@@ -3950,16 +3950,16 @@ function stopRecording() {
     mediaRecorder.stop();
   }
   document.getElementById('btn-stop').style.display = 'none';
-  addLog('success', '✓ Recording complete! Processing video...');
+  addLog('success', '[ok] Recording complete! Processing video...');
 }
 
 function finishVideo() {
   videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
   const sizeMB = (videoBlob.size / 1024 / 1024).toFixed(1);
 
-  addLog('success', `✓ Video ready! Size: ${sizeMB}MB`);
+  addLog('success', `[ok] Video ready! Size: ${sizeMB}MB`);
 
-  document.getElementById('download-info').textContent = `"${scriptData.title}" — ${scriptData.duration}s · ${sizeMB}MB · WebM format`;
+  document.getElementById('download-info').textContent = `"${scriptData.title}" - ${scriptData.duration}s . ${sizeMB}MB . WebM format`;
   document.getElementById('final-details').innerHTML = `
     Title: ${scriptData.title}<br>
     Duration: ${scriptData.duration} seconds<br>
@@ -4019,7 +4019,7 @@ function renderLibrary() {
   grid.innerHTML = videoLibrary.map(v => `
     <div style="background:var(--navy3);border:1px solid var(--border2);border-radius:12px;padding:1rem;">
       <div style="font-size:0.88rem;font-weight:700;margin-bottom:0.5rem;color:var(--white);">${v.title}</div>
-      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:1rem;">${v.date} · ${v.duration}s · ${v.size}</div>
+      <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:1rem;">${v.date} . ${v.duration}s . ${v.size}</div>
       <div style="display:flex;gap:0.5rem;">
         <button onclick="downloadFromLibrary(${v.id})" style="flex:1;background:var(--gold);color:var(--navy);border:none;padding:0.5rem;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;">⬇ Download</button>
         <button onclick="deleteFromLibrary(${v.id})" style="background:rgba(230,51,41,0.15);color:var(--red);border:1px solid rgba(230,51,41,0.3);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;cursor:pointer;">🗑</button>
@@ -4106,7 +4106,7 @@ window.loadVideoFile = function loadVideoFile(event) {
   document.getElementById('enhance-filename').textContent = file.name;
   document.getElementById('enhancer-editor').style.display = 'block';
   document.getElementById('enhancer-upload-card').style.display = 'none';
-  addEnhanceLog('success', `✓ Loaded: ${file.name}`);
+  addEnhanceLog('success', `[ok] Loaded: ${file.name}`);
   
   video.onloadedmetadata = () => {
     trimStart = 0;
@@ -4203,7 +4203,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async window.startEnhancing = function startEnhancing() {
   if (!enhanceVideo) { alert('Please upload a video first.'); return; }
   
-  addEnhanceLog('info', '▶ Starting enhancement...');
+  addEnhanceLog('info', '[>] Starting enhancement...');
   document.getElementById('enhance-progress').style.display = 'block';
   
   const video = document.getElementById('original-video');
@@ -4241,7 +4241,7 @@ async window.startEnhancing = function startEnhancing() {
   const musicType = document.getElementById('enhance-music').value;
   if (musicType !== 'none') {
     startBackgroundMusic(audioCtx, dest, musicType, video.duration || 60);
-    addEnhanceLog('success', '✓ Background music added');
+    addEnhanceLog('success', '[ok] Background music added');
   }
   
   // Use clips if defined, otherwise full video
@@ -4262,7 +4262,7 @@ async window.startEnhancing = function startEnhancing() {
         canvas.height = video.videoHeight;
         canvas.width = Math.round(video.videoHeight * targetAR);
       }
-      addEnhanceLog('info', `✓ Aspect ratio: ${enhanceAR} (${canvas.width}x${canvas.height})`);
+      addEnhanceLog('info', `[ok] Aspect ratio: ${enhanceAR} (${canvas.width}x${canvas.height})`);
     }
   }
 
@@ -4272,7 +4272,7 @@ async window.startEnhancing = function startEnhancing() {
 
   video.currentTime = useClips ? clips[0].start : 0;
   video.play();
-  addEnhanceLog('success', useClips ? `✓ Processing ${clips.length} clip(s)...` : '✓ Processing video frames...');
+  addEnhanceLog('success', useClips ? `[ok] Processing ${clips.length} clip(s)...` : '[ok] Processing video frames...');
   
   function renderFrame() {
     if (video.paused || video.ended) {
@@ -4376,12 +4376,12 @@ function applyQualityPreset(preset) {
     auto: {
       brightness: 105, contrast: 115, saturation: 115,
       sharpness: 2, filter: 'vivid',
-      label: '✨ Auto Enhanced'
+      label: '[*] Auto Enhanced'
     },
     reset: {
       brightness: 100, contrast: 100, saturation: 100,
       sharpness: 0, filter: 'none',
-      label: '↺ Reset to original'
+      label: '[r] Reset to original'
     }
   };
 
@@ -4404,7 +4404,7 @@ function applyQualityPreset(preset) {
   label.style.display = 'block';
 
   updatePreview();
-  addEnhanceLog('success', '✓ ' + p.label);
+  addEnhanceLog('success', '[ok] ' + p.label);
 }
 
 function applyAudioPreset() {
@@ -4514,7 +4514,7 @@ function buildAudioChain(audioCtx, source, dest) {
 async function finishEnhancing() {
   enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
   const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
-  addEnhanceLog('success', `✓ Enhanced video ready! Size: ${sizeMB}MB`);
+  addEnhanceLog('success', `[ok] Enhanced video ready! Size: ${sizeMB}MB`);
 
   const format = document.getElementById('enhance-format')?.value || 'webm';
 
@@ -4522,9 +4522,9 @@ async function finishEnhancing() {
     addEnhanceLog('info', '🔄 Converting to MP4 via FFmpeg...');
     try {
       await convertToMP4(enhancedBlob);
-      addEnhanceLog('success', '✓ MP4 conversion complete!');
+      addEnhanceLog('success', '[ok] MP4 conversion complete!');
     } catch(e) {
-      addEnhanceLog('error', '✗ MP4 conversion failed, downloading as WebM');
+      addEnhanceLog('error', '[x] MP4 conversion failed, downloading as WebM');
       downloadEnhanced();
     }
   } else {
@@ -4550,7 +4550,7 @@ async function convertToMP4(webmBlob) {
   });
   
   await ffmpeg.load();
-  addEnhanceLog('success', '✓ FFmpeg loaded!');
+  addEnhanceLog('success', '[ok] FFmpeg loaded!');
 
   const quality = document.getElementById('enhance-quality')?.value || 'medium';
   const crf = quality === 'high' ? '18' : quality === 'medium' ? '23' : '28';
@@ -4638,7 +4638,7 @@ function updateTimeline() {
   if (seg) { seg.style.left = leftPct + '%'; seg.style.right = rightPct + '%'; }
   if (hl) hl.style.left = leftPct + '%';
   if (hr) hr.style.right = rightPct + '%';
-  document.getElementById('timeline-time').textContent = `${formatTime(trimStart)} → ${formatTime(trimEnd)} / ${formatTime(dur)}`;
+  document.getElementById('timeline-time').textContent = `${formatTime(trimStart)} -> ${formatTime(trimEnd)} / ${formatTime(dur)}`;
   document.getElementById('trim-start').value = formatTime(trimStart);
   document.getElementById('trim-end').value = formatTime(trimEnd);
 }
@@ -4694,7 +4694,7 @@ function addClip() {
   const clip = { start: trimStart, end: trimEnd };
   clips.push(clip);
   renderClips();
-  addEnhanceLog('success', `✓ Clip added: ${formatTime(clip.start)} → ${formatTime(clip.end)}`);
+  addEnhanceLog('success', `[ok] Clip added: ${formatTime(clip.start)} -> ${formatTime(clip.end)}`);
 }
 
 function renderClips() {
@@ -4704,7 +4704,7 @@ function renderClips() {
     clips.map((c, i) => `
       <div class="clip-item">
         <span style="font-size:0.82rem;background:rgba(245,166,35,0.1);padding:0.2rem 0.6rem;border-radius:4px;font-family:var(--font-mono);color:var(--gold);">${i+1}</span>
-        <span class="clip-time">${formatTime(c.start)} → ${formatTime(c.end)}</span>
+        <span class="clip-time">${formatTime(c.start)} -> ${formatTime(c.end)}</span>
         <span style="font-size:0.78rem;color:var(--muted);">(${formatTime(c.end - c.start)})</span>
         <button class="clip-remove" onclick="removeClip(${i})">✕</button>
       </div>
@@ -4770,9 +4770,9 @@ Return ONLY the JSON array, nothing else.`;
       trimEnd = clips[0].end;
       updateTimeline();
     }
-    addEnhanceLog('success', `✓ AI found ${clips.length} clip(s) to keep`);
+    addEnhanceLog('success', `[ok] AI found ${clips.length} clip(s) to keep`);
   } catch(e) {
-    addEnhanceLog('error', '✗ AI edit failed: ' + e.message);
+    addEnhanceLog('error', '[x] AI edit failed: ' + e.message);
   }
 }
 
@@ -4780,7 +4780,7 @@ Return ONLY the JSON array, nothing else.`;
 const originalStartEnhancing = window.startEnhancing;
 
 function shareEnhancedWhatsApp() {
-  const text = `🎬 Check out this enhanced video!\n\nEnhanced with AfriVid Studio — AI Video Tool\n\n🌍 afrivid.studio/yan-studio.html\n\n#YAN #YoungAfricansNetwork`;
+  const text = `🎬 Check out this enhanced video!\n\nEnhanced with AfriVid Studio - AI Video Tool\n\n🌍 afrivid.studio/yan-studio.html\n\n#YAN #YoungAfricansNetwork`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
@@ -4843,7 +4843,7 @@ function renderVideoList() {
       <span style="font-size:0.75rem;font-family:var(--font-mono);color:var(--gold);min-width:20px;">${i+1}</span>
       <div style="flex:1;">
         <div style="font-size:0.82rem;font-weight:600;color:var(--white);">${v.name}</div>
-        <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${formatDur(v.duration)} · ${v.size}MB</div>
+        <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${formatDur(v.duration)} . ${v.size}MB</div>
       </div>
       <div style="display:flex;gap:4px;">
         ${i > 0 ? `<button onclick="moveVideo(${i},-1)" style="background:var(--border2);border:none;color:var(--white);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">↑</button>` : ''}
@@ -4853,7 +4853,7 @@ function renderVideoList() {
     </div>
   `).join('') + `
     <div style="padding:0.5rem;text-align:center;font-size:0.75rem;color:var(--gold);font-family:var(--font-mono);">
-      Total: ${multiVideos.length} videos · ${formatDur(totalDur)} combined
+      Total: ${multiVideos.length} videos . ${formatDur(totalDur)} combined
     </div>`;
 }
 
@@ -4917,7 +4917,7 @@ window.combineVideos = async function combineVideos() {
     });
 
     await ffmpeg.load();
-    addCombineLog('success', '✓ FFmpeg loaded!');
+    addCombineLog('success', '[ok] FFmpeg loaded!');
 
     // Write all video files
     const fileList = [];
@@ -4944,7 +4944,7 @@ window.combineVideos = async function combineVideos() {
       'combined.mp4'
     ]);
 
-    addCombineLog('success', '✓ Videos combined!');
+    addCombineLog('success', '[ok] Videos combined!');
     document.getElementById('combine-progress-label').textContent = 'Done!';
     document.getElementById('combine-progress-pct').textContent = '100%';
     document.getElementById('combine-progress-fill').style.width = '100%';
@@ -4959,10 +4959,10 @@ window.combineVideos = async function combineVideos() {
     a.download = `AfriVid-Combined-${Date.now()}.mp4`;
     a.click();
     URL.revokeObjectURL(url);
-    addCombineLog('success', `✓ Downloaded! Size: ${sizeMB}MB`);
+    addCombineLog('success', `[ok] Downloaded! Size: ${sizeMB}MB`);
 
   } catch(e) {
-    addCombineLog('error', '✗ Combine failed: ' + e.message);
+    addCombineLog('error', '[x] Combine failed: ' + e.message);
     addCombineLog('info', 'Tip: Make sure all videos have the same resolution and codec');
   }
 }
@@ -5021,12 +5021,12 @@ async function uploadToYouTube() {
   
   try {
     const token = await initYouTubeAuth();
-    statusEl.textContent = '✓ Authenticated! Uploading video...';
+    statusEl.textContent = '[ok] Authenticated! Uploading video...';
     
     const metadata = {
       snippet: {
         title: scriptData.title || 'YAN Video',
-        description: `Generated with AfriVid Studio — AI Video Generator
+        description: `Generated with AfriVid Studio - AI Video Generator
 
 AfriVid
 https://afrivid.studio
@@ -5074,15 +5074,15 @@ ${(scriptData.hashtags || []).join(' ')}`,
     
     if (data.id) {
       const ytUrl = `https://www.youtube.com/watch?v=${data.id}`;
-      statusEl.innerHTML = `✅ Uploaded! <a href="${ytUrl}" target="_blank" style="color:#F5A623;">Watch on YouTube →</a>`;
-      addLog('success', `✓ YouTube upload complete: ${ytUrl}`);
+      statusEl.innerHTML = `[ok] Uploaded! <a href="${ytUrl}" target="_blank" style="color:#F5A623;">Watch on YouTube -></a>`;
+      addLog('success', `[ok] YouTube upload complete: ${ytUrl}`);
     } else {
       throw new Error(data.error?.message || 'Upload failed');
     }
     
   } catch(e) {
-    statusEl.textContent = '✗ Upload failed: ' + e.message;
-    addLog('error', '✗ YouTube error: ' + e.message);
+    statusEl.textContent = '[x] Upload failed: ' + e.message;
+    addLog('error', '[x] YouTube error: ' + e.message);
   }
 }
 
@@ -5104,7 +5104,7 @@ function loadPhotoFile(event) {
     document.getElementById('photo-upload-card').style.display = 'none';
     document.getElementById('photo-editor').style.display = 'block';
     updatePhotoPreview();
-    addPhotoLog('success', `✓ Loaded: ${file.name} (${img.width}x${img.height})`);
+    addPhotoLog('success', `[ok] Loaded: ${file.name} (${img.width}x${img.height})`);
   };
   img.src = url;
 }
@@ -5191,7 +5191,7 @@ function applyPhotoPreset(preset) {
   document.getElementById('psh-val').textContent = p.sh;
   document.getElementById('pw-val').textContent = p.w;
   updatePhotoPreview();
-  addPhotoLog('success', `✓ ${preset} preset applied`);
+  addPhotoLog('success', `[ok] ${preset} preset applied`);
 }
 
 async function applyPhotoAIEdit() {
@@ -5253,9 +5253,9 @@ textPos: "none", "bottom", "top", "br"`;
     if (p.textPos) document.getElementById('photo-text-pos').value = p.textPos;
 
     updatePhotoPreview();
-    addPhotoLog('success', '✓ AI edit applied!');
+    addPhotoLog('success', '[ok] AI edit applied!');
   } catch(e) {
-    addPhotoLog('error', '✗ AI edit failed: ' + e.message);
+    addPhotoLog('error', '[x] AI edit failed: ' + e.message);
   }
 }
 
@@ -5298,7 +5298,7 @@ async function removeBackground() {
   const btn = document.getElementById('bg-remove-btn');
   const status = document.getElementById('bg-remove-status');
   btn.disabled = true;
-  btn.textContent = '⏳ Processing...';
+  btn.textContent = '[..] Processing...';
   status.style.display = 'block';
   addPhotoLog('info', '🤖 AI detecting subject...');
 
@@ -5369,11 +5369,11 @@ async function removeBackground() {
     // Change format to PNG for transparency
     document.getElementById('photo-format').value = 'png';
 
-    addPhotoLog('success', '✓ Background removed! Download as PNG to keep transparency.');
+    addPhotoLog('success', '[ok] Background removed! Download as PNG to keep transparency.');
     status.style.display = 'none';
 
   } catch(e) {
-    addPhotoLog('error', '✗ Background removal failed: ' + e.message);
+    addPhotoLog('error', '[x] Background removal failed: ' + e.message);
     status.style.display = 'none';
   }
 
@@ -5740,7 +5740,7 @@ window.loadTemplate = function loadTemplate(type) {
         { type: 'rect', x: 0, y: 0, w: 1080, h: 8, color: '#F5A623' },
         { type: 'text', text: 'EVENT TITLE', x: 100, y: 300, color: '#F5A623', size: 80, font: 'Syne', weight: 800 },
         { type: 'text', text: 'Subtitle or description goes here', x: 100, y: 400, color: '#ffffff', size: 40, font: 'Syne', weight: 400 },
-        { type: 'text', text: '📅 Date · 📍 Location', x: 100, y: 500, color: '#74C69D', size: 36, font: 'Syne', weight: 600 },
+        { type: 'text', text: '📅 Date . 📍 Location', x: 100, y: 500, color: '#74C69D', size: 36, font: 'Syne', weight: 600 },
         { type: 'rect', x: 0, y: 1912, w: 1080, h: 8, color: '#F5A623' },
       ]
     },
@@ -5767,7 +5767,7 @@ window.loadTemplate = function loadTemplate(type) {
         { type: 'text', text: 'JOIN US', x: 540, y: 600, color: '#ffffff', size: 100, font: 'Syne', weight: 900, align: 'center' },
         { type: 'text', text: 'for something amazing', x: 540, y: 700, color: 'rgba(255,255,255,0.8)', size: 44, font: 'Syne', weight: 400, align: 'center' },
         { type: 'rect', x: 200, y: 780, w: 680, h: 3, color: 'rgba(255,255,255,0.4)' },
-        { type: 'text', text: 'Date · Time · Location', x: 540, y: 870, color: 'rgba(255,255,255,0.9)', size: 38, font: 'Syne', weight: 600, align: 'center' },
+        { type: 'text', text: 'Date . Time . Location', x: 540, y: 870, color: 'rgba(255,255,255,0.9)', size: 38, font: 'Syne', weight: 600, align: 'center' },
       ]
     },
     social: {
@@ -5815,7 +5815,7 @@ window.generateAIImage = async function generateAIImage() {
 
   const btn = document.getElementById('design-generate-btn');
   const status = document.getElementById('design-status');
-  btn.textContent = '⏳ Generating...';
+  btn.textContent = '[..] Generating...';
   btn.disabled = true;
   status.textContent = '🤖 AI is creating your ' + type + '...';
   status.style.color = '#F5A623';
@@ -5859,14 +5859,14 @@ window.generateAIImage = async function generateAIImage() {
       designElements = [{ type: 'image', img, x: 0, y: 0, w: designW, h: designH }];
       designBg = '#ffffff';
       saveDesignHistory();
-      status.textContent = '✓ Generated! Download or add text/elements on top.';
+      status.textContent = '[ok] Generated! Download or add text/elements on top.';
       status.style.color = '#74C69D';
     };
     img.src = imgUrl;
 
   } catch(e) {
     const msg = e.name === 'AbortError' ? 'Timed out. Try a simpler prompt.' : e.message;
-    status.textContent = '✗ ' + msg;
+    status.textContent = '[x] ' + msg;
     status.style.color = '#E63329';
   }
 
@@ -5880,7 +5880,7 @@ window.generateDesign = async function generateDesign() {
 
   const btn = document.getElementById('design-generate-btn');
   const statusEl = document.getElementById('design-status');
-  if (btn) { btn.textContent = '⏳ Generating...'; btn.disabled = true; }
+  if (btn) { btn.textContent = '[..] Generating...'; btn.disabled = true; }
   if (statusEl) { statusEl.textContent = '🤖 AI is designing...'; statusEl.style.color = '#F5A623'; }
 
   try {
@@ -5941,16 +5941,16 @@ Rules:
     saveDesignHistory();
     renderDesign();
 
-    if (statusEl) { statusEl.textContent = '✓ Design generated!'; statusEl.style.color = '#74C69D'; }
+    if (statusEl) { statusEl.textContent = '[ok] Design generated!'; statusEl.style.color = '#74C69D'; }
     setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
 
   } catch(e) {
     const msg = e.name === 'AbortError' ? 'Request timed out. Try again.' : e.message;
-    if (statusEl) { statusEl.textContent = '✗ ' + msg; statusEl.style.color = '#E63329'; }
+    if (statusEl) { statusEl.textContent = '[x] ' + msg; statusEl.style.color = '#E63329'; }
     console.error('Design generation error:', e);
   }
 
-  if (btn) { btn.textContent = '✨ Generate Design'; btn.disabled = false; }
+  if (btn) { btn.textContent = '[*] Generate Design'; btn.disabled = false; }
 }
 
 // Initialize design canvas when tab is opened
@@ -5997,7 +5997,7 @@ function checkResumePrompt() {
     if (age < 3600000) { // Less than 1 hour old
       const resumeDiv = document.createElement('div');
       resumeDiv.style.cssText = 'padding:0.75rem 1rem;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:8px;margin-bottom:1rem;font-size:0.82rem;display:flex;justify-content:space-between;align-items:center;';
-      resumeDiv.innerHTML = `<span style="color:var(--gold);">↺ Resume: "${data.title}" (${data.sceneCount} scenes)</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;">✕</button>`;
+      resumeDiv.innerHTML = `<span style="color:var(--gold);">[r] Resume: "${data.title}" (${data.sceneCount} scenes)</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;">✕</button>`;
       const form = document.querySelector('#panel-1 .card');
       if (form) form.prepend(resumeDiv);
     }
