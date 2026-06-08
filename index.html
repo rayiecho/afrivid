@@ -2198,7 +2198,8 @@ Or just paste your raw content and we will structure it into scenes automaticall
 - Certificate of participation
 - Social media post announcing scholarship
 - Flyer for tech training program"></textarea>
-            <button onclick="generateDesign()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">✨ Generate Design</button>
+            <button id="design-generate-btn" onclick="generateDesign()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">✨ Generate Design</button>
+            <div id="design-status" style="font-size:0.75rem;font-family:var(--font-mono);margin-top:0.5rem;min-height:1rem;"></div>
           </div>
         </div>
 
@@ -5293,13 +5294,19 @@ async function generateDesign() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   if (!prompt) { alert('Describe your design first'); return; }
 
-  const btn = document.querySelector('#section-design .btn-gold');
+  const btn = document.getElementById('design-generate-btn');
+  const statusEl = document.getElementById('design-status');
   if (btn) { btn.textContent = '⏳ Generating...'; btn.disabled = true; }
+  if (statusEl) { statusEl.textContent = '🤖 AI is designing...'; statusEl.style.color = '#F5A623'; }
 
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
     const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
@@ -5309,35 +5316,54 @@ async function generateDesign() {
 
 Canvas is ${designW}x${designH} pixels.
 
-Return ONLY a JSON object:
+Return ONLY a valid JSON object, no other text:
 {
-  "background": "#hex or linear-gradient(135deg, #hex1, #hex2)",
+  "background": "#050A14",
   "elements": [
-    {"type": "text", "text": "...", "x": 100, "y": 200, "color": "#hex", "size": 48, "font": "Syne", "weight": 700},
-    {"type": "rect", "x": 0, "y": 0, "w": 400, "h": 8, "color": "#hex"},
-    {"type": "circle", "x": 200, "y": 200, "r": 80, "color": "#hex"}
+    {"type": "text", "text": "AfriVid Studio", "x": 400, "y": 300, "color": "#F5A623", "size": 72, "font": "Syne", "weight": 800, "align": "center"},
+    {"type": "rect", "x": 100, "y": 350, "w": 600, "h": 4, "color": "#74C69D"},
+    {"type": "circle", "x": 400, "y": 200, "r": 80, "color": "rgba(245,166,35,0.2)"}
   ]
 }
 
-Use AfriVid brand colors: gold #F5A623, dark #050A14, green #74C69D.
-Make it professional and visually striking. Max 10 elements.`
+Rules:
+- background: hex color or linear-gradient(135deg, #hex1, #hex2)
+- element types: text, rect, circle only
+- text align: "center" or "left"
+- Use brand colors: gold #F5A623, dark #050A14, green #74C69D
+- Max 8 elements
+- Make it professional and striking
+- Return ONLY the JSON, nothing else`
         }]
       })
     });
 
-    const data = await response.json();
-    const text = data.content[0].text.trim();
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON');
-    const design = JSON.parse(jsonMatch[0]);
+    clearTimeout(timeout);
 
+    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+    const data = await response.json();
+    if (!data.content || !data.content[0]) throw new Error('Empty response from AI');
+
+    const text = data.content[0].text.trim();
+    if (statusEl) statusEl.textContent = '🎨 Applying design...';
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('AI did not return valid JSON. Try again.');
+
+    const design = JSON.parse(jsonMatch[0]);
     designBg = design.background || '#050A14';
-    designElements = design.elements || [];
+    designElements = (design.elements || []).map(e => ({...e}));
     saveDesignHistory();
     renderDesign();
 
+    if (statusEl) { statusEl.textContent = '✓ Design generated!'; statusEl.style.color = '#74C69D'; }
+    setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+
   } catch(e) {
-    alert('Generation failed: ' + e.message);
+    const msg = e.name === 'AbortError' ? 'Request timed out. Try again.' : e.message;
+    if (statusEl) { statusEl.textContent = '✗ ' + msg; statusEl.style.color = '#E63329'; }
+    console.error('Design generation error:', e);
   }
 
   if (btn) { btn.textContent = '✨ Generate Design'; btn.disabled = false; }
