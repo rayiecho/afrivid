@@ -3815,10 +3815,12 @@ function toggleSidebar() {
 
 function switchTab(tab) {
   if (tab === 'design') {
-    setTimeout(() => {
-      initDesignCanvas();
-      if (designElements.length === 0) loadTemplate('logo');
-    }, 100);
+    setTimeout(function() {
+      if (typeof initDesignCanvas === 'function') {
+        initDesignCanvas();
+        if (designElements.length === 0) loadTemplate('logo');
+      }
+    }, 200);
   }
   if (tab === 'library') renderLibrary();
   if (tab === 'admin') { loadAdminDashboard(); return; }
@@ -4280,7 +4282,7 @@ async function uploadEnhancedToYouTube() {
 
 // ── TRIM & AI EDIT ──
 let clips = []; // [{start, end}]
-let isDragging = false;
+let isDesignDragging = false;
 let dragHandle = null;
 let trimStart = 0;
 let trimEnd = 0;
@@ -4336,7 +4338,7 @@ function seekToPosition(e) {
 }
 
 function startDrag(handle, e) {
-  isDragging = true;
+  isDesignDragging = true;
   dragHandle = handle;
   e.preventDefault();
   document.addEventListener('mousemove', onDrag);
@@ -4344,7 +4346,7 @@ function startDrag(handle, e) {
 }
 
 function onDrag(e) {
-  if (!isDragging) return;
+  if (!isDesignDragging) return;
   const video = document.getElementById('original-video');
   if (!video.duration) return;
   const bar = document.getElementById('timeline-bar');
@@ -4357,7 +4359,7 @@ function onDrag(e) {
 }
 
 function stopDrag() {
-  isDragging = false;
+  isDesignDragging = false;
   document.removeEventListener('mousemove', onDrag);
   document.removeEventListener('mouseup', stopDrag);
 }
@@ -4903,8 +4905,8 @@ function addPhotoLog(type, msg) {
 let designElements = [];
 let designHistory = [];
 let selectedElement = null;
-let isDragging = false;
-let dragOffset = { x: 0, y: 0 };
+let isDesignDragging = false;
+let designDragOffset = { x: 0, y: 0 };
 let designBg = '#050A14';
 let designW = 800, designH = 800;
 
@@ -5024,8 +5026,8 @@ function onDesignMouseDown(e) {
     if (x >= bounds.x - 10 && x <= bounds.x + bounds.w + 10 &&
         y >= bounds.y - 10 && y <= bounds.y + bounds.h + 10) {
       selectedElement = i;
-      isDragging = true;
-      dragOffset = { x: x - designElements[i].x, y: y - designElements[i].y };
+      isDesignDragging = true;
+      designDragOffset = { x: x - designElements[i].x, y: y - designElements[i].y };
       break;
     }
   }
@@ -5035,21 +5037,21 @@ function onDesignMouseDown(e) {
 }
 
 function onDesignMouseMove(e) {
-  if (!isDragging || selectedElement === null) return;
+  if (!isDesignDragging || selectedElement === null) return;
   const canvas = document.getElementById('design-canvas');
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
   const x = (e.clientX - rect.left) * scaleX;
   const y = (e.clientY - rect.top) * scaleY;
-  designElements[selectedElement].x = x - dragOffset.x;
-  designElements[selectedElement].y = y - dragOffset.y;
+  designElements[selectedElement].x = x - designDragOffset.x;
+  designElements[selectedElement].y = y - designDragOffset.y;
   renderDesign();
 }
 
 function onDesignMouseUp() {
   if (isDragging) saveDesignHistory();
-  isDragging = false;
+  isDesignDragging = false;
 }
 
 function onDesignDblClick(e) {
