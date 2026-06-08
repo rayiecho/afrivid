@@ -100,8 +100,9 @@
     if (!currentUser) return false;
     if (ADMIN_EMAILS.includes(currentUser.email)) return true;
     const used = userProfile?.videosGenerated || 0;
-    if (used >= BETA_LIMIT) {
-      alert(`You have reached the beta limit of ${BETA_LIMIT} videos. Thank you for testing AfriVid Studio! Full access coming soon.`);
+    const limit = userProfile?.betaLimit || BETA_LIMIT;
+    if (used >= limit) {
+      alert(`You have reached your limit of ${limit} videos. Contact support to increase your limit.`);
       return false;
     }
     return true;
