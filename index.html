@@ -5347,6 +5347,8 @@ function makeAnother() {
   scriptData = null;
   videoBlob = null;
   recordedChunks = [];
+  window.cachedAudioBuffers = null; // Clear voice cache for new video
+  window.lastCompletedScene = 0;
   document.getElementById('video-topic').value = '';
   document.getElementById('video-content').value = '';
   document.getElementById('script-output').innerHTML = '';
