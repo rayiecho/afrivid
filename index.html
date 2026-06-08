@@ -128,7 +128,7 @@
       await signInWithEmailAndPassword(auth, email, password);
     } catch(e) {
       document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').textContent = '⚠ ' + e.message.replace('Firebase: ', '');
+      document.getElementById('login-error').textContent = '[!] ' + e.message.replace('Firebase: ', '');
     }
   };
 
@@ -138,12 +138,12 @@
     const password = document.getElementById('signup-password').value;
     if (!name || !email || !password) {
       document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').textContent = '⚠ Please fill all fields';
+      document.getElementById('login-error').textContent = '[!] Please fill all fields';
       return;
     }
     if (password.length < 6) {
       document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').textContent = '⚠ Password must be at least 6 characters';
+      document.getElementById('login-error').textContent = '[!] Password must be at least 6 characters';
       return;
     }
     try {
@@ -155,7 +155,7 @@
       document.getElementById('login-screen').style.display = 'none';
     } catch(e) {
       document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').textContent = '⚠ ' + e.message.replace('Firebase: ', '').replace('Error (', '').replace(').', '');
+      document.getElementById('login-error').textContent = '[!] ' + e.message.replace('Firebase: ', '').replace('Error (', '').replace(').', '');
     }
   };
 
@@ -200,7 +200,7 @@
       await signInWithPopup(auth, googleProvider);
     } catch(e) {
       document.getElementById('login-error').style.display = 'block';
-      document.getElementById('login-error').textContent = '⚠ ' + e.message;
+      document.getElementById('login-error').textContent = '[!] ' + e.message;
     }
   };
 
@@ -241,7 +241,7 @@
     if (adminBtn) adminBtn.style.display = 'flex';
   };
 
-  // ── FULL ADMIN SYSTEM ──
+  // -- FULL ADMIN SYSTEM --
   let adminRefreshInterval = null;
   let paymentEnabled = false;
 
@@ -555,7 +555,7 @@
     }
   }
 
-  // ── ADMIN CONTROLS ──
+  // -- ADMIN CONTROLS --
   window.togglePayment = async function(current) {
     const msg = current ? 'Disable payment system? Users will not be charged.' : 'Enable payment system? Users will be asked to pay after beta limit.';
     if (!confirm(msg)) return;
@@ -669,7 +669,7 @@
     pointer-events: none;
   }
 
-  /* ── LOGIN ── */
+  /* -- LOGIN -- */
   #login-screen {
     position: fixed; inset: 0; z-index: 1000;
     display: flex; align-items: center; justify-content: center;
@@ -716,7 +716,7 @@
   .login-btn:hover { background: var(--gold2); transform: translateY(-1px); }
   .login-error { color: var(--red); font-size: 0.8rem; margin-top: 0.75rem; display: none; font-family: var(--font-mono); }
 
-  /* ── MAIN APP ── */
+  /* -- MAIN APP -- */
   #app { display: none; position: relative; z-index: 1; min-height: 100vh; }
 
   /* HEADER */
@@ -1053,40 +1053,40 @@
 </head>
 <body>
 <script>
-// Route onclick calls to real functions defined later
-function switchTab(t){if(window._switchTab)window._switchTab(t);}
-function toggleSidebar(){if(window._toggleSidebar)window._toggleSidebar();}
-function setMode(m){if(window._setMode)window._setMode(m);}
-function goToStep(n){if(window._goToStep)window._goToStep(n);}
-function generateScript(){if(window._generateScript)window._generateScript();}
-function generateVideo(){if(window._generateVideo)window._generateVideo();}
-function downloadVideo(){if(window._downloadVideo)window._downloadVideo();}
-function makeAnother(){if(window._makeAnother)window._makeAnother();}
-function startEnhancing(){if(window._startEnhancing)window._startEnhancing();}
-function loadVideoFile(e){if(window._loadVideoFile)window._loadVideoFile(e);}
-function generateDesign(){if(window._generateDesign)window._generateDesign();}
-function generateAIImage(){if(window._generateAIImage)window._generateAIImage();}
-function loadTemplate(t){if(window._loadTemplate)window._loadTemplate(t);}
-function downloadDesign(f,s){if(window._downloadDesign)window._downloadDesign(f,s);}
-function combineVideos(){if(window._combineVideos)window._combineVideos();}
-function setUploadMode(m){if(window._setUploadMode)window._setUploadMode(m);}
-function downloadDesignSVG(){if(window._downloadDesignSVG)window._downloadDesignSVG();}
-function initDesignCanvas(){if(window._initDesignCanvas)window._initDesignCanvas();}
-function resizeCanvas(){if(window._resizeCanvas)window._resizeCanvas();}
-function addDesignText(){if(window._addDesignText)window._addDesignText();}
-function addDesignShape(t){if(window._addDesignShape)window._addDesignShape(t);}
-function clearDesignCanvas(){if(window._clearDesignCanvas)window._clearDesignCanvas();}
-function undoDesign(){if(window._undoDesign)window._undoDesign();}
-function deleteSelectedElement(){if(window._deleteSelectedElement)window._deleteSelectedElement();}
-function updateSelectedElement(p,v){if(window._updateSelectedElement)window._updateSelectedElement(p,v);}
-function resetEnhancer(){if(window._resetEnhancer)window._resetEnhancer();}
-function stopRecording(){if(window._stopRecording)window._stopRecording();}
-function shareWhatsApp(){if(window._shareWhatsApp)window._shareWhatsApp();}
-function uploadToYouTube(){if(window._uploadToYouTube)window._uploadToYouTube();}
-function sendToEditor(){if(window._sendToEditor)window._sendToEditor();}
-function downloadMP4(){if(window._downloadMP4)window._downloadMP4();}
-function openFeedback(){if(window._openFeedback)window._openFeedback();}
-function loadAdminDashboard(){if(window._loadAdminDashboard)window._loadAdminDashboard();}
+// Route onclick calls - real functions in main script
+function switchTab(t){window._fn&&window._fn('switchTab',t);}
+function toggleSidebar(){window._fn&&window._fn('toggleSidebar');}
+function setMode(m){window._fn&&window._fn('setMode',m);}
+function goToStep(n){window._fn&&window._fn('goToStep',n);}
+function generateScript(){window._fn&&window._fn('generateScript');}
+function generateVideo(){window._fn&&window._fn('generateVideo');}
+function downloadVideo(){window._fn&&window._fn('downloadVideo');}
+function makeAnother(){window._fn&&window._fn('makeAnother');}
+function startEnhancing(){window._fn&&window._fn('startEnhancing');}
+function loadVideoFile(e){window._fn&&window._fn('loadVideoFile',e);}
+function generateDesign(){window._fn&&window._fn('generateDesign');}
+function generateAIImage(){window._fn&&window._fn('generateAIImage');}
+function loadTemplate(t){window._fn&&window._fn('loadTemplate',t);}
+function downloadDesign(f,s){window._fn&&window._fn('downloadDesign',f,s);}
+function combineVideos(){window._fn&&window._fn('combineVideos');}
+function setUploadMode(m){window._fn&&window._fn('setUploadMode',m);}
+function downloadDesignSVG(){window._fn&&window._fn('downloadDesignSVG');}
+function initDesignCanvas(){window._fn&&window._fn('initDesignCanvas');}
+function resizeCanvas(){window._fn&&window._fn('resizeCanvas');}
+function addDesignText(){window._fn&&window._fn('addDesignText');}
+function addDesignShape(t){window._fn&&window._fn('addDesignShape',t);}
+function clearDesignCanvas(){window._fn&&window._fn('clearDesignCanvas');}
+function undoDesign(){window._fn&&window._fn('undoDesign');}
+function deleteSelectedElement(){window._fn&&window._fn('deleteSelectedElement');}
+function updateSelectedElement(p,v){window._fn&&window._fn('updateSelectedElement',p,v);}
+function resetEnhancer(){window._fn&&window._fn('resetEnhancer');}
+function stopRecording(){window._fn&&window._fn('stopRecording');}
+function shareWhatsApp(){window._fn&&window._fn('shareWhatsApp');}
+function uploadToYouTube(){window._fn&&window._fn('uploadToYouTube');}
+function sendToEditor(){window._fn&&window._fn('sendToEditor');}
+function downloadMP4(){window._fn&&window._fn('downloadMP4');}
+function openFeedback(){window._fn&&window._fn('openFeedback');}
+function loadAdminDashboard(){window._fn&&window._fn('loadAdminDashboard');}
 </script>
 
 <!-- LANDING PAGE -->
@@ -2406,7 +2406,23 @@ Or just paste your raw content and we will structure it into scenes automaticall
 </div>
 
 <script>
-// ── AUTH ──
+// Central function dispatcher
+window._fn = function(name, ...args) {
+  const fns = {
+    switchTab, toggleSidebar, setMode, goToStep, generateScript,
+    generateVideo, downloadVideo, makeAnother, startEnhancing,
+    loadVideoFile, generateDesign, generateAIImage, loadTemplate,
+    downloadDesign, combineVideos, setUploadMode, downloadDesignSVG,
+    initDesignCanvas, resizeCanvas, addDesignText, addDesignShape,
+    clearDesignCanvas, undoDesign, deleteSelectedElement, updateSelectedElement,
+    resetEnhancer, stopRecording, shareWhatsApp, uploadToYouTube,
+    sendToEditor, downloadMP4, openFeedback, loadAdminDashboard
+  };
+  if (fns[name]) return fns[name](...args);
+  console.warn('Function not found:', name);
+};
+
+// -- AUTH --
 const PASSWORD = 'AfriVid@Admin2026';
 
 function checkPassword() {
@@ -2427,7 +2443,7 @@ function logout() {
   document.getElementById('pwd-input').value = '';
 }
 
-// ── STATE ──
+// -- STATE --
 let scriptData = null;
 let recordedChunks = [];
 let mediaRecorder = null;
@@ -2436,7 +2452,7 @@ let isRecording = false;
 let currentScene = 0;
 let animFrame = null;
 
-// ── MODE ──
+// -- MODE --
 let currentMode = 'ai';
 
 window.setMode = function setMode(mode) {
@@ -2448,7 +2464,7 @@ window.setMode = function setMode(mode) {
   document.getElementById('btn-generate').textContent = mode === 'ai' ? '✨ Generate Script' : '🎬 Structure My Script';
 }
 
-// ── STEPS ──
+// -- STEPS --
 window.goToStep = function goToStep(n) {
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`panel-${i}`).classList.toggle('active', i === n);
@@ -2459,7 +2475,7 @@ window.goToStep = function goToStep(n) {
   }
 }
 
-// ── SCRIPT GENERATION ──
+// -- SCRIPT GENERATION --
 async function structureOwnScript() {
   const ownScript = document.getElementById('own-script').value.trim();
   if (!ownScript) { alert('Please paste your script first.'); return; }
@@ -2651,8 +2667,8 @@ function renderScript() {
   `;
 }
 
-// ── MUSIC ──
-// ── GENERATED BACKGROUND MUSIC ──
+// -- MUSIC --
+// -- GENERATED BACKGROUND MUSIC --
 function startBackgroundMusic(audioCtx, dest, style, duration) {
   const musicType = document.getElementById('bg-music') ? 
     document.getElementById('bg-music').value : 'none';
@@ -2774,7 +2790,7 @@ function getTransitionAlpha() {
   return 1;
 }
 
-// ── MP4 CONVERSION ──
+// -- MP4 CONVERSION --
 async function downloadMP4() {
   if (!videoBlob) { alert('No video to convert.'); return; }
   
@@ -2816,7 +2832,7 @@ async function downloadMP4() {
   }
 }
 
-// ── PRESENTER PHOTO ──
+// -- PRESENTER PHOTO --
 let presenterImage = null;
 
 function loadPresenterPhoto(event) {
@@ -2880,8 +2896,8 @@ function drawPresenterPhoto(ctx, W, H) {
   ctx.shadowBlur = 0;
 }
 
-// ── VIDEO GENERATION ──
-// ── CODE DETECTION ──
+// -- VIDEO GENERATION --
+// -- CODE DETECTION --
 function detectSceneType(text) {
   if (!text) return 'normal';
   const codePatterns = [/```[\s\S]*```/, /def |function |class |import |const |let |var |if\(|for\(|while\(/, /\{/, /<\w+>/, /=>/, /\(\) =>/];
@@ -3075,7 +3091,7 @@ const COLORS = {
   dark: { bg: '#050C14', text: '#F8F9FC', accent: '#F5A623' }
 };
 
-// ── WHITEBOARD DRAW ──
+// -- WHITEBOARD DRAW --
 function drawWhiteboardScene(canvas, scene, progress, currentWord = -1) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
@@ -3173,7 +3189,7 @@ function drawWhiteboardScene(canvas, scene, progress, currentWord = -1) {
   }
 }
 
-// ── CINEMATIC DRAW ──
+// -- CINEMATIC DRAW --
 function drawCinematicScene(canvas, scene, progress, currentWord = -1) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
@@ -3433,7 +3449,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   }
 }
 
-// ── BACKGROUND IMAGES ──
+// -- BACKGROUND IMAGES --
 const bgImageCache = {};
 
 async function loadBgImage(theme) {
@@ -3551,7 +3567,7 @@ function drawPhotoBgScene(canvas, scene, progress, currentWord = -1, bgImg = nul
   }
 }
 
-// ── WHATSAPP SHARE ──
+// -- WHATSAPP SHARE --
 function shareWhatsApp() {
   if (!scriptData) return;
   const text = `🎬 *${scriptData.title}*\n\nGenerated with AfriVid Studio — AI Video Generator\n\n🌍 afrivid.studio/yan-studio.html\n\n#YAN #YoungAfricansNetwork #AIVideo`;
@@ -3971,8 +3987,8 @@ window.downloadVideo = function downloadVideo() {
   if (window.trackVideoGeneration) window.trackVideoGeneration(scriptData.title, scriptData.duration);
 }
 
-// ── TAB SWITCHING ──
-// ── VIDEO LIBRARY ──
+// -- TAB SWITCHING --
+// -- VIDEO LIBRARY --
 let videoLibrary = JSON.parse(localStorage.getItem('yan-video-library') || '[]');
 
 function saveToLibrary(blob, title, duration) {
@@ -4027,7 +4043,7 @@ function deleteFromLibrary(id) {
   renderLibrary();
 }
 
-// ── SIDEBAR TOGGLE ──
+// -- SIDEBAR TOGGLE --
 let sidebarCollapsed = false;
 window.toggleSidebar = function() {
   sidebarCollapsed = !sidebarCollapsed;
@@ -4074,7 +4090,7 @@ window.switchTab = function(tab) {
   if (topbar && window.innerWidth <= 768) topbar.style.display = 'block';
 }
 
-// ── ENHANCER ──
+// -- ENHANCER --
 let enhanceVideo = null;
 let enhanceRecordedChunks = [];
 let enhanceMediaRecorder = null;
@@ -4334,7 +4350,7 @@ async window.startEnhancing = function startEnhancing() {
 
 let enhancedBlob = null;
 
-// ── AUDIO PROCESSING ──
+// -- AUDIO PROCESSING --
 function applyQualityPreset(preset) {
   const presets = {
     iphone: {
@@ -4580,7 +4596,7 @@ async function uploadEnhancedToYouTube() {
   await uploadToYouTube();
 }
 
-// ── TRIM & AI EDIT ──
+// -- TRIM & AI EDIT --
 let clips = []; // [{start, end}]
 let dragHandle = null;
 let trimStart = 0;
@@ -4777,7 +4793,7 @@ function addEnhanceLog(type, msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-// ── UPLOAD MODE ──
+// -- UPLOAD MODE --
 let uploadMode = 'single';
 let multiVideos = []; // Array of {file, url, name, duration}
 
@@ -4959,7 +4975,7 @@ function resetEnhancer() {
   document.getElementById('enhance-log').innerHTML = '<span class="log-line info">// Upload a video to get started.</span>';
 }
 
-// ── YOUTUBE UPLOAD ──
+// -- YOUTUBE UPLOAD --
 const YT_CLIENT_ID = '224204618916-014ts9p8mj2vs9b0rtnq1b2o8gaetehk.apps.googleusercontent.com';
 const YT_SCOPES = 'https://www.googleapis.com/auth/youtube.upload';
 let ytAccessToken = null;
@@ -5070,7 +5086,7 @@ ${(scriptData.hashtags || []).join(' ')}`,
   }
 }
 
-// ── PHOTO EDITOR ──
+// -- PHOTO EDITOR --
 let photoImage = null;
 
 function loadPhotoFile(event) {
@@ -5263,7 +5279,7 @@ function resetPhotoEditor() {
   document.getElementById('photo-log').innerHTML = '<span class="log-line info">// Upload a photo to get started.</span>';
 }
 
-// ── AI BACKGROUND REMOVAL ──
+// -- AI BACKGROUND REMOVAL --
 let selfieSegmentation = null;
 
 async function initSegmentation() {
@@ -5374,7 +5390,7 @@ function addPhotoLog(type, msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-// ── DESIGN STUDIO ──
+// -- DESIGN STUDIO --
 let designElements = [];
 let designHistory = [];
 let selectedElement = null;
@@ -5956,7 +5972,7 @@ function updateDurationWarning() {
     warn.style.background = 'rgba(230,51,41,0.1)';
     warn.style.border = '1px solid rgba(230,51,41,0.3)';
     warn.style.color = '#E63329';
-    warn.textContent = '⚠ ' + (dur/60) + '-min video takes ' + (dur/60) + '+ minutes to generate. Consider splitting into shorter videos for better experience.';
+    warn.textContent = '[!] ' + (dur/60) + '-min video takes ' + (dur/60) + '+ minutes to generate. Consider splitting into shorter videos for better experience.';
   }
 }
 
