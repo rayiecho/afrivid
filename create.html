@@ -145,6 +145,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .btn-row .btn{width:100%;justify-content:center;}
   .card{padding:1.25rem;}
 }
+.loading-state{display:none;text-align:center;padding:3rem 2rem;}
+.loading-spinner{width:48px;height:48px;border-radius:50%;border:3px solid rgba(245,166,35,0.2);border-top-color:#F5A623;animation:spin 0.8s linear infinite;margin:0 auto 1.5rem;}
+.loading-text{font-size:1rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;margin-bottom:0.5rem;}
+.loading-sub{font-size:0.78rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
