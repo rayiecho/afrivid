@@ -159,6 +159,24 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
             <button class="btn btn-green" onclick="handleSaveToStudio()">💾 Save to Studio</button>
             <button class="btn btn-outline" onclick="resetEditor()">✕ New Video</button>
           </div>
+          <div id="progress-wrap" style="display:none;margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">
+              <span id="progress-label">Processing...</span>
+              <span id="progress-pct">0%</span>
+            </div>
+            <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+              <div id="progress-fill" style="height:100%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:2px;transition:width 0.3s;width:0%;"></div>
+            </div>
+          </div>
+          <div id="combine-progress-wrap" style="display:none;margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">
+              <span id="combine-progress-label">Combining...</span>
+              <span id="combine-progress-pct">0%</span>
+            </div>
+            <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+              <div id="combine-progress-fill" style="height:100%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:2px;transition:width 0.3s;width:0%;"></div>
+            </div>
+          </div>
           <div class="status-log" id="status-log"><span class="log-line info">// Video loaded. Apply enhancements and export.</span></div>
         </div>
 
@@ -413,17 +431,1057 @@ window.applyPreset = function(preset) {
   addLog('success', `[ok] ${preset} preset applied`);
 }
 
-window.handleExport = function() {
-  if (!currentVideoFile) { alert('No video loaded'); return; }
-  if (!currentUser) { showLogin(); return; }
-  addLog('info', '[~] Preparing export...');
-  setTimeout(() => {
+// ---- FULL ENHANCER ENGINE ----
+loadVideoFile = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  enhanceVideo = file;
+  const url = URL.createObjectURL(file);
+  const video = document.getElementById('original-video');
+  video.src = url;
+  video.load();
+  document.getElementById('upload-card').textContent = file.name;
+  document.getElementById('editor-card').style.display = 'block';
+  document.getElementById('upload-card').style.display = 'none';
+  addEnhanceLog('success', `[ok] Loaded: ${file.name}`);
+  
+  video.onloadedmetadata = () => {
+    trimStart = 0;
+    trimEnd = video.duration;
+    clips = [];
+    updateTimeline();
+    const canvas = document.getElementById('preview-video');
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    updatePreview();
+  };
+}
+
+function getFilterCSS() {
+  const b = document.getElementById('adj-brightness').value;
+  const c = document.getElementById('adj-contrast').value;
+  const s = document.getElementById('adj-saturation').value;
+  const sharp = parseFloat(document.getElementById('adj-sharpness').value);
+  const filter = document.getElementById('brightness').value;
+
+  document.getElementById('brightness-val').textContent = b + '%';
+  document.getElementById('contrast-val').textContent = c + '%';
+  document.getElementById('saturation-val').textContent = s + '%';
+  document.getElementById('sharpness-val').textContent = sharp;
+
+  let filterStr = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+
+  // Sharpness via contrast on edges
+  if (sharp > 0) filterStr += ` contrast(${100 + sharp * 8}%)`;
+
+  // Color filters
+  if (filter === 'vivid') filterStr += ' saturate(150%) contrast(110%)';
+  else if (filter === 'warm') filterStr += ' sepia(25%) saturate(120%) brightness(102%)';
+  else if (filter === 'cool') filterStr += ' hue-rotate(15deg) saturate(85%) brightness(98%)';
+  else if (filter === 'bw') filterStr += ' grayscale(100%) contrast(110%)';
+  else if (filter === 'cinematic') filterStr += ' contrast(125%) saturate(75%) brightness(92%) sepia(10%)';
+
+  return filterStr;
+}
+
+function updatePreview() {
+  const video = document.getElementById('original-video');
+  const canvas = document.getElementById('preview-video');
+  const ctx = canvas.getContext('2d');
+  
+  if (!video.src) return;
+  
+  ctx.filter = getFilterCSS();
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  ctx.filter = 'none';
+  
+  // Watermark
+  const wm = {value:'none'}.value;
+  if (wm !== 'none') {
+    ctx.fillStyle = 'rgba(245,166,35,0.8)';
+    ctx.font = 'bold 14px Syne, sans-serif';
+    ctx.textAlign = wm.includes('r') ? 'right' : 'left';
+    const x = wm.includes('r') ? canvas.width - 16 : 16;
+    const y = wm.includes('t') ? 30 : canvas.height - 16;
+    ctx.fillText('AfriVid', x, y);
+  }
+  
+  // Subtitles
+  const subType = {value:'none'}.value;
+  document.getElementById('manual-subtitle-card').style.display = subType === 'manual' ? 'block' : 'none';
+  
+  if (subType === 'manual') {
+    const text = document.getElementById('manual-subtitle-text').value;
+    if (text) {
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(0, canvas.height - 60, canvas.width, 60);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 22px Syne, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(text.split('\n')[0], canvas.width/2, canvas.height - 24);
+    }
+  }
+}
+
+// Live preview as video plays
+document.addEventListener('DOMContentLoaded', () => {
+  const video = document.getElementById('original-video');
+  if (video) {
+    video.addEventListener('timeupdate', updatePreview);
+    video.addEventListener('play', function previewLoop() {
+      if (!video.paused) {
+        updatePreview();
+        requestAnimationFrame(previewLoop);
+      }
+    });
+  }
+});
+
+startEnhancing = async function() {
+  if (!enhanceVideo) { alert('Please upload a video first.'); return; }
+  
+  addEnhanceLog('info', '[>] Starting enhancement...');
+  document.getElementById('progress-wrap').style.display = 'block';
+  
+  const video = document.getElementById('original-video');
+  const canvas = document.getElementById('preview-video');
+  canvas.width = video.videoWidth || 1280;
+  canvas.height = video.videoHeight || 720;
+  
+  // Setup AudioContext for music
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const dest = audioCtx.createMediaStreamDestination();
+  
+  // Capture canvas stream
+  const canvasStream = canvas.captureStream(30);
+  canvasStream.addTrack(dest.stream.getAudioTracks()[0]);
+  
+  // Add original video audio with processing chain
+  const videoSource = audioCtx.createMediaElementSource(video);
+  buildAudioChain(audioCtx, videoSource, dest);
+  // Also connect to speakers so user can hear during processing
+  const monitorGain = audioCtx.createGain();
+  monitorGain.gain.value = 0.5;
+  videoSource.connect(monitorGain);
+  monitorGain.connect(audioCtx.destination);
+  
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') 
+    ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+  
+  enhanceRecordedChunks = [];
+  enhanceMediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 3000000 });
+  enhanceMediaRecorder.ondataavailable = e => { if (e.data.size > 0) enhanceRecordedChunks.push(e.data); };
+  enhanceMediaRecorder.onstop = finishEnhancing;
+  enhanceMediaRecorder.start(100);
+  
+  // Start background music
+  const musicType = document.getElementById('video-music') || {value:'none'}.value;
+  if (musicType !== 'none') {
+    startBackgroundMusic(audioCtx, dest, musicType, video.duration || 60);
+    addEnhanceLog('success', '[ok] Background music added');
+  }
+  
+  // Use clips if defined, otherwise full video
+  const useClips = clips && clips.length > 0;
+  let clipIndex = 0;
+
+  // Apply aspect ratio crop
+  const enhanceAR = {value:'original'}?.value || 'original';
+  if (enhanceAR !== 'original') {
+    const arParts = enhanceAR.split(':');
+    const targetAR = parseInt(arParts[0]) / parseInt(arParts[1]);
+    const videoAR = video.videoWidth / video.videoHeight;
+    if (Math.abs(targetAR - videoAR) > 0.01) {
+      if (targetAR > videoAR) {
+        canvas.width = video.videoWidth;
+        canvas.height = Math.round(video.videoWidth / targetAR);
+      } else {
+        canvas.height = video.videoHeight;
+        canvas.width = Math.round(video.videoHeight * targetAR);
+      }
+      addEnhanceLog('info', `[ok] Aspect ratio: ${enhanceAR} (${canvas.width}x${canvas.height})`);
+    }
+  }
+
+  // Apply quality bitrate
+  const quality = {value:'medium'}?.value || 'medium';
+  const bitrates = { high: 6000000, medium: 3000000, low: 1000000 };
+
+  video.currentTime = useClips ? clips[0].start : 0;
+  video.play();
+  addEnhanceLog('success', useClips ? `[ok] Processing ${clips.length} clip(s)...` : '[ok] Processing video frames...');
+  
+  function renderFrame() {
+    if (video.paused || video.ended) {
+      enhanceMediaRecorder.stop();
+      return;
+    }
+    
+    const progress = video.currentTime / video.duration;
+    document.getElementById('progress-fill').style.width = (progress * 100) + '%';
+    document.getElementById('progress-pct').textContent = Math.round(progress * 100) + '%';
+    document.getElementById('progress-label').textContent = `Processing frame ${Math.round(video.currentTime)}s / ${Math.round(video.duration)}s`;
+    
+    // Draw filtered frame
+    const ctx = canvas.getContext('2d');
+    ctx.filter = getFilterCSS();
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.filter = 'none';
+    
+    // Watermark
+    const wm = {value:'none'}.value;
+    if (wm !== 'none') {
+      ctx.fillStyle = 'rgba(245,166,35,0.85)';
+      ctx.font = 'bold 18px Syne, sans-serif';
+      ctx.textAlign = wm.includes('r') ? 'right' : 'left';
+      const x = wm.includes('r') ? canvas.width - 20 : 20;
+      const y = wm.includes('t') ? 36 : canvas.height - 20;
+      ctx.fillText('AfriVid', x, y);
+    }
+    
+    // Subtitles
+    const subType = {value:'none'}.value;
+    if (subType === 'manual') {
+      const text = document.getElementById('manual-subtitle-text').value;
+      if (text) {
+        const lines = text.split('\n');
+        const lineIdx = Math.floor((video.currentTime / video.duration) * lines.length);
+        const currentLine = lines[Math.min(lineIdx, lines.length - 1)];
+        ctx.fillStyle = 'rgba(0,0,0,0.65)';
+        ctx.fillRect(0, canvas.height - 64, canvas.width, 64);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 24px Syne, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(currentLine, canvas.width/2, canvas.height - 22);
+      }
+    }
+    
+    requestAnimationFrame(renderFrame);
+  }
+  
+  video.addEventListener('timeupdate', () => {
+    if (clips && clips.length > 0 && clipIndex < clips.length) {
+      const clip = clips[clipIndex];
+      if (video.currentTime >= clip.end) {
+        clipIndex++;
+        if (clipIndex < clips.length) {
+          video.currentTime = clips[clipIndex].start;
+        } else {
+          video.pause();
+          if (enhanceMediaRecorder && enhanceMediaRecorder.state !== 'inactive') {
+            enhanceMediaRecorder.stop();
+          }
+        }
+      }
+    }
+  });
+
+  video.addEventListener('ended', () => {
+    if (enhanceMediaRecorder && enhanceMediaRecorder.state !== 'inactive') {
+      enhanceMediaRecorder.stop();
+    }
+  });
+  
+  renderFrame();
+}
+
+let enhancedBlob = null;
+
+// -- AUDIO PROCESSING --
+function applyQualityPreset(preset) {
+  const presets = {
+    iphone: {
+      brightness: 108, contrast: 115, saturation: 125,
+      sharpness: 2.5, filter: 'warm',
+      label: '[ph] iPhone Look applied'
+    },
+    dslr: {
+      brightness: 102, contrast: 120, saturation: 110,
+      sharpness: 3.5, filter: 'none',
+      label: '[cam] DSLR Look applied'
+    },
+    cinema: {
+      brightness: 95, contrast: 130, saturation: 85,
+      sharpness: 2, filter: 'cinematic',
+      label: '[vid] Cinema Look applied'
+    },
+    broadcast: {
+      brightness: 110, contrast: 112, saturation: 118,
+      sharpness: 3, filter: 'none',
+      label: '[tv] Broadcast Look applied'
+    },
+    auto: {
+      brightness: 105, contrast: 115, saturation: 115,
+      sharpness: 2, filter: 'vivid',
+      label: '[*] Auto Enhanced'
+    },
+    reset: {
+      brightness: 100, contrast: 100, saturation: 100,
+      sharpness: 0, filter: 'none',
+      label: '[r] Reset to original'
+    }
+  };
+
+  const p = presets[preset];
+  if (!p) return;
+
+  document.getElementById('adj-brightness').value = p.brightness;
+  document.getElementById('adj-contrast').value = p.contrast;
+  document.getElementById('adj-saturation').value = p.saturation;
+  document.getElementById('adj-sharpness').value = p.sharpness;
+  document.getElementById('brightness').value = p.filter;
+
+  document.getElementById('brightness-val').textContent = p.brightness + '%';
+  document.getElementById('contrast-val').textContent = p.contrast + '%';
+  document.getElementById('saturation-val').textContent = p.saturation + '%';
+  document.getElementById('sharpness-val').textContent = p.sharpness;
+
+  const label = document.getElementById('preset-applied');
+  label.textContent = p.label;
+  label.style.display = 'block';
+
+  updatePreview();
+  addEnhanceLog('success', '[ok] ' + p.label);
+}
+
+function applyAudioPreset() {
+  const preset = document.getElementById('audio-preset').value;
+  const presets = {
+    crowd:   { noise: 85, voice: 70, echo: 30, wind: 20, volume: 120 },
+    outdoor: { noise: 60, voice: 50, echo: 10, wind: 90, volume: 110 },
+    room:    { noise: 40, voice: 60, echo: 80, wind: 10, volume: 100 },
+    phone:   { noise: 70, voice: 90, echo: 50, wind: 30, volume: 150 },
+    studio:  { noise: 20, voice: 40, echo: 20, wind: 10, volume: 100 },
+    none:    { noise: 0,  voice: 0,  echo: 0,  wind: 0,  volume: 100 }
+  };
+  const p = presets[preset] || presets.none;
+  {value:0}.value = p.noise;
+  {value:0}.value = p.voice;
+  document.getElementById('echo-removal').value = p.echo;
+  {value:0}.value = p.wind;
+  document.getElementById('audio-volume').value = p.volume;
+  {textContent:''}.textContent = p.noise + '%';
+  {textContent:''}.textContent = p.voice + '%';
+  document.getElementById('echo-val').textContent = p.echo + '%';
+  document.getElementById('wind-val').textContent = p.wind + '%';
+  document.getElementById('volume-val').textContent = p.volume + '%';
+}
+
+async function previewAudioFilters() {
+  const video = document.getElementById('original-video');
+  if (!video || !video.src) { alert('Upload a video first'); return; }
+
+  const btn = document.getElementById('btn-preview-audio');
+  const status = document.getElementById('audio-preview-status');
+
+  if (btn._playing) {
+    // Stop preview
+    if (btn._audioCtx) btn._audioCtx.close();
+    btn._playing = false;
+    btn.textContent = '[>] Preview Audio with Filters';
+    status.textContent = '';
+    video.muted = false;
+    return;
+  }
+
+  try {
+    btn.textContent = '[||] Stop Preview';
+    btn._playing = true;
+    status.textContent = 'Playing with filters applied...';
+    status.style.color = '#74C69D';
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    btn._audioCtx = audioCtx;
+
+    // Play video audio through filters
+    video.muted = true;
+    video.currentTime = 0;
+    video.play();
+
+    const source = audioCtx.createMediaElementSource(video);
+    const dest = audioCtx.destination;
+    buildAudioChain(audioCtx, source, dest);
+
+    video.onended = () => {
+      btn._playing = false;
+      btn.textContent = '[>] Preview Audio with Filters';
+      status.textContent = '';
+      video.muted = false;
+    };
+
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    status.style.color = 'var(--red)';
+    btn._playing = false;
+    btn.textContent = '[>] Preview Audio with Filters';
+  }
+}
+
+function buildAudioChain(audioCtx, source, dest) {
+  const noiseLevel = parseInt({value:0}.value) / 100;
+  const voiceLevel = parseInt({value:0}.value) / 100;
+  const echoLevel = parseInt(document.getElementById('echo-removal').value) / 100;
+  const windLevel = parseInt({value:0}.value) / 100;
+  const volume = parseInt(document.getElementById('audio-volume').value) / 100;
+
+  let node = source;
+
+  // Wind/Rumble filter - high pass filter removes low freq rumble
+  if (windLevel > 0) {
+    const highPass = audioCtx.createBiquadFilter();
+    highPass.type = 'highpass';
+    highPass.frequency.value = 80 + (windLevel * 120); // 80-200Hz cutoff
+    highPass.Q.value = 0.7;
+    node.connect(highPass);
+    node = highPass;
+  }
+
+  // Noise reduction - combination of filters
+  if (noiseLevel > 0) {
+    // Low pass to cut high freq hiss
+    const lowPass = audioCtx.createBiquadFilter();
+    lowPass.type = 'lowpass';
+    lowPass.frequency.value = 8000 - (noiseLevel * 4000); // 4000-8000Hz
+    lowPass.Q.value = 0.5;
+    node.connect(lowPass);
+    node = lowPass;
+
+    // Dynamics compressor to reduce noise floor
+    const compressor = audioCtx.createDynamicsCompressor();
+    compressor.threshold.value = -50 + (noiseLevel * 30); // -50 to -20dB
+    compressor.knee.value = 10;
+    compressor.ratio.value = 4 + (noiseLevel * 8); // 4:1 to 12:1
+    compressor.attack.value = 0.003;
+    compressor.release.value = 0.1 + (noiseLevel * 0.2);
+    node.connect(compressor);
+    node = compressor;
+  }
+
+  // Voice boost - peaking EQ around speech frequencies
+  if (voiceLevel > 0) {
+    // Boost 1-4kHz (speech clarity)
+    const voiceEQ = audioCtx.createBiquadFilter();
+    voiceEQ.type = 'peaking';
+    voiceEQ.frequency.value = 2000;
+    voiceEQ.Q.value = 1.5;
+    voiceEQ.gain.value = voiceLevel * 12; // 0-12dB boost
+    node.connect(voiceEQ);
+    node = voiceEQ;
+
+    // Boost presence 4-8kHz
+    const presenceEQ = audioCtx.createBiquadFilter();
+    presenceEQ.type = 'peaking';
+    presenceEQ.frequency.value = 5000;
+    presenceEQ.Q.value = 1;
+    presenceEQ.gain.value = voiceLevel * 6;
+    node.connect(presenceEQ);
+    node = presenceEQ;
+  }
+
+  // Echo/reverb reduction - gate
+  if (echoLevel > 0) {
+    const echoComp = audioCtx.createDynamicsCompressor();
+    echoComp.threshold.value = -30 - (echoLevel * 20);
+    echoComp.ratio.value = 8 + (echoLevel * 12);
+    echoComp.attack.value = 0.001;
+    echoComp.release.value = 0.05 + (echoLevel * 0.1);
+    node.connect(echoComp);
+    node = echoComp;
+  }
+
+  // Volume
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = volume;
+  node.connect(gainNode);
+  gainNode.connect(dest);
+
+  return gainNode;
+}
+
+async function finishEnhancing() {
+  enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
+  const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
+  addEnhanceLog('success', `[ok] Enhanced video ready! Size: ${sizeMB}MB`);
+  // Auto-save to library
+  saveEnhancedToLibrary(enhancedBlob, 'Enhanced - ' + new Date().toLocaleDateString());
+
+  const format = document.getElementById('enhance-format')?.value || 'webm';
+
+  if (format === 'mp4') {
+    addEnhanceLog('info', '[sync] Converting to MP4 via FFmpeg...');
+    try {
+      await convertToMP4(enhancedBlob);
+      addEnhanceLog('success', '[ok] MP4 conversion complete!');
+    } catch(e) {
+      addEnhanceLog('error', '[x] MP4 conversion failed, downloading as WebM');
+      downloadEnhanced();
+    }
+  } else {
+    document.getElementById('enhance-export-btns').style.display = 'flex';
+  }
+
+  document.getElementById('progress-label').textContent = 'Done!';
+  document.getElementById('progress-pct').textContent = '100%';
+  document.getElementById('progress-fill').style.width = '100%';
+}
+
+async function convertToMP4(webmBlob) {
+  // Dynamically load FFmpeg
+  addEnhanceLog('info', '[pkg] Loading FFmpeg (first time may take 30s)...');
+  
+  const { FFmpeg } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js');
+  const { fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+  
+  const ffmpeg = new FFmpeg();
+  ffmpeg.on('progress', ({ progress }) => {
+    const pct = Math.round(progress * 100);
+    addEnhanceLog('info', `[sync] Converting: ${pct}%`);
+  });
+  
+  await ffmpeg.load();
+  addEnhanceLog('success', '[ok] FFmpeg loaded!');
+
+  const quality = {value:'medium'}?.value || 'medium';
+  const crf = quality === 'high' ? '18' : quality === 'medium' ? '23' : '28';
+
+  await ffmpeg.writeFile('input.webm', await fetchFile(webmBlob));
+  await ffmpeg.exec([
+    '-i', 'input.webm',
+    '-c:v', 'libx264',
+    '-crf', crf,
+    '-preset', 'fast',
+    '-c:a', 'aac',
+    '-b:a', '128k',
+    'output.mp4'
+  ]);
+
+  const data = await ffmpeg.readFile('output.mp4');
+  const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
+  const url = URL.createObjectURL(mp4Blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `AfriVid-Enhanced-${Date.now()}.mp4`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  document.getElementById('enhance-export-btns').style.display = 'flex';
+}
+
+function downloadEnhanced() {
+  if (!enhancedBlob) return;
+  const url = URL.createObjectURL(enhancedBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `AfriVid-Enhanced-${Date.now()}.webm`;
+  a.click();
+  URL.revokeObjectURL(url);
+  addEnhanceLog('success', '[dn] Downloaded!');
+}
+
+async function uploadEnhancedToYouTube() {
+  if (!enhancedBlob) { alert('No enhanced video yet.'); return; }
+  videoBlob = enhancedBlob;
+  scriptData = { title: 'YAN Enhanced Video', hashtags: ['#YAN', '#YoungAfricansNetwork'] };
+  await uploadToYouTube();
+}
+
+// -- TRIM & EDIT --
+let clips = []; // [{start, end}]
+let dragHandle = null;
+let trimStart = 0;
+let trimEnd = 0;
+
+function parseTime(str) {
+  if (!str) return 0;
+  const parts = str.split(':').map(Number);
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  return parseFloat(str) || 0;
+}
+
+function formatTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function updateTrimPreview() {
+  const video = document.getElementById('original-video');
+  if (!video.duration) return;
+  const start = parseTime(document.getElementById('trim-start').value) || 0;
+  const end = parseTime(document.getElementById('trim-end').value) || video.duration;
+  trimStart = Math.max(0, Math.min(start, video.duration));
+  trimEnd = Math.max(trimStart, Math.min(end, video.duration));
+  updateTimeline();
+}
+
+function updateTimeline() {
+  const video = document.getElementById('original-video');
+  if (!video.duration) return;
+  const dur = video.duration;
+  const leftPct = (trimStart / dur) * 100;
+  const rightPct = ((dur - trimEnd) / dur) * 100;
+  const seg = document.getElementById('timeline-segment');
+  const hl = document.getElementById('handle-left');
+  const hr = document.getElementById('handle-right');
+  if (seg) { seg.style.left = leftPct + '%'; seg.style.right = rightPct + '%'; }
+  if (hl) hl.style.left = leftPct + '%';
+  if (hr) hr.style.right = rightPct + '%';
+  document.getElementById('timeline-time').textContent = `${formatTime(trimStart)} -> ${formatTime(trimEnd)} / ${formatTime(dur)}`;
+  document.getElementById('trim-start').value = formatTime(trimStart);
+  document.getElementById('trim-end').value = formatTime(trimEnd);
+}
+
+function seekToPosition(e) {
+  const video = document.getElementById('original-video');
+  if (!video.duration) return;
+  const bar = document.getElementById('trim-timeline');
+  const rect = bar.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  video.currentTime = pct * video.duration;
+}
+
+function startDrag(handle, e) {
+  isDesignDragging = true;
+  dragHandle = handle;
+  e.preventDefault();
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('mouseup', stopDrag);
+}
+
+function onDrag(e) {
+  if (!isDesignDragging) return;
+  const video = document.getElementById('original-video');
+  if (!video.duration) return;
+  const bar = document.getElementById('timeline-bar');
+  const rect = bar.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  const time = pct * video.duration;
+  if (dragHandle === 'left') { trimStart = Math.min(time, trimEnd - 1); }
+  else { trimEnd = Math.max(time, trimStart + 1); }
+  updateTimeline();
+}
+
+function stopDrag() {
+  isDesignDragging = false;
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', stopDrag);
+}
+
+// Update playhead as video plays
+setInterval(() => {
+  const video = document.getElementById('original-video');
+  const ph = document.getElementById('timeline-playhead');
+  if (video && ph && video.duration) {
+    ph.style.left = (video.currentTime / video.duration * 100) + '%';
+  }
+}, 100);
+
+function addClip() {
+  const video = document.getElementById('original-video');
+  if (!video.duration) { alert('Upload a video first'); return; }
+  const clip = { start: trimStart, end: trimEnd };
+  clips.push(clip);
+  renderClips();
+  addEnhanceLog('success', `[ok] Clip added: ${formatTime(clip.start)} -> ${formatTime(clip.end)}`);
+}
+
+function renderClips() {
+  const list = document.getElementById('clips-list');
+  if (!clips.length) { list.innerHTML = ''; return; }
+  list.innerHTML = `<div style="font-size:0.75rem;font-family:var(--font-mono);color:var(--gold);margin-bottom:0.5rem;">SELECTED CLIPS (${clips.length})</div>` +
+    clips.map((c, i) => `
+      <div class="clip-item">
+        <span style="font-size:0.82rem;background:rgba(245,166,35,0.1);padding:0.2rem 0.6rem;border-radius:4px;font-family:var(--font-mono);color:var(--gold);">${i+1}</span>
+        <span class="clip-time">${formatTime(c.start)} -> ${formatTime(c.end)}</span>
+        <span style="font-size:0.78rem;color:var(--muted);">(${formatTime(c.end - c.start)})</span>
+        <button class="clip-remove" onclick="removeClip(${i})">[x]</button>
+      </div>
+    `).join('');
+}
+
+function removeClip(i) {
+  clips.splice(i, 1);
+  renderClips();
+}
+
+function clearClips() {
+  clips = [];
+  renderClips();
+  trimStart = 0;
+  const video = document.getElementById('original-video');
+  trimEnd = video.duration || 0;
+  updateTimeline();
+}
+
+async function applyAIEdit() {
+  const instructions = document.getElementById('ai-edit-instructions').value.trim();
+  if (!instructions) { alert('Please type your edit instructions first.'); return; }
+  const video = document.getElementById('original-video');
+  if (!video.duration) { alert('Upload a video first.'); return; }
+
+  addEnhanceLog('info', 'AfriVid is interpreting your instructions...');
+
+  const prompt = `You are a video editor assistant. The video is ${formatTime(video.duration)} long (${Math.round(video.duration)} seconds total).
+
+The user wants to edit this video with these instructions:
+"${instructions}"
+
+Return ONLY a JSON array of clips to KEEP (not remove). Each clip has start and end in seconds.
+Example: [{"start": 90, "end": 240}, {"start": 420, "end": 540}]
+
+Convert any time references like "1:30" to seconds (90). "Remove first 30 seconds" means start first clip at 30. "Keep only 2:00 to 4:00" means one clip from 120 to 240.
+
+Return ONLY the JSON array, nothing else.`;
+
+  try {
+    const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content[0].text.trim();
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error('No clips found');
+    const aiClips = JSON.parse(jsonMatch[0]);
+    clips = aiClips.map(c => ({
+      start: Math.max(0, Math.min(c.start, video.duration)),
+      end: Math.max(0, Math.min(c.end, video.duration))
+    }));
+    renderClips();
+    if (clips.length > 0) {
+      trimStart = clips[0].start;
+      trimEnd = clips[0].end;
+      updateTimeline();
+    }
+    addEnhanceLog('success', `[ok] Found ${clips.length} clip(s) to keep`);
+  } catch(e) {
+    addEnhanceLog('error', '[x] Edit failed: ' + e.message);
+  }
+}
+
+// Override startEnhancing to respect clips
+const originalStartEnhancing = window.startEnhancing;
+
+function shareEnhancedWhatsApp() {
+  const text = `[vid] Check out this enhanced video!\n\nEnhanced with AfriVid Studio\n\n[world] afrivid.studio/afrivid.html\n\n#AfriVid #AfricaCreates`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function addEnhanceLog(type, msg) {
+  const log = document.getElementById('enhance-log');
+  const line = document.createElement('span');
+  line.className = `log-line ${type}`;
+  line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+// -- UPLOAD MODE --
+let uploadMode = 'single';
+let multiVideos = []; // Array of {file, url, name, duration}
+
+setUploadMode = function(mode) {
+  uploadMode = mode;
+  document.getElementById('single-upload-zone').style.display = mode === 'single' ? 'block' : 'none';
+  document.getElementById('multi-upload-zone').style.display = mode === 'multi' ? 'block' : 'none';
+  document.getElementById('mode-single').style.background = mode === 'single' ? 'var(--gold)' : 'transparent';
+  document.getElementById('mode-single').style.color = mode === 'single' ? 'var(--navy)' : 'var(--muted)';
+  document.getElementById('mode-multi').style.background = mode === 'multi' ? 'var(--gold)' : 'transparent';
+  document.getElementById('mode-multi').style.color = mode === 'multi' ? 'var(--navy)' : 'var(--muted)';
+}
+
+async function loadMultipleVideos(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+
+  for (const file of files) {
+    const url = URL.createObjectURL(file);
+    const duration = await getVideoDuration(url);
+    multiVideos.push({ file, url, name: file.name, duration, size: (file.size/1024/1024).toFixed(1) });
+  }
+
+  renderVideoList();
+  document.getElementById('multi-video-list').style.display = 'block';
+}
+
+function getVideoDuration(url) {
+  return new Promise(resolve => {
+    const v = document.createElement('video');
+    v.onloadedmetadata = () => resolve(Math.round(v.duration));
+    v.onerror = () => resolve(0);
+    v.src = url;
+  });
+}
+
+function formatDur(s) {
+  const m = Math.floor(s/60), sec = s%60;
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+
+function renderVideoList() {
+  const list = document.getElementById('video-items-list');
+  const totalDur = multiVideos.reduce((s,v) => s + v.duration, 0);
+  list.innerHTML = multiVideos.map((v, i) => `
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:var(--navy3);border-radius:8px;margin-bottom:0.5rem;border:1px solid var(--border2);">
+      <span style="font-size:0.75rem;font-family:var(--font-mono);color:var(--gold);min-width:20px;">${i+1}</span>
+      <div style="flex:1;">
+        <div style="font-size:0.82rem;font-weight:600;color:var(--white);">${v.name}</div>
+        <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${formatDur(v.duration)} . ${v.size}MB</div>
+      </div>
+      <div style="display:flex;gap:4px;">
+        ${i > 0 ? `<button onclick="moveVideo(${i},-1)" style="background:var(--border2);border:none;color:var(--white);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">[up]</button>` : ''}
+        ${i < multiVideos.length-1 ? `<button onclick="moveVideo(${i},1)" style="background:var(--border2);border:none;color:var(--white);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">[dn]</button>` : ''}
+        <button onclick="removeVideo(${i})" style="background:rgba(230,51,41,0.15);border:none;color:#E63329;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">[x]</button>
+      </div>
+    </div>
+  `).join('') + `
+    <div style="padding:0.5rem;text-align:center;font-size:0.75rem;color:var(--gold);font-family:var(--font-mono);">
+      Total: ${multiVideos.length} videos . ${formatDur(totalDur)} combined
+    </div>`;
+}
+
+function moveVideo(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= multiVideos.length) return;
+  [multiVideos[idx], multiVideos[newIdx]] = [multiVideos[newIdx], multiVideos[idx]];
+  renderVideoList();
+}
+
+function removeVideo(idx) {
+  URL.revokeObjectURL(multiVideos[idx].url);
+  multiVideos.splice(idx, 1);
+  if (multiVideos.length === 0) {
+    document.getElementById('multi-video-list').style.display = 'none';
+  } else {
+    renderVideoList();
+  }
+}
+
+function resetMultiUpload() {
+  multiVideos.forEach(v => URL.revokeObjectURL(v.url));
+  multiVideos = [];
+  document.getElementById('multi-video-list').style.display = 'none';
+  document.getElementById('multi-file-input').value = '';
+  document.getElementById('combine-log').innerHTML = '<span class="log-line info">// Videos will be combined in the order shown above.</span>';
+}
+
+function addCombineLog(type, msg) {
+  const log = document.getElementById('combine-log');
+  const line = document.createElement('span');
+  line.className = `log-line ${type}`;
+  line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+combineVideos = async function() {
+  if (multiVideos.length < 2) { alert('Please upload at least 2 videos to combine'); return; }
+
+  addCombineLog('info', `[vid] Combining ${multiVideos.length} videos...`);
+  document.getElementById('combine-progress').style.display = 'block';
+
+  // Check for instructions
+  const instructions = document.getElementById('combine-instructions').value.trim();
+  if (instructions) {
+    addCombineLog('info', 'AfriVid is processing your instructions...');
+  }
+
+  try {
+    // Load FFmpeg
+    addCombineLog('info', '[pkg] Loading FFmpeg...');
+    const { FFmpeg } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js');
+    const { fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+
+    const ffmpeg = new FFmpeg();
+    ffmpeg.on('progress', ({ progress }) => {
+      const pct = Math.round(progress * 100);
+      document.getElementById('combine-progress-fill').style.width = pct + '%';
+      document.getElementById('combine-progress-pct').textContent = pct + '%';
+    });
+
+    await ffmpeg.load();
+    addCombineLog('success', '[ok] FFmpeg loaded!');
+
+    // Write all video files
+    const fileList = [];
+    for (let i = 0; i < multiVideos.length; i++) {
+      const fname = `input${i}.mp4`;
+      addCombineLog('info', `[in] Loading video ${i+1}/${multiVideos.length}...`);
+      await ffmpeg.writeFile(fname, await fetchFile(multiVideos[i].file));
+      fileList.push(`file '${fname}'`);
+      document.getElementById('combine-progress-fill').style.width = (i+1)/multiVideos.length * 30 + '%';
+    }
+
+    // Create concat file
+    const concatContent = fileList.join('\n');
+    await ffmpeg.writeFile('concat.txt', concatContent);
+    addCombineLog('info', '[link] Combining videos...');
+
+    // Combine using concat
+    await ffmpeg.exec([
+      '-f', 'concat',
+      '-safe', '0',
+      '-i', 'concat.txt',
+      '-c', 'copy',
+      'combined.mp4'
+    ]);
+
+    addCombineLog('success', '[ok] Videos combined!');
+    document.getElementById('combine-progress-label').textContent = 'Done!';
+    document.getElementById('combine-progress-pct').textContent = '100%';
+    document.getElementById('combine-progress-fill').style.width = '100%';
+
+    // Download
+    const data = await ffmpeg.readFile('combined.mp4');
+    const blob = new Blob([data.buffer], { type: 'video/mp4' });
+    const sizeMB = (blob.size/1024/1024).toFixed(1);
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(currentVideoFile);
-    a.download = `AfriVid-Edit-${Date.now()}.mp4`;
+    a.href = url;
+    a.download = `AfriVid-Combined-${Date.now()}.mp4`;
     a.click();
-    addLog('success', '[ok] Video exported!');
-  }, 800);
+    URL.revokeObjectURL(url);
+    addCombineLog('success', `[ok] Downloaded! Size: ${sizeMB}MB`);
+
+  } catch(e) {
+    addCombineLog('error', '[x] Combine failed: ' + e.message);
+    addCombineLog('info', 'Tip: Make sure all videos have the same resolution and codec');
+  }
+}
+
+function resetEnhancer() {
+  enhanceVideo = null;
+  document.getElementById('editor-card').style.display = 'none';
+  document.getElementById('upload-card').style.display = 'block';
+  document.getElementById('video-file-input').value = '';
+  document.getElementById('enhance-log').innerHTML = '<span class="log-line info">// Upload a video to get started.</span>';
+}
+
+// -- YOUTUBE UPLOAD --
+const YT_CLIENT_ID = '224204618916-014ts9p8mj2vs9b0rtnq1b2o8gaetehk.apps.googleusercontent.com';
+const YT_SCOPES = 'https://www.googleapis.com/auth/youtube.upload';
+let ytAccessToken = null;
+
+function initYouTubeAuth() {
+  return new Promise((resolve, reject) => {
+    if (ytAccessToken) { resolve(ytAccessToken); return; }
+    
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${YT_CLIENT_ID}` +
+      `&redirect_uri=${encodeURIComponent(window.location.href.split('?')[0])}` +
+      `&response_type=token` +
+      `&scope=${encodeURIComponent(YT_SCOPES)}` +
+      `&include_granted_scopes=true`;
+
+    const popup = window.open(authUrl, 'youtube-auth', 'width=500,height=600,scrollbars=yes');
+    
+    const interval = setInterval(() => {
+      try {
+        if (popup.closed) {
+          clearInterval(interval);
+          reject(new Error('Auth popup closed'));
+          return;
+        }
+        const hash = popup.location.hash;
+        if (hash && hash.includes('access_token')) {
+          clearInterval(interval);
+          popup.close();
+          const params = new URLSearchParams(hash.substring(1));
+          ytAccessToken = params.get('access_token');
+          resolve(ytAccessToken);
+        }
+      } catch(e) {}
+    }, 500);
+  });
+}
+
+async function uploadToYouTube() {
+  if (!videoBlob) { alert('No video to upload.'); return; }
+  
+  const statusEl = document.getElementById('download-info');
+  statusEl.textContent = 'Connecting to YouTube...';
+  
+  try {
+    const token = await initYouTubeAuth();
+    statusEl.textContent = '[ok] Authenticated! Uploading video...';
+    
+    const metadata = {
+      snippet: {
+        title: scriptData.title || 'YAN Video',
+        description: `Generated with AfriVid Studio
+
+AfriVid
+https://afrivid.studio
+
+${(scriptData.hashtags || []).join(' ')}`,
+        tags: ['AfriVid', 'AfriVidStudio', 'Africa', 'AIVideo'],
+        categoryId: '27' // Education
+      },
+      status: {
+        privacyStatus: 'public'
+      }
+    };
+
+    // Multipart upload
+    const boundary = '-------314159265358979323846';
+    const delimiter = '\r\n--' + boundary + '\r\n';
+    const closeDelimiter = '\r\n--' + boundary + '--';
+
+    const metadataStr = JSON.stringify(metadata);
+    const videoArrayBuffer = await videoBlob.arrayBuffer();
+
+    const body = new Blob([
+      delimiter,
+      'Content-Type: application/json\r\n\r\n',
+      metadataStr,
+      delimiter,
+      'Content-Type: video/webm\r\n\r\n',
+      new Uint8Array(videoArrayBuffer),
+      closeDelimiter
+    ]);
+
+    const response = await fetch(
+      'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=multipart&part=snippet,status',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': `multipart/related; boundary="${boundary}"`,
+        },
+        body: body
+      }
+    );
+
+    const data = await response.json();
+    
+    if (data.id) {
+      const ytUrl = `https://www.youtube.com/watch?v=${data.id}`;
+      statusEl.innerHTML = `[ok] Uploaded! <a href="${ytUrl}" target="_blank" style="color:#F5A623;">Watch on YouTube -></a>`;
+      addLog('success', `[ok] YouTube upload complete: ${ytUrl}`);
+    } else {
+      throw new Error(data.error?.message || 'Upload failed');
+    }
+    
+  } catch(e) {
+    statusEl.textContent = '[x] Upload failed: ' + e.message;
+    addLog('error', '[x] YouTube error: ' + e.message);
+  }
+}
+
+// -- PHOTO EDITOR --
+let photoImage = null;
+
+
+
+window.handleExport = function() { 
+  if (!currentUser) { showLogin(); return; }
+  downloadEnhanced(); 
 }
 
 window.handleSaveToStudio = async function() {
@@ -436,20 +1494,14 @@ window.handleSaveToStudio = async function() {
       type: 'edited',
       createdAt: serverTimestamp()
     });
-    addLog('success', '[ok] Saved to Studio!');
+    addEnhanceLog('success', '[ok] Saved to Studio!');
     setTimeout(() => window.location.href = 'studio.html', 1200);
   } catch(e) {
-    addLog('error', '[x] Save failed: ' + e.message);
+    addEnhanceLog('error', '[x] Save failed: ' + e.message);
   }
 }
 
-window.resetEditor = function() {
-  currentVideoFile = null;
-  document.getElementById('preview-video').src = '';
-  document.getElementById('upload-card').style.display = 'block';
-  document.getElementById('editor-card').style.display = 'none';
-  document.getElementById('status-log').innerHTML = '<span class="log-line info">// Video loaded. Apply enhancements and export.</span>';
-}
+window.resetEditor = function() { resetEnhancer(); }
 
 window.addCombineFiles = function(event) {
   const files = Array.from(event.target.files);
