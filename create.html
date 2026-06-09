@@ -3460,7 +3460,10 @@ window.setAspectRatio = function(ratio, btn) {
 
 window.toggleVideoCrop = function() {
   const canvas = document.getElementById('video-canvas');
-  if (!canvas.width) { addLog('error','[x] Record a video first'); return; }
+  if (!canvas.width) {
+    // Set a default size so crop works before recording
+    canvas.width = 1920; canvas.height = 1080;
+  }
   videoCropActive = !videoCropActive;
   const overlay = document.getElementById('crop-overlay');
   const controls = document.getElementById('crop-controls');
