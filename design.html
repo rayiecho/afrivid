@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid Studio — Design Studio</title>
+<meta name="description" content="Create logos, posters, certificates, flyers and social media graphics online for free. Describe what you want and AfriVid generates it.">
+<meta name="keywords" content="design tool online free, logo maker Africa, poster maker, certificate maker, AfriVid design">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
+.back-btn:hover{color:#F5A623;}
+.topbar-divider{width:1px;height:20px;background:rgba(255,255,255,0.1);}
+.topbar-title{font-size:1rem;font-weight:800;color:#fff;}
+.topbar-title span{color:#F5A623;}
+.user-badge{font-size:0.72rem;color:#74C69D;font-family:'Space Mono',monospace;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;}
+.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
+.main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 2rem 6rem;}
+.page-header{margin-bottom:2rem;}
+.page-label{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
+.page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#fff;margin-bottom:0.4rem;}
+.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.4);}
+.design-layout{display:grid;grid-template-columns:260px 1fr;gap:1.25rem;align-items:start;}
+.sidebar-panel{display:flex;flex-direction:column;gap:1rem;}
+.canvas-panel{display:flex;flex-direction:column;gap:1rem;}
+.card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;}
+.control-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.ai-input{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.75rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;margin-bottom:0.75rem;box-sizing:border-box;resize:vertical;min-height:80px;}
+.ai-input:focus{border-color:rgba(245,166,35,0.4);}
+.btn{padding:0.75rem 1.25rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+.btn-gold{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.3);}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+.btn-green{background:#2D8A5E;color:#fff;}
+.btn-green:hover{background:#40916C;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-full{width:100%;justify-content:center;}
+.btn-row{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.template-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);padding:0.6rem 0.5rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;text-align:center;}
+.template-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+.size-select{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;margin-bottom:0.5rem;}
+.type-select{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;margin-bottom:0.75rem;}
+.canvas-wrap{background:#1a1a1a;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:1rem;border:1px solid rgba(255,255,255,0.06);min-height:400px;}
+#design-canvas{max-width:100%;max-height:600px;display:block;border-radius:4px;}
+.element-controls{background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:12px;padding:1rem;display:none;}
+.bg-colors{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;}
+.bg-swatch{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.bg-swatch:hover{transform:scale(1.1);border-color:rgba(255,255,255,0.3);}
+.design-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.75rem 1rem;font-family:'Space Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.4);max-height:80px;overflow-y:auto;line-height:1.9;}
+.log-line{display:block;}
+.log-line.success{color:#74C69D;}
+.log-line.error{color:#E63329;}
+.log-line.info{color:#F5A623;}
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
+.modal-overlay.active{display:flex;}
+.login-box{position:relative;width:100%;max-width:420px;}
+.login-header{text-align:center;margin-bottom:2rem;}
+.login-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:#fff;}
+.login-title span{color:#F5A623;}
+.login-card{background:rgba(17,17,17,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;}
+.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.auth-tab.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.flabel{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
+.finput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:border-color 0.2s;}
+.finput:focus{border-color:rgba(245,166,35,0.5);}
+.btn-auth{width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.ferror{display:none;margin-top:0.85rem;padding:0.7rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.5rem;cursor:pointer;}
+@media(max-width:900px){
+  .design-layout{grid-template-columns:1fr;}
+  .topbar{padding:0.85rem 1rem;}
+  .main{padding:1.5rem 1rem 6rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Dashboard
+    </a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">Design <span>Studio</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="user-badge" id="user-badge" style="display:none;"></div>
+    <button class="btn-signin" id="btn-signin" onclick="showLogin()" style="display:none;">Sign In</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-header">
+    <div class="page-label">DESIGN STUDIO</div>
+    <h1 class="page-title">Create a Design</h1>
+    <p class="page-sub">Logos, posters, certificates, flyers — describe it or build it manually.</p>
+  </div>
+
+  <div class="design-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar-panel">
+
+      <!-- AI GENERATE -->
+      <div class="card">
+        <div class="control-label">AI GENERATE</div>
+        <select class="type-select" id="design-type">
+          <option value="logo">Logo</option>
+          <option value="poster">Poster</option>
+          <option value="banner">Banner</option>
+          <option value="icon">App Icon</option>
+          <option value="illustration">Illustration</option>
+        </select>
+        <textarea class="ai-input" id="ai-prompt" placeholder="Describe your design... e.g. modern African tech company logo in gold and black"></textarea>
+        <button class="btn btn-gold btn-full" id="generate-btn" onclick="generateAIDesign()">✦ Generate Design</button>
+        <div style="margin-top:0.5rem;font-size:0.68rem;color:rgba(255,255,255,0.25);font-family:'Space Mono',monospace;text-align:center;" id="design-status"></div>
+      </div>
+
+      <!-- TEMPLATES -->
+      <div class="card">
+        <div class="control-label">TEMPLATES</div>
+        <div class="template-grid">
+          <button class="template-btn" onclick="loadTemplate('logo')">🔵 Logo</button>
+          <button class="template-btn" onclick="loadTemplate('poster')">📋 Poster</button>
+          <button class="template-btn" onclick="loadTemplate('certificate')">🏆 Certificate</button>
+          <button class="template-btn" onclick="loadTemplate('flyer')">📢 Flyer</button>
+          <button class="template-btn" onclick="loadTemplate('social')">📱 Social</button>
+          <button class="template-btn" onclick="loadTemplate('banner')">🖼 Banner</button>
+        </div>
+      </div>
+
+      <!-- CANVAS SETTINGS -->
+      <div class="card">
+        <div class="control-label">CANVAS</div>
+        <select class="size-select" id="canvas-size" onchange="resizeDesignCanvas()">
+          <option value="800x800">Square 800×800</option>
+          <option value="1080x1920">Story 1080×1920</option>
+          <option value="1920x1080">Banner 1920×1080</option>
+          <option value="1240x1754">A4 1240×1754</option>
+          <option value="1080x1080">Instagram 1080×1080</option>
+        </select>
+        <div class="control-label" style="margin-top:0.75rem;">BACKGROUND</div>
+        <div class="bg-colors">
+          <div class="bg-swatch" style="background:#050A14;" onclick="setDesignBg('#050A14')"></div>
+          <div class="bg-swatch" style="background:#111111;" onclick="setDesignBg('#111111')"></div>
+          <div class="bg-swatch" style="background:#ffffff;" onclick="setDesignBg('#ffffff')"></div>
+          <div class="bg-swatch" style="background:#F5A623;" onclick="setDesignBg('#F5A623')"></div>
+          <div class="bg-swatch" style="background:#74C69D;" onclick="setDesignBg('#74C69D')"></div>
+          <div class="bg-swatch" style="background:#E63329;" onclick="setDesignBg('#E63329')"></div>
+          <div class="bg-swatch" style="background:linear-gradient(135deg,#050A14,#0D1F35);" onclick="setDesignBg('linear-gradient(135deg,#050A14,#0D1F35)')"></div>
+          <div class="bg-swatch" style="background:linear-gradient(135deg,#F5A623,#74C69D);" onclick="setDesignBg('linear-gradient(135deg,#F5A623,#74C69D)')"></div>
+        </div>
+      </div>
+
+      <!-- ADD ELEMENTS -->
+      <div class="card">
+        <div class="control-label">ADD ELEMENTS</div>
+        <div class="btn-row" style="margin-bottom:0.5rem;">
+          <button class="btn btn-outline" style="flex:1;padding:0.6rem;" onclick="addText()">T Text</button>
+          <button class="btn btn-outline" style="flex:1;padding:0.6rem;" onclick="addShape('rect')">▭ Rect</button>
+          <button class="btn btn-outline" style="flex:1;padding:0.6rem;" onclick="addShape('circle')">● Circle</button>
+        </div>
+        <label style="display:block;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(245,166,35,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+          🖼 Add Image
+          <input type="file" accept="image/*" style="display:none;" onchange="addImageElement(event)">
+        </label>
+      </div>
+
+      <!-- ELEMENT CONTROLS -->
+      <div class="card element-controls" id="element-controls">
+        <div class="control-label">SELECTED ELEMENT</div>
+        <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;">
+          <label style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Color</label>
+          <input type="color" id="el-color" value="#ffffff" onchange="updateElement('color',this.value)" style="width:36px;height:28px;border:none;border-radius:4px;cursor:pointer;background:none;">
+          <label style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-left:0.5rem;">Size</label>
+          <input type="number" id="el-size" value="32" min="8" max="200" style="width:60px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.82rem;" onchange="updateElement('size',this.value)">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="undoDesign()">↩ Undo</button>
+          <button class="btn" style="flex:1;padding:0.55rem;font-size:0.78rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;" onclick="deleteElement()">🗑 Delete</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CANVAS AREA -->
+    <div class="canvas-panel">
+      <div class="card" style="padding:1rem;">
+        <div class="canvas-wrap">
+          <canvas id="design-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="card">
+        <div class="control-label">EXPORT</div>
+        <div class="btn-row">
+          <button class="btn btn-gold" onclick="downloadDesign('png')">⬇ PNG</button>
+          <button class="btn btn-outline" onclick="downloadDesign('jpeg')">⬇ JPEG</button>
+          <button class="btn btn-outline" onclick="downloadDesignSVG()">⬇ SVG</button>
+          <button class="btn btn-outline" onclick="downloadDesign('png',2)">⬇ 2× HD</button>
+          <button class="btn btn-green" onclick="handleSaveToStudio()">💾 Studio</button>
+          <button class="btn btn-outline" onclick="clearCanvas()">✕ Clear</button>
+        </div>
+      </div>
+
+      <div class="design-log" id="design-log"><span class="log-line info">// Choose a template or describe your design to get started.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="login-box">
+    <button class="modal-close" onclick="hideLogin()">✕</button>
+    <div class="login-header">
+      <div class="login-icon">A</div>
+      <div class="login-title">AfriVid <span>Studio</span></div>
+    </div>
+    <div class="login-card">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
+        <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
+      </div>
+      <div id="form-signin" style="display:none;">
+        <label class="flabel">EMAIL</label>
+        <input type="email" id="login-email" class="finput" placeholder="you@example.com">
+        <label class="flabel">PASSWORD</label>
+        <input type="password" id="login-password" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
+        <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
+      </div>
+      <div id="form-signup">
+        <label class="flabel">FULL NAME</label>
+        <input type="text" id="signup-name" class="finput" placeholder="Your full name">
+        <label class="flabel">EMAIL</label>
+        <input type="email" id="signup-email" class="finput" placeholder="you@example.com">
+        <label class="flabel">PASSWORD</label>
+        <input type="password" id="signup-password" class="finput" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
+        <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
+      </div>
+      <div class="ferror" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, setDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+let elements = [];
+let history = [];
+let selectedEl = null;
+let isDragging = false;
+let dragOffset = {x:0,y:0};
+let designBg = '#050A14';
+let W = 800, H = 800;
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    const badge = document.getElementById('user-badge');
+    badge.style.display = 'block';
+    badge.textContent = user.displayName || user.email.split('@')[0];
+  } else {
+    document.getElementById('btn-signin').style.display = 'block';
+    document.getElementById('user-badge').style.display = 'none';
+  }
+});
+
+// INIT CANVAS
+function initCanvas() {
+  const canvas = document.getElementById('design-canvas');
+  canvas.width = W; canvas.height = H;
+  renderCanvas();
+  canvas.addEventListener('mousedown', onMouseDown);
+  canvas.addEventListener('mousemove', onMouseMove);
+  canvas.addEventListener('mouseup', () => { isDragging = false; });
+  canvas.addEventListener('dblclick', onDblClick);
+  canvas.addEventListener('touchstart', onTouchStart, {passive:true});
+  canvas.addEventListener('touchmove', onTouchMove, {passive:false});
+  canvas.addEventListener('touchend', () => { isDragging = false; });
+}
+
+function renderCanvas() {
+  const canvas = document.getElementById('design-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  // Background
+  if (designBg.includes('gradient')) {
+    const colors = designBg.match(/#[a-fA-F0-9]{6}/g) || ['#050A14','#0D1F35'];
+    const grad = ctx.createLinearGradient(0,0,W,H);
+    colors.forEach((c,i) => grad.addColorStop(i/(colors.length-1),c));
+    ctx.fillStyle = grad;
+  } else {
+    ctx.fillStyle = designBg;
+  }
+  ctx.fillRect(0,0,W,H);
+  // Elements
+  elements.forEach((el,idx) => {
+    ctx.save();
+    if (el.type==='text') {
+      ctx.fillStyle = el.color||'#fff';
+      ctx.font = `${el.weight||700} ${el.size||32}px ${el.font||'Syne'}, sans-serif`;
+      ctx.textAlign = el.align||'left';
+      ctx.fillText(el.text, el.x, el.y);
+    } else if (el.type==='rect') {
+      ctx.fillStyle = el.color||'#F5A623';
+      ctx.fillRect(el.x, el.y, el.w||200, el.h||100);
+    } else if (el.type==='circle') {
+      ctx.fillStyle = el.color||'#F5A623';
+      ctx.beginPath();
+      ctx.arc(el.x, el.y, el.r||50, 0, Math.PI*2);
+      ctx.fill();
+    } else if (el.type==='line') {
+      ctx.strokeStyle = el.color||'#F5A623';
+      ctx.lineWidth = el.size||3;
+      ctx.beginPath();
+      ctx.moveTo(el.x, el.y);
+      ctx.lineTo(el.x2||el.x+200, el.y2||el.y);
+      ctx.stroke();
+    } else if (el.type==='image' && el.img) {
+      ctx.drawImage(el.img, el.x, el.y, el.w||200, el.h||200);
+    }
+    if (selectedEl===idx) {
+      ctx.strokeStyle='#F5A623'; ctx.lineWidth=2; ctx.setLineDash([5,3]);
+      const b = getBounds(el);
+      ctx.strokeRect(b.x-5,b.y-5,b.w+10,b.h+10);
+      ctx.setLineDash([]);
+    }
+    ctx.restore();
+  });
+}
+
+function getBounds(el) {
+  if (el.type==='text') return {x:el.x,y:el.y-(el.size||32),w:200,h:el.size||32};
+  if (el.type==='rect') return {x:el.x,y:el.y,w:el.w||200,h:el.h||100};
+  if (el.type==='circle') return {x:el.x-(el.r||50),y:el.y-(el.r||50),w:(el.r||50)*2,h:(el.r||50)*2};
+  if (el.type==='image') return {x:el.x,y:el.y,w:el.w||200,h:el.h||200};
+  return {x:el.x,y:el.y,w:100,h:30};
+}
+
+function getCanvasPos(e) {
+  const canvas = document.getElementById('design-canvas');
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (e.clientX-rect.left) * (canvas.width/rect.width),
+    y: (e.clientY-rect.top) * (canvas.height/rect.height)
+  };
+}
+
+function onMouseDown(e) {
+  const {x,y} = getCanvasPos(e);
+  let found = false;
+  for (let i=elements.length-1;i>=0;i--) {
+    const b = getBounds(elements[i]);
+    if (x>=b.x-8&&x<=b.x+b.w+8&&y>=b.y-8&&y<=b.y+b.h+8) {
+      selectedEl=i; isDragging=true;
+      dragOffset={x:x-elements[i].x,y:y-elements[i].y};
+      found=true; break;
+    }
+  }
+  if (!found) selectedEl=null;
+  updateElementControls();
+  renderCanvas();
+}
+
+function onMouseMove(e) {
+  if (!isDragging||selectedEl===null) return;
+  const {x,y} = getCanvasPos(e);
+  elements[selectedEl].x = x-dragOffset.x;
+  elements[selectedEl].y = y-dragOffset.y;
+  renderCanvas();
+}
+
+function onTouchStart(e) {
+  if (e.touches.length!==1) return;
+  onMouseDown({clientX:e.touches[0].clientX,clientY:e.touches[0].clientY});
+}
+
+function onTouchMove(e) {
+  if (e.touches.length!==1) return;
+  e.preventDefault();
+  onMouseMove({clientX:e.touches[0].clientX,clientY:e.touches[0].clientY});
+}
+
+function onDblClick(e) {
+  if (selectedEl!==null&&elements[selectedEl].type==='text') {
+    const t = prompt('Edit text:', elements[selectedEl].text);
+    if (t!==null) { elements[selectedEl].text=t; saveHistory(); renderCanvas(); }
+  }
+}
+
+function updateElementControls() {
+  const ctrl = document.getElementById('element-controls');
+  if (selectedEl!==null) {
+    ctrl.style.display='block';
+    document.getElementById('el-color').value = elements[selectedEl].color||'#ffffff';
+    document.getElementById('el-size').value = elements[selectedEl].size||elements[selectedEl].r||32;
+  } else {
+    ctrl.style.display='none';
+  }
+}
+
+function saveHistory() {
+  history.push(JSON.stringify(elements.map(e=>({...e,img:e.img?'img':null}))));
+  if (history.length>20) history.shift();
+}
+
+window.addText = function() {
+  elements.push({type:'text',text:'Your Text Here',x:W/2-80,y:H/2,color:'#ffffff',size:48,font:'Syne',weight:700,align:'left'});
+  selectedEl=elements.length-1;
+  saveHistory(); renderCanvas(); updateElementControls();
+}
+
+window.addShape = function(type) {
+  if (type==='rect') elements.push({type:'rect',x:W/2-100,y:H/2-50,w:200,h:100,color:'#F5A623'});
+  if (type==='circle') elements.push({type:'circle',x:W/2,y:H/2,r:60,color:'#F5A623'});
+  selectedEl=elements.length-1;
+  saveHistory(); renderCanvas(); updateElementControls();
+}
+
+window.addImageElement = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      elements.push({type:'image',img,x:W/2-100,y:H/2-100,w:200,h:200});
+      selectedEl=elements.length-1;
+      saveHistory(); renderCanvas();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+window.updateElement = function(prop, val) {
+  if (selectedEl===null) return;
+  if (prop==='color') elements[selectedEl].color=val;
+  if (prop==='size') { elements[selectedEl].size=parseInt(val); elements[selectedEl].r=parseInt(val); }
+  renderCanvas();
+}
+
+window.deleteElement = function() {
+  if (selectedEl===null) return;
+  elements.splice(selectedEl,1);
+  selectedEl=null;
+  updateElementControls(); saveHistory(); renderCanvas();
+}
+
+window.undoDesign = function() {
+  if (history.length<2) return;
+  history.pop();
+  elements = JSON.parse(history[history.length-1]).filter(e=>e.img!=='img');
+  renderCanvas();
+}
+
+window.clearCanvas = function() {
+  if (!confirm('Clear all elements?')) return;
+  elements=[]; selectedEl=null;
+  updateElementControls(); saveHistory(); renderCanvas();
+}
+
+window.setDesignBg = function(color) {
+  designBg=color; renderCanvas();
+}
+
+window.resizeDesignCanvas = function() {
+  const size = document.getElementById('canvas-size').value.split('x');
+  W=parseInt(size[0]); H=parseInt(size[1]);
+  const canvas = document.getElementById('design-canvas');
+  canvas.width=W; canvas.height=H;
+  renderCanvas();
+}
+
+window.loadTemplate = function(type) {
+  const templates = {
+    logo: {bg:'linear-gradient(135deg,#050A14,#0D1F35)',size:'800x800',els:[
+      {type:'circle',x:400,y:280,r:160,color:'rgba(245,166,35,0.12)'},
+      {type:'circle',x:400,y:280,r:110,color:'#F5A623'},
+      {type:'text',text:'A',x:356,y:330,color:'#050A14',size:130,font:'Syne',weight:900},
+      {type:'text',text:'AfriVid',x:400,y:440,color:'#ffffff',size:68,font:'Syne',weight:800,align:'center'},
+      {type:'text',text:'STUDIO',x:400,y:490,color:'#F5A623',size:28,font:'Syne',weight:700,align:'center'},
+    ]},
+    poster: {bg:'linear-gradient(135deg,#050A14,#0D2B1A)',size:'1080x1920',els:[
+      {type:'rect',x:0,y:0,w:1080,h:8,color:'#F5A623'},
+      {type:'text',text:'EVENT TITLE',x:80,y:300,color:'#F5A623',size:80,font:'Syne',weight:800},
+      {type:'text',text:'Subtitle goes here',x:80,y:390,color:'#fff',size:38,font:'Syne',weight:400},
+      {type:'text',text:'Date · Location',x:80,y:480,color:'#74C69D',size:32,font:'Syne',weight:600},
+    ]},
+    certificate: {bg:'#ffffff',size:'1240x1754',els:[
+      {type:'rect',x:0,y:0,w:1240,h:12,color:'#F5A623'},
+      {type:'rect',x:0,y:1742,w:1240,h:12,color:'#F5A623'},
+      {type:'text',text:'CERTIFICATE OF PARTICIPATION',x:620,y:250,color:'#050A14',size:52,font:'Syne',weight:800,align:'center'},
+      {type:'text',text:'This is to certify that',x:620,y:430,color:'#6B7A99',size:30,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'RECIPIENT NAME',x:620,y:580,color:'#F5A623',size:70,font:'Syne',weight:800,align:'center'},
+      {type:'rect',x:320,y:620,w:600,h:4,color:'#F5A623'},
+      {type:'text',text:'AfriVid Studio',x:620,y:1500,color:'#050A14',size:32,font:'Syne',weight:700,align:'center'},
+    ]},
+    flyer: {bg:'linear-gradient(135deg,#050A14,#F5A623)',size:'1080x1920',els:[
+      {type:'text',text:'JOIN US',x:540,y:600,color:'#ffffff',size:100,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'for something amazing',x:540,y:700,color:'rgba(255,255,255,0.8)',size:42,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Date · Time · Location',x:540,y:850,color:'rgba(255,255,255,0.9)',size:36,font:'Syne',weight:600,align:'center'},
+    ]},
+    social: {bg:'#050A14',size:'1080x1080',els:[
+      {type:'rect',x:0,y:0,w:1080,h:6,color:'#F5A623'},
+      {type:'text',text:'YOUR HEADLINE',x:80,y:480,color:'#ffffff',size:80,font:'Syne',weight:800},
+      {type:'text',text:'Supporting text here',x:80,y:580,color:'#74C69D',size:40,font:'Syne',weight:400},
+      {type:'text',text:'@AfriVidStudio',x:80,y:980,color:'#F5A623',size:32,font:'Space Mono',weight:400},
+    ]},
+    banner: {bg:'linear-gradient(135deg,#050A14,#0D1F35)',size:'1920x1080',els:[
+      {type:'circle',x:200,y:540,r:150,color:'rgba(245,166,35,0.15)'},
+      {type:'text',text:'AfriVid Studio',x:400,y:480,color:'#ffffff',size:90,font:'Syne',weight:800},
+      {type:'text',text:"Africa's First Smart Video Suite",x:400,y:570,color:'#F5A623',size:38,font:'Syne',weight:400},
+    ]}
+  };
+  const t = templates[type];
+  if (!t) return;
+  designBg=t.bg;
+  const sz=t.size.split('x');
+  W=parseInt(sz[0]); H=parseInt(sz[1]);
+  document.getElementById('canvas-size').value=t.size;
+  const canvas=document.getElementById('design-canvas');
+  canvas.width=W; canvas.height=H;
+  elements=t.els.map(e=>({...e}));
+  selectedEl=null;
+  saveHistory(); renderCanvas();
+  addLog('success',`[ok] ${type} template loaded`);
+}
+
+window.generateAIDesign = async function() {
+  const prompt = document.getElementById('ai-prompt').value.trim();
+  const type = document.getElementById('design-type').value;
+  if (!prompt) { alert('Describe your design first'); return; }
+  const btn = document.getElementById('generate-btn');
+  const status = document.getElementById('design-status');
+  btn.textContent='[..] Generating...'; btn.disabled=true;
+  status.textContent='Creating your '+type+'...';
+  try {
+    // Try image generation first
+    const ctrl = new AbortController();
+    const timeout = setTimeout(()=>ctrl.abort(),60000);
+    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      signal:ctrl.signal,
+      body:JSON.stringify({prompt:`Professional ${type} design, ${prompt}. High quality, clean, modern.`})
+    });
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error('Image generation failed');
+    const blob = await res.blob();
+    const imgUrl = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const canvas=document.getElementById('design-canvas');
+      canvas.width=W; canvas.height=H;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,W,H);
+      elements=[{type:'image',img,x:0,y:0,w:W,h:H}];
+      designBg='#ffffff';
+      saveHistory();
+      status.textContent='[ok] Design generated!';
+      status.style.color='#74C69D';
+      addLog('success','[ok] Design generated!');
+    };
+    img.src=imgUrl;
+  } catch(e) {
+    // Fallback to text-based design
+    try {
+      const res2 = await fetch('https://yan-ai-worker.youngafricansn.workers.dev',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:'claude-haiku-4-5-20251001',max_tokens:1000,
+          messages:[{role:'user',content:`Design a ${type} for: "${prompt}". Canvas ${W}x${H}px.
+Return ONLY JSON: {"background":"#hex","elements":[{"type":"text","text":"...","x":400,"y":300,"color":"#F5A623","size":72,"font":"Syne","weight":800,"align":"center"}]}
+Use: text,rect,circle. Brand colors: #F5A623 gold, #050A14 dark, #74C69D green. Max 8 elements. Return ONLY JSON.`}]
+        })
+      });
+      const data=await res2.json();
+      const match=data.content[0].text.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('No JSON');
+      const design=JSON.parse(match[0]);
+      designBg=design.background||'#050A14';
+      elements=(design.elements||[]).map(e=>({...e}));
+      saveHistory(); renderCanvas();
+      status.textContent='[ok] Design created!';
+      status.style.color='#74C69D';
+      addLog('success','[ok] Design generated!');
+    } catch(e2) {
+      status.textContent='[x] Failed. Try again.';
+      status.style.color='#E63329';
+      addLog('error','[x] '+e2.message);
+    }
+  }
+  btn.textContent='✦ Generate Design'; btn.disabled=false;
+}
+
+window.downloadDesign = function(format, scale=1) {
+  const canvas=document.getElementById('design-canvas');
+  selectedEl=null; renderCanvas();
+  if (scale>1) {
+    const hi=document.createElement('canvas');
+    hi.width=canvas.width*scale; hi.height=canvas.height*scale;
+    const ctx=hi.getContext('2d');
+    ctx.scale(scale,scale); ctx.drawImage(canvas,0,0);
+    const url=hi.toDataURL(`image/${format}`,format==='jpeg'?0.95:1);
+    const a=document.createElement('a');
+    a.href=url; a.download=`AfriVid-Design-${hi.width}x${hi.height}.${format}`; a.click();
+    return;
+  }
+  const url=canvas.toDataURL(`image/${format}`,format==='jpeg'?0.92:1);
+  const a=document.createElement('a');
+  a.href=url; a.download=`AfriVid-Design-${Date.now()}.${format}`; a.click();
+  addLog('success',`[ok] Downloaded as ${format.toUpperCase()}`);
+}
+
+window.downloadDesignSVG = function() {
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  if (designBg.includes('gradient')) {
+    const colors=designBg.match(/#[a-fA-F0-9]{6}/g)||['#050A14','#0D1F35'];
+    svg+=`<defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">`;
+    colors.forEach((c,i)=>{svg+=`<stop offset="${i/(colors.length-1)*100}%" style="stop-color:${c}"/>`;});
+    svg+=`</linearGradient></defs><rect width="${W}" height="${H}" fill="url(#bg)"/>`;
+  } else {
+    svg+=`<rect width="${W}" height="${H}" fill="${designBg}"/>`;
+  }
+  elements.forEach(el=>{
+    if (el.type==='text') svg+=`<text x="${el.x}" y="${el.y}" font-family="${el.font||'Syne'}" font-size="${el.size||32}" font-weight="${el.weight||700}" fill="${el.color||'#fff'}" text-anchor="${el.align==='center'?'middle':'start'}">${el.text}</text>`;
+    else if (el.type==='rect') svg+=`<rect x="${el.x}" y="${el.y}" width="${el.w||200}" height="${el.h||100}" fill="${el.color||'#F5A623'}"/>`;
+    else if (el.type==='circle') svg+=`<circle cx="${el.x}" cy="${el.y}" r="${el.r||50}" fill="${el.color||'#F5A623'}"/>`;
+  });
+  svg+='</svg>';
+  const blob=new Blob([svg],{type:'image/svg+xml'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`AfriVid-Design-${Date.now()}.svg`;
+  a.click();
+  addLog('success','[ok] Downloaded as SVG');
+}
+
+window.handleSaveToStudio = async function() {
+  if (!currentUser) { showLogin(); return; }
+  try {
+    await addDoc(collection(db,'studio_designs'),{
+      userId:currentUser.uid,
+      userEmail:currentUser.email,
+      title:'Design',
+      createdAt:serverTimestamp()
+    });
+    addLog('success','[ok] Saved to Studio!');
+    setTimeout(()=>window.location.href='studio.html',1200);
+  } catch(e) {
+    addLog('error','[x] Save failed: '+e.message);
+  }
+}
+
+function addLog(type, msg) {
+  const log=document.getElementById('design-log');
+  const line=document.createElement('span');
+  line.className=`log-line ${type}`;
+  line.textContent=msg;
+  log.appendChild(line);
+  log.scrollTop=log.scrollHeight;
+}
+
+window.showLogin=function(){document.getElementById('login-modal').classList.add('active');}
+window.hideLogin=function(){document.getElementById('login-modal').classList.remove('active');}
+window.showAuthTab=function(tab){
+  document.getElementById('form-signin').style.display=tab==='signin'?'block':'none';
+  document.getElementById('form-signup').style.display=tab==='signup'?'block':'none';
+  document.getElementById('tab-signin').classList.toggle('active',tab==='signin');
+  document.getElementById('tab-signup').classList.toggle('active',tab==='signup');
+}
+window.doSignIn=async function(){
+  const email=document.getElementById('login-email').value;
+  const password=document.getElementById('login-password').value;
+  const err=document.getElementById('login-error');
+  try{await signInWithEmailAndPassword(auth,email,password);hideLogin();}
+  catch(e){err.style.display='block';err.textContent='[!] '+e.message.replace('Firebase: ','');}
+}
+window.doSignUp=async function(){
+  const name=document.getElementById('signup-name').value.trim();
+  const email=document.getElementById('signup-email').value.trim();
+  const password=document.getElementById('signup-password').value;
+  const err=document.getElementById('login-error');
+  if(!name||!email||!password){err.style.display='block';err.textContent='[!] Fill all fields';return;}
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,password);
+    await updateProfile(cred.user,{displayName:name});
+    await sendEmailVerification(cred.user);
+    await setDoc(doc(db,'studio_users',cred.user.uid),{name,email,videosGenerated:0,joinedAt:serverTimestamp(),plan:'beta'});
+    hideLogin();
+  }catch(e){err.style.display='block';err.textContent='[!] '+e.message.replace('Firebase: ','');}
+}
+document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)hideLogin();});
+
+// Initialize
+initCanvas();
+</script>
+</body>
+</html>
