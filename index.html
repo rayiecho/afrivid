@@ -74,9 +74,22 @@
   function updateUserUI() {
     if (!currentUser) return;
     const name = currentUser.displayName || currentUser.email.split('@')[0];
-    document.getElementById('user-name-display').textContent = name;
-    const remaining = BETA_LIMIT - (userProfile?.videosGenerated || 0);
-    document.getElementById('user-videos-remaining').textContent = `${remaining} videos left`;
+    const nameEl = document.getElementById('user-name-display');
+    if (nameEl) nameEl.textContent = name;
+    const used = userProfile?.videosGenerated || 0;
+    const limit = userProfile?.betaLimit || BETA_LIMIT;
+    const remaining = Math.max(0, limit - used);
+    const el = document.getElementById('user-videos-remaining');
+    if (el) {
+      el.textContent = `${remaining} of ${limit} videos left`;
+      el.style.color = remaining <= 2 ? '#E63329' : remaining <= 5 ? '#F5A623' : '#74C69D';
+    }
+    // Also update mobile display
+    const mel = document.getElementById('mobile-videos-remaining');
+    if (mel) {
+      mel.textContent = `${remaining} of ${limit} videos left`;
+      mel.style.color = remaining <= 2 ? '#E63329' : remaining <= 5 ? '#F5A623' : '#74C69D';
+    }
   }
 
   async function trackVideoGeneration(title, duration) {
@@ -94,6 +107,7 @@
       createdAt: serverTimestamp()
     });
     userProfile.videosGenerated = (userProfile.videosGenerated || 0) + 1;
+    updateUserUI(); // Update display immediately
     updateUserUI();
   }
 
