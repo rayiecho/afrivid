@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AfriVid Studio — Video Editor</title>
+<title>AfriVid Studio  -  Video Editor</title>
 <meta name="description" content="Edit any video online for free. Trim, enhance quality, remove noise, add captions and export as MP4. No software needed.">
 <meta name="keywords" content="video editor online free, trim video, add captions, enhance video quality, AfriVid edit">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -121,7 +121,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div class="page-header">
     <div class="page-label">VIDEO EDITOR</div>
     <h1 class="page-title">Edit Your Video</h1>
-    <p class="page-sub">Upload a video — trim, enhance, add captions and export in high quality.</p>
+    <p class="page-sub">Upload a video  -  trim, enhance, add captions and export in high quality.</p>
   </div>
 
   <!-- MODE TOGGLE -->
@@ -257,8 +257,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
           <div class="control-group">
             <div class="control-label">EXPORT FORMAT</div>
             <select style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;">
-              <option>MP4 — High Quality</option>
-              <option>MP4 — Compressed</option>
+              <option>MP4  -  High Quality</option>
+              <option>MP4  -  Compressed</option>
               <option>WebM</option>
             </select>
           </div>
@@ -516,7 +516,7 @@ function updatePreview() {
   ctx.filter = 'none';
   
   // Watermark
-  const wm = {value:'none'}.value;
+  const wm = 'none';
   if (wm !== 'none') {
     ctx.fillStyle = 'rgba(245,166,35,0.8)';
     ctx.font = 'bold 14px Syne, sans-serif';
@@ -527,7 +527,7 @@ function updatePreview() {
   }
   
   // Subtitles
-  const subType = {value:'none'}.value;
+  const subType = 'none';
   document.getElementById('manual-subtitle-card').style.display = subType === 'manual' ? 'block' : 'none';
   
   if (subType === 'manual') {
@@ -595,7 +595,7 @@ startEnhancing = async function() {
   enhanceMediaRecorder.start(100);
   
   // Start background music
-  const musicType = document.getElementById('video-music') || {value:'none'}.value;
+  const musicType = document.getElementById('video-music')?.value || 'none';
   if (musicType !== 'none') {
     startBackgroundMusic(audioCtx, dest, musicType, video.duration || 60);
     addEnhanceLog('success', '[ok] Background music added');
@@ -649,7 +649,7 @@ startEnhancing = async function() {
     ctx.filter = 'none';
     
     // Watermark
-    const wm = {value:'none'}.value;
+    const wm = 'none';
     if (wm !== 'none') {
       ctx.fillStyle = 'rgba(245,166,35,0.85)';
       ctx.font = 'bold 18px Syne, sans-serif';
@@ -660,7 +660,7 @@ startEnhancing = async function() {
     }
     
     // Subtitles
-    const subType = {value:'none'}.value;
+    const subType = 'none';
     if (subType === 'manual') {
       const text = document.getElementById('manual-subtitle-text').value;
       if (text) {
@@ -775,13 +775,13 @@ function applyAudioPreset() {
     none:    { noise: 0,  voice: 0,  echo: 0,  wind: 0,  volume: 100 }
   };
   const p = presets[preset] || presets.none;
-  {value:0}.value = p.noise;
-  {value:0}.value = p.voice;
+  // noise slider removed
+  // voice slider removed
   document.getElementById('echo-removal').value = p.echo;
-  {value:0}.value = p.wind;
+  // wind slider removed
   document.getElementById('audio-volume').value = p.volume;
-  {textContent:''}.textContent = p.noise + '%';
-  {textContent:''}.textContent = p.voice + '%';
+  // noise val removed
+  // voice val removed
   document.getElementById('echo-val').textContent = p.echo + '%';
   document.getElementById('wind-val').textContent = p.wind + '%';
   document.getElementById('volume-val').textContent = p.volume + '%';
@@ -838,10 +838,10 @@ async function previewAudioFilters() {
 }
 
 function buildAudioChain(audioCtx, source, dest) {
-  const noiseLevel = parseInt({value:0}.value) / 100;
-  const voiceLevel = parseInt({value:0}.value) / 100;
+  const noiseLevel = 0;
+  const voiceLevel = 0;
   const echoLevel = parseInt(document.getElementById('echo-removal').value) / 100;
-  const windLevel = parseInt({value:0}.value) / 100;
+  const windLevel = 0;
   const volume = parseInt(document.getElementById('audio-volume').value) / 100;
 
   let node = source;
@@ -1670,7 +1670,7 @@ window.applyCrop = function() {
   canvas.width = cw; canvas.height = ch;
   ctx.putImageData(imageData, 0, 0);
   cancelCrop();
-  addLog('success', `[ok] Cropped to ${cw}x${ch}px — export to save`);
+  addLog('success', `[ok] Cropped to ${cw}x${ch}px  -  export to save`);
 }
 
 window.cancelCrop = function() {

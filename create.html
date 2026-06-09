@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AfriVid Studio — Video Creator</title>
+<title>AfriVid Studio  -  Video Creator</title>
 <meta name="description" content="Create professional videos in minutes. Type a topic, choose a style and AfriVid generates a complete video with voice, slides and music.">
 <meta name="keywords" content="video creator online, create video free, video maker Africa, AfriVid create">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -175,7 +175,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <div class="step-pill" id="step-4"><div class="step-dot">4</div>Export</div>
   </div>
 
-  <!-- PANEL 1 — SETUP -->
+  <!-- PANEL 1  -  SETUP -->
   <div class="panel active" id="panel-1">
     <div class="card">
       <div class="card-title">
@@ -186,7 +186,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <div class="form-group full">
           <label class="form-label">Video Topic</label>
           <input type="text" class="form-input" id="video-topic" placeholder="e.g. What is Leadership? or Climate Change in Africa">
-          <span class="form-hint">Be specific — better topic = better video</span>
+          <span class="form-hint">Be specific  -  better topic = better video</span>
         </div>
         <div class="form-group full">
           <label class="form-label">Additional Context (optional)</label>
@@ -265,7 +265,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     </div>
   </div>
 
-  <!-- PANEL 2 — SCRIPT -->
+  <!-- PANEL 2  -  SCRIPT -->
   <div class="panel" id="panel-2">
     <div class="card">
       <div class="card-title">
@@ -280,7 +280,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     </div>
   </div>
 
-  <!-- PANEL 3 — RECORD -->
+  <!-- PANEL 3  -  RECORD -->
   <div class="panel" id="panel-3">
     <div id="canvas-container">
       <canvas id="video-canvas"></canvas>
@@ -318,7 +318,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     </div>
   </div>
 
-  <!-- PANEL 4 — EXPORT -->
+  <!-- PANEL 4  -  EXPORT -->
   <div class="panel" id="panel-4">
     <div class="download-card">
       <div class="download-icon">✅</div>
@@ -442,7 +442,7 @@ window.updateDurationWarning = function() {
     warn.textContent = `[time] ${dur/60}-min video will take ~${dur/60} min to generate.`;
   } else {
     warn.style.cssText += 'background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;';
-    warn.textContent = `[!] Long video — consider splitting into shorter videos.`;
+    warn.textContent = `[!] Long video  -  consider splitting into shorter videos.`;
   }
 }
 
@@ -512,7 +512,7 @@ Create exactly ${sceneCount} scenes. Total scene durations must equal ${duration
   btn.disabled = false;
 }
 
-// START RECORDING — requires login
+// START RECORDING  -  requires login
 window.handleStartRecording = function() {
   if (!currentUser) {
     showLogin('Sign in to record your video');
@@ -667,7 +667,7 @@ async function downloadMP4() {
   if (!videoBlob) { alert('No video to convert.'); return; }
   
   // Show converting message
-  {textContent:''}.textContent = 'Converting to MP4... This may take a moment.';
+  // status update removed
   
   try {
     // Use FFmpeg.wasm for conversion
@@ -689,7 +689,7 @@ async function downloadMP4() {
     a.click();
     URL.revokeObjectURL(url);
     
-    {textContent:''}.textContent = 'MP4 downloaded successfully!';
+    // status update removed
     addLog('success', '[ok] MP4 conversion complete!');
   } catch(e) {
     // Fallback - just download as WebM renamed to mp4
@@ -699,7 +699,7 @@ async function downloadMP4() {
     a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.mp4`;
     a.click();
     URL.revokeObjectURL(url);
-    {textContent:''}.textContent = 'Downloaded! (WebM format - rename to .webm if MP4 doesn\'t play)';
+    // status update removed
     addLog('info', '[i] Direct download complete');
   }
 }
@@ -732,8 +732,8 @@ function clearPresenterPhoto() {
 
 function drawPresenterPhoto(ctx, W, H) {
   if (!presenterImage) return;
-  const position = {value:'br'} ? {value:'br'}.value : 'br';
-  const shape = {value:'circle'} ? {value:'circle'}.value : 'circle';
+  const position = 'br';
+  const shape = 'circle';
   const size = Math.round(W * 0.15);
   const margin = 20;
   let x, y;
@@ -1174,7 +1174,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   if (style === 'whiteboard') { drawWhiteboardScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'cinematic') { drawCinematicScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'photobg') {
-    const theme = {value:'africa'} ? {value:'africa'}.value : 'africa';
+    const theme = 'africa';
     const cachedImg = bgImageCache[theme] || null;
     drawPhotoBgScene(canvas, scene, progress, currentWord, cachedImg);
     applyTransition(canvas);
@@ -1449,7 +1449,7 @@ function shareWhatsApp() {
 
 function applyTransition(canvas) {
   const transition = {value:'fade'} ?
-    {value:'fade'}.value : 'fade';
+    'fade';
   if (transition === 'none' || !isTransitioning) return;
   const ctx = canvas.getContext('2d');
   const alpha = getTransitionAlpha();
@@ -1671,7 +1671,7 @@ async function startRecording() {
 
   document.getElementById('canvas-overlay').style.display = 'none';
   document.getElementById('btn-record').style.display = 'none';
-  {style:{display:'none'}}.style.display = 'inline-flex';
+  // style ref removed
   document.getElementById('progress-wrap').style.display = 'block';
 
   recordedChunks = [];
@@ -1680,7 +1680,7 @@ async function startRecording() {
   // Preload background image if needed
   const visualStyle = document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides';
   if (visualStyle === 'photobg') {
-    const theme = {value:'africa'}.value;
+    const theme = 'africa';
     addLog('info', '[img] Loading background image...');
     await loadBgImage(theme);
     addLog('success', '[ok] Background image loaded');
@@ -1821,7 +1821,7 @@ function stopRecording() {
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
   }
-  {style:{display:'none'}}.style.display = 'none';
+  // style ref removed
   addLog('success', '[ok] Recording complete! Processing video...');
 }
 
@@ -1831,7 +1831,7 @@ function finishVideo() {
 
   addLog('success', `[ok] Video ready! Size: ${sizeMB}MB`);
 
-  {textContent:''}.textContent = `"${scriptData.title}" - ${scriptData.duration}s . ${sizeMB}MB . WebM format`;
+  // status update removed
   document.getElementById('final-details').innerHTML = `
     Title: ${scriptData.title}<br>
     Duration: ${scriptData.duration} seconds<br>
