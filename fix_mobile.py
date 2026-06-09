@@ -1,12 +1,13 @@
 with open('index.html', 'r') as f:
     content = f.read()
 
-old_mobile = '''  @media (max-width:768px) {
+old_css = """  @media (max-width:768px) {
     .sidebar { width:60px; }
     .sidebar-logo-text { display:none; }
     .sidebar-item span:not(.item-icon) { display:none; }
     .app-content { margin-left:60px; }
   }
+
   /* RESPONSIVE */
   @media (max-width: 768px) {
     .header { padding: 1rem 1.25rem; }
@@ -16,175 +17,102 @@ old_mobile = '''  @media (max-width:768px) {
     .steps-bar { flex-direction: column; border-radius: 14px; }
     .step-item { border-right: none; border-bottom: 1px solid var(--border2); }
     .step-item:last-child { border-bottom: none; }
-  }'''
+  }"""
 
-new_mobile = '''  /* RESPONSIVE - DESKTOP */
-  @media (max-width:1024px) {
-    .sidebar { width:200px; }
-    .app-content { margin-left:200px; }
-  }
+new_css = """  /* MOBILE NAV */
+  .mobile-nav { display: none; }
+  .mobile-topbar { display: none; }
 
-  /* RESPONSIVE - TABLET & MOBILE */
-  @media (max-width:768px) {
-    /* Hide sidebar on mobile */
-    .sidebar { display:none; }
-    .app-content { margin-left:0; padding:1rem 0.75rem 80px; }
+  @media (max-width: 768px) {
+    .sidebar { display: none !important; }
+    .app-content { margin-left: 0 !important; padding: 0 0 80px 0 !important; }
+    .main { padding: 1rem 0.75rem !important; }
+    .mobile-topbar { display: block !important; }
+    .header { padding: 0.85rem 1rem; }
 
-    /* Bottom nav bar */
-    .mobile-nav { display:flex !important; }
+    .steps-bar {
+      flex-direction: row !important;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      border-radius: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      gap: 8px;
+      padding: 0 0 8px 0;
+      margin-bottom: 1rem;
+    }
+    .steps-bar::-webkit-scrollbar { display: none; }
+    .step-item {
+      border-right: none !important;
+      border-bottom: none !important;
+      border: 1px solid var(--border2) !important;
+      border-radius: 20px !important;
+      padding: 0.5rem 1rem !important;
+      flex-shrink: 0;
+      white-space: nowrap;
+      min-width: auto;
+    }
+    .step-item.active { border-color: rgba(245,166,35,0.4) !important; background: rgba(245,166,35,0.1) !important; }
+    .step-item.done { border-color: rgba(45,138,94,0.3) !important; }
+    .step-label { font-size: 0.75rem; }
 
-    /* Content adjustments */
-    .main { padding:1rem 0.75rem; }
-    .form-grid { grid-template-columns:1fr; }
-    .form-group.full { grid-column:span 1; }
-    .steps-bar { flex-direction:column; border-radius:14px; }
-    .step-item { border-right:none; border-bottom:1px solid var(--border2); }
-    .step-item:last-child { border-bottom:none; }
-    .card { padding:1.25rem; }
-    .card-title { font-size:0.95rem; }
-    .enhance-grid { grid-template-columns:1fr; }
-    .btn-row { flex-direction:column; }
-    .btn { width:100%; text-align:center; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: span 1; }
+    .enhance-grid { grid-template-columns: 1fr; }
+    .card { padding: 1rem; border-radius: 12px; }
+    .btn-row { flex-direction: column; }
+    .btn-row .btn { width: 100%; justify-content: center; }
 
-    /* Landing page mobile */
-    .land-btn-primary, .land-btn-secondary { width:100%; text-align:center; padding:0.9rem 1rem; }
-  }
+    .mobile-nav {
+      display: flex !important;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--navy2);
+      border-top: 1px solid var(--border2);
+      z-index: 200;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .mobile-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 10px 0 8px;
+      background: none;
+      border: none;
+      color: rgba(248,249,252,0.35);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .mobile-nav-item.active { color: var(--gold); }
+    .mobile-nav-item.active::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 24px; height: 2px;
+      background: var(--gold);
+      border-radius: 0 0 2px 2px;
+    }
+    .mobile-nav-item svg { width: 22px; height: 22px; }
+    #canvas-container { border-radius: 10px; }
+    .download-card { padding: 1.25rem; }
+    .upload-zone { padding: 2rem 1rem; }
+    .mode-toggle { margin-bottom: 1rem; }
+  }"""
 
-  /* MOBILE NAV BAR */
-  .mobile-nav {
-    display:none;
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    background:var(--navy2);
-    border-top:1px solid var(--border2);
-    padding:0.5rem 0;
-    z-index:200;
-    justify-content:space-around;
-    align-items:center;
-  }
-  .mobile-nav-item {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:3px;
-    padding:0.4rem 0.75rem;
-    border-radius:8px;
-    cursor:pointer;
-    background:none;
-    border:none;
-    color:var(--muted);
-    font-size:0.62rem;
-    font-weight:600;
-    font-family:var(--font-display);
-    transition:all 0.2s;
-    flex:1;
-  }
-  .mobile-nav-item .nav-icon { font-size:1.3rem; }
-  .mobile-nav-item.active { color:var(--gold); }
-  .mobile-nav-item.active .nav-icon { transform:scale(1.1); }'''
-
-content = content.replace(old_mobile, new_mobile, 1)
-
-# Add mobile nav HTML inside app div after sidebar
-old_app_content = '  <!-- MAIN CONTENT -->\n  <div class="app-content">'
-new_app_content = '''  <!-- MAIN CONTENT -->
-  <div class="app-content">
-
-  <!-- MOBILE TOP BAR -->
-  <div style="display:none;" class="mobile-topbar" id="mobile-topbar">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:var(--navy2);border-bottom:1px solid var(--border2);margin:-1rem -0.75rem 1rem;position:sticky;top:0;z-index:50;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.8rem;color:#050A14;">A</div>
-        <span style="font-size:0.95rem;font-weight:800;color:#fff;">AfriVid <span style="color:var(--gold);">Studio</span></span>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:0.75rem;font-weight:600;color:#fff;" id="mobile-user-name"></div>
-        <div style="font-size:0.65rem;color:var(--gold);font-family:var(--font-mono);" id="mobile-videos-remaining"></div>
-      </div>
-    </div>
-  </div>'''
-
-content = content.replace(old_app_content, new_app_content, 1)
-
-# Add mobile nav bar before closing app div
-old_close = '</div><!-- end app-content -->\n</div><!-- end app-layout -->'
-new_close = '''</div><!-- end app-content -->
-</div><!-- end app-layout -->
-
-<!-- MOBILE BOTTOM NAV -->
-<nav class="mobile-nav" id="mobile-nav">
-  <button class="mobile-nav-item active" id="mobile-create" onclick="switchTab('create')">
-    <span class="nav-icon">🎬</span>Create
-  </button>
-  <button class="mobile-nav-item" id="mobile-enhance" onclick="switchTab('enhance')">
-    <span class="nav-icon">✂️</span>Edit
-  </button>
-  <button class="mobile-nav-item" id="mobile-photo" onclick="switchTab('photo')">
-    <span class="nav-icon">🖼</span>Photo
-  </button>
-  <button class="mobile-nav-item" id="mobile-library" onclick="switchTab('library')">
-    <span class="nav-icon">📚</span>Library
-  </button>
-  <button class="mobile-nav-item" onclick="openFeedback()">
-    <span class="nav-icon">💬</span>More
-  </button>
-</nav>'''
-
-content = content.replace(old_close, new_close, 1)
-
-# Update switchTab to also update mobile nav
-old_switch = '''function switchTab(tab) {
-  if (tab === 'library') renderLibrary();
-  if (tab === 'admin') { loadAdminDashboard(); return; }
-  ['create','enhance','library','photo'].forEach(t => {
-    const sec = document.getElementById('section-'+t);
-    if (sec) sec.classList.toggle('active', t === tab);
-  });
-  // Update sidebar active state
-  ['create','enhance','library','photo','admin'].forEach(t => {
-    const btn = document.getElementById('sidebar-'+t);
-    if (btn) btn.classList.toggle('active', t === tab);
-  });
-}'''
-
-new_switch = '''function switchTab(tab) {
-  if (tab === 'library') renderLibrary();
-  if (tab === 'admin') { loadAdminDashboard(); return; }
-  ['create','enhance','library','photo'].forEach(t => {
-    const sec = document.getElementById('section-'+t);
-    if (sec) sec.classList.toggle('active', t === tab);
-  });
-  // Update sidebar
-  ['create','enhance','library','photo','admin'].forEach(t => {
-    const btn = document.getElementById('sidebar-'+t);
-    if (btn) btn.classList.toggle('active', t === tab);
-  });
-  // Update mobile nav
-  ['create','enhance','library','photo'].forEach(t => {
-    const btn = document.getElementById('mobile-'+t);
-    if (btn) btn.classList.toggle('active', t === tab);
-  });
-  // Sync mobile user info
-  const mun = document.getElementById('mobile-user-name');
-  const mur = document.getElementById('mobile-videos-remaining');
-  const un = document.getElementById('user-name-display');
-  const ur = document.getElementById('user-videos-remaining');
-  if (mun && un) mun.textContent = un.textContent;
-  if (mur && ur) mur.textContent = ur.textContent;
-  // Show mobile topbar on mobile
-  const topbar = document.getElementById('mobile-topbar');
-  if (topbar && window.innerWidth <= 768) topbar.style.display = 'block';
-}'''
-
-content = content.replace(old_switch, new_switch, 1)
-
-# Landing page mobile fixes
-old_land_nav = '''  <nav style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 4rem;background:rgba(5,10,20,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);">'''
-new_land_nav = '''  <nav style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;background:rgba(5,10,20,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem;">'''
-content = content.replace(old_land_nav, new_land_nav, 1)
-
-with open('index.html', 'w') as f:
-    f.write(content)
-print("✅ Mobile responsiveness added!")
+if old_css in content:
+    content = content.replace(old_css, new_css)
+    with open('index.html', 'w') as f:
+        f.write(content)
+    print("✅ Mobile CSS updated successfully!")
+else:
+    print("❌ Still not found. Trying line count...")
+    print("Total chars in file:", len(content))
