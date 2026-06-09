@@ -1956,7 +1956,7 @@ window._startRecording = async function startRecording() {
 
   mediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 2500000 });
   mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-  mediaRecorder.onstop = finishVideo;
+  mediaRecorder.onstop = window.finishVideo || finishVideo;
   mediaRecorder.start(100);
 
   // Start background music
@@ -2061,7 +2061,7 @@ window._stopRecording = function stopRecording() {
   addLog('success', '[ok] Recording complete! Processing video...');
 }
 
-function finishVideo() {
+window.finishVideo = function finishVideo() {
   videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
   const sizeMB = (videoBlob.size / 1024 / 1024).toFixed(1);
 
