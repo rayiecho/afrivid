@@ -134,7 +134,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div class="mode-toggle">
     <button class="mode-btn active" onclick="setMode('enhance')">✂ Enhance Video</button>
     <button class="mode-btn" onclick="setMode('combine')">⊞ Combine Videos</button>
-    <button class="mode-btn" onclick="setMode('captions')">CC Captions</button>
   </div>
 
   <!-- ENHANCE MODE -->
@@ -429,6 +428,33 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   </div>
   </div>
 
+      <!-- CAPTIONS -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M17 2l-5 5-5-5"/></svg></div>
+          Captions
+        </div>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);margin-bottom:1rem;line-height:1.6;">Auto-generate or add captions manually.</p>
+        <div class="caption-style-grid">
+          <button class="caption-style-btn active" onclick="setCaptionStyle('classic')">Classic</button>
+          <button class="caption-style-btn" onclick="setCaptionStyle('bold')">Bold</button>
+          <button class="caption-style-btn" onclick="setCaptionStyle('minimal')">Minimal</button>
+          <button class="caption-style-btn" onclick="setCaptionStyle('tiktok')">TikTok</button>
+        </div>
+        <select id="caption-position" class="form-select" style="margin:0.75rem 0;">
+          <option value="bottom">Bottom</option>
+          <option value="top">Top</option>
+          <option value="middle">Middle</option>
+        </select>
+        <button class="btn btn-gold" style="width:100%;margin-bottom:0.5rem;" onclick="generateCaptions()">Generate Auto-Captions</button>
+        <button class="btn btn-outline" style="width:100%;" onclick="addManualCaption()">+ Add Manually</button>
+        <div id="caption-list" style="display:none;margin-top:1rem;">
+          <div style="font-size:0.7rem;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">CAPTIONS</div>
+          <div id="caption-items"></div>
+        </div>
+        <div id="caption-status" style="font-size:0.72rem;font-family:'Space Mono',monospace;color:#F5A623;margin-top:0.5rem;"></div>
+      </div>
+
   <!-- COMBINE MODE -->
   <div id="mode-combine" style="display:none;">
     <div class="card">
@@ -449,11 +475,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     </div>
   </div>
 
-  <!-- CAPTIONS MODE -->
-  <div id="mode-captions" style="display:none;">
-    <div class="card">
-      <div class="card-title">
-        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M17 2l-5 5-5-5"/></svg></div>
         Add Captions
       </div>
       <p style="font-size:0.85rem;color:rgba(255,255,255,0.45);margin-bottom:1.25rem;line-height:1.7;">Upload a video to auto-generate captions or add them manually. Choose your caption style below.</p>
