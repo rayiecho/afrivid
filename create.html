@@ -357,6 +357,19 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
             </select>
           </div>
           <div class="form-group">
+            <label class="form-label">Language</label>
+            <select id="video-language" class="form-select">
+              <option value="English">English</option>
+              <option value="French">French</option>
+              <option value="Swahili">Swahili</option>
+              <option value="Arabic">Arabic</option>
+              <option value="Portuguese">Portuguese</option>
+              <option value="Amharic">Amharic</option>
+              <option value="Yoruba">Yoruba</option>
+              <option value="Zulu">Zulu</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label class="form-label">Voice</label>
             <select id="voice-select" class="form-select">
               <optgroup label="Female Voices">
@@ -668,8 +681,8 @@ window._handleGenerateScript = window.handleGenerateScript = async function() {
   btn.disabled = true;
   try {
     const duration = parseInt(document.getElementById('video-duration').value);
-    const language = document.getElementById('video-language').value;
-    const style = document.getElementById('video-style').value;
+    const language = document.getElementById('video-language') ? document.getElementById('video-language').value : 'English';
+    const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
     const context = document.getElementById('video-content').value.trim();
     const sceneCount = Math.max(3, Math.floor(duration / 20));
     const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
@@ -1374,7 +1387,7 @@ function drawCinematicScene(canvas, scene, progress, currentWord = -1) {
 
 function drawScene(canvas, scene, progress, currentWord = -1) {
   const style = document.getElementById('video-style') ? 
-    document.getElementById('video-style').value : 'slides';
+    document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark' : 'slides';
   // Auto-detect scene type for smart rendering
   const sceneType = detectSceneType((scene.voiceover || '') + ' ' + (scene.slideTitle || ''));
   if (style === 'slides' && sceneType === 'code') { drawCodeScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
@@ -1890,7 +1903,7 @@ async function startRecording() {
   isRecording = true;
 
   // Preload background image if needed
-  const visualStyle = document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides';
+  const visualStyle = document.getElementById('video-style') ? document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark' : 'slides';
   if (visualStyle === 'photobg') {
     const theme = 'africa';
     addLog('info', '[img] Loading background image...');
@@ -1906,7 +1919,7 @@ async function startRecording() {
         const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: scene.voiceover, voice: document.getElementById('video-voice').value })
+          body: JSON.stringify({ text: scene.voiceover, voice: document.getElementById('voice-select') ? document.getElementById('voice-select').value : 'helios' })
         });
         const blob = await res.blob();
         addLog('success', `[ok] Scene ${i+1} voice ready`);
@@ -3618,7 +3631,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -3716,7 +3729,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -3814,7 +3827,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -3912,7 +3925,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -4010,7 +4023,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -4108,7 +4121,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -4206,7 +4219,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -4304,7 +4317,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
@@ -4402,7 +4415,7 @@ generateScript = async function() {
 
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
-  const style = document.getElementById('video-style').value;
+  const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
   const program = document.getElementById('video-program').value;
   const content = document.getElementById('video-content').value.trim();
 
