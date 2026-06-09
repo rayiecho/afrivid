@@ -1880,7 +1880,7 @@ async function enableVoice() {
   }
 }
 
-async function startRecording() {
+window._startRecording = async function startRecording() {
   if (!scriptData) { alert('No script found. Please go back and generate a script first.'); return; }
 
   goToStep(3);
@@ -2039,7 +2039,7 @@ async function startRecording() {
   animFrame = requestAnimationFrame(renderLoop);
 }
 
-function stopRecording() {
+window._stopRecording = function stopRecording() {
   isRecording = false;
   if (animFrame) cancelAnimationFrame(animFrame);
   window.speechSynthesis.cancel();
