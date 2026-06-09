@@ -555,6 +555,134 @@ window.loadTemplate = function(type) {
   addLog('success',`[ok] ${type} template loaded`);
 }
 
+function buildDesignPrompt(type, userPrompt, W, H) {
+  const cx = Math.round(W/2);
+  const cy = Math.round(H/2);
+
+  const typeGuides = {
+    logo: `You are a professional logo designer. Create a logo for: "${userPrompt}".
+Canvas: ${W}x${H}px (square format).
+LOGO RULES:
+- Center everything around (${cx}, ${cy})
+- Use large bold letter(s) as the main element (size 180-280px)
+- Add a geometric shape behind the letter (circle or rect as backdrop)
+- Add company name below center (size 60-80px, weight 800)
+- Add a short tagline below name (size 24-30px, weight 400, muted color)
+- Add decorative accent lines or dots for polish
+- Use gradient background: dark navy to slightly lighter
+- Max 12 elements. Make it look like a Fortune 500 company logo.`,
+
+    poster: `You are a professional poster designer. Create an event poster for: "${userPrompt}".
+Canvas: ${W}x${H}px (portrait format).
+POSTER RULES:
+- Add a bold top accent bar (rect, full width, height 10-12px, gold color) at y=0
+- Add event title in HUGE bold text (size 100-140px) at upper third
+- Add subtitle or date in medium text (size 50-60px) below title
+- Add location/details in smaller text (size 36-42px)
+- Add decorative circles or geometric shapes for visual interest
+- Add bottom accent bar at y=${H-12}
+- Add organizer name at bottom center (size 28px)
+- Use dark background with gold and green accents
+- Max 15 elements. Make it visually striking and professional.`,
+
+    certificate: `You are a professional certificate designer. Create a certificate for: "${userPrompt}".
+Canvas: ${W}x${H}px (A4 portrait).
+CERTIFICATE RULES:
+- Add gold border: 4 rects forming a frame (top, bottom, left, right, thickness 14px)
+- Add inner border: 4 thinner rects (thickness 4px, offset 30px from edges, gold 30% opacity)
+- Title "CERTIFICATE OF ${userPrompt.toUpperCase().includes('ACHIEVEMENT') ? 'ACHIEVEMENT' : 'PARTICIPATION'}" at top (size 54-64px, weight 800, dark color, centered at x=${cx})
+- "This is to certify that" text (size 28-32px, muted, centered)
+- Recipient name placeholder in gold (size 80-90px, weight 800, centered)
+- Gold underline rect below name
+- "has successfully completed" text (size 28px, muted)
+- Program name in bold (size 48-56px, weight 700, dark, centered)
+- Date and signature placeholders at bottom
+- Organization name at very bottom (size 28px)
+- White background (#ffffff), gold accents
+- Max 18 elements.`,
+
+    flyer: `You are a professional flyer designer. Create a marketing flyer for: "${userPrompt}".
+Canvas: ${W}x${H}px.
+FLYER RULES:
+- Bold attention-grabbing headline at top third (size 90-120px, weight 900)
+- Supporting text below headline (size 44-54px)
+- Key details/bullet points in middle section (size 32-38px each)
+- Strong call-to-action at bottom (size 48px, in a colored rect button shape)
+- Decorative geometric shapes for visual energy
+- Vibrant gradient background
+- Contact or website info at very bottom (size 24px)
+- Max 14 elements. Make it eye-catching.`,
+
+    banner: `You are a professional banner designer. Create a wide banner for: "${userPrompt}".
+Canvas: ${W}x${H}px (landscape format).
+BANNER RULES:
+- Logo/brand element on left side (large letter or shape, x=${Math.round(W*0.12)})
+- Main headline in center-left (size 80-100px, weight 800, x=${Math.round(W*0.25)})
+- Subheading below headline (size 38-44px, gold color)
+- Decorative circles or shapes on right side for balance
+- Horizontal accent line under headline
+- Website or CTA on right side (size 28-32px)
+- Dark gradient background left to right
+- Max 12 elements.`,
+
+    social: `You are a professional social media designer. Create a social media graphic for: "${userPrompt}".
+Canvas: ${W}x${H}px (square or portrait).
+SOCIAL RULES:
+- Top accent bar (rect, full width, height 6px, gold)
+- Bold hook headline (size 80-100px, weight 900) in upper half
+- Supporting text in middle (size 40-48px)
+- Decorative geometric shapes for visual interest
+- Brand handle or watermark at bottom (size 28-32px, gold, monospace font)
+- Bottom accent bar
+- Dark background with strong contrast
+- Max 12 elements. Make it scroll-stopping.`,
+
+    icon: `You are a professional app icon designer. Create an app icon for: "${userPrompt}".
+Canvas: ${W}x${H}px (square).
+ICON RULES:
+- Rounded rect background filling most of canvas (slightly smaller, rounded corners implied by design)
+- Large central symbol: bold letter, simple shape, or combined mark (size 200-280px)
+- The symbol should be instantly recognizable at small sizes
+- Maximum 2-3 colors
+- No text other than possibly a single letter
+- Clean, bold, minimal
+- Max 6 elements.`
+  };
+
+  const guide = typeGuides[type] || typeGuides.poster;
+
+  return `${guide}
+
+ELEMENT TYPES AVAILABLE:
+- text: {type:"text", text:"...", x:number, y:number, color:"#hex", size:number, font:"Syne" or "Space Mono", weight:400|700|800|900, align:"center"|"left"|"right"}
+- rect: {type:"rect", x:number, y:number, w:number, h:number, color:"#hex or rgba(r,g,b,a)"}
+- circle: {type:"circle", x:number, y:number, r:number, color:"#hex or rgba(r,g,b,a)"}
+
+BRAND COLORS:
+- Gold: #F5A623 (primary accent)
+- Dark: #050A14 (deep background)
+- Navy: #0D1F35 (secondary background)  
+- Green: #74C69D (success/highlight)
+- White: #F8F9FC (text on dark)
+- Muted: rgba(248,249,252,0.5) (secondary text)
+- Red: #E63329 (danger/alert)
+
+COORDINATE SYSTEM: (0,0) = top-left, (${W},${H}) = bottom-right
+For text: x,y is the baseline position. Center text by setting x=${cx} and align="center"
+For circles: x,y is the CENTER of the circle
+For rects: x,y is the TOP-LEFT corner
+
+QUALITY RULES:
+- Spacing: leave at least 60px padding from canvas edges
+- Typography hierarchy: vary sizes dramatically (headline 3-4x larger than body)
+- Contrast: ensure text is readable against its background
+- Balance: distribute elements to avoid clustering
+- Professional: this must look like it was made by a senior designer
+
+Return ONLY a valid JSON object, no markdown, no explanation:
+{"background":"#hex or linear-gradient(135deg,#hex1,#hex2)","elements":[...]}`;
+}
+
 window.generateAIDesign = async function() {
   const prompt = document.getElementById('ai-prompt').value.trim();
   const type = document.getElementById('design-type').value;
@@ -596,10 +724,8 @@ window.generateAIDesign = async function() {
       const res2 = await fetch('https://yan-ai-worker.youngafricansn.workers.dev',{
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          model:'claude-haiku-4-5-20251001',max_tokens:1000,
-          messages:[{role:'user',content:`Design a ${type} for: "${prompt}". Canvas ${W}x${H}px.
-Return ONLY JSON: {"background":"#hex","elements":[{"type":"text","text":"...","x":400,"y":300,"color":"#F5A623","size":72,"font":"Syne","weight":800,"align":"center"}]}
-Use: text,rect,circle. Brand colors: #F5A623 gold, #050A14 dark, #74C69D green. Max 8 elements. Return ONLY JSON.`}]
+          model:'claude-sonnet-4-6',max_tokens:2000,
+          messages:[{role:'user',content:buildDesignPrompt(type, prompt, W, H)}]
         })
       });
       const data=await res2.json();
