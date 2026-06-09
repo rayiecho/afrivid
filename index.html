@@ -1067,39 +1067,56 @@
 </head>
 <body>
 <script>
-// Simple stubs - delegate to real functions when ready
-function switchTab(t){setTimeout(function(){if(typeof _switchTab!=='undefined')_switchTab(t);},0);}
-function toggleSidebar(){setTimeout(function(){if(typeof _toggleSidebar!=='undefined')_toggleSidebar();},0);}
-function setMode(m){setTimeout(function(){if(typeof _setMode!=='undefined')_setMode(m);},0);}
-function goToStep(n){setTimeout(function(){if(typeof _goToStep!=='undefined')_goToStep(n);},0);}
-function generateScript(){setTimeout(function(){if(typeof _generateScript!=='undefined')_generateScript();},0);}
-function generateVideo(){setTimeout(function(){if(typeof _generateVideo!=='undefined')_generateVideo();},0);}
-function downloadVideo(){setTimeout(function(){if(typeof _downloadVideo!=='undefined')_downloadVideo();},0);}
-function makeAnother(){setTimeout(function(){if(typeof _makeAnother!=='undefined')_makeAnother();},0);}
-function startEnhancing(){setTimeout(function(){if(typeof _startEnhancing!=='undefined')_startEnhancing();},0);}
-function loadVideoFile(e){setTimeout(function(){if(typeof _loadVideoFile!=='undefined')_loadVideoFile(e);},0);}
-function generateDesign(){setTimeout(function(){if(typeof _generateDesign!=='undefined')_generateDesign();},0);}
-function generateAIImage(){setTimeout(function(){if(typeof _generateAIImage!=='undefined')_generateAIImage();},0);}
-function loadTemplate(t){setTimeout(function(){if(typeof _loadTemplate!=='undefined')_loadTemplate(t);},0);}
-function downloadDesign(f,s){setTimeout(function(){if(typeof _downloadDesign!=='undefined')_downloadDesign(f,s);},0);}
-function combineVideos(){setTimeout(function(){if(typeof _combineVideos!=='undefined')_combineVideos();},0);}
-function setUploadMode(m){setTimeout(function(){if(typeof _setUploadMode!=='undefined')_setUploadMode(m);},0);}
-function downloadDesignSVG(){setTimeout(function(){if(typeof _downloadDesignSVG!=='undefined')_downloadDesignSVG();},0);}
-function resetEnhancer(){setTimeout(function(){if(typeof _resetEnhancer!=='undefined')_resetEnhancer();},0);}
-function stopRecording(){setTimeout(function(){if(typeof _stopRecording!=='undefined')_stopRecording();},0);}
-function shareWhatsApp(){setTimeout(function(){if(typeof _shareWhatsApp!=='undefined')_shareWhatsApp();},0);}
-function uploadToYouTube(){setTimeout(function(){if(typeof _uploadToYouTube!=='undefined')_uploadToYouTube();},0);}
-function sendToEditor(){setTimeout(function(){if(typeof _sendToEditor!=='undefined')_sendToEditor();},0);}
-function downloadMP4(){setTimeout(function(){if(typeof _downloadMP4!=='undefined')_downloadMP4();},0);}
-function loadAdminDashboard(){setTimeout(function(){if(typeof _loadAdminDashboard!=='undefined')_loadAdminDashboard();},0);}
-function addDesignText(){setTimeout(function(){if(typeof _addDesignText!=='undefined')_addDesignText();},0);}
-function addDesignShape(t){setTimeout(function(){if(typeof _addDesignShape!=='undefined')_addDesignShape(t);},0);}
-function clearDesignCanvas(){setTimeout(function(){if(typeof _clearDesignCanvas!=='undefined')_clearDesignCanvas();},0);}
-function undoDesign(){setTimeout(function(){if(typeof _undoDesign!=='undefined')_undoDesign();},0);}
-function deleteSelectedElement(){setTimeout(function(){if(typeof _deleteSelectedElement!=='undefined')_deleteSelectedElement();},0);}
-function updateSelectedElement(p,v){setTimeout(function(){if(typeof _updateSelectedElement!=='undefined')_updateSelectedElement(p,v);},0);}
-function resizeCanvas(){setTimeout(function(){if(typeof _resizeCanvas!=='undefined')_resizeCanvas();},0);}
-function initDesignCanvas(){setTimeout(function(){if(typeof _initDesignCanvas!=='undefined')_initDesignCanvas();},0);}
+// These will be overwritten by real implementations when main script loads
+var switchTab=function(t){};
+var toggleSidebar=function(){};
+var setMode=function(m){};
+var goToStep=function(n){};
+var generateScript=function(){};
+var generateVideo=function(){};
+var downloadVideo=function(){};
+var makeAnother=function(){};
+var startEnhancing=function(){};
+var loadVideoFile=function(e){};
+var generateDesign=function(){};
+var generateAIImage=function(){};
+var loadTemplate=function(t){};
+var downloadDesign=function(f,s){};
+var combineVideos=function(){};
+var setUploadMode=function(m){};
+var downloadDesignSVG=function(){};
+var resetEnhancer=function(){};
+var stopRecording=function(){};
+var shareWhatsApp=function(){};
+var uploadToYouTube=function(){};
+var sendToEditor=function(){};
+var downloadMP4=function(){};
+var loadAdminDashboard=function(){};
+var addDesignText=function(){};
+var addDesignShape=function(t){};
+var clearDesignCanvas=function(){};
+var undoDesign=function(){};
+var deleteSelectedElement=function(){};
+var updateSelectedElement=function(p,v){};
+var resizeCanvas=function(){};
+var initDesignCanvas=function(){};
+var toggleMobileMenu=function(){};
+var setCaptionStyle=function(s){};
+var generateCaptions=function(){};
+var addManualCaption=function(){};
+var clearCaptions=function(){};
+var deleteCaption=function(i){};
+var setVirtualBg=function(b){};
+var saveDesignToLibrary=function(){};
+var sendLibraryToEditor=function(id){};
+var downloadFromLibrary=function(id){};
+var deleteFromLibrary=function(id){};
+var adjustLimit=function(u,c,d){};
+var resetUserVideos=function(u){};
+var changePlan=function(u,p){};
+var togglePayment=function(c){};
+var toggleMaintenance=function(c){};
+var adjustGlobalLimit=function(c,d){};
 </script>
 
 <!-- LANDING PAGE -->
@@ -2473,7 +2490,7 @@ let animFrame = null;
 // -- MODE --
 let currentMode = 'ai';
 
-function _setMode(mode) {
+setMode = function(mode) {
   currentMode = mode;
   document.getElementById('ai-fields').style.display = mode === 'ai' ? 'block' : 'none';
   document.getElementById('own-fields').style.display = mode === 'own' ? 'block' : 'none';
@@ -2483,7 +2500,7 @@ function _setMode(mode) {
 }
 
 // -- STEPS --
-function _goToStep(n) {
+goToStep = function(n) {
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`panel-${i}`).classList.toggle('active', i === n);
     const s = document.getElementById(`step-${i}`);
@@ -2565,7 +2582,7 @@ Make exactly ${scenes} scenes. Use the provided content for voiceover text - do 
   }
 }
 
-async function _generateScript() {
+async generateScript = function() {
   // Check beta limit
   if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
 
@@ -3991,7 +4008,7 @@ function finishVideo() {
   goToStep(4);
 }
 
-function _downloadVideo() {
+downloadVideo = function() {
   if (!videoBlob) { alert('No video to download yet.'); return; }
   const url = URL.createObjectURL(videoBlob);
   const a = document.createElement('a');
@@ -4136,7 +4153,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-function _toggleSidebar() {
+toggleSidebar = function() {
   sidebarCollapsed = !sidebarCollapsed;
   const sidebar = document.getElementById('sidebar');
   const content = document.querySelector('.app-content');
@@ -4144,7 +4161,7 @@ function _toggleSidebar() {
   if (content) content.classList.toggle('expanded', sidebarCollapsed);
 }
 
-function _switchTab(tab) {
+switchTab = function(tab) {
   if (tab === 'design') {
     setTimeout(function() {
       if (typeof initDesignCanvas === 'function') {
@@ -4189,7 +4206,7 @@ let enhanceVideo = null;
 let enhanceRecordedChunks = [];
 let enhanceMediaRecorder = null;
 
-function _loadVideoFile(event) {
+loadVideoFile = function(event) {
   const file = event.target.files[0];
   if (!file) return;
   enhanceVideo = file;
@@ -4294,7 +4311,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-async function _startEnhancing() {
+async startEnhancing = function() {
   if (!enhanceVideo) { alert('Please upload a video first.'); return; }
   
   addEnhanceLog('info', '[>] Starting enhancement...');
@@ -4893,7 +4910,7 @@ function addEnhanceLog(type, msg) {
 let uploadMode = 'single';
 let multiVideos = []; // Array of {file, url, name, duration}
 
-function _setUploadMode(mode) {
+setUploadMode = function(mode) {
   uploadMode = mode;
   document.getElementById('single-upload-zone').style.display = mode === 'single' ? 'block' : 'none';
   document.getElementById('multi-upload-zone').style.display = mode === 'multi' ? 'block' : 'none';
@@ -4987,7 +5004,7 @@ function addCombineLog(type, msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-async function _combineVideos() {
+async combineVideos = function() {
   if (multiVideos.length < 2) { alert('Please upload at least 2 videos to combine'); return; }
 
   addCombineLog('info', `[vid] Combining ${multiVideos.length} videos...`);
@@ -5755,7 +5772,7 @@ function undoDesign() {
   renderDesign();
 }
 
-function _downloadDesign(format, scale = 1) {
+downloadDesign = function(format, scale = 1) {
   const canvas = document.getElementById('design-canvas');
   selectedElement = null;
   renderDesign();
@@ -5826,7 +5843,7 @@ function downloadDesignSVG() {
   URL.revokeObjectURL(url);
 }
 
-function _loadTemplate(type) {
+loadTemplate = function(type) {
   designElements = [];
   selectedElement = null;
 
@@ -5918,7 +5935,7 @@ function _loadTemplate(type) {
   renderDesign();
 }
 
-async function _generateAIImage() {
+async generateAIImage = function() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   const type = document.getElementById('design-type').value;
   if (!prompt) { alert('Describe what you want to generate'); return; }
@@ -5984,7 +6001,7 @@ async function _generateAIImage() {
   btn.disabled = false;
 }
 
-async function _generateDesign() {
+async generateDesign = function() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   if (!prompt) { alert('Describe your design first'); return; }
 
@@ -6114,7 +6131,7 @@ function checkResumePrompt() {
   } catch(e) {}
 }
 
-function _makeAnother() {
+makeAnother = function() {
   scriptData = null;
   videoBlob = null;
   recordedChunks = [];
