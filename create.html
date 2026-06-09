@@ -2078,7 +2078,9 @@ function finishVideo() {
     Generated: ${new Date().toLocaleString()}
   `;
 
-  goToStep(4);
+  if (window._goToStep) window._goToStep(4);
+  saveToLibrary(videoBlob, scriptData.title, scriptData.duration);
+  trackVideoGeneration(scriptData.title, scriptData.duration);
 }
 
 downloadVideo = function() {
