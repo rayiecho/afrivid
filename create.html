@@ -907,7 +907,7 @@ function getTransitionAlpha() {
 }
 
 // -- MP4 CONVERSION --
-async function downloadMP4() {
+window._downloadMP4 = async function downloadMP4() {
   if (!videoBlob) { alert('No video to convert.'); return; }
   
   // Show converting message
@@ -1684,7 +1684,7 @@ function drawPhotoBgScene(canvas, scene, progress, currentWord = -1, bgImg = nul
 }
 
 // -- WHATSAPP SHARE --
-function shareWhatsApp() {
+window._shareWhatsApp = function shareWhatsApp() {
   if (!scriptData) return;
   const text = `[vid] *${scriptData.title}*\n\nGenerated with AfriVid Studio\n\n[world] rayiecho.github.io/afrivid\n\n#AfriVid #AfricaCreates #BuiltInAfrica`;
   const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -3294,7 +3294,7 @@ function initYouTubeAuth() {
   });
 }
 
-async function uploadToYouTube() {
+window._uploadToYouTube = async function uploadToYouTube() {
   if (!videoBlob) { alert('No video to upload.'); return; }
   
   const statusEl = {textContent:''};
@@ -3574,7 +3574,7 @@ window.handleDownload = function() {
   }
 }
 
-window.handleSaveToStudio = async function() {
+window._handleSaveToStudio = window.handleSaveToStudio = async function() {
   if (!currentUser) { showLogin(); return; }
   try {
     await addDoc(collection(db, 'studio_videos'), {
@@ -4678,7 +4678,7 @@ function checkResumePrompt() {
   } catch(e) {}
 }
 
-makeAnother = function() {
+window._makeAnother = makeAnother = function() {
   scriptData = null;
   videoBlob = null;
   recordedChunks = [];
