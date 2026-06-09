@@ -148,7 +148,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </style>
 </head>
 <body>
-<!-- Global function proxies — needed because main script is type="module" -->
+<!-- Global function proxies  -  needed because main script is type="module" -->
 <script>
 function setMode(m){ if(window._setMode) window._setMode(m); }
 function goToStep(n){ if(window._goToStep) window._goToStep(n); }
@@ -204,7 +204,7 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
     <div class="step-pill" id="step-4"><div class="step-dot">4</div>Export</div>
   </div>
 
-  <!-- PANEL 1 — SETUP -->
+  <!-- PANEL 1  -  SETUP -->
   <div class="panel active" id="panel-1">
     <div class="card">
       <div class="card-title">
@@ -224,7 +224,7 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
           <div class="form-group">
             <label class="form-label">Video Topic / Title</label>
             <input type="text" class="form-input" id="video-topic" placeholder="e.g. How to Apply for Scholarships in Africa">
-            <span class="form-hint">Be specific — better topic = better video</span>
+            <span class="form-hint">Be specific  -  better topic = better video</span>
           </div>
           <div class="form-group">
             <label class="form-label">Target Audience</label>
@@ -297,20 +297,20 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
             <label class="form-label">Voice</label>
             <select class="form-select" id="voice-select">
               <optgroup label="Female Voices">
-                <option value="asteria">Asteria — Warm Female</option>
-                <option value="athena">Athena — Clear Female</option>
-                <option value="hera">Hera — Strong Female</option>
-                <option value="luna">Luna — Soft Female</option>
-                <option value="stella">Stella — Bright Female</option>
+                <option value="asteria">Asteria  -  Warm Female</option>
+                <option value="athena">Athena  -  Clear Female</option>
+                <option value="hera">Hera  -  Strong Female</option>
+                <option value="luna">Luna  -  Soft Female</option>
+                <option value="stella">Stella  -  Bright Female</option>
               </optgroup>
               <optgroup label="Male Voices">
-                <option value="orion">Orion — Deep Male</option>
-                <option value="zeus">Zeus — Powerful Male</option>
-                <option value="orpheus">Orpheus — Smooth Male</option>
-                <option value="angus">Angus — Warm Male</option>
-                <option value="arcas">Arcas — Clear Male</option>
-                <option value="perseus">Perseus — Strong Male</option>
-                <option value="helios" selected>Helios — Energetic Male</option>
+                <option value="orion">Orion  -  Deep Male</option>
+                <option value="zeus">Zeus  -  Powerful Male</option>
+                <option value="orpheus">Orpheus  -  Smooth Male</option>
+                <option value="angus">Angus  -  Warm Male</option>
+                <option value="arcas">Arcas  -  Clear Male</option>
+                <option value="perseus">Perseus  -  Strong Male</option>
+                <option value="helios" selected>Helios  -  Energetic Male</option>
               </optgroup>
             </select>
           </div>
@@ -357,10 +357,10 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
           <div class="form-group">
             <label class="form-label">Aspect Ratio</label>
             <select class="form-select" id="video-aspect-ratio" onchange="setAspectRatioFromSelect()">
-              <option value="16:9">16:9 — YouTube/Landscape</option>
-              <option value="9:16">9:16 — TikTok/Reels</option>
-              <option value="1:1">1:1 — Instagram Square</option>
-              <option value="4:3">4:3 — Classic</option>
+              <option value="16:9">16:9  -  YouTube/Landscape</option>
+              <option value="9:16">9:16  -  TikTok/Reels</option>
+              <option value="1:1">1:1  -  Instagram Square</option>
+              <option value="4:3">4:3  -  Classic</option>
             </select>
           </div>
           <div class="form-group">
@@ -441,7 +441,7 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
     </div>
   </div>
 
-  <!-- PANEL 2 — SCRIPT -->
+  <!-- PANEL 2  -  SCRIPT -->
   <div class="panel" id="panel-2">
     <div class="card">
       <div class="card-title">
@@ -458,7 +458,7 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
     </div>
   </div>
 
-  <!-- PANEL 3 — RECORD -->
+  <!-- PANEL 3  -  RECORD -->
   <div class="panel" id="panel-3">
     <div id="canvas-container">
       <canvas id="video-canvas"></canvas>
@@ -498,7 +498,7 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
     </div>
   </div>
 
-  <!-- PANEL 4 — EXPORT -->
+  <!-- PANEL 4  -  EXPORT -->
   <div class="panel" id="panel-4">
     <div class="download-card">
       <div class="download-icon">🎉</div>
@@ -632,7 +632,7 @@ window.updateDurationWarning = function() {
     warn.textContent = `[time] ${dur/60}-min video will take ~${dur/60} min to generate.`;
   } else {
     warn.style.cssText += 'background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;';
-    warn.textContent = `[!] Long video — consider splitting into shorter videos.`;
+    warn.textContent = `[!] Long video  -  consider splitting into shorter videos.`;
   }
 }
 
@@ -714,7 +714,7 @@ Create exactly ${sceneCount} scenes. Total durations must equal ${duration}. Ret
   btn.disabled = false;
 }
 
-// START RECORDING — requires login
+// START RECORDING  -  requires login
 window._handleStartRecording = window.handleStartRecording = function() {
   if (!currentUser) {
     showLogin('Sign in to record your video');
