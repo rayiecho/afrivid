@@ -2585,7 +2585,7 @@ Make exactly ${scenes} scenes. Use the provided content for voiceover text - do 
   }
 }
 
-async generateScript = function() {
+generateScript = async function() {
   // Check beta limit
   if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
 
@@ -4322,7 +4322,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-async startEnhancing = function() {
+startEnhancing = async function() {
   if (!enhanceVideo) { alert('Please upload a video first.'); return; }
   
   addEnhanceLog('info', '[>] Starting enhancement...');
@@ -5015,7 +5015,7 @@ function addCombineLog(type, msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-async combineVideos = function() {
+combineVideos = async function() {
   if (multiVideos.length < 2) { alert('Please upload at least 2 videos to combine'); return; }
 
   addCombineLog('info', `[vid] Combining ${multiVideos.length} videos...`);
@@ -5946,7 +5946,7 @@ loadTemplate = function(type) {
   renderDesign();
 }
 
-async generateAIImage = function() {
+generateAIImage = async function() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   const type = document.getElementById('design-type').value;
   if (!prompt) { alert('Describe what you want to generate'); return; }
@@ -6012,7 +6012,7 @@ async generateAIImage = function() {
   btn.disabled = false;
 }
 
-async generateDesign = function() {
+generateDesign = async function() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   if (!prompt) { alert('Describe your design first'); return; }
 
