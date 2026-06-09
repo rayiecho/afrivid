@@ -1923,6 +1923,8 @@ Or just paste your raw content and we will structure it into scenes automaticall
             <label class="form-label">Noise Reduction</label>
             <input type="range" class="filter-slider" id="noise-reduction" min="0" max="100" value="0" oninput="document.getElementById('noise-val').textContent=this.value+'%'">
             <span class="form-hint" id="noise-val">0%</span>
+            <button onclick="previewAudioFilters()" style="margin-top:0.5rem;width:100%;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.5rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font-mono);" id="btn-preview-audio">[>] Preview Audio with Filters</button>
+            <div id="audio-preview-status" style="font-size:0.7rem;font-family:var(--font-mono);color:var(--muted);margin-top:0.25rem;"></div>
           </div>
           <div class="form-group">
             <label class="form-label">Voice Boost</label>
@@ -4550,6 +4552,56 @@ function applyAudioPreset() {
   document.getElementById('echo-val').textContent = p.echo + '%';
   document.getElementById('wind-val').textContent = p.wind + '%';
   document.getElementById('volume-val').textContent = p.volume + '%';
+}
+
+async function previewAudioFilters() {
+  const video = document.getElementById('original-video');
+  if (!video || !video.src) { alert('Upload a video first'); return; }
+
+  const btn = document.getElementById('btn-preview-audio');
+  const status = document.getElementById('audio-preview-status');
+
+  if (btn._playing) {
+    // Stop preview
+    if (btn._audioCtx) btn._audioCtx.close();
+    btn._playing = false;
+    btn.textContent = '[>] Preview Audio with Filters';
+    status.textContent = '';
+    video.muted = false;
+    return;
+  }
+
+  try {
+    btn.textContent = '[||] Stop Preview';
+    btn._playing = true;
+    status.textContent = 'Playing with filters applied...';
+    status.style.color = '#74C69D';
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    btn._audioCtx = audioCtx;
+
+    // Play video audio through filters
+    video.muted = true;
+    video.currentTime = 0;
+    video.play();
+
+    const source = audioCtx.createMediaElementSource(video);
+    const dest = audioCtx.destination;
+    buildAudioChain(audioCtx, source, dest);
+
+    video.onended = () => {
+      btn._playing = false;
+      btn.textContent = '[>] Preview Audio with Filters';
+      status.textContent = '';
+      video.muted = false;
+    };
+
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    status.style.color = 'var(--red)';
+    btn._playing = false;
+    btn.textContent = '[>] Preview Audio with Filters';
+  }
 }
 
 function buildAudioChain(audioCtx, source, dest) {
