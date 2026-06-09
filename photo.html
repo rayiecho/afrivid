@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid Studio — Photo Editor</title>
+<meta name="description" content="Edit photos online for free. Remove backgrounds, adjust brightness, apply presets and add watermarks. No software needed.">
+<meta name="keywords" content="photo editor online free, remove background, edit photo Africa, AfriVid photo">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
+.back-btn:hover{color:#F5A623;}
+.topbar-divider{width:1px;height:20px;background:rgba(255,255,255,0.1);}
+.topbar-title{font-size:1rem;font-weight:800;color:#fff;}
+.topbar-title span{color:#F5A623;}
+.user-badge{font-size:0.72rem;color:#74C69D;font-family:'Space Mono',monospace;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;}
+.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
+.main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2.5rem 2rem 6rem;}
+.page-header{margin-bottom:2rem;}
+.page-label{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
+.page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#fff;margin-bottom:0.4rem;}
+.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.4);}
+.card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;}
+.card-title{font-size:0.95rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;color:#fff;}
+.card-icon{width:32px;height:32px;border-radius:8px;background:rgba(245,166,35,0.12);display:flex;align-items:center;justify-content:center;}
+.upload-zone{border:2px dashed rgba(245,166,35,0.2);border-radius:14px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(245,166,35,0.02);}
+.upload-zone:hover{border-color:rgba(245,166,35,0.5);background:rgba(245,166,35,0.05);}
+.upload-icon{font-size:2.5rem;margin-bottom:1rem;}
+.upload-text{font-size:1rem;font-weight:600;color:#fff;margin-bottom:0.4rem;}
+.upload-sub{font-size:0.8rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;}
+.editor-layout{display:grid;grid-template-columns:1fr 300px;gap:1.25rem;}
+.canvas-wrap{background:#1a1a1a;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:320px;border:1px solid rgba(255,255,255,0.06);position:relative;}
+#photo-canvas{max-width:100%;max-height:500px;display:block;}
+.controls-panel{display:flex;flex-direction:column;gap:1rem;}
+.control-group{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;}
+.control-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.slider-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;}
+.slider-name{font-size:0.72rem;color:rgba(255,255,255,0.5);width:80px;flex-shrink:0;}
+.slider{flex:1;accent-color:#F5A623;}
+.slider-val{font-size:0.7rem;color:#F5A623;font-family:'Space Mono',monospace;width:36px;text-align:right;}
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;}
+.preset-btn{background:#111;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.45rem;border-radius:8px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;text-align:center;}
+.preset-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+.ai-input{width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.75rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;margin-bottom:0.75rem;box-sizing:border-box;}
+.ai-input:focus{border-color:rgba(245,166,35,0.4);}
+.btn{padding:0.75rem 1.5rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+.btn-gold{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.3);}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+.btn-green{background:#2D8A5E;color:#fff;}
+.btn-green:hover{background:#40916C;}
+.btn-red{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-row{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;}
+.btn-full{width:100%;justify-content:center;}
+.photo-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;font-family:'Space Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.4);max-height:90px;overflow-y:auto;margin-top:1rem;line-height:1.9;}
+.log-line{display:block;}
+.log-line.success{color:#74C69D;}
+.log-line.error{color:#E63329;}
+.log-line.info{color:#F5A623;}
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
+.modal-overlay.active{display:flex;}
+.login-box{position:relative;width:100%;max-width:420px;}
+.login-header{text-align:center;margin-bottom:2rem;}
+.login-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:#fff;}
+.login-title span{color:#F5A623;}
+.login-card{background:rgba(17,17,17,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;}
+.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.auth-tab.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.flabel{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
+.finput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:border-color 0.2s;}
+.finput:focus{border-color:rgba(245,166,35,0.5);}
+.btn-auth{width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.ferror{display:none;margin-top:0.85rem;padding:0.7rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.5rem;cursor:pointer;}
+@media(max-width:768px){
+  .topbar{padding:0.85rem 1rem;}
+  .main{padding:1.5rem 1rem 6rem;}
+  .editor-layout{grid-template-columns:1fr;}
+  .btn-row{flex-direction:column;}
+  .btn-row .btn{width:100%;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Dashboard
+    </a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">Photo <span>Editor</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="user-badge" id="user-badge" style="display:none;"></div>
+    <button class="btn-signin" id="btn-signin" onclick="showLogin()" style="display:none;">Sign In</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-header">
+    <div class="page-label">PHOTO EDITOR</div>
+    <h1 class="page-title">Edit Your Photo</h1>
+    <p class="page-sub">Upload a photo — adjust, enhance, remove backgrounds and download.</p>
+  </div>
+
+  <!-- UPLOAD -->
+  <div id="upload-card" class="card">
+    <div class="card-title">
+      <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+      Upload Photo
+    </div>
+    <div class="upload-zone" onclick="document.getElementById('photo-file-input').click()">
+      <div class="upload-icon">🖼</div>
+      <div class="upload-text">Drop your photo here or click to upload</div>
+      <div class="upload-sub">JPG, PNG, WebP · Max 20MB</div>
+    </div>
+    <input type="file" id="photo-file-input" accept="image/*" style="display:none;" onchange="loadPhoto(event)">
+  </div>
+
+  <!-- EDITOR -->
+  <div id="editor-card" style="display:none;">
+    <div class="editor-layout">
+      <!-- CANVAS -->
+      <div>
+        <div class="canvas-wrap">
+          <canvas id="photo-canvas"></canvas>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-gold" onclick="downloadPhoto()">⬇ Download</button>
+          <button class="btn btn-green" onclick="handleSaveToStudio()">💾 Save to Studio</button>
+          <button class="btn btn-outline" onclick="resetEditor()">✕ New Photo</button>
+        </div>
+        <div class="photo-log" id="photo-log"><span class="log-line info">// Photo loaded. Apply edits and download.</span></div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls-panel">
+
+        <!-- AI EDIT -->
+        <div class="control-group">
+          <div class="control-label">AI EDIT</div>
+          <input type="text" class="ai-input" id="ai-instructions" placeholder="e.g. make it brighter and warmer">
+          <button class="btn btn-gold btn-full" onclick="applyAIEdit()">✦ Apply with AI</button>
+        </div>
+
+        <!-- PRESETS -->
+        <div class="control-group">
+          <div class="control-label">PRESETS</div>
+          <div class="preset-grid">
+            <button class="preset-btn" onclick="applyPreset('iphone')">iPhone</button>
+            <button class="preset-btn" onclick="applyPreset('dslr')">DSLR</button>
+            <button class="preset-btn" onclick="applyPreset('cinema')">Cinema</button>
+            <button class="preset-btn" onclick="applyPreset('portrait')">Portrait</button>
+            <button class="preset-btn" onclick="applyPreset('vivid')">Vivid</button>
+            <button class="preset-btn" onclick="applyPreset('bw')">B&W</button>
+            <button class="preset-btn" onclick="applyPreset('warm')">Warm</button>
+            <button class="preset-btn" onclick="applyPreset('cool')">Cool</button>
+            <button class="preset-btn" onclick="applyPreset('reset')">Reset</button>
+          </div>
+        </div>
+
+        <!-- ADJUSTMENTS -->
+        <div class="control-group">
+          <div class="control-label">ADJUSTMENTS</div>
+          <div class="slider-row">
+            <span class="slider-name">Brightness</span>
+            <input type="range" class="slider" id="brightness" min="0" max="300" value="100" oninput="updatePreview()">
+            <span class="slider-val" id="b-val">100%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-name">Contrast</span>
+            <input type="range" class="slider" id="contrast" min="0" max="300" value="100" oninput="updatePreview()">
+            <span class="slider-val" id="c-val">100%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-name">Saturation</span>
+            <input type="range" class="slider" id="saturation" min="0" max="300" value="100" oninput="updatePreview()">
+            <span class="slider-val" id="s-val">100%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-name">Warmth</span>
+            <input type="range" class="slider" id="warmth" min="-100" max="100" value="0" oninput="updatePreview()">
+            <span class="slider-val" id="w-val">0</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-name">Sharpness</span>
+            <input type="range" class="slider" id="sharpness" min="0" max="10" step="0.5" value="0" oninput="updatePreview()">
+            <span class="slider-val" id="sh-val">0</span>
+          </div>
+        </div>
+
+        <!-- TOOLS -->
+        <div class="control-group">
+          <div class="control-label">TOOLS</div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem;">
+            <button class="btn btn-outline btn-full" id="bg-remove-btn" onclick="removeBackground()">✂ Remove Background</button>
+            <div style="display:flex;gap:0.5rem;">
+              <select style="flex:1;background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.55rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;" id="watermark-pos">
+                <option value="none">No Watermark</option>
+                <option value="br">Bottom Right</option>
+                <option value="bl">Bottom Left</option>
+                <option value="tr">Top Right</option>
+              </select>
+              <select style="flex:1;background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.55rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;" id="export-format">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+                <option value="webp">WebP</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" placeholder="Add text overlay..." style="flex:1;background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.55rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;" id="text-overlay" oninput="updatePreview()">
+              <select style="background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.55rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;" id="text-pos">
+                <option value="none">No Text</option>
+                <option value="bottom">Bottom</option>
+                <option value="top">Top</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="login-box">
+    <button class="modal-close" onclick="hideLogin()">✕</button>
+    <div class="login-header">
+      <div class="login-icon">A</div>
+      <div class="login-title">AfriVid <span>Studio</span></div>
+    </div>
+    <div class="login-card">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
+        <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
+      </div>
+      <div id="form-signin" style="display:none;">
+        <label class="flabel">EMAIL</label>
+        <input type="email" id="login-email" class="finput" placeholder="you@example.com">
+        <label class="flabel">PASSWORD</label>
+        <input type="password" id="login-password" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
+        <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
+      </div>
+      <div id="form-signup">
+        <label class="flabel">FULL NAME</label>
+        <input type="text" id="signup-name" class="finput" placeholder="Your full name">
+        <label class="flabel">EMAIL</label>
+        <input type="email" id="signup-email" class="finput" placeholder="you@example.com">
+        <label class="flabel">PASSWORD</label>
+        <input type="password" id="signup-password" class="finput" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
+        <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
+      </div>
+      <div class="ferror" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, setDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+let photoImage = null;
+let selfieSegmentation = null;
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    const badge = document.getElementById('user-badge');
+    badge.style.display = 'block';
+    badge.textContent = user.displayName || user.email.split('@')[0];
+  } else {
+    document.getElementById('btn-signin').style.display = 'block';
+    document.getElementById('user-badge').style.display = 'none';
+  }
+});
+
+window.loadPhoto = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    photoImage = img;
+    const canvas = document.getElementById('photo-canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    document.getElementById('upload-card').style.display = 'none';
+    document.getElementById('editor-card').style.display = 'block';
+    updatePreview();
+    addLog('success', `[ok] Loaded: ${file.name} (${img.width}x${img.height})`);
+  };
+  img.src = url;
+}
+
+function getFilter() {
+  const b = document.getElementById('brightness').value;
+  const c = document.getElementById('contrast').value;
+  const s = document.getElementById('saturation').value;
+  const sh = parseFloat(document.getElementById('sharpness').value);
+  const w = parseInt(document.getElementById('warmth').value);
+  let f = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+  if (sh > 0) f += ` contrast(${100+sh*6}%)`;
+  if (w > 0) f += ` sepia(${w*0.4}%) saturate(${100+w*0.3}%)`;
+  if (w < 0) f += ` hue-rotate(${w*0.2}deg) saturate(${100+w*0.3}%)`;
+  return f;
+}
+
+window.updatePreview = function() {
+  if (!photoImage) return;
+  const canvas = document.getElementById('photo-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  ctx.filter = getFilter();
+  ctx.drawImage(photoImage, 0, 0, W, H);
+  ctx.filter = 'none';
+  // Watermark
+  const wm = document.getElementById('watermark-pos').value;
+  if (wm !== 'none') {
+    ctx.fillStyle = 'rgba(245,166,35,0.85)';
+    ctx.font = `bold ${Math.round(W*0.03)}px Syne, sans-serif`;
+    ctx.textAlign = wm.includes('r') ? 'right' : 'left';
+    const x = wm.includes('r') ? W-14 : 14;
+    const y = wm.includes('t') ? 32 : H-14;
+    ctx.fillText('AfriVid Studio', x, y);
+  }
+  // Text overlay
+  const text = document.getElementById('text-overlay').value;
+  const textPos = document.getElementById('text-pos').value;
+  if (text && textPos !== 'none') {
+    const fs = Math.round(W*0.04);
+    ctx.font = `bold ${fs}px Syne, sans-serif`;
+    ctx.textAlign = 'center';
+    const ty = textPos === 'top' ? fs+16 : H-20;
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(0, ty-fs-8, W, fs+20);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(text, W/2, ty);
+  }
+  ctx.restore();
+  // Update vals
+  document.getElementById('b-val').textContent = document.getElementById('brightness').value+'%';
+  document.getElementById('c-val').textContent = document.getElementById('contrast').value+'%';
+  document.getElementById('s-val').textContent = document.getElementById('saturation').value+'%';
+  document.getElementById('w-val').textContent = document.getElementById('warmth').value;
+  document.getElementById('sh-val').textContent = document.getElementById('sharpness').value;
+}
+
+window.applyPreset = function(preset) {
+  const presets = {
+    iphone:   {b:108,c:115,s:125,sh:2.5,w:15},
+    dslr:     {b:102,c:120,s:110,sh:3.5,w:0},
+    cinema:   {b:95, c:130,s:75, sh:2,  w:-10},
+    portrait: {b:110,c:108,s:105,sh:1.5,w:10},
+    vivid:    {b:105,c:115,s:160,sh:2,  w:5},
+    bw:       {b:105,c:115,s:0,  sh:2,  w:0},
+    warm:     {b:105,c:110,s:115,sh:1,  w:60},
+    cool:     {b:100,c:110,s:90, sh:1,  w:-50},
+    reset:    {b:100,c:100,s:100,sh:0,  w:0}
+  };
+  const p = presets[preset];
+  if (!p) return;
+  document.getElementById('brightness').value = p.b;
+  document.getElementById('contrast').value = p.c;
+  document.getElementById('saturation').value = p.s;
+  document.getElementById('sharpness').value = p.sh;
+  document.getElementById('warmth').value = p.w;
+  updatePreview();
+  addLog('success', `[ok] ${preset} preset applied`);
+}
+
+window.applyAIEdit = async function() {
+  const instructions = document.getElementById('ai-instructions').value.trim();
+  if (!instructions) { alert('Type your edit instructions first'); return; }
+  addLog('info', '[~] Processing AI instructions...');
+  try {
+    const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 300,
+        messages: [{
+          role: 'user',
+          content: `Photo editor. User wants: "${instructions}". Return ONLY JSON:
+{"brightness":100,"contrast":100,"saturation":100,"sharpness":0,"warmth":0}
+brightness:0-300, contrast:0-300, saturation:0-300, sharpness:0-10, warmth:-100to100`
+        }]
+      })
+    });
+    const data = await response.json();
+    const match = data.content[0].text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON');
+    const p = JSON.parse(match[0]);
+    document.getElementById('brightness').value = p.brightness||100;
+    document.getElementById('contrast').value = p.contrast||100;
+    document.getElementById('saturation').value = p.saturation||100;
+    document.getElementById('sharpness').value = p.sharpness||0;
+    document.getElementById('warmth').value = p.warmth||0;
+    updatePreview();
+    addLog('success', '[ok] AI edit applied!');
+  } catch(e) {
+    addLog('error', '[x] AI edit failed: '+e.message);
+  }
+}
+
+window.removeBackground = async function() {
+  if (!photoImage) { alert('Upload a photo first'); return; }
+  const btn = document.getElementById('bg-remove-btn');
+  btn.textContent = '[..] Processing...';
+  btn.disabled = true;
+  addLog('info', '[~] Detecting subject...');
+  try {
+    if (!selfieSegmentation) {
+      selfieSegmentation = new SelfieSegmentation({
+        locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`
+      });
+      selfieSegmentation.setOptions({modelSelection:1});
+      await selfieSegmentation.initialize();
+    }
+    const canvas = document.getElementById('photo-canvas');
+    const W = canvas.width, H = canvas.height;
+    let result = null;
+    selfieSegmentation.onResults(r => { result = r; });
+    const tmp = document.createElement('canvas');
+    tmp.width = W; tmp.height = H;
+    const tCtx = tmp.getContext('2d');
+    tCtx.filter = getFilter();
+    tCtx.drawImage(photoImage, 0, 0, W, H);
+    await selfieSegmentation.send({image: tmp});
+    await new Promise(r => setTimeout(r, 600));
+    if (!result) throw new Error('Segmentation failed');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+    // Checkerboard transparent bg
+    const cs = 20;
+    for (let x=0; x<W; x+=cs) {
+      for (let y=0; y<H; y+=cs) {
+        ctx.fillStyle = ((x/cs+y/cs)%2===0) ? '#ccc' : '#fff';
+        ctx.fillRect(x,y,cs,cs);
+      }
+    }
+    ctx.save();
+    ctx.filter = getFilter();
+    ctx.drawImage(photoImage, 0, 0, W, H);
+    ctx.filter = 'none';
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.drawImage(result.segmentationMask, 0, 0, W, H);
+    ctx.restore();
+    document.getElementById('export-format').value = 'png';
+    addLog('success', '[ok] Background removed! Download as PNG.');
+  } catch(e) {
+    addLog('error', '[x] Failed: '+e.message);
+  }
+  btn.textContent = '✂ Remove Background';
+  btn.disabled = false;
+}
+
+window.downloadPhoto = function() {
+  const canvas = document.getElementById('photo-canvas');
+  const format = document.getElementById('export-format').value;
+  const url = canvas.toDataURL(`image/${format}`, format==='jpeg'?0.92:1);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `AfriVid-Photo-${Date.now()}.${format}`;
+  a.click();
+  addLog('success', '[ok] Photo downloaded!');
+}
+
+window.handleSaveToStudio = async function() {
+  if (!currentUser) { showLogin(); return; }
+  try {
+    await addDoc(collection(db, 'studio_photos'), {
+      userId: currentUser.uid,
+      userEmail: currentUser.email,
+      title: 'Edited Photo',
+      createdAt: serverTimestamp()
+    });
+    addLog('success', '[ok] Saved to Studio!');
+    setTimeout(() => window.location.href = 'studio.html', 1200);
+  } catch(e) {
+    addLog('error', '[x] Save failed: '+e.message);
+  }
+}
+
+window.resetEditor = function() {
+  photoImage = null;
+  document.getElementById('upload-card').style.display = 'block';
+  document.getElementById('editor-card').style.display = 'none';
+  document.getElementById('photo-file-input').value = '';
+  document.getElementById('photo-log').innerHTML = '<span class="log-line info">// Photo loaded. Apply edits and download.</span>';
+}
+
+function addLog(type, msg) {
+  const log = document.getElementById('photo-log');
+  const line = document.createElement('span');
+  line.className = `log-line ${type}`;
+  line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); }
+window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); }
+window.showAuthTab = function(tab) {
+  document.getElementById('form-signin').style.display = tab==='signin'?'block':'none';
+  document.getElementById('form-signup').style.display = tab==='signup'?'block':'none';
+  document.getElementById('tab-signin').classList.toggle('active', tab==='signin');
+  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+}
+window.doSignIn = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  try { await signInWithEmailAndPassword(auth, email, password); hideLogin(); }
+  catch(e) { err.style.display='block'; err.textContent='[!] '+e.message.replace('Firebase: ',''); }
+}
+window.doSignUp = async function() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const err = document.getElementById('login-error');
+  if (!name||!email||!password){err.style.display='block';err.textContent='[!] Fill all fields';return;}
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user,{displayName:name});
+    await sendEmailVerification(cred.user);
+    await setDoc(doc(db,'studio_users',cred.user.uid),{name,email,videosGenerated:0,joinedAt:serverTimestamp(),plan:'beta'});
+    hideLogin();
+  } catch(e){err.style.display='block';err.textContent='[!] '+e.message.replace('Firebase: ','');}
+}
+document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)hideLogin();});
+</script>
+</body>
+</html>
