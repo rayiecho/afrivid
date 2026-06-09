@@ -891,7 +891,7 @@ async function downloadMP4() {
     a.click();
     URL.revokeObjectURL(url);
     
-    {textContent:''}.textContent = 'MP4 downloaded successfully!';
+    // removed broken download-info reference
     addLog('success', '[ok] MP4 conversion complete!');
   } catch(e) {
     // Fallback - just download as WebM renamed to mp4
