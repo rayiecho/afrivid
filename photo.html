@@ -97,6 +97,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </style>
 </head>
 <body>
+<script>
+// Global proxies - onclick handlers need global scope
+function loadPhoto(a,b){ if(window._loadPhoto) window._loadPhoto(a,b); else if(window['loadPhoto']) window['loadPhoto'](a,b); }
+function applyPreset(a,b){ if(window._applyPreset) window._applyPreset(a,b); else if(window['applyPreset']) window['applyPreset'](a,b); }
+function updatePreview(){ if(window._updatePreview) window._updatePreview(); else if(window['updatePreview']) window['updatePreview'](); }
+function applyAIEdit(){ if(window._applyAIEdit) window._applyAIEdit(); else if(window['applyAIEdit']) window['applyAIEdit'](); }
+function removeBackground(){ if(window._removeBackground) window._removeBackground(); else if(window['removeBackground']) window['removeBackground'](); }
+function downloadPhoto(){ if(window._downloadPhoto) window._downloadPhoto(); else if(window['downloadPhoto']) window['downloadPhoto'](); }
+function handleSaveToStudio(){ if(window._handleSaveToStudio) window._handleSaveToStudio(); else if(window['handleSaveToStudio']) window['handleSaveToStudio'](); }
+function resetEditor(){ if(window._resetEditor) window._resetEditor(); else if(window['resetEditor']) window['resetEditor'](); }
+function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
+function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
+function applyCrop(){ if(window._applyCrop) window._applyCrop(); else if(window['applyCrop']) window['applyCrop'](); }
+function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); else if(window['cancelCrop']) window['cancelCrop'](); }
+function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
+function hideLogin(){ if(window._hideLogin) window._hideLogin(); else if(window['hideLogin']) window['hideLogin'](); }
+function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); else if(window['showAuthTab']) window['showAuthTab'](a,b); }
+function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
+function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
+</script>
+
 
 <div class="topbar">
   <div class="topbar-left">

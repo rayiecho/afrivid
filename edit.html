@@ -107,6 +107,36 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </style>
 </head>
 <body>
+<script>
+// Global proxies - onclick handlers need global scope
+function setMode(a,b){ if(window._setMode) window._setMode(a,b); else if(window['setMode']) window['setMode'](a,b); }
+function loadVideoFile(a,b){ if(window._loadVideoFile) window._loadVideoFile(a,b); else if(window['loadVideoFile']) window['loadVideoFile'](a,b); }
+function applyQualityPreset(a,b){ if(window._applyQualityPreset) window._applyQualityPreset(a,b); else if(window['applyQualityPreset']) window['applyQualityPreset'](a,b); }
+function applyAudioPreset(){ if(window._applyAudioPreset) window._applyAudioPreset(); else if(window['applyAudioPreset']) window['applyAudioPreset'](); }
+function previewAudioFilters(){ if(window._previewAudioFilters) window._previewAudioFilters(); else if(window['previewAudioFilters']) window['previewAudioFilters'](); }
+function startEnhancing(){ if(window._startEnhancing) window._startEnhancing(); else if(window['startEnhancing']) window['startEnhancing'](); }
+function downloadEnhanced(){ if(window._downloadEnhanced) window._downloadEnhanced(); else if(window['downloadEnhanced']) window['downloadEnhanced'](); }
+function resetEnhancer(){ if(window._resetEnhancer) window._resetEnhancer(); else if(window['resetEnhancer']) window['resetEnhancer'](); }
+function addClip(){ if(window._addClip) window._addClip(); else if(window['addClip']) window['addClip'](); }
+function removeClip(a,b){ if(window._removeClip) window._removeClip(a,b); else if(window['removeClip']) window['removeClip'](a,b); }
+function clearClips(){ if(window._clearClips) window._clearClips(); else if(window['clearClips']) window['clearClips'](); }
+function combineVideos(){ if(window._combineVideos) window._combineVideos(); else if(window['combineVideos']) window['combineVideos'](); }
+function setCaptionStyle(a,b){ if(window._setCaptionStyle) window._setCaptionStyle(a,b); else if(window['setCaptionStyle']) window['setCaptionStyle'](a,b); }
+function generateCaptions(){ if(window._generateCaptions) window._generateCaptions(); else if(window['generateCaptions']) window['generateCaptions'](); }
+function addManualCaption(){ if(window._addManualCaption) window._addManualCaption(); else if(window['addManualCaption']) window['addManualCaption'](); }
+function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
+function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
+function applyCrop(){ if(window._applyCrop) window._applyCrop(); else if(window['applyCrop']) window['applyCrop'](); }
+function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); else if(window['cancelCrop']) window['cancelCrop'](); }
+function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
+function hideLogin(){ if(window._hideLogin) window._hideLogin(); else if(window['hideLogin']) window['hideLogin'](); }
+function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); else if(window['showAuthTab']) window['showAuthTab'](a,b); }
+function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
+function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
+function uploadEnhancedToYouTube(){ if(window._uploadEnhancedToYouTube) window._uploadEnhancedToYouTube(); else if(window['uploadEnhancedToYouTube']) window['uploadEnhancedToYouTube'](); }
+function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shareEnhancedWhatsApp(); else if(window['shareEnhancedWhatsApp']) window['shareEnhancedWhatsApp'](); }
+</script>
+
 
 <div class="topbar">
   <div class="topbar-left">
