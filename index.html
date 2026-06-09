@@ -260,14 +260,17 @@
   let paymentEnabled = false;
 
   window.loadAdminDashboard = async function() {
-    ['create','enhance','library','photo'].forEach(t => {
+    // Hide other sections
+    ['create','enhance','library','photo','design'].forEach(t => {
       const s = document.getElementById('section-'+t);
       if(s) { s.classList.remove('active'); s.style.display = 'none'; }
     });
-    ['create','enhance','library','photo','admin'].forEach(t => {
+    ['create','enhance','library','photo','design','admin'].forEach(t => {
       const b = document.getElementById('sidebar-'+t);
       if(b) b.classList.toggle('active', t === 'admin');
     });
+    // Track current tab
+    window._currentTab = 'admin';
 
     let adminSection = document.getElementById('section-admin');
     if (!adminSection) {
@@ -4171,11 +4174,19 @@ switchTab = function(tab) {
     }, 200);
   }
   if (tab === 'library') renderLibrary();
-  if (tab === 'admin') { loadAdminDashboard(); return; }
+  if (tab === 'admin') { 
+    if (typeof window.loadAdminDashboard === 'function') window.loadAdminDashboard();
+    return; 
+  }
+  // Hide admin section when switching away
+  const adminSec = document.getElementById('section-admin');
+  if (adminSec) adminSec.style.display = 'none';
+  
   ['create','enhance','library','photo','design'].forEach(t => {
     const sec = document.getElementById('section-'+t);
     if (sec) { sec.classList.toggle('active', t === tab); sec.style.display = t === tab ? 'block' : 'none'; }
   });
+  window._currentTab = tab;
   // Update sidebar
   ['create','enhance','library','photo','admin'].forEach(t => {
     const btn = document.getElementById('sidebar-'+t);
