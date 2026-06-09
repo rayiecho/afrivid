@@ -148,6 +148,37 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </style>
 </head>
 <body>
+<script>
+// Global proxies - required because main script is type="module"
+function setMode(m){ const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
+function goToStep(n){ if(window._goToStep) window._goToStep(n); }
+function generateScript(){ if(window._generateScript) window._generateScript(); }
+function handleGenerateScript(){ if(window._handleGenerateScript) window._handleGenerateScript(); }
+function startRecording(){ if(window._startRecording) window._startRecording(); }
+function stopRecording(){ if(window._stopRecording) window._stopRecording(); }
+function makeAnother(){ if(window._makeAnother) window._makeAnother(); }
+function downloadVideo(){ if(window._downloadVideo) window._downloadVideo(); }
+function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
+function shareWhatsApp(){ if(window._shareWhatsApp) window._shareWhatsApp(); }
+function uploadToYouTube(){ if(window._uploadToYouTube) window._uploadToYouTube(); }
+function loadPresenterPhoto(e){ if(window._loadPresenterPhoto) window._loadPresenterPhoto(e); }
+function clearPresenterPhoto(){ if(window._clearPresenterPhoto) window._clearPresenterPhoto(); }
+function updateDurationWarning(){ if(window._updateDurationWarning) window._updateDurationWarning(); }
+function toggleVideoCrop(){ if(window._toggleVideoCrop) window._toggleVideoCrop(); }
+function setVideoCropRatio(r){ if(window._setVideoCropRatio) window._setVideoCropRatio(r); }
+function applyVideoCrop(){ if(window._applyVideoCrop) window._applyVideoCrop(); }
+function cancelVideoCrop(){ if(window._cancelVideoCrop) window._cancelVideoCrop(); }
+function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); }
+function setCropRatio(r){ if(window._setCropRatio) window._setCropRatio(r); }
+function applyCrop(){ if(window._applyCrop) window._applyCrop(); }
+function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); }
+function showLogin(){ if(window._showLogin) window._showLogin(); }
+function hideLogin(){ if(window._hideLogin) window._hideLogin(); }
+function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
+function doSignIn(){ if(window._doSignIn) window._doSignIn(); }
+function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
+</script>
+
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -602,7 +633,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // STEP NAVIGATION
-window.goToStep = function(n) {
+window._goToStep = window.goToStep = function(n) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById(`panel-${n}`).classList.add('active');
   document.querySelectorAll('.step-pill').forEach((p, i) => {
@@ -629,7 +660,7 @@ window.updateDurationWarning = function() {
 }
 
 // GENERATE SCRIPT
-window.handleGenerateScript = async function() {
+window._handleGenerateScript = window.handleGenerateScript = async function() {
   const topic = document.getElementById('video-topic').value.trim();
   if (!topic) { alert('Please enter a video topic'); return; }
   const btn = event.target;
@@ -704,7 +735,7 @@ window.handleStartRecording = function() {
 }
 
 // RECORD VIDEO
-window.handleRecord = async function() {
+window._handleRecord = window.handleRecord = async function() {
   if (!currentUser) { showLogin(); return; }
   // Check limit
   const used = userProfile?.videosGenerated || 0;
@@ -3528,19 +3559,19 @@ window.handleMakeAnother = function() {
 }
 
 // AUTH
-window.showLogin = function(msg) {
+window._showLogin = window.showLogin = function(msg) {
   document.getElementById('login-modal').classList.add('active');
 }
-window.hideLogin = function() {
+window._hideLogin = window.hideLogin = function() {
   document.getElementById('login-modal').classList.remove('active');
 }
-window.showAuthTab = function(tab) {
+window._showAuthTab = window.showAuthTab = function(tab) {
   document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
   document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
 }
-window.doSignIn = async function() {
+window._doSignIn = window.doSignIn = async function() {
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
   const err = document.getElementById('login-error');
@@ -3552,7 +3583,7 @@ window.doSignIn = async function() {
     err.textContent = '[!] ' + e.message.replace('Firebase: ','');
   }
 }
-window.doSignUp = async function() {
+window._doSignUp = window.doSignUp = async function() {
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
