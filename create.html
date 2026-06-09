@@ -1912,7 +1912,7 @@ window._startRecording = async function startRecording() {
 
   document.getElementById('canvas-overlay').style.display = 'none';
   document.getElementById('btn-record').style.display = 'none';
-  // style ref removed
+  if (document.getElementById('btn-stop')) document.getElementById('btn-stop').style.display = 'inline-flex';
   document.getElementById('progress-wrap').style.display = 'block';
 
   recordedChunks = [];
@@ -2057,6 +2057,8 @@ window._startRecording = async function startRecording() {
 
 window._stopRecording = function stopRecording() {
   isRecording = false;
+  if (document.getElementById('btn-stop')) document.getElementById('btn-stop').style.display = 'none';
+  if (document.getElementById('btn-record')) document.getElementById('btn-record').style.display = 'inline-flex';
   if (animFrame) cancelAnimationFrame(animFrame);
   window.speechSynthesis.cancel();
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
