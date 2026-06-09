@@ -1847,6 +1847,23 @@ function saveToLibrary(blob, title, duration) {
     renderLibrary();
   };
   reader.readAsDataURL(blob);
+  // Also save to Firestore studio
+  if (currentUser) {
+    import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js').then(({ getFirestore, collection, addDoc, doc, updateDoc, increment, serverTimestamp }) => {
+      const db = getFirestore();
+      addDoc(collection(db, 'studio_videos'), {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        title: title,
+        duration: duration,
+        size: (blob.size / 1024 / 1024).toFixed(1) + 'MB',
+        createdAt: serverTimestamp()
+      }).then(() => {
+        updateDoc(doc(db, 'studio_users', currentUser.uid), { videosGenerated: increment(1) });
+        addLog('success', '[ok] Video saved to your Studio!');
+      }).catch(e => addLog('error', '[x] Studio save failed: ' + e.message));
+    });
+  }
 }
 
 function renderLibrary() {
