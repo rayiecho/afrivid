@@ -901,7 +901,7 @@ async function downloadMP4() {
     a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.mp4`;
     a.click();
     URL.revokeObjectURL(url);
-    {textContent:''}.textContent = 'Downloaded! (WebM format - rename to .webm if MP4 doesn\'t play)';
+    // removed broken reference
     addLog('info', '[i] Direct download complete');
   }
 }
@@ -934,8 +934,8 @@ function clearPresenterPhoto() {
 
 function drawPresenterPhoto(ctx, W, H) {
   if (!presenterImage) return;
-  const position = {value:'br'} ? {value:'br'}.value : 'br';
-  const shape = {value:'circle'} ? {value:'circle'}.value : 'circle';
+  const position = 'br';
+  const shape = 'circle';
   const size = Math.round(W * 0.15);
   const margin = 20;
   let x, y;
@@ -1376,7 +1376,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   if (style === 'whiteboard') { drawWhiteboardScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'cinematic') { drawCinematicScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'photobg') {
-    const theme = {value:'africa'} ? {value:'africa'}.value : 'africa';
+  const theme = 'africa';
     const cachedImg = bgImageCache[theme] || null;
     drawPhotoBgScene(canvas, scene, progress, currentWord, cachedImg);
     applyTransition(canvas);
@@ -1650,8 +1650,7 @@ function shareWhatsApp() {
 }
 
 function applyTransition(canvas) {
-  const transition = {value:'fade'} ?
-    {value:'fade'}.value : 'fade';
+  const transition = document.getElementById('scene-transition') ? document.getElementById('scene-transition').value : 'fade';
   if (transition === 'none' || !isTransitioning) return;
   const ctx = canvas.getContext('2d');
   const alpha = getTransitionAlpha();
@@ -1873,7 +1872,7 @@ async function startRecording() {
 
   document.getElementById('canvas-overlay').style.display = 'none';
   document.getElementById('btn-record').style.display = 'none';
-  {style:{display:'none'}}.style.display = 'inline-flex';
+  // removed broken style reference
   document.getElementById('progress-wrap').style.display = 'block';
 
   recordedChunks = [];
@@ -1882,7 +1881,7 @@ async function startRecording() {
   // Preload background image if needed
   const visualStyle = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : 'slides';
   if (visualStyle === 'photobg') {
-    const theme = {value:'africa'}.value;
+  const theme = 'africa';
     addLog('info', '[img] Loading background image...');
     await loadBgImage(theme);
     addLog('success', '[ok] Background image loaded');
@@ -2023,7 +2022,7 @@ function stopRecording() {
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
   }
-  {style:{display:'none'}}.style.display = 'none';
+  // removed broken style reference
   addLog('success', '[ok] Recording complete! Processing video...');
 }
 
@@ -2033,7 +2032,7 @@ function finishVideo() {
 
   addLog('success', `[ok] Video ready! Size: ${sizeMB}MB`);
 
-  {textContent:''}.textContent = `"${scriptData.title}" - ${scriptData.duration}s . ${sizeMB}MB . WebM format`;
+  // removed broken reference
   document.getElementById('final-details').innerHTML = `
     Title: ${scriptData.title}<br>
     Duration: ${scriptData.duration} seconds<br>
