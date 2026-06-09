@@ -176,6 +176,11 @@ function hideLogin(){ if(window._hideLogin) window._hideLogin(); }
 function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
 function doSignIn(){ if(window._doSignIn) window._doSignIn(); }
 function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
+function downloadVideo(){ if(window._downloadVideo) window._downloadVideo(); }
+function makeAnother(){ if(window._makeAnother) window._makeAnother(); }
+function startRecording(){ if(window._startRecording) window._startRecording(); }
+function stopRecording(){ if(window._stopRecording) window._stopRecording(); }
+function generateScript(){ if(window._generateScript) window._generateScript(); }
 </script>
 
 <!-- TOPBAR -->
@@ -2046,7 +2051,7 @@ function finishVideo() {
   goToStep(4);
 }
 
-downloadVideo = function() {
+window._downloadVideo = window.downloadVideo = function() {
   if (!videoBlob) { alert('No video to download yet.'); return; }
   const url = URL.createObjectURL(videoBlob);
   const a = document.createElement('a');
