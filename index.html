@@ -1746,7 +1746,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
       <!-- LOADING -->
       <div class="loading-state" id="loading-script">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Generating your video script...</div>
+        <div class="loading-text">AfriVid is creating your script...</div>
         <div class="loading-sub">Claude AI is writing scenes, voiceover and slide content</div>
       </div>
     </div>
@@ -2293,7 +2293,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
 - Modern logo for AfriVid Studio, gold and dark colors, letter A with play button
 - Professional poster for tech conference in Africa
 - App icon for smart video tool, minimalist gold design"></textarea>
-            <button id="design-generate-btn" onclick="generateAIImage()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">[*] Generate with AfriVid</button>
+            <button id="design-generate-btn" onclick="generateAIImage()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">Create with AfriVid</button>
             <button onclick="generateDesign()" class="btn btn-outline" style="width:100%;margin-top:0.5rem;font-size:0.82rem;">✏️ Generate Layout Only</button>
             <div id="design-status" style="font-size:0.75rem;font-family:var(--font-mono);margin-top:0.5rem;min-height:1rem;"></div>
           </div>
@@ -3853,9 +3853,9 @@ async function startRecording() {
     await loadBgImage(theme);
     addLog('success', '[ok] Background image loaded');
   }
-  addLog('info', '[mic] Generating voiceover audio...');
+  addLog('info', '[mic] Preparing voiceover...');
   // Music will start after AudioContext is set up
-  addLog('info', `[mic] Generating all voices in parallel...`);
+  addLog('info', '[mic] Preparing all voices...');
   const audioBuffers = await Promise.all(
     scriptData.scenes.map(async (scene, i) => {
       try {
@@ -5076,7 +5076,7 @@ combineVideos = async function() {
   // Check for AI instructions
   const instructions = document.getElementById('combine-instructions').value.trim();
   if (instructions) {
-    addCombineLog('info', '[bot] AfriVid is processing your instructions...');
+    addCombineLog('info', 'AfriVid is processing your instructions...');
   }
 
   try {
@@ -6005,9 +6005,9 @@ generateAIImage = async function() {
 
   const btn = document.getElementById('design-generate-btn');
   const status = document.getElementById('design-status');
-  btn.textContent = '[..] Generating...';
+  btn.textContent = '[..] Creating...';
   btn.disabled = true;
-  status.textContent = '[bot] AfriVid is creating your ' + type + '...';
+  status.textContent = 'AfriVid is working on your ' + type + '...';
   status.style.color = '#F5A623';
 
   // Build enhanced prompt for better logo/poster quality
@@ -6060,7 +6060,7 @@ generateAIImage = async function() {
     status.style.color = '#E63329';
   }
 
-  btn.textContent = '[*] Generate with AfriVid';
+  btn.textContent = 'Create with AfriVid';
   btn.disabled = false;
 }
 
@@ -6070,7 +6070,7 @@ generateDesign = async function() {
 
   const btn = document.getElementById('design-generate-btn');
   const statusEl = document.getElementById('design-status');
-  if (btn) { btn.textContent = '[..] Generating...'; btn.disabled = true; }
+  if (btn) { btn.textContent = '[..] Creating...'; btn.disabled = true; }
   if (statusEl) { statusEl.textContent = '[bot] AI is designing...'; statusEl.style.color = '#F5A623'; }
 
   try {
