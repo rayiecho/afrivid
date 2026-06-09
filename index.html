@@ -1515,7 +1515,7 @@ var adjustGlobalLimit=function(c,d){};
         </div>
         <!-- MODE TOGGLE -->
         <div class="mode-toggle" style="margin-bottom:1.5rem;">
-          <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">🤖 AfriVid Generate Script</button>
+          <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">AfriVid Script Generator</button>
           <button class="mode-btn" id="mode-own" onclick="setMode('own')">✍️ Use My Own Script</button>
         </div>
 
@@ -1623,7 +1623,7 @@ var adjustGlobalLimit=function(c,d){};
             <label class="form-label">Topic Category</label>
             <select id="video-program" class="form-select">
               <option value="General knowledge and education">📚 General Education</option>
-              <option value="Artificial Intelligence and technology">🤖 Artificial Intelligence</option>
+              <option value="Artificial Intelligence and technology">🤖 Technology & AI</option>
               <option value="Finance money and financial literacy">💰 Finance & Money</option>
               <option value="Business and entrepreneurship">📊 Business & Entrepreneurship</option>
               <option value="IT Training and digital skills">💻 IT & Digital Skills</option>
@@ -4772,7 +4772,7 @@ async function uploadEnhancedToYouTube() {
   await uploadToYouTube();
 }
 
-// -- TRIM & AI EDIT --
+// -- TRIM & EDIT --
 let clips = []; // [{start, end}]
 let dragHandle = null;
 let trimStart = 0;
@@ -4946,9 +4946,9 @@ Return ONLY the JSON array, nothing else.`;
       trimEnd = clips[0].end;
       updateTimeline();
     }
-    addEnhanceLog('success', `[ok] AI found ${clips.length} clip(s) to keep`);
+    addEnhanceLog('success', `[ok] Found ${clips.length} clip(s) to keep`);
   } catch(e) {
-    addEnhanceLog('error', '[x] AI edit failed: ' + e.message);
+    addEnhanceLog('error', '[x] Edit failed: ' + e.message);
   }
 }
 
@@ -5073,7 +5073,7 @@ combineVideos = async function() {
   addCombineLog('info', `[vid] Combining ${multiVideos.length} videos...`);
   document.getElementById('combine-progress').style.display = 'block';
 
-  // Check for AI instructions
+  // Check for instructions
   const instructions = document.getElementById('combine-instructions').value.trim();
   if (instructions) {
     addCombineLog('info', 'AfriVid is processing your instructions...');
@@ -5428,9 +5428,9 @@ textPos: "none", "bottom", "top", "br"`;
     if (p.textPos) document.getElementById('photo-text-pos').value = p.textPos;
 
     updatePhotoPreview();
-    addPhotoLog('success', '[ok] AI edit applied!');
+    addPhotoLog('success', '[ok] Edit applied!');
   } catch(e) {
-    addPhotoLog('error', '[x] AI edit failed: ' + e.message);
+    addPhotoLog('error', '[x] Edit failed: ' + e.message);
   }
 }
 
@@ -5454,7 +5454,7 @@ function resetPhotoEditor() {
   document.getElementById('photo-log').innerHTML = '<span class="log-line info">// Upload a photo to get started.</span>';
 }
 
-// -- AI BACKGROUND REMOVAL --
+// -- BACKGROUND REMOVAL --
 let selfieSegmentation = null;
 
 async function initSegmentation() {
@@ -5475,7 +5475,7 @@ async function removeBackground() {
   btn.disabled = true;
   btn.textContent = '[..] Processing...';
   status.style.display = 'block';
-  addPhotoLog('info', '[bot] AI detecting subject...');
+  addPhotoLog('info', 'Detecting subject...');
 
   try {
     const segmentation = await initSegmentation();
@@ -6071,7 +6071,7 @@ generateDesign = async function() {
   const btn = document.getElementById('design-generate-btn');
   const statusEl = document.getElementById('design-status');
   if (btn) { btn.textContent = '[..] Creating...'; btn.disabled = true; }
-  if (statusEl) { statusEl.textContent = '[bot] AI is designing...'; statusEl.style.color = '#F5A623'; }
+  if (statusEl) { statusEl.textContent = 'AfriVid is designing...'; statusEl.style.color = '#F5A623'; }
 
   try {
     const controller = new AbortController();
@@ -6086,7 +6086,7 @@ generateDesign = async function() {
         max_tokens: 1500,
         messages: [{
           role: 'user',
-          content: `You are a graphic design AI. Create a design based on: "${prompt}"
+          content: `Create a professional design based on: "${prompt}"
 
 Canvas is ${designW}x${designH} pixels.
 
@@ -6117,13 +6117,13 @@ Rules:
     if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
     const data = await response.json();
-    if (!data.content || !data.content[0]) throw new Error('Empty response from AI');
+    if (!data.content || !data.content[0]) throw new Error('Empty response. Try again.');
 
     const text = data.content[0].text.trim();
     if (statusEl) statusEl.textContent = '[art] Applying design...';
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('AI did not return valid JSON. Try again.');
+    if (!jsonMatch) throw new Error('Could not process. Try again.');
 
     const design = JSON.parse(jsonMatch[0]);
     designBg = design.background || '#050A14';
