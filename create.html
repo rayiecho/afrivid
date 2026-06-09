@@ -148,6 +148,35 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </style>
 </head>
 <body>
+<!-- Global function proxies — needed because main script is type="module" -->
+<script>
+function setMode(m){ if(window._setMode) window._setMode(m); }
+function goToStep(n){ if(window._goToStep) window._goToStep(n); }
+function handleGenerateScript(){ if(window._handleGenerateScript) window._handleGenerateScript(); }
+function handleStartRecording(){ if(window._handleStartRecording) window._handleStartRecording(); }
+function handleRecord(){ if(window._handleRecord) window._handleRecord(); }
+function handleDownload(){ if(window._handleDownload) window._handleDownload(); }
+function handleMakeAnother(){ if(window._handleMakeAnother) window._handleMakeAnother(); }
+function handleSaveToStudio(){ if(window._handleSaveToStudio) window._handleSaveToStudio(); }
+function toggleVideoCrop(){ if(window._toggleVideoCrop) window._toggleVideoCrop(); }
+function setVideoCropRatio(r){ if(window._setVideoCropRatio) window._setVideoCropRatio(r); }
+function applyVideoCrop(){ if(window._applyVideoCrop) window._applyVideoCrop(); }
+function cancelVideoCrop(){ if(window._cancelVideoCrop) window._cancelVideoCrop(); }
+function setAspectRatio(r,b){ if(window._setAspectRatio) window._setAspectRatio(r,b); }
+function setAspectRatioFromSelect(){ if(window._setAspectRatioFromSelect) window._setAspectRatioFromSelect(); }
+function stopRecording(){ if(window._stopRecording) window._stopRecording(); }
+function shareWhatsApp(){ if(window._shareWhatsApp) window._shareWhatsApp(); }
+function uploadToYouTube(){ if(window._uploadToYouTube) window._uploadToYouTube(); }
+function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
+function updateDurationWarning(){ if(window._updateDurationWarning) window._updateDurationWarning(); }
+function loadPresenterPhoto(e){ if(window._loadPresenterPhoto) window._loadPresenterPhoto(e); }
+function clearPresenterPhoto(){ if(window._clearPresenterPhoto) window._clearPresenterPhoto(); }
+function showLogin(){ if(window._showLogin) window._showLogin(); }
+function hideLogin(){ if(window._hideLogin) window._hideLogin(); }
+function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
+function doSignIn(){ if(window._doSignIn) window._doSignIn(); }
+function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
+</script>
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -581,7 +610,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // STEP NAVIGATION
-window.goToStep = function(n) {
+window._goToStep = window.goToStep = function(n) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById(`panel-${n}`).classList.add('active');
   document.querySelectorAll('.step-pill').forEach((p, i) => {
@@ -608,7 +637,7 @@ window.updateDurationWarning = function() {
 }
 
 // GENERATE SCRIPT
-window.handleGenerateScript = async function() {
+window._handleGenerateScript = window.handleGenerateScript = async function() {
   const topic = document.getElementById('video-topic').value.trim();
   if (!topic) { alert('Please enter a video topic'); return; }
   const btn = event.target;
@@ -686,7 +715,7 @@ Create exactly ${sceneCount} scenes. Total durations must equal ${duration}. Ret
 }
 
 // START RECORDING — requires login
-window.handleStartRecording = function() {
+window._handleStartRecording = window.handleStartRecording = function() {
   if (!currentUser) {
     showLogin('Sign in to record your video');
     return;
@@ -695,7 +724,7 @@ window.handleStartRecording = function() {
 }
 
 // RECORD VIDEO
-window.handleRecord = async function() {
+window._handleRecord = window.handleRecord = async function() {
   if (!currentUser) { showLogin(); return; }
   // Check limit
   const used = userProfile?.videosGenerated || 0;
@@ -3383,7 +3412,7 @@ let videoCropStart = null;
 let videoCropRect = {x:0,y:0,w:0,h:0};
 let isVideoCropping = false;
 
-window.setAspectRatioFromSelect = function() {
+window._setAspectRatioFromSelect = window.setAspectRatioFromSelect = function() {
   const ratio = document.getElementById('video-aspect-ratio').value;
   const ratioMap = {'16:9':'16/9','9:16':'9/16','1:1':'1/1','4:3':'4/3'};
   document.getElementById('canvas-container').style.aspectRatio = ratioMap[ratio] || '16/9';
@@ -3391,14 +3420,14 @@ window.setAspectRatioFromSelect = function() {
   addLog('info', `[ok] Aspect ratio: ${ratio}`);
 }
 
-window.setMode = function(mode) {
+window._setMode = window.setMode = function(mode) {
   document.getElementById('ai-fields').style.display = mode === 'ai' ? 'block' : 'none';
   document.getElementById('own-fields').style.display = mode === 'own' ? 'block' : 'none';
   document.getElementById('mode-ai').classList.toggle('active', mode === 'ai');
   document.getElementById('mode-own').classList.toggle('active', mode === 'own');
 }
 
-window.setAspectRatio = function(ratio, btn) {
+window._setAspectRatio = window.setAspectRatio = function(ratio, btn) {
   selectedAspectRatio = ratio;
   document.querySelectorAll('#aspect-ratio-btns .crop-ratio-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
@@ -3408,7 +3437,7 @@ window.setAspectRatio = function(ratio, btn) {
   addLog('info', `[ok] Aspect ratio set to ${ratio}`);
 }
 
-window.toggleVideoCrop = function() {
+window._toggleVideoCrop = window.toggleVideoCrop = function() {
   const canvas = document.getElementById('video-canvas');
   if (!canvas.width) { addLog('error','[x] Record a video first'); return; }
   videoCropActive = !videoCropActive;
@@ -3423,7 +3452,7 @@ window.toggleVideoCrop = function() {
   } else { cancelVideoCrop(); }
 }
 
-window.setVideoCropRatio = function(ratio) {
+window._setVideoCropRatio = window.setVideoCropRatio = function(ratio) {
   videoCropRatio = ratio;
   document.querySelectorAll('#crop-controls .crop-ratio-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
@@ -3478,7 +3507,7 @@ function updateVideoCropVisual() {
   sel.style.height = (videoCropRect.h * scaleY) + 'px';
 }
 
-window.applyVideoCrop = function() {
+window._applyVideoCrop = window.applyVideoCrop = function() {
   const canvas = document.getElementById('video-canvas');
   const cw = Math.round(Math.abs(videoCropRect.w));
   const ch = Math.round(Math.abs(videoCropRect.h));
@@ -3491,14 +3520,14 @@ window.applyVideoCrop = function() {
   addLog('success', `[ok] Cropped to ${cw}x${ch}px`);
 }
 
-window.cancelVideoCrop = function() {
+window._cancelVideoCrop = window.cancelVideoCrop = function() {
   videoCropActive = false; isVideoCropping = false; videoCropStart = null;
   document.getElementById('crop-overlay').style.display = 'none';
   document.getElementById('crop-controls').style.display = 'none';
   document.getElementById('crop-selection').style.display = 'none';
 }
 
-window.handleDownload = function() {
+window._handleDownload = window.handleDownload = function() {
   if (videoBlob) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(videoBlob);
@@ -3509,7 +3538,7 @@ window.handleDownload = function() {
   }
 }
 
-window.handleSaveToStudio = async function() {
+window._handleSaveToStudio = window.handleSaveToStudio = async function() {
   if (!currentUser) { showLogin(); return; }
   try {
     await addDoc(collection(db, 'studio_videos'), {
@@ -3527,7 +3556,7 @@ window.handleSaveToStudio = async function() {
   }
 }
 
-window.handleMakeAnother = function() {
+window._handleMakeAnother = window.handleMakeAnother = function() {
   scriptData = null;
   videoBlob = null;
   document.getElementById('video-topic').value = '';
@@ -3542,19 +3571,19 @@ window.handleMakeAnother = function() {
 }
 
 // AUTH
-window.showLogin = function(msg) {
+window._showLogin = window.showLogin = function(msg) {
   document.getElementById('login-modal').classList.add('active');
 }
-window.hideLogin = function() {
+window._hideLogin = window.hideLogin = function() {
   document.getElementById('login-modal').classList.remove('active');
 }
-window.showAuthTab = function(tab) {
+window._showAuthTab = window.showAuthTab = function(tab) {
   document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
   document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
   document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
 }
-window.doSignIn = async function() {
+window._doSignIn = window.doSignIn = async function() {
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
   const err = document.getElementById('login-error');
@@ -3566,7 +3595,7 @@ window.doSignIn = async function() {
     err.textContent = '[!] ' + e.message.replace('Firebase: ','');
   }
 }
-window.doSignUp = async function() {
+window._doSignUp = window.doSignUp = async function() {
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
