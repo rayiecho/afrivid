@@ -1448,8 +1448,7 @@ function shareWhatsApp() {
 }
 
 function applyTransition(canvas) {
-  const transition = {value:'fade'} ?
-    'fade';
+  const transition = document.getElementById('scene-transition') ? document.getElementById('scene-transition').value : 'fade';
   if (transition === 'none' || !isTransitioning) return;
   const ctx = canvas.getContext('2d');
   const alpha = getTransitionAlpha();
