@@ -133,138 +133,276 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
   <!-- ENHANCE MODE -->
   <div id="mode-enhance">
-    <!-- UPLOAD -->
-    <div id="upload-card" class="card">
+<!-- UPLOAD -->
+    <div class="card" id="enhancer-upload-card">
       <div class="card-title">
-        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-        Upload Video
+        <div class="card-title-icon">📁</div>
+        Upload Your Video
       </div>
-      <div class="upload-zone" onclick="document.getElementById('video-file-input').click()">
-        <div class="upload-icon">🎬</div>
-        <div class="upload-text">Drop your video here or click to upload</div>
-        <div class="upload-sub">MP4, MOV, AVI, WebM · Max 500MB</div>
+      <div class="upload-zone" onclick="document.getElementById('video-file-input').click()" id="upload-zone">
+        <input type="file" id="video-file-input" accept="video/*" style="display:none" onchange="loadVideoFile(event)">
+        <div class="upload-zone-icon">🎥</div>
+        <div class="upload-zone-text">Click to upload your video</div>
+        <div class="upload-zone-sub">MP4, MOV, AVI, WebM supported</div>
       </div>
-      <input type="file" id="video-file-input" accept="video/*" style="display:none;" onchange="loadVideoFile(event)">
     </div>
 
-    <!-- EDITOR -->
-    <div id="editor-card" style="display:none;">
-      <div class="editor-layout">
-        <div>
-          <div class="preview-area" id="preview-area">
-            <video id="preview-video" controls style="width:100%;height:100%;object-fit:contain;"></video>
-            <canvas id="crop-canvas" style="display:none;width:100%;height:100%;object-fit:contain;"></canvas>
-            <div class="crop-overlay" id="crop-overlay"></div>
-            <div class="crop-selection" id="crop-selection" style="display:none;"></div>
-          </div>
-          <!-- CROP CONTROLS -->
-          <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
-            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
-            <div class="crop-ratio-btns">
-              <button class="crop-ratio-btn" onclick="setCropRatio('free')">Free</button>
-              <button class="crop-ratio-btn" onclick="setCropRatio('1:1')">1:1</button>
-              <button class="crop-ratio-btn active" onclick="setCropRatio('16:9')">16:9</button>
-              <button class="crop-ratio-btn" onclick="setCropRatio('9:16')">9:16</button>
-              <button class="crop-ratio-btn" onclick="setCropRatio('4:3')">4:3</button>
-              <button class="crop-ratio-btn" onclick="setCropRatio('3:4')">3:4</button>
-            </div>
-            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-              <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">✓ Apply Crop</button>
-              <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">✕ Cancel</button>
-            </div>
-          </div>
-          <div class="btn-row" style="margin-top:1rem;">
-            <button class="btn btn-gold" onclick="handleExport()">⬇ Export MP4</button>
-            <button class="btn btn-green" onclick="handleSaveToStudio()">💾 Save to Studio</button>
-            <button class="btn btn-outline" onclick="toggleCrop()">⬚ Crop</button>
-            <button class="btn btn-outline" onclick="resetEditor()">✕ New Video</button>
-          </div>
-          <div id="progress-wrap" style="display:none;margin-bottom:1rem;">
-            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">
-              <span id="progress-label">Processing...</span>
-              <span id="progress-pct">0%</span>
-            </div>
-            <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
-              <div id="progress-fill" style="height:100%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:2px;transition:width 0.3s;width:0%;"></div>
-            </div>
-          </div>
-          <div id="combine-progress-wrap" style="display:none;margin-bottom:1rem;">
-            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">
-              <span id="combine-progress-label">Combining...</span>
-              <span id="combine-progress-pct">0%</span>
-            </div>
-            <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
-              <div id="combine-progress-fill" style="height:100%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:2px;transition:width 0.3s;width:0%;"></div>
-            </div>
-          </div>
-          <div class="status-log" id="status-log"><span class="log-line info">// Video loaded. Apply enhancements and export.</span></div>
+    <!-- EDITOR (hidden until video loaded) -->
+    <div id="enhancer-editor" style="display:none;">
+      
+      <!-- PREVIEW -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-icon">👁</div>
+          Preview
+          <span class="tag tag-gold" id="enhance-filename">video.mp4</span>
         </div>
-
-        <div class="controls-panel">
-          <!-- PRESETS -->
-          <div class="control-group">
-            <div class="control-label">QUICK PRESETS</div>
-            <div class="preset-grid">
-              <button class="preset-btn" onclick="applyPreset('iphone')">iPhone</button>
-              <button class="preset-btn" onclick="applyPreset('dslr')">DSLR</button>
-              <button class="preset-btn" onclick="applyPreset('cinema')">Cinema</button>
-              <button class="preset-btn" onclick="applyPreset('vivid')">Vivid</button>
-              <button class="preset-btn" onclick="applyPreset('bw')">B&W</button>
-              <button class="preset-btn" onclick="applyPreset('reset')">Reset</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">ORIGINAL</div>
+            <div class="enhance-preview">
+              <video id="original-video" controls></video>
             </div>
           </div>
-
-          <!-- ADJUSTMENTS -->
-          <div class="control-group">
-            <div class="control-label">ADJUSTMENTS</div>
-            <div class="slider-row">
-              <span class="slider-name">Brightness</span>
-              <input type="range" class="slider" id="brightness" min="0" max="200" value="100" oninput="updateFilter()">
-              <span class="slider-val" id="brightness-val">100%</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-name">Contrast</span>
-              <input type="range" class="slider" id="contrast" min="0" max="200" value="100" oninput="updateFilter()">
-              <span class="slider-val" id="contrast-val">100%</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-name">Saturation</span>
-              <input type="range" class="slider" id="saturation" min="0" max="300" value="100" oninput="updateFilter()">
-              <span class="slider-val" id="saturation-val">100%</span>
-            </div>
-            <div class="slider-row">
-              <span class="slider-name">Warmth</span>
-              <input type="range" class="slider" id="warmth" min="-100" max="100" value="0" oninput="updateFilter()">
-              <span class="slider-val" id="warmth-val">0</span>
+          <div>
+            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">ENHANCED PREVIEW</div>
+            <div class="enhance-preview">
+              <canvas id="enhance-canvas" style="width:100%;height:100%;"></canvas>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- AUDIO -->
-          <div class="control-group">
-            <div class="control-label">AUDIO</div>
-            <div class="slider-row">
-              <span class="slider-name">Volume</span>
-              <input type="range" class="slider" id="volume" min="0" max="200" value="100" oninput="updateAudio()">
-              <span class="slider-val" id="volume-val">100%</span>
-            </div>
-            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-              <button class="preset-btn" style="flex:1;" onclick="addLog('info','[~] Noise removal applied')">Noise Remove</button>
-              <button class="preset-btn" style="flex:1;" onclick="addLog('info','[~] Voice boost applied')">Voice Boost</button>
-            </div>
+      <!-- ADJUSTMENTS -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon">🎨</div>Visual Adjustments</div>
+        <div class="enhance-grid">
+          <div class="form-group">
+            <label class="form-label">Brightness</label>
+            <input type="range" class="filter-slider" id="adj-brightness" min="50" max="200" value="100" oninput="updatePreview()">
+            <span class="form-hint" id="brightness-val">100%</span>
           </div>
+          <div class="form-group">
+            <label class="form-label">Contrast</label>
+            <input type="range" class="filter-slider" id="adj-contrast" min="50" max="200" value="100" oninput="updatePreview()">
+            <span class="form-hint" id="contrast-val">100%</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Saturation</label>
+            <input type="range" class="filter-slider" id="adj-saturation" min="0" max="200" value="100" oninput="updatePreview()">
+            <span class="form-hint" id="saturation-val">100%</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sharpness</label>
+            <input type="range" class="filter-slider" id="adj-sharpness" min="0" max="5" value="0" step="0.5" oninput="updatePreview()">
+            <span class="form-hint" id="sharpness-val">0</span>
+          </div>
+        </div>
+      </div>
 
-          <!-- FORMAT -->
-          <div class="control-group">
-            <div class="control-label">EXPORT FORMAT</div>
-            <select style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;">
-              <option>MP4  -  High Quality</option>
-              <option>MP4  -  Compressed</option>
-              <option>WebM</option>
+      <!-- QUALITY PRESETS -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon">✨</div>Quality Presets</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;">
+          <button onclick="applyQualityPreset('iphone')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">📱 iPhone Look</button>
+          <button onclick="applyQualityPreset('dslr')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">📷 DSLR Look</button>
+          <button onclick="applyQualityPreset('cinema')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">🎬 Cinema</button>
+          <button onclick="applyQualityPreset('broadcast')" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">📺 Broadcast</button>
+          <button onclick="applyQualityPreset('auto')" style="background:linear-gradient(135deg,rgba(245,166,35,0.2),rgba(45,138,94,0.2));border:1px solid var(--gold);color:var(--gold);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:700;">✨ Auto Enhance</button>
+          <button onclick="applyQualityPreset('reset')" style="background:var(--navy3);border:1px solid var(--border);color:var(--muted);padding:0.85rem;border-radius:10px;cursor:pointer;font-size:0.82rem;">↺ Reset</button>
+        </div>
+        <div id="preset-applied" style="display:none;font-size:0.75rem;color:#74C69D;font-family:var(--font-mono);margin-top:0.5rem;"></div>
+      </div>
+
+      <!-- AUDIO ENHANCEMENT -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon">🎙</div>Audio Enhancement</div>
+        <div class="enhance-grid">
+          <div class="form-group">
+            <label class="form-label">Noise Reduction</label>
+            <input type="range" class="filter-slider" id="noise-reduction" min="0" max="100" value="0" oninput="document.getElementById('noise-val').textContent=this.value+'%'">
+            <span class="form-hint" id="noise-val">0%</span>
+            <button onclick="previewAudioFilters()" style="margin-top:0.5rem;width:100%;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.5rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font-mono);" id="btn-preview-audio">[>] Preview Audio with Filters</button>
+            <div id="audio-preview-status" style="font-size:0.7rem;font-family:var(--font-mono);color:var(--muted);margin-top:0.25rem;"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Voice Boost</label>
+            <input type="range" class="filter-slider" id="voice-boost" min="0" max="100" value="0" oninput="document.getElementById('voice-val').textContent=this.value+'%'">
+            <span class="form-hint" id="voice-val">0%</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Echo Removal</label>
+            <input type="range" class="filter-slider" id="echo-removal" min="0" max="100" value="0" oninput="document.getElementById('echo-val').textContent=this.value+'%'">
+            <span class="form-hint" id="echo-val">0%</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Wind/Rumble Filter</label>
+            <input type="range" class="filter-slider" id="wind-filter" min="0" max="100" value="0" oninput="document.getElementById('wind-val').textContent=this.value+'%'">
+            <span class="form-hint" id="wind-val">0%</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quick Preset</label>
+            <select id="audio-preset" class="form-select" onchange="applyAudioPreset()">
+              <option value="none">Custom</option>
+              <option value="crowd">🎤 Crowd/Event Noise</option>
+              <option value="outdoor">🌬 Outdoor/Wind</option>
+              <option value="room">🏠 Room Echo</option>
+              <option value="phone">📱 Phone Quality Fix</option>
+              <option value="studio">🎙 Studio Clean</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Volume</label>
+            <input type="range" class="filter-slider" id="audio-volume" min="0" max="300" value="100" oninput="document.getElementById('volume-val').textContent=this.value+'%'">
+            <span class="form-hint" id="volume-val">100%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENHANCEMENTS -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon">✨</div>Enhancements</div>
+        <div class="enhance-grid">
+          <div class="form-group">
+            <label class="form-label">Add Subtitles</label>
+            <select id="enhance-subtitles" class="form-select">
+              <option value="none">No Subtitles</option>
+              <option value="auto">Auto Generate</option>
+              <option value="manual">Manual Text</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Background Music</label>
+            <select id="enhance-music" class="form-select">
+              <option value="none">No Music</option>
+              <option value="inspirational">🌍 Inspirational</option>
+              <option value="upbeat">⚡ Upbeat</option>
+              <option value="calm">🌊 Calm</option>
+              <option value="corporate">💼 Corporate</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">YAN Intro</label>
+            <select id="enhance-intro" class="form-select">
+              <option value="none">No Intro</option>
+              <option value="yan">YAN Branded Intro (3s)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">YAN Outro</label>
+            <select id="enhance-outro" class="form-select">
+              <option value="none">No Outro</option>
+              <option value="yan">YAN Branded Outro (3s)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Watermark</label>
+            <select id="enhance-watermark" class="form-select">
+              <option value="none">No Watermark</option>
+              <option value="yan-tl">YAN Logo — Top Left</option>
+              <option value="yan-tr">YAN Logo — Top Right</option>
+              <option value="yan-br">YAN Logo — Bottom Right</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Video Filter</label>
+            <select id="enhance-filter" class="form-select" onchange="updatePreview()">
+              <option value="none">None</option>
+              <option value="vivid">🌈 Vivid</option>
+              <option value="warm">🌅 Warm</option>
+              <option value="cool">❄️ Cool</option>
+              <option value="bw">⚫ Black & White</option>
+              <option value="cinematic">🎬 Cinematic</option>
             </select>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- MANUAL SUBTITLE TEXT -->
+      <div class="card" id="manual-subtitle-card" style="display:none;">
+        <div class="card-title"><div class="card-title-icon">💬</div>Subtitle Text</div>
+        <div class="form-group">
+          <label class="form-label">Enter Subtitles</label>
+          <textarea id="manual-subtitle-text" class="form-textarea" placeholder="Type your subtitle text here. It will appear at the bottom of the video throughout."></textarea>
+        </div>
+      </div>
+
+      <!-- TRIM & AI EDIT -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon">✂️</div>Trim & Edit</div>
+        
+        <!-- EDIT INSTRUCTIONS -->
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label class="form-label">Edit Instructions</label>
+          <textarea id="ai-edit-instructions" class="form-textarea" style="min-height:80px;" placeholder="Type instructions in plain English:
+- Keep only 1:30 to 4:00
+- Remove the first 30 seconds
+- Cut everything after 5 minutes
+- Keep from 2:00 to 3:30 and 7:00 to 9:00"></textarea>
+          <button onclick="applyAIEdit()" class="btn btn-gold" style="margin-top:0.75rem;padding:0.65rem 1.5rem;font-size:0.85rem;">Apply Smart Edit</button>
+        </div>
+
+        <!-- MANUAL TIMELINE -->
+        <div class="form-label" style="margin-bottom:0.5rem;">Manual Trim</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input type="text" id="trim-start" class="form-input" placeholder="0:00" oninput="updateTrimPreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time</label>
+            <input type="text" id="trim-end" class="form-input" placeholder="0:30" oninput="updateTrimPreview()">
+          </div>
+        </div>
+        
+        <!-- TIMELINE VISUAL -->
+        <div class="timeline-wrap" id="trim-timeline" onclick="seekToPosition(event)">
+          <div class="timeline-track">
+            <div class="timeline-bar" id="timeline-bar">
+              <div class="timeline-segment" id="timeline-segment"></div>
+              <div class="timeline-handle left" id="handle-left" onmousedown="startDrag('left', event)"></div>
+              <div class="timeline-handle right" id="handle-right" onmousedown="startDrag('right', event)"></div>
+            </div>
+          </div>
+          <div id="timeline-playhead" style="position:absolute;top:0;bottom:0;width:2px;background:#fff;left:0;pointer-events:none;"></div>
+          <div id="timeline-time" style="position:absolute;bottom:4px;left:8px;font-size:0.68rem;font-family:var(--font-mono);color:var(--muted);">0:00 / 0:00</div>
+        </div>
+
+        <!-- CLIPS LIST -->
+        <div id="clips-list" style="margin-top:1rem;"></div>
+        
+        <div class="btn-row" style="margin-top:1rem;">
+          <button onclick="addClip()" class="btn btn-outline" style="font-size:0.85rem;">+ Add Clip</button>
+          <button onclick="clearClips()" class="btn btn-outline" style="font-size:0.85rem;color:var(--red);border-color:var(--red);">✕ Clear All</button>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon">⚡</div>Export</div>
+        <div class="btn-row">
+          <button class="btn btn-gold" onclick="startEnhancing()">✨ Enhance & Export</button>
+          <button class="btn btn-outline" onclick="resetEnhancer()">↺ Reset</button>
+        </div>
+        <div id="enhance-export-btns" style="display:none;" class="btn-row">
+          <button class="btn btn-green" onclick="downloadEnhanced()">⬇ Download Enhanced</button>
+          <button onclick="uploadEnhancedToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.85rem 2rem;border-radius:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;">▶ Upload to YouTube</button>
+          <button onclick="shareEnhancedWhatsApp()" style="background:#25D366;border:none;color:#fff;padding:0.85rem 2rem;border-radius:10px;font-weight:700;cursor:pointer;">💬 WhatsApp</button>
+        </div>
+        <div class="status-log" id="enhance-log" style="margin-top:1rem;">
+          <span class="log-line info">// Upload a video to get started.</span>
+        </div>
+        <div class="progress-wrap" id="enhance-progress" style="display:none;margin-top:1rem;">
+          <div class="progress-label">
+            <span id="enhance-progress-label">Processing...</span>
+            <span id="enhance-progress-pct">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="enhance-progress-fill"></div></div>
+        </div>
+      </div>
+
+    </div><!-- end enhancer-editor -->
+  </div>
   </div>
 
   <!-- COMBINE MODE -->
