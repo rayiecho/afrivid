@@ -769,7 +769,7 @@ window._handleRecord = window.handleRecord = async function() {
 // ---- FULL VIDEO ENGINE ----
 function startBackgroundMusic(audioCtx, dest, style, duration) {
   const musicType = document.getElementById('video-music') ? 
-    document.getElementById('video-music').value : 'none';
+    document.getElementById('bg-music') ? document.getElementById('bg-music').value : 'none' : 'none';
   if (musicType === 'none') return null;
 
   const nodes = [];
@@ -1887,7 +1887,7 @@ window._startRecording = async function startRecording() {
 
   const canvas = document.getElementById('video-canvas');
   // Set canvas size based on aspect ratio
-  const ar = {value:'16:9'}?.value || '16:9';
+  const ar = document.getElementById('video-aspect-ratio') ? document.getElementById('video-aspect-ratio').value : '16:9';
   if (ar === '16:9') { canvas.width = 1920; canvas.height = 1080; }
   else if (ar === '9:16') { canvas.width = 1080; canvas.height = 1920; }
   else if (ar === '1:1') { canvas.width = 1080; canvas.height = 1080; }
@@ -1949,7 +1949,7 @@ window._startRecording = async function startRecording() {
   mediaRecorder.start(100);
 
   // Start background music
-  startBackgroundMusic(audioCtx, dest, document.getElementById('video-music').value, scriptData.duration);
+  startBackgroundMusic(audioCtx, dest, document.getElementById('bg-music') ? document.getElementById('bg-music').value : 'none', scriptData.duration);
   addLog('info', '[>] Recording video with voice...');
 
   const totalDuration = scriptData.duration * 1000;
