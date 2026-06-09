@@ -177,6 +177,14 @@ function hideLogin(){ if(window._hideLogin) window._hideLogin(); }
 function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
 function doSignIn(){ if(window._doSignIn) window._doSignIn(); }
 function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
+function toggleSidebar(){ /* no sidebar on this page */ }
+function switchTab(t){ /* no tabs on this page */ }
+function logout(){ if(window._logout) window._logout(); }
+function checkPassword(){ if(window._checkPassword) window._checkPassword(); }
+function selectStar(n){ if(window._selectStar) window._selectStar(n); }
+function openFeedback(){ if(window._openFeedback) window._openFeedback(); }
+function closeFeedback(){ if(window._closeFeedback) window._closeFeedback(); }
+function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
 </script>
 
 
@@ -624,6 +632,15 @@ let userProfile = null;
 let scriptData = null;
 let videoBlob = null;
 let recordedChunks = [];
+let isRecording = false;
+let animFrame = null;
+let mediaRecorder = null;
+let isTransitioning = false;
+let transitionStartTime = 0;
+let presenterImage = null;
+let bgImage = null;
+let videoLibrary = [];
+try { videoLibrary = JSON.parse(localStorage.getItem('afrivid-library') || '[]'); } catch(e) {}
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
