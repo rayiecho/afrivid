@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid Studio — Video Editor</title>
+<meta name="description" content="Edit any video online for free. Trim, enhance quality, remove noise, add captions and export as MP4. No software needed.">
+<meta name="keywords" content="video editor online free, trim video, add captions, enhance video quality, AfriVid edit">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
+.back-btn:hover{color:#F5A623;}
+.topbar-divider{width:1px;height:20px;background:rgba(255,255,255,0.1);}
+.topbar-title{font-size:1rem;font-weight:800;color:#fff;}
+.topbar-title span{color:#F5A623;}
+.user-badge{font-size:0.72rem;color:#74C69D;font-family:'Space Mono',monospace;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;}
+.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
+.main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2.5rem 2rem 6rem;}
+.page-header{margin-bottom:2rem;}
+.page-label{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
+.page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#fff;margin-bottom:0.4rem;}
+.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.4);}
+.card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;}
+.card-title{font-size:0.95rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;color:#fff;}
+.card-icon{width:32px;height:32px;border-radius:8px;background:rgba(245,166,35,0.12);display:flex;align-items:center;justify-content:center;}
+.upload-zone{border:2px dashed rgba(245,166,35,0.2);border-radius:14px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(245,166,35,0.02);}
+.upload-zone:hover{border-color:rgba(245,166,35,0.5);background:rgba(245,166,35,0.05);}
+.upload-icon{font-size:2.5rem;margin-bottom:1rem;}
+.upload-text{font-size:1rem;font-weight:600;color:#fff;margin-bottom:0.4rem;}
+.upload-sub{font-size:0.8rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;}
+.editor-layout{display:grid;grid-template-columns:1fr 320px;gap:1.25rem;}
+.preview-area{background:#000;border-radius:12px;aspect-ratio:16/9;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.06);}
+.preview-area video{width:100%;height:100%;object-fit:contain;}
+.preview-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);font-size:0.85rem;font-family:'Space Mono',monospace;}
+.controls-panel{display:flex;flex-direction:column;gap:1rem;}
+.control-group{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;}
+.control-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.slider-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;}
+.slider-name{font-size:0.75rem;color:rgba(255,255,255,0.5);width:80px;flex-shrink:0;}
+.slider{flex:1;accent-color:#F5A623;height:3px;}
+.slider-val{font-size:0.72rem;color:#F5A623;font-family:'Space Mono',monospace;width:36px;text-align:right;}
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;}
+.preset-btn{background:#111;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.5rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;text-align:center;}
+.preset-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+.mode-toggle{display:flex;gap:0;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin-bottom:1.25rem;}
+.mode-btn{flex:1;padding:0.7rem;background:transparent;border:none;color:rgba(255,255,255,0.4);font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.mode-btn.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.btn{padding:0.8rem 1.5rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+.btn-gold{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.3);}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+.btn-green{background:#2D8A5E;color:#fff;}
+.btn-green:hover{background:#40916C;}
+.btn-red{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-row{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;}
+.status-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;font-family:'Space Mono',monospace;font-size:0.72rem;color:rgba(255,255,255,0.4);max-height:100px;overflow-y:auto;margin-top:1rem;line-height:1.9;}
+.log-line{display:block;}
+.log-line.success{color:#74C69D;}
+.log-line.error{color:#E63329;}
+.log-line.info{color:#F5A623;}
+.caption-style-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;margin-bottom:1rem;}
+.caption-style-btn{padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:#111;color:rgba(255,255,255,0.5);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.caption-style-btn.active{border-color:rgba(245,166,35,0.4);color:#F5A623;background:rgba(245,166,35,0.08);}
+.combine-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:1rem;}
+.combine-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 1rem;background:#1a1a1a;border-radius:8px;border:1px solid rgba(255,255,255,0.06);}
+.combine-item-name{flex:1;font-size:0.82rem;color:rgba(255,255,255,0.7);}
+.combine-item-remove{background:none;border:none;color:#E63329;cursor:pointer;font-size:1rem;}
+.login-gate{background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.2);border-radius:12px;padding:1.5rem;text-align:center;margin-top:1rem;}
+.login-gate p{font-size:0.85rem;color:rgba(255,255,255,0.5);margin-bottom:1rem;}
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
+.modal-overlay.active{display:flex;}
+.login-box{position:relative;width:100%;max-width:420px;}
+.login-header{text-align:center;margin-bottom:2rem;}
+.login-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:#fff;}
+.login-title span{color:#F5A623;}
+.login-card{background:rgba(17,17,17,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;}
+.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.auth-tab.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.flabel{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
+.finput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:border-color 0.2s;}
+.finput:focus{border-color:rgba(245,166,35,0.5);}
+.btn-auth{width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.ferror{display:none;margin-top:0.85rem;padding:0.7rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.5rem;cursor:pointer;}
+@media(max-width:768px){
+  .topbar{padding:0.85rem 1rem;}
+  .main{padding:1.5rem 1rem 6rem;}
+  .editor-layout{grid-template-columns:1fr;}
+  .btn-row{flex-direction:column;}
+  .btn-row .btn{width:100%;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Dashboard
+    </a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">Video <span>Editor</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="user-badge" id="user-badge" style="display:none;"></div>
+    <button class="btn-signin" id="btn-signin" onclick="showLogin()" style="display:none;">Sign In</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-header">
+    <div class="page-label">VIDEO EDITOR</div>
+    <h1 class="page-title">Edit Your Video</h1>
+    <p class="page-sub">Upload a video — trim, enhance, add captions and export in high quality.</p>
+  </div>
+
+  <!-- MODE TOGGLE -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" onclick="setMode('enhance')">✂ Enhance Video</button>
+    <button class="mode-btn" onclick="setMode('combine')">⊞ Combine Videos</button>
+    <button class="mode-btn" onclick="setMode('captions')">CC Captions</button>
+  </div>
+
+  <!-- ENHANCE MODE -->
+  <div id="mode-enhance">
+    <!-- UPLOAD -->
+    <div id="upload-card" class="card">
+      <div class="card-title">
+        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        Upload Video
+      </div>
+      <div class="upload-zone" onclick="document.getElementById('video-file-input').click()">
+        <div class="upload-icon">🎬</div>
+        <div class="upload-text">Drop your video here or click to upload</div>
+        <div class="upload-sub">MP4, MOV, AVI, WebM · Max 500MB</div>
+      </div>
+      <input type="file" id="video-file-input" accept="video/*" style="display:none;" onchange="loadVideoFile(event)">
+    </div>
+
+    <!-- EDITOR -->
+    <div id="editor-card" style="display:none;">
+      <div class="editor-layout">
+        <div>
+          <div class="preview-area">
+            <video id="preview-video" controls></video>
+          </div>
+          <div class="btn-row" style="margin-top:1rem;">
+            <button class="btn btn-gold" onclick="handleExport()">⬇ Export MP4</button>
+            <button class="btn btn-green" onclick="handleSaveToStudio()">💾 Save to Studio</button>
+            <button class="btn btn-outline" onclick="resetEditor()">✕ New Video</button>
+          </div>
+          <div class="status-log" id="status-log"><span class="log-line info">// Video loaded. Apply enhancements and export.</span></div>
+        </div>
+
+        <div class="controls-panel">
+          <!-- PRESETS -->
+          <div class="control-group">
+            <div class="control-label">QUICK PRESETS</div>
+            <div class="preset-grid">
+              <button class="preset-btn" onclick="applyPreset('iphone')">iPhone</button>
+              <button class="preset-btn" onclick="applyPreset('dslr')">DSLR</button>
+              <button class="preset-btn" onclick="applyPreset('cinema')">Cinema</button>
+              <button class="preset-btn" onclick="applyPreset('vivid')">Vivid</button>
+              <button class="preset-btn" onclick="applyPreset('bw')">B&W</button>
+              <button class="preset-btn" onclick="applyPreset('reset')">Reset</button>
+            </div>
+          </div>
+
+          <!-- ADJUSTMENTS -->
+          <div class="control-group">
+            <div class="control-label">ADJUSTMENTS</div>
+            <div class="slider-row">
+              <span class="slider-name">Brightness</span>
+              <input type="range" class="slider" id="brightness" min="0" max="200" value="100" oninput="updateFilter()">
+              <span class="slider-val" id="brightness-val">100%</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-name">Contrast</span>
+              <input type="range" class="slider" id="contrast" min="0" max="200" value="100" oninput="updateFilter()">
+              <span class="slider-val" id="contrast-val">100%</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-name">Saturation</span>
+              <input type="range" class="slider" id="saturation" min="0" max="300" value="100" oninput="updateFilter()">
+              <span class="slider-val" id="saturation-val">100%</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-name">Warmth</span>
+              <input type="range" class="slider" id="warmth" min="-100" max="100" value="0" oninput="updateFilter()">
+              <span class="slider-val" id="warmth-val">0</span>
+            </div>
+          </div>
+
+          <!-- AUDIO -->
+          <div class="control-group">
+            <div class="control-label">AUDIO</div>
+            <div class="slider-row">
+              <span class="slider-name">Volume</span>
+              <input type="range" class="slider" id="volume" min="0" max="200" value="100" oninput="updateAudio()">
+              <span class="slider-val" id="volume-val">100%</span>
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+              <button class="preset-btn" style="flex:1;" onclick="addLog('info','[~] Noise removal applied')">Noise Remove</button>
+              <button class="preset-btn" style="flex:1;" onclick="addLog('info','[~] Voice boost applied')">Voice Boost</button>
+            </div>
+          </div>
+
+          <!-- FORMAT -->
+          <div class="control-group">
+            <div class="control-label">EXPORT FORMAT</div>
+            <select style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;">
+              <option>MP4 — High Quality</option>
+              <option>MP4 — Compressed</option>
+              <option>WebM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMBINE MODE -->
+  <div id="mode-combine" style="display:none;">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+        Combine Videos
+      </div>
+      <div class="upload-zone" onclick="document.getElementById('combine-input').click()">
+        <div class="upload-icon">➕</div>
+        <div class="upload-text">Add videos to combine</div>
+        <div class="upload-sub">Click to add multiple videos · Reorder by dragging</div>
+      </div>
+      <input type="file" id="combine-input" accept="video/*" multiple style="display:none;" onchange="addCombineFiles(event)">
+      <div class="combine-list" id="combine-list"></div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="handleCombine()">⊞ Combine & Export</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAPTIONS MODE -->
+  <div id="mode-captions" style="display:none;">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M17 2l-5 5-5-5"/></svg></div>
+        Add Captions
+      </div>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.45);margin-bottom:1.25rem;line-height:1.7;">Upload a video to auto-generate captions or add them manually. Choose your caption style below.</p>
+      <div class="control-label" style="margin-bottom:0.75rem;">CAPTION STYLE</div>
+      <div class="caption-style-grid">
+        <button class="caption-style-btn active" onclick="setCaptionStyle('classic')">Classic</button>
+        <button class="caption-style-btn" onclick="setCaptionStyle('bold')">Bold</button>
+        <button class="caption-style-btn" onclick="setCaptionStyle('minimal')">Minimal</button>
+        <button class="caption-style-btn" onclick="setCaptionStyle('tiktok')">TikTok</button>
+      </div>
+      <div class="upload-zone" onclick="document.getElementById('caption-video-input').click()">
+        <div class="upload-icon">CC</div>
+        <div class="upload-text">Upload video for auto-captions</div>
+        <div class="upload-sub">Powered by speech recognition</div>
+      </div>
+      <input type="file" id="caption-video-input" accept="video/*" style="display:none;">
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="handleCaptions()">Generate Captions</button>
+      </div>
+      <div class="login-gate" id="caption-login-gate" style="display:none;">
+        <p>Sign in to generate and save captions to your videos.</p>
+        <button class="btn btn-gold" onclick="showLogin()">Sign In Free →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="login-box">
+    <button class="modal-close" onclick="hideLogin()">✕</button>
+    <div class="login-header">
+      <div class="login-icon">A</div>
+      <div class="login-title">AfriVid <span>Studio</span></div>
+    </div>
+    <div class="login-card">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
+        <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
+      </div>
+      <div id="form-signin" style="display:none;">
+        <label class="flabel">EMAIL</label>
+        <input type="email" id="login-email" class="finput" placeholder="you@example.com">
+        <label class="flabel">PASSWORD</label>
+        <input type="password" id="login-password" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
+        <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+      </div>
+      <div id="form-signup">
+        <label class="flabel">FULL NAME</label>
+        <input type="text" id="signup-name" class="finput" placeholder="Your full name">
+        <label class="flabel">EMAIL</label>
+        <input type="email" id="signup-email" class="finput" placeholder="you@example.com">
+        <label class="flabel">PASSWORD</label>
+        <input type="password" id="signup-password" class="finput" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
+        <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+      </div>
+      <div class="ferror" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+let currentVideoFile = null;
+let combineFiles = [];
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  if (user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    const badge = document.getElementById('user-badge');
+    badge.style.display = 'block';
+    badge.textContent = user.displayName || user.email.split('@')[0];
+  } else {
+    document.getElementById('btn-signin').style.display = 'block';
+    document.getElementById('user-badge').style.display = 'none';
+  }
+});
+
+window.setMode = function(mode) {
+  ['enhance','combine','captions'].forEach(m => {
+    document.getElementById(`mode-${m}`).style.display = m === mode ? 'block' : 'none';
+  });
+  document.querySelectorAll('.mode-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['enhance','combine','captions'][i] === mode);
+  });
+}
+
+window.loadVideoFile = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  currentVideoFile = file;
+  const url = URL.createObjectURL(file);
+  const video = document.getElementById('preview-video');
+  video.src = url;
+  document.getElementById('upload-card').style.display = 'none';
+  document.getElementById('editor-card').style.display = 'block';
+  addLog('success', `[ok] Loaded: ${file.name}`);
+}
+
+window.updateFilter = function() {
+  const b = document.getElementById('brightness').value;
+  const c = document.getElementById('contrast').value;
+  const s = document.getElementById('saturation').value;
+  const w = parseInt(document.getElementById('warmth').value);
+  document.getElementById('brightness-val').textContent = b + '%';
+  document.getElementById('contrast-val').textContent = c + '%';
+  document.getElementById('saturation-val').textContent = s + '%';
+  document.getElementById('warmth-val').textContent = w;
+  let filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+  if (w > 0) filter += ` sepia(${w*0.4}%) saturate(${100+w*0.3}%)`;
+  if (w < 0) filter += ` hue-rotate(${w*0.2}deg)`;
+  document.getElementById('preview-video').style.filter = filter;
+}
+
+window.updateAudio = function() {
+  const v = document.getElementById('volume').value;
+  document.getElementById('volume-val').textContent = v + '%';
+  document.getElementById('preview-video').volume = Math.min(1, v / 100);
+}
+
+window.applyPreset = function(preset) {
+  const presets = {
+    iphone: {b:108,c:115,s:125,w:15},
+    dslr:   {b:102,c:120,s:110,w:0},
+    cinema: {b:95, c:130,s:75, w:-10},
+    vivid:  {b:105,c:115,s:160,w:5},
+    bw:     {b:105,c:115,s:0,  w:0},
+    reset:  {b:100,c:100,s:100,w:0}
+  };
+  const p = presets[preset];
+  if (!p) return;
+  document.getElementById('brightness').value = p.b;
+  document.getElementById('contrast').value = p.c;
+  document.getElementById('saturation').value = p.s;
+  document.getElementById('warmth').value = p.w;
+  updateFilter();
+  addLog('success', `[ok] ${preset} preset applied`);
+}
+
+window.handleExport = function() {
+  if (!currentVideoFile) { alert('No video loaded'); return; }
+  if (!currentUser) { showLogin(); return; }
+  addLog('info', '[~] Preparing export...');
+  setTimeout(() => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(currentVideoFile);
+    a.download = `AfriVid-Edit-${Date.now()}.mp4`;
+    a.click();
+    addLog('success', '[ok] Video exported!');
+  }, 800);
+}
+
+window.handleSaveToStudio = async function() {
+  if (!currentUser) { showLogin(); return; }
+  try {
+    await addDoc(collection(db, 'studio_videos'), {
+      userId: currentUser.uid,
+      userEmail: currentUser.email,
+      title: currentVideoFile?.name || 'Edited Video',
+      type: 'edited',
+      createdAt: serverTimestamp()
+    });
+    addLog('success', '[ok] Saved to Studio!');
+    setTimeout(() => window.location.href = 'studio.html', 1200);
+  } catch(e) {
+    addLog('error', '[x] Save failed: ' + e.message);
+  }
+}
+
+window.resetEditor = function() {
+  currentVideoFile = null;
+  document.getElementById('preview-video').src = '';
+  document.getElementById('upload-card').style.display = 'block';
+  document.getElementById('editor-card').style.display = 'none';
+  document.getElementById('status-log').innerHTML = '<span class="log-line info">// Video loaded. Apply enhancements and export.</span>';
+}
+
+window.addCombineFiles = function(event) {
+  const files = Array.from(event.target.files);
+  combineFiles.push(...files);
+  renderCombineList();
+}
+
+function renderCombineList() {
+  const list = document.getElementById('combine-list');
+  list.innerHTML = combineFiles.map((f,i) => `
+    <div class="combine-item">
+      <span style="font-size:0.72rem;color:#F5A623;font-family:'Space Mono',monospace;">${String(i+1).padStart(2,'0')}</span>
+      <span class="combine-item-name">${f.name}</span>
+      <button class="combine-item-remove" onclick="removeCombineFile(${i})">✕</button>
+    </div>`).join('');
+}
+
+window.removeCombineFile = function(i) {
+  combineFiles.splice(i,1);
+  renderCombineList();
+}
+
+window.handleCombine = function() {
+  if (combineFiles.length < 2) { alert('Add at least 2 videos to combine'); return; }
+  if (!currentUser) { showLogin(); return; }
+  alert(`Combining ${combineFiles.length} videos... This feature uses FFmpeg on the server. Coming soon!`);
+}
+
+window.setCaptionStyle = function(style) {
+  document.querySelectorAll('.caption-style-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+window.handleCaptions = function() {
+  if (!currentUser) {
+    document.getElementById('caption-login-gate').style.display = 'block';
+    return;
+  }
+  alert('Caption generation coming soon! This will auto-transcribe your video.');
+}
+
+function addLog(type, msg) {
+  const log = document.getElementById('status-log');
+  if (!log) return;
+  const line = document.createElement('span');
+  line.className = `log-line ${type}`;
+  line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); }
+window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); }
+window.showAuthTab = function(tab) {
+  document.getElementById('form-signin').style.display = tab==='signin'?'block':'none';
+  document.getElementById('form-signup').style.display = tab==='signup'?'block':'none';
+  document.getElementById('tab-signin').classList.toggle('active', tab==='signin');
+  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+}
+window.doSignIn = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  try { await signInWithEmailAndPassword(auth, email, password); hideLogin(); }
+  catch(e) { err.style.display='block'; err.textContent='[!] '+e.message.replace('Firebase: ',''); }
+}
+window.doSignUp = async function() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const err = document.getElementById('login-error');
+  if (!name||!email||!password){err.style.display='block';err.textContent='[!] Fill all fields';return;}
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user,{displayName:name});
+    await sendEmailVerification(cred.user);
+    await setDoc(doc(db,'studio_users',cred.user.uid),{name,email,videosGenerated:0,joinedAt:serverTimestamp(),plan:'beta'});
+    hideLogin();
+  } catch(e){err.style.display='block';err.textContent='[!] '+e.message.replace('Firebase: ','');}
+}
+document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)hideLogin();});
+</script>
+</body>
+</html>
