@@ -168,10 +168,10 @@ function toggleVideoCrop(){ if(window._toggleVideoCrop) window._toggleVideoCrop(
 function setVideoCropRatio(r){ if(window._setVideoCropRatio) window._setVideoCropRatio(r); }
 function applyVideoCrop(){ if(window._applyVideoCrop) window._applyVideoCrop(); }
 function cancelVideoCrop(){ if(window._cancelVideoCrop) window._cancelVideoCrop(); }
-function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); }
+function toggleCrop(){ if(window.toggleVideoCrop) window.toggleVideoCrop(); else if(window._toggleVideoCrop) window._toggleVideoCrop(); }
 function setCropRatio(r){ if(window._setCropRatio) window._setCropRatio(r); }
-function applyCrop(){ if(window._applyCrop) window._applyCrop(); }
-function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); }
+function applyCrop(){ if(window.applyVideoCrop) window.applyVideoCrop(); else if(window._applyVideoCrop) window._applyVideoCrop(); }
+function cancelCrop(){ if(window.cancelVideoCrop) window.cancelVideoCrop(); else if(window._cancelVideoCrop) window._cancelVideoCrop(); }
 function showLogin(){ if(window._showLogin) window._showLogin(); }
 function hideLogin(){ if(window._hideLogin) window._hideLogin(); }
 function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
