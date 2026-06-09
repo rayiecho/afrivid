@@ -635,12 +635,6 @@ let recordedChunks = [];
 let isRecording = false;
 let animFrame = null;
 let mediaRecorder = null;
-let isTransitioning = false;
-let transitionStartTime = 0;
-let presenterImage = null;
-let bgImage = null;
-let videoLibrary = [];
-try { videoLibrary = JSON.parse(localStorage.getItem('afrivid-library') || '[]'); } catch(e) {}
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
