@@ -646,7 +646,7 @@ window._handleGenerateScript = window.handleGenerateScript = async function() {
   try {
     const duration = parseInt(document.getElementById('video-duration')?.value || document.getElementById('own-duration')?.value || 60);
     const language = document.getElementById('video-language')?.value || 'English';
-    const style = document.getElementById('video-style')?.value || 'slides_dark';
+    const style = document.getElementById('video-visual-style')?.value || 'slides_dark';
     const context = document.getElementById('video-content')?.value.trim() || '';
     const audience = document.getElementById('video-audience')?.value || 'General audience';
     const category = document.getElementById('video-program')?.value || 'General knowledge and education';
@@ -869,7 +869,7 @@ async function downloadMP4() {
   if (!videoBlob) { alert('No video to convert.'); return; }
   
   // Show converting message
-  {textContent:''}.textContent = 'Converting to MP4... This may take a moment.';
+  // download-info not present in this page
   
   try {
     // Use FFmpeg.wasm for conversion
@@ -1362,8 +1362,8 @@ function drawCinematicScene(canvas, scene, progress, currentWord = -1) {
 }
 
 function drawScene(canvas, scene, progress, currentWord = -1) {
-  const style = document.getElementById('video-style') ? 
-    document.getElementById('video-style').value : 'slides';
+  const style = document.getElementById('video-visual-style') ? 
+    document.getElementById('video-visual-style').value : 'slides';
   // Auto-detect scene type for smart rendering
   const sceneType = detectSceneType((scene.voiceover || '') + ' ' + (scene.slideTitle || ''));
   if (style === 'slides' && sceneType === 'code') { drawCodeScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
@@ -1880,7 +1880,7 @@ async function startRecording() {
   isRecording = true;
 
   // Preload background image if needed
-  const visualStyle = document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides';
+  const visualStyle = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : 'slides';
   if (visualStyle === 'photobg') {
     const theme = {value:'africa'}.value;
     addLog('info', '[img] Loading background image...');
