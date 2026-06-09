@@ -79,6 +79,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 /* CANVAS */
 #canvas-container{background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;position:relative;border:1px solid rgba(255,255,255,0.08);margin-bottom:1.5rem;}
+.crop-overlay{position:absolute;inset:0;cursor:crosshair;z-index:10;display:none;}
+.crop-selection{position:absolute;border:2px solid #F5A623;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);pointer-events:none;z-index:11;}
+.crop-ratio-btns{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.crop-ratio-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.35rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.crop-ratio-btn:hover,.crop-ratio-btn.active{border-color:rgba(245,166,35,0.4);color:#F5A623;background:rgba(245,166,35,0.08);}
 #video-canvas{width:100%;height:100%;display:block;}
 .canvas-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);flex-direction:column;gap:1rem;}
 .canvas-overlay-icon{font-size:2.5rem;}
@@ -242,6 +247,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
             <option value="calm">Calm</option>
           </select>
         </div>
+        <div class="form-group full">
+          <label class="form-label">Aspect Ratio</label>
+          <div class="crop-ratio-btns" id="aspect-ratio-btns">
+            <button class="crop-ratio-btn active" onclick="setAspectRatio('16:9',this)">16:9 YouTube</button>
+            <button class="crop-ratio-btn" onclick="setAspectRatio('9:16',this)">9:16 Reels/TikTok</button>
+            <button class="crop-ratio-btn" onclick="setAspectRatio('1:1',this)">1:1 Instagram</button>
+            <button class="crop-ratio-btn" onclick="setAspectRatio('4:3',this)">4:3 Standard</button>
+          </div>
+          <span class="form-hint">Choose output format before generating</span>
+        </div>
       </div>
       <div class="duration-warning" id="duration-warning"></div>
       <div class="btn-row">
@@ -273,6 +288,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <div class="canvas-overlay-icon">🎬</div>
         <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;">Ready to record</div>
       </div>
+      <div class="crop-overlay" id="crop-overlay"></div>
+      <div class="crop-selection" id="crop-selection" style="display:none;"></div>
+    </div>
+    <!-- CROP CONTROLS for post-recording crop -->
+    <div id="crop-controls" style="display:none;margin-bottom:1rem;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
+      <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP VIDEO FRAME</div>
+      <div class="crop-ratio-btns" style="margin-bottom:0.5rem;">
+        <button class="crop-ratio-btn" onclick="setVideoCropRatio('free')">Free</button>
+        <button class="crop-ratio-btn active" onclick="setVideoCropRatio('16:9')">16:9</button>
+        <button class="crop-ratio-btn" onclick="setVideoCropRatio('9:16')">9:16</button>
+        <button class="crop-ratio-btn" onclick="setVideoCropRatio('1:1')">1:1</button>
+        <button class="crop-ratio-btn" onclick="setVideoCropRatio('4:3')">4:3</button>
+      </div>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyVideoCrop()">✓ Apply</button>
+        <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelVideoCrop()">✕ Cancel</button>
+      </div>
     </div>
     <div class="progress-wrap" id="progress-wrap" style="display:none;">
       <div class="progress-labels"><span id="progress-label">Generating...</span><span id="progress-pct">0%</span></div>
@@ -281,6 +313,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <div class="status-log" id="status-log"><span class="log-line info">// Ready. Press Start Recording to generate your video.</span></div>
     <div class="btn-row">
       <button class="btn btn-gold" id="btn-record" onclick="handleRecord()">▶ Start Recording</button>
+      <button class="btn btn-outline" onclick="toggleVideoCrop()">⬚ Crop Frame</button>
       <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
     </div>
   </div>
@@ -3167,6 +3200,114 @@ function addLog(type, msg) {
   line.textContent = msg;
   log.appendChild(line);
   log.scrollTop = log.scrollHeight;
+}
+
+// ---- ASPECT RATIO + CROP ----
+let selectedAspectRatio = '16:9';
+let videoCropRatio = '16:9';
+let videoCropActive = false;
+let videoCropStart = null;
+let videoCropRect = {x:0,y:0,w:0,h:0};
+let isVideoCropping = false;
+
+window.setAspectRatio = function(ratio, btn) {
+  selectedAspectRatio = ratio;
+  document.querySelectorAll('#aspect-ratio-btns .crop-ratio-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  // Update canvas container aspect ratio
+  const ratioMap = {'16:9':'16/9','9:16':'9/16','1:1':'1/1','4:3':'4/3'};
+  document.getElementById('canvas-container').style.aspectRatio = ratioMap[ratio] || '16/9';
+  addLog('info', `[ok] Aspect ratio set to ${ratio}`);
+}
+
+window.toggleVideoCrop = function() {
+  const canvas = document.getElementById('video-canvas');
+  if (!canvas.width) { addLog('error','[x] Record a video first'); return; }
+  videoCropActive = !videoCropActive;
+  const overlay = document.getElementById('crop-overlay');
+  const controls = document.getElementById('crop-controls');
+  if (videoCropActive) {
+    overlay.style.display = 'block';
+    controls.style.display = 'block';
+    document.getElementById('crop-selection').style.display = 'none';
+    videoCropRect = {x:0,y:0,w:0,h:0};
+    addLog('info','[crop] Drag on canvas to select crop area');
+  } else { cancelVideoCrop(); }
+}
+
+window.setVideoCropRatio = function(ratio) {
+  videoCropRatio = ratio;
+  document.querySelectorAll('#crop-controls .crop-ratio-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('crop-overlay');
+  function getPos(e) {
+    const canvas = document.getElementById('video-canvas');
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) * (canvas.width / rect.width),
+      y: (e.clientY - rect.top) * (canvas.height / rect.height)
+    };
+  }
+  overlay.addEventListener('mousedown', (e) => {
+    if (!videoCropActive) return;
+    isVideoCropping = true;
+    videoCropStart = getPos(e);
+    videoCropRect = {x:videoCropStart.x, y:videoCropStart.y, w:0, h:0};
+    document.getElementById('crop-selection').style.display = 'block';
+  });
+  overlay.addEventListener('mousemove', (e) => {
+    if (!isVideoCropping) return;
+    const canvas = document.getElementById('video-canvas');
+    const pos = getPos(e);
+    videoCropRect.w = Math.max(0, Math.min(canvas.width - videoCropRect.x, pos.x - videoCropStart.x));
+    videoCropRect.h = Math.max(0, Math.min(canvas.height - videoCropRect.y, pos.y - videoCropStart.y));
+    if (videoCropRatio !== 'free') {
+      const ratios = {'16:9':16/9,'9:16':9/16,'1:1':1,'4:3':4/3};
+      const r = ratios[videoCropRatio];
+      if (r) videoCropRect.h = videoCropRect.w / r;
+    }
+    updateVideoCropVisual();
+  });
+  overlay.addEventListener('mouseup', () => { isVideoCropping = false; });
+  overlay.addEventListener('touchstart',(e)=>{e.preventDefault();overlay.dispatchEvent(new MouseEvent('mousedown',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY}));},{passive:false});
+  overlay.addEventListener('touchmove',(e)=>{e.preventDefault();overlay.dispatchEvent(new MouseEvent('mousemove',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY}));},{passive:false});
+  overlay.addEventListener('touchend',()=>overlay.dispatchEvent(new MouseEvent('mouseup')));
+});
+
+function updateVideoCropVisual() {
+  const canvas = document.getElementById('video-canvas');
+  const canvasRect = canvas.getBoundingClientRect();
+  const containerRect = document.getElementById('canvas-container').getBoundingClientRect();
+  const scaleX = canvasRect.width / canvas.width;
+  const scaleY = canvasRect.height / canvas.height;
+  const sel = document.getElementById('crop-selection');
+  sel.style.left = (videoCropRect.x * scaleX + (canvasRect.left - containerRect.left)) + 'px';
+  sel.style.top = (videoCropRect.y * scaleY + (canvasRect.top - containerRect.top)) + 'px';
+  sel.style.width = (videoCropRect.w * scaleX) + 'px';
+  sel.style.height = (videoCropRect.h * scaleY) + 'px';
+}
+
+window.applyVideoCrop = function() {
+  const canvas = document.getElementById('video-canvas');
+  const cw = Math.round(Math.abs(videoCropRect.w));
+  const ch = Math.round(Math.abs(videoCropRect.h));
+  if (cw < 10 || ch < 10) { addLog('error','[x] Select a larger area'); return; }
+  const ctx = canvas.getContext('2d');
+  const imageData = ctx.getImageData(videoCropRect.x, videoCropRect.y, cw, ch);
+  canvas.width = cw; canvas.height = ch;
+  ctx.putImageData(imageData, 0, 0);
+  cancelVideoCrop();
+  addLog('success', `[ok] Cropped to ${cw}x${ch}px`);
+}
+
+window.cancelVideoCrop = function() {
+  videoCropActive = false; isVideoCropping = false; videoCropStart = null;
+  document.getElementById('crop-overlay').style.display = 'none';
+  document.getElementById('crop-controls').style.display = 'none';
+  document.getElementById('crop-selection').style.display = 'none';
 }
 
 window.handleDownload = function() {

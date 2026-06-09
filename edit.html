@@ -151,12 +151,32 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <div id="editor-card" style="display:none;">
       <div class="editor-layout">
         <div>
-          <div class="preview-area">
-            <video id="preview-video" controls></video>
+          <div class="preview-area" id="preview-area">
+            <video id="preview-video" controls style="width:100%;height:100%;object-fit:contain;"></video>
+            <canvas id="crop-canvas" style="display:none;width:100%;height:100%;object-fit:contain;"></canvas>
+            <div class="crop-overlay" id="crop-overlay"></div>
+            <div class="crop-selection" id="crop-selection" style="display:none;"></div>
+          </div>
+          <!-- CROP CONTROLS -->
+          <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
+            <div class="crop-ratio-btns">
+              <button class="crop-ratio-btn" onclick="setCropRatio('free')">Free</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('1:1')">1:1</button>
+              <button class="crop-ratio-btn active" onclick="setCropRatio('16:9')">16:9</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('9:16')">9:16</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('4:3')">4:3</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('3:4')">3:4</button>
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+              <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">✓ Apply Crop</button>
+              <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">✕ Cancel</button>
+            </div>
           </div>
           <div class="btn-row" style="margin-top:1rem;">
             <button class="btn btn-gold" onclick="handleExport()">⬇ Export MP4</button>
             <button class="btn btn-green" onclick="handleSaveToStudio()">💾 Save to Studio</button>
+            <button class="btn btn-outline" onclick="toggleCrop()">⬚ Crop</button>
             <button class="btn btn-outline" onclick="resetEditor()">✕ New Video</button>
           </div>
           <div id="progress-wrap" style="display:none;margin-bottom:1rem;">
@@ -1551,6 +1571,115 @@ function addLog(type, msg) {
   line.textContent = msg;
   log.appendChild(line);
   log.scrollTop = log.scrollHeight;
+}
+
+// ---- CROP SYSTEM ----
+let cropActive = false;
+let cropRatio = '16:9';
+let cropStart = null;
+let cropRect = {x:0,y:0,w:0,h:0};
+let isCropping = false;
+
+window.toggleCrop = function() {
+  if (!currentVideoFile) { alert('Load a video first'); return; }
+  cropActive = !cropActive;
+  const overlay = document.getElementById('crop-overlay');
+  const controls = document.getElementById('crop-controls');
+  const video = document.getElementById('preview-video');
+  const cropCanvas = document.getElementById('crop-canvas');
+  if (cropActive) {
+    // Snapshot current video frame to canvas
+    cropCanvas.width = video.videoWidth || 1280;
+    cropCanvas.height = video.videoHeight || 720;
+    const ctx = cropCanvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, cropCanvas.width, cropCanvas.height);
+    video.style.display = 'none';
+    cropCanvas.style.display = 'block';
+    overlay.style.display = 'block';
+    controls.style.display = 'block';
+    document.getElementById('crop-selection').style.display = 'none';
+    cropRect = {x:0,y:0,w:0,h:0};
+    addLog('info','[crop] Drag on the video frame to select crop area');
+  } else { cancelCrop(); }
+}
+
+window.setCropRatio = function(ratio) {
+  cropRatio = ratio;
+  document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('crop-overlay');
+  function getPos(e) {
+    const canvas = document.getElementById('crop-canvas');
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) * (canvas.width / rect.width),
+      y: (e.clientY - rect.top) * (canvas.height / rect.height)
+    };
+  }
+  overlay.addEventListener('mousedown', (e) => {
+    if (!cropActive) return;
+    isCropping = true;
+    cropStart = getPos(e);
+    cropRect = {x:cropStart.x, y:cropStart.y, w:0, h:0};
+    document.getElementById('crop-selection').style.display = 'block';
+  });
+  overlay.addEventListener('mousemove', (e) => {
+    if (!isCropping) return;
+    const canvas = document.getElementById('crop-canvas');
+    const pos = getPos(e);
+    cropRect.w = Math.max(0, Math.min(canvas.width - cropRect.x, pos.x - cropStart.x));
+    cropRect.h = Math.max(0, Math.min(canvas.height - cropRect.y, pos.y - cropStart.y));
+    if (cropRatio !== 'free') {
+      const ratios = {'1:1':1,'16:9':16/9,'9:16':9/16,'4:3':4/3,'3:4':3/4};
+      const r = ratios[cropRatio];
+      if (r) cropRect.h = cropRect.w / r;
+    }
+    updateEditCropVisual();
+  });
+  overlay.addEventListener('mouseup', () => { isCropping = false; });
+  overlay.addEventListener('touchstart', (e) => { e.preventDefault(); overlay.dispatchEvent(new MouseEvent('mousedown',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})); },{passive:false});
+  overlay.addEventListener('touchmove', (e) => { e.preventDefault(); overlay.dispatchEvent(new MouseEvent('mousemove',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})); },{passive:false});
+  overlay.addEventListener('touchend', () => overlay.dispatchEvent(new MouseEvent('mouseup')));
+});
+
+function updateEditCropVisual() {
+  const canvas = document.getElementById('crop-canvas');
+  const canvasRect = canvas.getBoundingClientRect();
+  const areaRect = document.getElementById('preview-area').getBoundingClientRect();
+  const scaleX = canvasRect.width / canvas.width;
+  const scaleY = canvasRect.height / canvas.height;
+  const offsetX = canvasRect.left - areaRect.left;
+  const offsetY = canvasRect.top - areaRect.top;
+  const sel = document.getElementById('crop-selection');
+  sel.style.left = (cropRect.x * scaleX + offsetX) + 'px';
+  sel.style.top = (cropRect.y * scaleY + offsetY) + 'px';
+  sel.style.width = (cropRect.w * scaleX) + 'px';
+  sel.style.height = (cropRect.h * scaleY) + 'px';
+}
+
+window.applyCrop = function() {
+  const canvas = document.getElementById('crop-canvas');
+  const cw = Math.round(Math.abs(cropRect.w));
+  const ch = Math.round(Math.abs(cropRect.h));
+  if (cw < 10 || ch < 10) { addLog('error','[x] Select a larger area'); return; }
+  const ctx = canvas.getContext('2d');
+  const imageData = ctx.getImageData(cropRect.x, cropRect.y, cw, ch);
+  canvas.width = cw; canvas.height = ch;
+  ctx.putImageData(imageData, 0, 0);
+  cancelCrop();
+  addLog('success', `[ok] Cropped to ${cw}x${ch}px — export to save`);
+}
+
+window.cancelCrop = function() {
+  cropActive = false; isCropping = false; cropStart = null;
+  document.getElementById('crop-overlay').style.display = 'none';
+  document.getElementById('crop-controls').style.display = 'none';
+  document.getElementById('crop-selection').style.display = 'none';
+  document.getElementById('preview-video').style.display = 'block';
+  document.getElementById('crop-canvas').style.display = 'none';
 }
 
 window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); }
