@@ -2323,7 +2323,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
 
           <!-- Selected element controls -->
           <div id="design-element-controls" style="display:none;padding:0.75rem;background:var(--navy3);border-radius:10px;margin-bottom:1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
-            <input type="color" id="design-element-color" onchange="updateSelectedElement('color',this.value)" style="width:36px;height:28px;border-radius:4px;border:none;cursor:pointer;" title="Color">
+            <input type="color" id="design-element-color" oninput="updateSelectedElement('color',this.value)" onchange="updateSelectedElement('color',this.value)" style="width:36px;height:28px;border-radius:4px;border:none;cursor:pointer;" title="Color">
             <input type="range" id="design-element-size" min="8" max="120" value="24" oninput="updateSelectedElement('size',this.value)" style="width:80px;accent-color:var(--gold);" title="Size">
             <select id="design-element-font" onchange="updateSelectedElement('font',this.value)" style="background:var(--navy2);border:1px solid var(--border2);color:var(--white);padding:0.25rem;border-radius:4px;font-size:0.75rem;">
               <option value="Syne">Syne</option>
@@ -5488,16 +5488,27 @@ function onDesignMouseDown(e) {
   const y = (e.clientY - rect.top) * scaleY;
 
   // Find clicked element (reverse order - top first)
-  selectedElement = null;
+  // Skip background images (type=image at index 0 that covers full canvas)
+  let found = false;
   for (let i = designElements.length - 1; i >= 0; i--) {
-    const bounds = getElementBounds(designElements[i]);
+    const el = designElements[i];
+    // Lock full-canvas background images
+    if (el.type === 'image' && el.x === 0 && el.y === 0 && 
+        el.w >= designW * 0.9 && el.h >= designH * 0.9) continue;
+    const bounds = getElementBounds(el);
     if (x >= bounds.x - 10 && x <= bounds.x + bounds.w + 10 &&
         y >= bounds.y - 10 && y <= bounds.y + bounds.h + 10) {
       selectedElement = i;
       isDesignDragging = true;
-      designDragOffset = { x: x - designElements[i].x, y: y - designElements[i].y };
+      designDragOffset = { x: x - el.x, y: y - el.y };
+      found = true;
       break;
     }
+  }
+
+  // Only deselect if clicking on empty canvas area (not on controls)
+  if (!found && e.target === canvas) {
+    selectedElement = null;
   }
   
   updateElementControls();
@@ -5549,12 +5560,16 @@ function updateElementControls() {
 function updateSelectedElement(prop, value) {
   if (selectedElement === null) return;
   const el = designElements[selectedElement];
-  if (prop === 'color') el.color = value;
+  if (prop === 'color') {
+    el.color = value;
+    // Update color picker to show current value
+    const cp = document.getElementById('design-element-color');
+    if (cp) cp.value = value;
+  }
   if (prop === 'size') { el.size = parseInt(value); el.r = parseInt(value); }
   if (prop === 'font') el.font = value;
   if (prop === 'weight') el.weight = value;
-  saveDesignHistory();
-  renderDesign();
+  renderDesign(); // Render immediately without saving history on every keystroke
 }
 
 function deleteSelectedElement() {
