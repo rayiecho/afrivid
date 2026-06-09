@@ -428,7 +428,22 @@ Or just paste your raw content and we will structure it into scenes automaticall
           <span id="script-title-display">Video Script</span>
           <span class="tag tag-gold" id="script-duration-tag">1 min</span>
         </div>
-        <div id="script-output"></div>
+        <div id="script-output">
+        <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
+          <div class="crop-ratio-btns">
+            <button class="crop-ratio-btn" onclick="setCropRatio('free')">Free</button>
+            <button class="crop-ratio-btn active" onclick="setCropRatio('16:9')">16:9</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('9:16')">9:16</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('1:1')">1:1</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('4:3')">4:3</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('A4')">A4</button>
+          </div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">Apply Crop</button>
+            <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">Cancel</button>
+          </div>
+        </div></div>
         <div class="btn-row">
           <button class="btn btn-gold" onclick="goToStep(3)">✅ Approve & Generate Video</button>
           <button class="btn btn-outline" onclick="goToStep(1)">← Edit Details</button>
@@ -445,8 +460,10 @@ Or just paste your raw content and we will structure it into scenes automaticall
           Video Preview
         </div>
 
-        <div id="canvas-container">
+        <div id="canvas-container" style="position:relative;">
           <canvas id="video-canvas"></canvas>
+          <div class="crop-overlay" id="crop-overlay"></div>
+          <div class="crop-selection" id="crop-selection" style="display:none;"></div>
           <div class="canvas-overlay" id="canvas-overlay">
             <div class="canvas-overlay-icon">🎬</div>
             <div>Click "Start Recording" to begin</div>
@@ -469,7 +486,8 @@ Or just paste your raw content and we will structure it into scenes automaticall
           <button class="btn btn-gold" id="btn-record" onclick="startRecording()">▶ Start Recording</button>
           <button class="btn btn-gold" id="btn-record-go" onclick="startRecording()" style="display:none;">▶ Start Recording</button>
           <button class="btn btn-red" id="btn-stop" onclick="stopRecording()" style="display:none;">⏹ Stop</button>
-          <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
+          <button class="btn btn-outline" onclick="toggleCrop()">⬚ Crop Frame</button>
+      <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
         </div>
       </div>
     </div>

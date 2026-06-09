@@ -98,6 +98,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .btn-row{flex-direction:column;}
   .btn-row .btn{width:100%;justify-content:center;}
 }
+
+.crop-overlay{position:absolute;inset:0;cursor:crosshair;z-index:10;display:none;}
+.crop-selection{position:absolute;border:2px solid #F5A623;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);pointer-events:none;z-index:11;}
+.crop-ratio-btns{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;}
+.crop-ratio-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.35rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.crop-ratio-btn:hover,.crop-ratio-btn.active{border-color:rgba(245,166,35,0.4);color:#F5A623;background:rgba(245,166,35,0.08);}
 </style>
 </head>
 <body>
@@ -167,7 +173,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
           <div>
             <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">ENHANCED PREVIEW</div>
             <div class="enhance-preview">
-              <canvas id="enhance-canvas" style="width:100%;height:100%;"></canvas>
+              <div class="crop-overlay" id="crop-overlay"></div>
+          <div class="crop-selection" id="crop-selection" style="display:none;"></div>
+          <canvas id="enhance-canvas" style="width:100%;height:100%;"></canvas>
             </div>
           </div>
         </div>
@@ -379,10 +387,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
       <!-- ACTIONS -->
       <div class="card">
-        <div class="card-title"><div class="card-title-icon">⚡</div>Export</div>
+        <div class="card-title"><div class="card-title-icon">⚡</div>Export
+        <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
+          <div class="crop-ratio-btns">
+            <button class="crop-ratio-btn" onclick="setCropRatio('free')">Free</button>
+            <button class="crop-ratio-btn active" onclick="setCropRatio('16:9')">16:9</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('9:16')">9:16</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('1:1')">1:1</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('4:3')">4:3</button>
+            <button class="crop-ratio-btn" onclick="setCropRatio('A4')">A4</button>
+          </div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">Apply Crop</button>
+            <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">Cancel</button>
+          </div>
+        </div></div>
         <div class="btn-row">
           <button class="btn btn-gold" onclick="startEnhancing()">✨ Enhance & Export</button>
-          <button class="btn btn-outline" onclick="resetEnhancer()">↺ Reset</button>
+          <button class="btn btn-outline" onclick="toggleCrop()">⬚ Crop</button>
+            <button class="btn btn-outline" onclick="resetEnhancer()">↺ Reset</button>
         </div>
         <div id="enhance-export-btns" style="display:none;" class="btn-row">
           <button class="btn btn-green" onclick="downloadEnhanced()">⬇ Download Enhanced</button>
