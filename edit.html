@@ -730,9 +730,9 @@ startEnhancing = async function() {
   const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') 
     ? 'video/webm;codecs=vp9,opus' : 'video/webm';
   
-  window._enhanceRecordedChunks || [] = [];
+  enhanceRecordedChunks = [];
   enhanceMediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 3000000 });
-  enhanceMediaRecorder.ondataavailable = e => { if (e.data.size > 0) window._enhanceRecordedChunks || [].push(e.data); };
+  enhanceMediaRecorder.ondataavailable = e => { if (e.data.size > 0) enhanceRecordedChunks.push(e.data); };
   enhanceMediaRecorder.onstop = finishEnhancing;
   enhanceMediaRecorder.start(100);
   
@@ -1006,7 +1006,7 @@ function buildAudioChain(audioCtx, source, dest) {
 }
 
 async function finishEnhancing() {
-  enhancedBlob = new Blob(window._enhanceRecordedChunks || [], { type: 'video/webm' });
+  enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
   const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
   addEnhanceLog('success', `[ok] Enhanced video ready! Size: ${sizeMB}MB`);
   // Auto-save to library
