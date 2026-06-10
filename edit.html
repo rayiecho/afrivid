@@ -599,19 +599,7 @@ function updatePreview() {
   video.style.transition = 'filter 0.2s';
 }
 
-  
-  if (subType === 'manual') {
-    const text = document.getElementById('manual-subtitle-text')?.value || '';
-    if (text) {
-      ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      ctx.fillRect(0, canvas.height - 60, canvas.width, 60);
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 22px Syne, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(text.split('\n')[0], canvas.width/2, canvas.height - 24);
-    }
-  }
-}
+
 
 // Live preview as video plays
 document.addEventListener('DOMContentLoaded', () => {
