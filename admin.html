@@ -361,6 +361,7 @@ document.addEventListener('click', function(e) {
                   <th>JOINED</th>
                   <th>VIDEOS</th>
                   <th>STATUS</th>
+                  <th>PLAN</th>
                   <th>ACTIONS</th>
                 </tr>
               </thead>
@@ -812,7 +813,11 @@ function renderUsersTable(users) {
       <td><span class="badge badge-gold">${u.videosGenerated||0}</span></td>
       <td><span class="badge ${u.banned?'badge-red':'badge-green'}">${u.banned?'Banned':'Active'}</span></td>
       <td>
+        <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'beta'}</span>
+      </td>
+      <td>
         <button class="btn btn-outline btn-sm" onclick="viewUser('${u.id}')">View</button>
+        <button class="btn ${u.plan==='pro'?'btn-outline':'btn-green'} btn-sm" style="margin-left:0.4rem;" onclick="togglePlan('${u.id}','${u.email}','${u.plan||'beta'}')">${u.plan==='pro'?'→ Beta':'→ Pro'}</button>
         <button class="btn btn-red btn-sm" style="margin-left:0.4rem;" onclick="banUser('${u.id}','${u.email}')">${u.banned?'Unban':'Ban'}</button>
       </td>
     </tr>
@@ -825,6 +830,20 @@ window.filterUsers = function(q) {
     (u.displayName||'').toLowerCase().includes(q.toLowerCase())
   );
   renderUsersTable(filtered);
+};
+
+window.togglePlan = async function(uid, email, currentPlan) {
+  const newPlan = currentPlan === 'pro' ? 'beta' : 'pro';
+  if(!confirm(`Change ${email} plan from ${currentPlan.toUpperCase()} to ${newPlan.toUpperCase()}?`)) return;
+  try {
+    await updateDoc(doc(db,'studio_users',uid), {
+      plan: newPlan,
+      planUpdatedAt: serverTimestamp(),
+      ...(newPlan === 'pro' ? {betaLimit: 99999} : {betaLimit: 10})
+    });
+    showToast(`✅ ${email} is now on ${newPlan.toUpperCase()} plan`, 'success');
+    loadUsers();
+  } catch(e) { showToast('Error: '+e.message,'error'); }
 };
 
 window.banUser = async function(uid, email) {
