@@ -564,9 +564,8 @@ brightness:0-300, contrast:0-300, saturation:0-300, sharpness:0-10, warmth:-100t
 
 window.removeBackground = async function() {
   if (!photoImage) { alert('Upload a photo first'); return; }
-  const btn = document.getElementById('bg-remove-btn');
-  btn.textContent = '[..] Processing...';
-  btn.disabled = true;
+  const btn = document.querySelector('[onclick="removeBackground()"]');
+  if(btn){btn.textContent='[..] Processing...';btn.disabled=true;}
   addLog('info', '[~] Detecting subject...');
   try {
     if (!selfieSegmentation) {
@@ -605,7 +604,7 @@ window.removeBackground = async function() {
     ctx.globalCompositeOperation = 'destination-in';
     ctx.drawImage(result.segmentationMask, 0, 0, W, H);
     ctx.restore();
-    document.getElementById('export-format').value = 'png';
+    (document.getElementById('photo-format')||document.getElementById('export-format')||{value:'png'}).value = 'png';
     addLog('success', '[ok] Background removed! Download as PNG.');
   } catch(e) {
     addLog('error', '[x] Failed: '+e.message);
@@ -616,7 +615,7 @@ window.removeBackground = async function() {
 
 window.downloadPhoto = function() {
   const canvas = document.getElementById('photo-canvas');
-  const format = document.getElementById('export-format').value;
+  const format = (document.getElementById('photo-format')||document.getElementById('export-format')||{value:'png'}).value;
   const url = canvas.toDataURL(`image/${format}`, format==='jpeg'?0.92:1);
   const a = document.createElement('a');
   a.href = url;
