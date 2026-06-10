@@ -1980,6 +1980,7 @@ window._startRecording = async function startRecording() {
     return Math.max(audioDuration + 500, minDuration * 0.8); // use whichever fits better
   });
   let sceneIndex = 0;
+  window._sceneAudioDone = false;
   let sceneStart = Date.now();
   let totalStart = Date.now();
 
@@ -2081,13 +2082,13 @@ window._startRecording = async function startRecording() {
         _ctx.globalAlpha=1;
       });
     }
-    if (sceneElapsed >= sceneDurations[sceneIndex]) {
-      if (sceneIndex < scriptData.scenes.length - 1) {
-        sceneIndex++;
-        sceneStart = now;
-        startTransition();
-        playSceneAudio(sceneIndex);
-      }
+    // Scene advances only when audio finishes (set by playSceneAudio)
+    if (window._sceneAudioDone && sceneIndex < scriptData.scenes.length - 1) {
+      window._sceneAudioDone = false;
+      sceneIndex++;
+      sceneStart = now;
+      startTransition();
+      playSceneAudio(sceneIndex);
     }
     if (totalElapsed >= totalDuration + 500) { stopRecording(); return; }
     animFrame = requestAnimationFrame(renderLoop);
