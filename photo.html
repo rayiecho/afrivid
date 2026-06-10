@@ -353,6 +353,42 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['do
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+<script>
+function updatePhotoPreview() {
+  var canvas = document.getElementById('photo-canvas');
+  if(!canvas) return;
+  var b = +(document.getElementById('photo-brightness')||{value:100}).value;
+  var c = +(document.getElementById('photo-contrast')||{value:100}).value;
+  var s = +(document.getElementById('photo-saturation')||{value:100}).value;
+  var w = parseInt((document.getElementById('photo-warmth')||{value:0}).value);
+  var css = 'brightness('+b+'%) contrast('+c+'%) saturate('+s+'%)';
+  if(w > 0) css += ' sepia('+(w*0.4)+'%) saturate('+(100+w*0.3)+'%)';
+  if(w < 0) css += ' hue-rotate('+(w*0.2)+'deg)';
+  canvas.style.filter = css;
+  canvas.style.transition = 'filter 0.2s';
+}
+function applyPhotoPreset(preset) {
+  var presets = {
+    iphone:{b:108,c:115,s:125,w:15}, dslr:{b:102,c:120,s:110,w:0},
+    cinema:{b:90,c:135,s:75,w:-10}, portrait:{b:105,c:110,s:90,w:10},
+    vivid:{b:105,c:115,s:160,w:5}, bw:{b:105,c:115,s:0,w:0},
+    reset:{b:100,c:100,s:100,w:0}
+  };
+  var p = presets[preset]; if(!p) return;
+  ['brightness','contrast','saturation'].forEach(function(id,idx){
+    var val = [p.b,p.c,p.s][idx];
+    var el = document.getElementById('photo-'+id);
+    var vEl = document.getElementById(['pb','pc','ps'][idx]+'-val');
+    if(el) el.value = val;
+    if(vEl) vEl.textContent = val+'%';
+  });
+  var wEl = document.getElementById('photo-warmth');
+  var wvEl = document.getElementById('pw-val');
+  if(wEl) wEl.value = p.w;
+  if(wvEl) wvEl.textContent = p.w;
+  updatePhotoPreview();
+}
+</script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
