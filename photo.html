@@ -854,77 +854,7 @@ function getPhotoFilter() {
   return f;
 }
 
-function updatePhotoPreview() {
-  if (!photoImage) return;
-  const canvas = document.getElementById('photo-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width;
-  const H = canvas.height;
-  const rotate = parseInt(document.getElementById('photo-rotate').value) * Math.PI / 180;
 
-  ctx.clearRect(0, 0, W, H);
-  ctx.save();
-  ctx.translate(W/2, H/2);
-  ctx.rotate(rotate);
-  ctx.filter = getPhotoFilter();
-  ctx.drawImage(photoImage, -W/2, -H/2, W, H);
-  ctx.filter = 'none';
-  ctx.restore();
-
-  // Watermark
-  const wm = document.getElementById('photo-watermark').value;
-  if (wm !== 'none') {
-    ctx.fillStyle = 'rgba(245,166,35,0.85)';
-    ctx.font = `bold ${Math.round(W * 0.035)}px Syne, sans-serif`;
-    ctx.textAlign = wm.includes('r') ? 'right' : 'left';
-    const x = wm.includes('r') ? W - 16 : 16;
-    const y = wm.includes('t') ? 36 : H - 16;
-    ctx.fillText('YAN | afrivid.studio', x, y);
-  }
-
-  // Text overlay
-  const textPos = document.getElementById('photo-text-pos').value;
-  const text = document.getElementById('photo-text').value;
-  if (textPos !== 'none' && text) {
-    const fontSize = Math.round(W * 0.04);
-    ctx.font = `bold ${fontSize}px Syne, sans-serif`;
-    ctx.textAlign = textPos === 'br' ? 'right' : 'center';
-    const x = textPos === 'br' ? W - 20 : W/2;
-    const y = textPos === 'top' ? fontSize + 20 : H - 24;
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillRect(0, y - fontSize - 8, W, fontSize + 20);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(text, x, y);
-  }
-}
-
-function applyPhotoPreset(preset) {
-  const presets = {
-    iphone:   { b:108, c:115, s:125, sh:2.5, w:15 },
-    dslr:     { b:102, c:120, s:110, sh:3.5, w:0  },
-    cinema:   { b:95,  c:130, s:75,  sh:2,   w:-10 },
-    portrait: { b:110, c:108, s:105, sh:1.5, w:10 },
-    vivid:    { b:105, c:115, s:160, sh:2,   w:5  },
-    bw:       { b:105, c:115, s:0,   sh:2,   w:0  },
-    warm:     { b:105, c:110, s:115, sh:1,   w:60 },
-    cool:     { b:100, c:110, s:90,  sh:1,   w:-50 },
-    reset:    { b:100, c:100, s:100, sh:0,   w:0  }
-  };
-  const p = presets[preset];
-  if (!p) return;
-  document.getElementById('photo-brightness').value = p.b;
-  document.getElementById('photo-contrast').value = p.c;
-  document.getElementById('photo-saturation').value = p.s;
-  document.getElementById('photo-sharpness').value = p.sh;
-  document.getElementById('photo-warmth').value = p.w;
-  document.getElementById('pb-val').textContent = p.b + '%';
-  document.getElementById('pc-val').textContent = p.c + '%';
-  document.getElementById('ps-val').textContent = p.s + '%';
-  document.getElementById('psh-val').textContent = p.sh;
-  document.getElementById('pw-val').textContent = p.w;
-  updatePhotoPreview();
-  addPhotoLog('success', `[ok] ${preset} preset applied`);
-}
 
 async function applyPhotoAIEdit() {
   const instructions = document.getElementById('photo-ai-instructions').value.trim();
