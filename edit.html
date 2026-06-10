@@ -508,28 +508,6 @@ function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shar
 
         Add Captions
       </div>
-      <p style="font-size:0.85rem;color:rgba(255,255,255,0.45);margin-bottom:1.25rem;line-height:1.7;">Upload a video to auto-generate captions or add them manually. Choose your caption style below.</p>
-      <div class="control-label" style="margin-bottom:0.75rem;">CAPTION STYLE</div>
-      <div class="caption-style-grid">
-        <button class="caption-style-btn active" onclick="setCaptionStyle('classic')">Classic</button>
-        <button class="caption-style-btn" onclick="setCaptionStyle('bold')">Bold</button>
-        <button class="caption-style-btn" onclick="setCaptionStyle('minimal')">Minimal</button>
-        <button class="caption-style-btn" onclick="setCaptionStyle('tiktok')">TikTok</button>
-      </div>
-      <div class="upload-zone" onclick="document.getElementById('caption-video-input').click()">
-        <div class="upload-icon">CC</div>
-        <div class="upload-text">Upload video for auto-captions</div>
-        <div class="upload-sub">Powered by speech recognition</div>
-      </div>
-      <input type="file" id="caption-video-input" accept="video/*" style="display:none;">
-      <div class="btn-row">
-        <button class="btn btn-gold" onclick="handleCaptions()">Generate Captions</button>
-      </div>
-      <div class="login-gate" id="caption-login-gate" style="display:none;">
-        <p>Sign in to generate and save captions to your videos.</p>
-        <button class="btn btn-gold" onclick="showLogin()">Sign In Free →</button>
-      </div>
-    </div>
   </div>
 
 </div>
@@ -665,30 +643,6 @@ window.applyPreset = function(preset) {
 }
 
 // ---- FULL ENHANCER ENGINE ----
-loadVideoFile = function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  enhanceVideo = file;
-  const url = URL.createObjectURL(file);
-  const video = document.getElementById('original-video');
-  video.src = url;
-  video.load();
-  document.getElementById('upload-card').textContent = file.name;
-  document.getElementById('editor-card').style.display = 'block';
-  document.getElementById('upload-card').style.display = 'none';
-  addEnhanceLog('success', `[ok] Loaded: ${file.name}`);
-  
-  video.onloadedmetadata = () => {
-    trimStart = 0;
-    trimEnd = video.duration;
-    clips = [];
-    updateTimeline();
-    const canvas = document.getElementById('preview-video');
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
-    updatePreview();
-  };
-}
 
 function getFilterCSS() {
   const b = document.getElementById('adj-brightness').value;
