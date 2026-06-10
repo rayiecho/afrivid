@@ -1173,8 +1173,9 @@ function doAdminLogin() {
     document.getElementById('admin-app').style.display = 'block';
     sessionStorage.setItem('afrivid_admin','1');
     // Store admin credentials for Firebase auth
-    sessionStorage.setItem('admin_fb_email','r.ayiecho@alustudent.com');
-    sessionStorage.setItem('admin_fb_pwd', pwd);
+    const adminEmail = document.getElementById('admin-email').value.trim() || 'afrividstudio@gmail.com';
+    sessionStorage.setItem('admin_fb_email', adminEmail);
+    sessionStorage.setItem('admin_fb_pwd', pwd); // Used for Firebase auth
     // Sign in to Firebase
     adminFirebaseSignIn().then(() => {
       loadOverview();
