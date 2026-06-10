@@ -154,6 +154,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </style>
 </head>
 <body>
+<button onclick="testPanel4()" style="position:fixed;bottom:1rem;right:1rem;z-index:9999;background:#F5A623;color:#000;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.75rem;">🧪 Test P4</button>
 <script>
 // Global proxies - required because main script is type="module"
 function setMode(m){ const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
