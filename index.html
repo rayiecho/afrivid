@@ -403,7 +403,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <!-- SIGN IN -->
       <form id="form-signin" onsubmit="signIn();return false;" style="display:none;">
         <label class="form-label">EMAIL</label>
-        <input type="email" id="login-email" class="form-input" placeholder="you@example.com">
+        <input type="email" id="login-email" class="form-input" placeholder="you@example.com" autocomplete="email">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="login-password" class="form-input" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()">
         <div id="login-error-signin" class="login-error"></div>
@@ -414,9 +414,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <!-- SIGN UP -->
       <form id="form-signup" onsubmit="signUp();return false;">
         <label class="form-label">FULL NAME</label>
-        <input type="text" id="signup-name" class="form-input" placeholder="Your full name">
+        <input type="text" id="signup-name" class="form-input" placeholder="Your full name" autocomplete="name">
         <label class="form-label">EMAIL</label>
-        <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
+        <input type="email" id="signup-email" class="form-input" placeholder="you@example.com" autocomplete="email">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUp()">
         <div id="login-error-signup" class="login-error"></div>
@@ -507,20 +507,35 @@ window.signUp = async function() {
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
-  const err = document.getElementById('login-error');
-  if (!name || !email || !password) { err.style.display='block'; err.textContent='[!] Please fill all fields'; return; }
-  if (password.length < 6) { err.style.display='block'; err.textContent='[!] Password must be at least 6 characters'; return; }
+  const err = document.getElementById('login-error-signup') || document.getElementById('login-error');
+  const btn = document.querySelector('#form-signup .btn-auth');
+  if(err){ err.style.display='none'; err.style.color=''; err.textContent=''; }
+  if(!name||!email||!password){
+    if(err){ err.style.display='block'; err.textContent='[!] Please fill all fields'; } return;
+  }
+  if(password.length < 6){
+    if(err){ err.style.display='block'; err.textContent='[!] Password must be at least 6 characters'; } return;
+  }
+  if(btn){ btn.textContent='Creating account...'; btn.disabled=true; }
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
     await sendEmailVerification(cred.user);
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
-      name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'beta'
+      displayName: name, email,
+      videosGenerated: 0, photosEdited: 0, designsCreated: 0,
+      createdAt: serverTimestamp(), lastActive: serverTimestamp(), plan: 'beta'
     });
-    window.location.href = 'studio.html';
+    if(btn){ btn.textContent='Account Created! ✅'; btn.disabled=true; }
+    if(err){ err.style.display='block'; err.style.color='#74C69D'; err.textContent='✅ Account created! Check your email to verify, then sign in.'; }
+    setTimeout(()=>window.showAuthTab('signin'), 2500);
   } catch(e) {
-    err.style.display = 'block';
-    err.textContent = '[!] ' + e.message.replace('Firebase: ', '');
+    if(btn){ btn.textContent='Create Account →'; btn.disabled=false; }
+    let msg = e.message.replace('Firebase: ','');
+    if(msg.includes('email-already-in-use')) msg = 'This email is already registered. Try signing in.';
+    if(msg.includes('invalid-email')) msg = 'Please enter a valid email address.';
+    if(msg.includes('weak-password')) msg = 'Password too weak. Use at least 6 characters.';
+    if(err){ err.style.display='block'; err.style.color=''; err.textContent='[!] '+msg; }
   }
 }
 
