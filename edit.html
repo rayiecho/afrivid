@@ -132,6 +132,7 @@ function updateTrimPreview() {
   var startEl = document.getElementById('trim-start');
   var endEl = document.getElementById('trim-end');
   if (!startEl || !endEl) return;
+  if(!video.duration || !isFinite(video.duration)) return;
   var s = (startEl.value / 100) * video.duration;
   var e = (endEl.value / 100) * video.duration;
   var sv = document.getElementById('trim-start-val');
@@ -540,6 +541,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
 let currentVideoFile = null;
+let enhanceVideo = null;
+let enhanceCanvas = null;
+let enhanceAR = "16:9";
 let combineFiles = [];
 
 onAuthStateChanged(auth, async (user) => {
@@ -574,6 +578,8 @@ window.loadVideoFile = function(event) {
   video.src = url;
   document.getElementById('enhancer-upload-card').style.display = 'none';
   document.getElementById('enhancer-editor').style.display = 'block';
+  enhanceVideo = video;
+  enhanceCanvas = document.getElementById('enhance-canvas');
   addLog('success', `[ok] Loaded: ${file.name}`);
 }
 
