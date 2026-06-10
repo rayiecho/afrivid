@@ -123,6 +123,13 @@ function removeBackground(){ if(window._removeBackground) window._removeBackgrou
 function downloadPhoto(){ if(window._downloadPhoto) window._downloadPhoto(); else if(window['downloadPhoto']) window['downloadPhoto'](); }
 function handleSaveToStudio(){ if(window._handleSaveToStudio) window._handleSaveToStudio(); else if(window['handleSaveToStudio']) window['handleSaveToStudio'](); }
 function resetEditor(){ if(window._resetEditor) window._resetEditor(); else if(window['resetEditor']) window['resetEditor'](); }
+function switchPhotoTab(tab, btn) {
+  document.querySelectorAll('.photo-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.photo-tool-tab').forEach(b => b.classList.remove('active'));
+  var panel = document.getElementById('photo-tab-' + tab);
+  if(panel) panel.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
 function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
 function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
 function applyCrop(){ if(window._applyCrop) window._applyCrop(); else if(window['applyCrop']) window['applyCrop'](); }
@@ -170,167 +177,142 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['do
 
     <!-- EDITOR -->
     <div id="photo-editor" style="display:none;">
+    <style>
+      .photo-studio{display:grid;grid-template-columns:200px 1fr;gap:1rem;align-items:start;}
+      .photo-left{display:flex;flex-direction:column;gap:0.4rem;}
+      .photo-center{display:flex;flex-direction:column;gap:0.75rem;}
+      .photo-quick-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;width:100%;text-align:left;transition:all 0.2s;font-family:'Syne',sans-serif;margin-bottom:0.3rem;display:block;}
+      .photo-quick-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+      .photo-tool-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;}
+      .photo-tool-tab{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);padding:0.4rem 0.85rem;border-radius:8px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;}
+      .photo-tool-tab:hover,.photo-tool-tab.active{border-color:rgba(245,166,35,0.4);color:#F5A623;background:rgba(245,166,35,0.08);}
+      .photo-panel{display:none;background:#0d1520;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;}
+      .photo-panel.active{display:block;}
+      .p-slider-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;}
+      .p-slider-row label{font-size:0.68rem;color:rgba(255,255,255,0.4);width:75px;flex-shrink:0;}
+      .p-slider-row input[type=range]{flex:1;}
+      .p-slider-row span{font-size:0.68rem;color:#F5A623;width:38px;text-align:right;font-family:'Space Mono',monospace;}
+      @media(max-width:768px){.photo-studio{grid-template-columns:1fr;}}
+    </style>
 
-      <!-- PREVIEW -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">👁</div>Preview
-          <span class="tag tag-gold" id="photo-filename">photo.jpg</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div>
-            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">ORIGINAL</div>
-            <div style="border-radius:12px;overflow:hidden;background:#000;max-height:300px;display:flex;align-items:center;justify-content:center;">
-              <img id="original-photo" style="max-width:100%;max-height:300px;object-fit:contain;">
-            </div>
-          </div>
-          <div>
-            <div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.5rem;">EDITED</div>
-            <div style="border-radius:12px;overflow:hidden;background:#000;max-height:300px;display:flex;align-items:center;justify-content:center;">
-              <canvas id="photo-canvas" style="max-width:100%;max-height:300px;object-fit:contain;"></canvas>
+    <div class="photo-studio">
+
+      <!-- LEFT SIDEBAR -->
+      <div class="photo-left">
+        <div style="font-size:0.6rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.25rem;">PRESETS</div>
+        <button class="photo-quick-btn" onclick="applyPhotoPreset('iphone')">📱 iPhone</button>
+        <button class="photo-quick-btn" onclick="applyPhotoPreset('dslr')">📷 DSLR</button>
+        <button class="photo-quick-btn" onclick="applyPhotoPreset('cinema')">🎬 Cinema</button>
+        <button class="photo-quick-btn" onclick="applyPhotoPreset('portrait')">👤 Portrait</button>
+        <button class="photo-quick-btn" onclick="applyPhotoPreset('vivid')">🌈 Vivid</button>
+        <button class="photo-quick-btn" onclick="applyPhotoPreset('bw')">⬛ B&W</button>
+        <button class="photo-quick-btn" onclick="applyPhotoPreset('reset')">↺ Reset</button>
+        <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
+        <button class="photo-quick-btn" onclick="toggleCrop()" style="color:#F5A623;border-color:rgba(245,166,35,0.2);">⬚ Crop</button>
+        <button class="photo-quick-btn" onclick="removeBackground()" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">✂ Remove BG</button>
+        <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
+        <button class="photo-quick-btn" onclick="downloadPhoto()" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">⬇ Download</button>
+        <button class="photo-quick-btn" onclick="handleSaveToStudio()" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">💾 Save</button>
+        <button class="photo-quick-btn" onclick="resetPhotoEditor()" style="color:rgba(230,51,41,0.7);">✕ New Photo</button>
+        <div id="bg-remove-status" style="font-size:0.62rem;color:#F5A623;font-family:'Space Mono',monospace;margin-top:0.3rem;"></div>
+        <span id="photo-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;word-break:break-all;margin-top:0.3rem;"></span>
+      </div>
+
+      <!-- CENTER -->
+      <div class="photo-center">
+
+        <!-- SINGLE PHOTO PREVIEW -->
+        <div style="position:relative;background:#000;border-radius:12px;overflow:hidden;min-height:300px;display:flex;align-items:center;justify-content:center;">
+          <canvas id="photo-canvas" style="max-width:100%;max-height:400px;display:block;"></canvas>
+          <img id="original-photo" style="display:none;">
           <div class="crop-overlay" id="crop-overlay"></div>
           <div class="crop-selection" id="crop-selection" style="display:none;"></div>
+        </div>
+
+        <!-- TOOL TABS -->
+        <div class="photo-tool-tabs">
+          <button class="photo-tool-tab active" onclick="switchPhotoTab('adjust',this)">🎨 Adjust</button>
+          <button class="photo-tool-tab" onclick="switchPhotoTab('ai',this)">✦ AI Edit</button>
+          <button class="photo-tool-tab" onclick="switchPhotoTab('crop',this)">⬚ Crop</button>
+          <button class="photo-tool-tab" onclick="switchPhotoTab('text',this)">T Text</button>
+        </div>
+
+        <!-- ADJUST PANEL -->
+        <div class="photo-panel active" id="photo-tab-adjust">
+          <div class="p-slider-row"><label>Brightness</label><input type="range" id="photo-brightness" min="50" max="200" value="100" oninput="updatePhotoPreview();document.getElementById('pb-val').textContent=this.value+'%'"><span id="pb-val">100%</span></div>
+          <div class="p-slider-row"><label>Contrast</label><input type="range" id="photo-contrast" min="50" max="200" value="100" oninput="updatePhotoPreview();document.getElementById('pc-val').textContent=this.value+'%'"><span id="pc-val">100%</span></div>
+          <div class="p-slider-row"><label>Saturation</label><input type="range" id="photo-saturation" min="0" max="200" value="100" oninput="updatePhotoPreview();document.getElementById('ps-val').textContent=this.value+'%'"><span id="ps-val">100%</span></div>
+          <div class="p-slider-row"><label>Sharpness</label><input type="range" id="photo-sharpness" min="0" max="10" value="0" step="0.5" oninput="updatePhotoPreview();document.getElementById('psh-val').textContent=this.value"><span id="psh-val">0</span></div>
+          <div class="p-slider-row"><label>Warmth</label><input type="range" id="photo-warmth" min="-50" max="50" value="0" oninput="updatePhotoPreview();document.getElementById('pw-val').textContent=this.value"><span id="pw-val">0</span></div>
+          <div class="p-slider-row"><label>Rotate</label>
+            <select id="photo-rotate" class="form-select" style="flex:1;font-size:0.72rem;" onchange="updatePhotoPreview()">
+              <option value="0">0°</option>
+              <option value="90">90°</option>
+              <option value="180">180°</option>
+              <option value="270">270°</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- AI EDIT PANEL -->
+        <div class="photo-panel" id="photo-tab-ai">
+          <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;">Describe what you want to change</p>
+          <textarea id="photo-ai-instructions" class="form-textarea" style="min-height:80px;font-size:0.82rem;" placeholder="e.g. Make it look like iPhone photo, brighten it up, add warm filter..."></textarea>
+          <button onclick="applyPhotoAIEdit()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">✦ Apply Smart Edit</button>
+        </div>
+
+        <!-- CROP PANEL -->
+        <div class="photo-panel" id="photo-tab-crop">
+          <div id="crop-controls" style="background:transparent;border:none;padding:0;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
+            <div class="crop-ratio-btns">
+              <button class="crop-ratio-btn active" onclick="setCropRatio('free')">Free</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('1:1')">1:1</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('16:9')">16:9</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('9:16')">9:16</button>
+              <button class="crop-ratio-btn" onclick="setCropRatio('4:3')">4:3</button>
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+              <button class="btn btn-gold" style="flex:1;padding:0.55rem;" onclick="applyCrop()">✓ Apply</button>
+              <button class="btn btn-outline" style="flex:1;padding:0.55rem;" onclick="cancelCrop()">✕ Cancel</button>
             </div>
           </div>
+          <button class="btn btn-outline" style="width:100%;margin-top:0.75rem;" onclick="toggleCrop()">⬚ Start Crop</button>
         </div>
-      </div>
 
-      <!-- EDIT INSTRUCTIONS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon"></div>Edit Instructions</div>
-        <div class="form-group">
-          <textarea id="photo-ai-instructions" class="form-textarea" style="min-height:80px;" placeholder="Type what you want:
-- Make it look professional
-- Brighten it up
-- Make it look like iPhone photo
-- Add warm filter
-- Make it black and white
-- Sharpen and enhance quality
-- Add YAN watermark"></textarea>
-          <button onclick="applyPhotoAIEdit()" class="btn btn-gold" style="margin-top:0.75rem;padding:0.65rem 1.5rem;font-size:0.85rem;">Apply Smart Edit</button>
-        </div>
-      </div>
-
-      <!-- QUALITY PRESETS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">✨</div>Quick Presets</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;">
-          <button onclick="applyPhotoPreset('iphone')" class="preset-btn">📱 iPhone</button>
-          <button onclick="applyPhotoPreset('dslr')" class="preset-btn">📷 DSLR</button>
-          <button onclick="applyPhotoPreset('cinema')" class="preset-btn">🎬 Cinema</button>
-          <button onclick="applyPhotoPreset('portrait')" class="preset-btn">👤 Portrait</button>
-          <button onclick="applyPhotoPreset('vivid')" class="preset-btn">🌈 Vivid</button>
-          <button onclick="applyPhotoPreset('bw')" class="preset-btn">⚫ B&W</button>
-          <button onclick="applyPhotoPreset('warm')" class="preset-btn">🌅 Warm</button>
-          <button onclick="applyPhotoPreset('cool')" class="preset-btn">❄️ Cool</button>
-          <button onclick="applyPhotoPreset('reset')" class="preset-btn" style="color:var(--muted);">↺ Reset</button>
-        </div>
-      </div>
-
-      <!-- MANUAL ADJUSTMENTS -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">🎨</div>Manual Adjustments</div>
-        <div class="enhance-grid">
-          <div class="form-group">
-            <label class="form-label">Brightness</label>
-            <input type="range" class="filter-slider" id="photo-brightness" min="0" max="300" value="100" oninput="updatePhotoPreview();document.getElementById('pb-val').textContent=this.value+'%'">
-            <span class="form-hint" id="pb-val">100%</span>
+        <!-- TEXT PANEL -->
+        <div class="photo-panel" id="photo-tab-text">
+          <div class="p-slider-row"><label>Text</label>
+            <input type="text" id="photo-text" class="form-input" style="flex:1;font-size:0.82rem;" placeholder="Your text here">
           </div>
-          <div class="form-group">
-            <label class="form-label">Contrast</label>
-            <input type="range" class="filter-slider" id="photo-contrast" min="0" max="300" value="100" oninput="updatePhotoPreview();document.getElementById('pc-val').textContent=this.value+'%'">
-            <span class="form-hint" id="pc-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Saturation</label>
-            <input type="range" class="filter-slider" id="photo-saturation" min="0" max="300" value="100" oninput="updatePhotoPreview();document.getElementById('ps-val').textContent=this.value+'%'">
-            <span class="form-hint" id="ps-val">100%</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Sharpness</label>
-            <input type="range" class="filter-slider" id="photo-sharpness" min="0" max="10" value="0" step="0.5" oninput="updatePhotoPreview();document.getElementById('psh-val').textContent=this.value">
-            <span class="form-hint" id="psh-val">0</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Warmth</label>
-            <input type="range" class="filter-slider" id="photo-warmth" min="-100" max="100" value="0" oninput="updatePhotoPreview();document.getElementById('pw-val').textContent=this.value">
-            <span class="form-hint" id="pw-val">0</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Rotate</label>
-            <input type="range" class="filter-slider" id="photo-rotate" min="-180" max="180" value="0" oninput="updatePhotoPreview();document.getElementById('pr-val').textContent=this.value+'°'">
-            <span class="form-hint" id="pr-val">0°</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEXT OVERLAY -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">💬</div>Text & Watermark</div>
-        <div class="enhance-grid">
-          <div class="form-group full">
-            <label class="form-label">Add Text</label>
-            <input type="text" id="photo-text" class="form-input" placeholder="e.g. Young Africans Network" oninput="updatePhotoPreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Text Position</label>
-            <select id="photo-text-pos" class="form-select" onchange="updatePhotoPreview()">
-              <option value="none">No Text</option>
-              <option value="bottom">Bottom Center</option>
-              <option value="top">Top Center</option>
-              <option value="br">Bottom Right</option>
+          <div class="p-slider-row"><label>Position</label>
+            <select id="photo-text-pos" class="form-select" style="flex:1;font-size:0.72rem;">
+              <option value="bottom">Bottom</option>
+              <option value="top">Top</option>
+              <option value="center">Center</option>
             </select>
           </div>
-          <div class="form-group">
-            <label class="form-label">YAN Watermark</label>
-            <select id="photo-watermark" class="form-select" onchange="updatePhotoPreview()">
-              <option value="none">No Watermark</option>
-              <option value="br">YAN — Bottom Right</option>
-              <option value="bl">YAN — Bottom Left</option>
-              <option value="tr">YAN — Top Right</option>
+          <div class="p-slider-row"><label>Format</label>
+            <select id="photo-format" class="form-select" style="flex:1;font-size:0.72rem;">
+              <option value="png">PNG</option>
+              <option value="jpeg">JPEG</option>
+              <option value="webp">WebP</option>
             </select>
           </div>
-        </div>
-      </div>
-
-      <!-- EXPORT -->
-      <div class="card">
-        <div class="card-title"><div class="card-title-icon">⚡</div>Download</div>
-        <div class="form-group" style="margin-bottom:1rem;">
-          <label class="form-label">Format</label>
-          <select id="photo-format" class="form-select">
-            <option value="jpeg">JPEG (smaller file)</option>
-            <option value="png">PNG (better quality)</option>
-            <option value="webp">WebP (best compression)</option>
-          </select>
-        
-        <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
-          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
-          <div class="crop-ratio-btns">
-            <button class="crop-ratio-btn" onclick="setCropRatio('free')">Free</button>
-            <button class="crop-ratio-btn active" onclick="setCropRatio('16:9')">16:9</button>
-            <button class="crop-ratio-btn" onclick="setCropRatio('9:16')">9:16</button>
-            <button class="crop-ratio-btn" onclick="setCropRatio('1:1')">1:1</button>
-            <button class="crop-ratio-btn" onclick="setCropRatio('4:3')">4:3</button>
-            <button class="crop-ratio-btn" onclick="setCropRatio('A4')">A4</button>
+          <div class="p-slider-row"><label>Watermark</label>
+            <select id="photo-watermark" class="form-select" style="flex:1;font-size:0.72rem;">
+              <option value="none">None</option>
+              <option value="afrivid">AfriVid Studio</option>
+            </select>
           </div>
-          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-            <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">Apply Crop</button>
-            <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">Cancel</button>
-          </div>
-        </div></div>
-        <div class="btn-row">
-          <button onclick="downloadPhoto()" class="btn btn-green">⬇ Download Photo</button>
-          <button onclick="removeBackground()" class="btn btn-gold" id="bg-remove-btn">🗑 Remove Background</button>
-          <button onclick="resetPhotoEditor()" class="btn btn-outline">↺ Reset</button>
+          <button onclick="updatePhotoPreview()" class="btn btn-gold" style="width:100%;margin-top:0.5rem;">Apply Text</button>
         </div>
-        <div id="bg-remove-status" style="display:none;margin-top:0.75rem;font-size:0.78rem;font-family:var(--font-mono);color:var(--gold);">
-          Removing background...
-        </div>
-        <div class="status-log" id="photo-log" style="margin-top:1rem;">
-          <span class="log-line info">// Upload a photo to get started.</span>
-        </div>
-      </div>
 
+        <!-- LOG -->
+        <div id="photo-log" style="font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);max-height:80px;overflow-y:auto;"></div>
+
+      </div><!-- end photo-center -->
+    </div><!-- end photo-studio -->
     </div><!-- end photo-editor -->
   </div><!-- end section-photo -->
   </div>
