@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#050A14;--bg2:#0a1628;--bg3:#0d1f35;--card:#0f1e30;
+  --gold:#F5A623;--green:#74C69D;--red:#E63329;--white:#fff;
+  --muted:rgba(255,255,255,0.4);--border:rgba(255,255,255,0.07);
+  --font-display:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
+}
+body{background:var(--bg);color:var(--white);font-family:var(--font-display);min-height:100vh;}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:360px;text-align:center;}
+.login-logo{font-size:2rem;font-weight:800;color:var(--gold);margin-bottom:0.25rem;}
+.login-sub{font-size:0.75rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:2rem;}
+.login-input{width:100%;background:#1a2a3a;border:1px solid var(--border);color:var(--white);padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;font-family:var(--font-display);margin-bottom:1rem;outline:none;}
+.login-input:focus{border-color:rgba(245,166,35,0.4);}
+.login-btn{width:100%;background:var(--gold);color:#000;border:none;padding:0.9rem;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:var(--font-display);}
+.login-err{color:var(--red);font-size:0.78rem;margin-top:0.5rem;font-family:var(--font-mono);}
+
+/* LAYOUT */
+#admin-app{display:none;}
+.admin-layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;}
+.sidebar-logo{padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.sidebar-logo-text{font-size:1.1rem;font-weight:800;color:var(--gold);}
+.sidebar-logo-sub{font-size:0.6rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:2px;}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1.5rem;cursor:pointer;color:var(--muted);font-size:0.82rem;font-weight:600;transition:all 0.2s;border-left:2px solid transparent;}
+.nav-item:hover{color:var(--white);background:rgba(255,255,255,0.03);}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(245,166,35,0.05);}
+.nav-icon{width:18px;text-align:center;font-size:0.9rem;}
+.nav-section{padding:1rem 1.5rem 0.4rem;font-size:0.6rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:2px;}
+.sidebar-footer{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--border);}
+.logout-btn{width:100%;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:var(--red);padding:0.6rem;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;font-family:var(--font-display);}
+
+/* MAIN */
+.main{padding:2rem;overflow-y:auto;}
+.page{display:none;}
+.page.active{display:block;}
+.page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.25rem;}
+.page-sub{font-size:0.78rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:1.5rem;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
+.card-title{font-size:0.65rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:1rem;}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
+.stat-label{font-size:0.65rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:0.5rem;}
+.stat-value{font-size:2rem;font-weight:800;color:var(--white);}
+.stat-value.gold{color:var(--gold);}
+.stat-value.green{color:var(--green);}
+.stat-value.red{color:var(--red);}
+.stat-delta{font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);margin-top:0.25rem;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+th{text-align:left;padding:0.75rem 1rem;font-size:0.62rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:1px;border-bottom:1px solid var(--border);}
+td{padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.badge{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:0.65rem;font-weight:700;font-family:var(--font-mono);}
+.badge-gold{background:rgba(245,166,35,0.15);color:var(--gold);}
+.badge-green{background:rgba(116,198,157,0.15);color:var(--green);}
+.badge-red{background:rgba(230,51,41,0.15);color:var(--red);}
+.badge-muted{background:rgba(255,255,255,0.07);color:var(--muted);}
+
+/* CHART */
+.chart-wrap{height:180px;display:flex;align-items:flex-end;gap:6px;padding-top:1rem;}
+.bar{flex:1;background:rgba(245,166,35,0.2);border-radius:4px 4px 0 0;position:relative;transition:all 0.3s;cursor:pointer;min-height:4px;}
+.bar:hover{background:rgba(245,166,35,0.4);}
+.bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:0.55rem;color:var(--muted);font-family:var(--font-mono);white-space:nowrap;}
+
+/* FORMS */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-size:0.68rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:0.4rem;}
+.form-input,.form-select,.form-textarea{width:100%;background:#1a2a3a;border:1px solid var(--border);color:var(--white);padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;font-family:var(--font-display);outline:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(245,166,35,0.4);}
+.form-select option{background:#1a2a3a;}
+.form-textarea{min-height:80px;resize:vertical;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.25rem;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;border:none;font-family:var(--font-display);transition:all 0.2s;}
+.btn-gold{background:var(--gold);color:#000;}
+.btn-gold:hover{background:#e8951f;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--white);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-red{background:rgba(230,51,41,0.15);border:1px solid rgba(230,51,41,0.3);color:var(--red);}
+.btn-green{background:rgba(116,198,157,0.15);border:1px solid rgba(116,198,157,0.3);color:var(--green);}
+.btn-sm{padding:0.4rem 0.75rem;font-size:0.72rem;}
+
+/* FINANCE */
+.balance-display{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;}
+.balance-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;}
+.balance-amount{font-size:1.75rem;font-weight:800;margin:0.5rem 0;}
+.receipt-preview{max-width:120px;max-height:120px;border-radius:8px;object-fit:cover;border:1px solid var(--border);}
+
+/* SYSTEM */
+.system-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1.5rem;}
+.system-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.system-info{}
+.system-name{font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;}
+.system-url{font-size:0.65rem;color:var(--muted);font-family:var(--font-mono);}
+.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;}
+.status-online{background:var(--green);box-shadow:0 0 8px var(--green);}
+.status-offline{background:var(--red);}
+.status-checking{background:var(--gold);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1.25rem;font-size:0.82rem;z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:rgba(116,198,157,0.4);color:var(--green);}
+.toast.error{border-color:rgba(230,51,41,0.4);color:var(--red);}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;}
+.upload-zone:hover{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.03);}
+
+/* GRID LAYOUTS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;}
+.mb-1{margin-bottom:1rem;}
+.mb-15{margin-bottom:1.5rem;}
+.flex{display:flex;align-items:center;}
+.flex-between{display:flex;align-items:center;justify-content:space-between;}
+.gap-1{gap:1rem;}
+.text-muted{color:var(--muted);font-size:0.78rem;}
+.text-mono{font-family:var(--font-mono);}
+.text-gold{color:var(--gold);}
+.text-green{color:var(--green);}
+.text-red{color:var(--red);}
+
+@media(max-width:900px){
+  .admin-layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .balance-display{grid-template-columns:1fr;}
+  .grid-2,.grid-3,.form-row{grid-template-columns:1fr;}
+  .system-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">AfriVid</div>
+    <div class="login-sub">ADMIN DASHBOARD</div>
+    <input type="password" class="login-input" id="admin-pwd" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    <button class="login-btn" onclick="doAdminLogin()">Access Dashboard</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-text">AfriVid</div>
+        <div class="sidebar-logo-sub">ADMIN PANEL</div>
+      </div>
+
+      <div class="nav-section">MAIN</div>
+      <div class="nav-item active" onclick="showPage('overview',this)"><span class="nav-icon">◈</span> Overview</div>
+      <div class="nav-item" onclick="showPage('analytics',this)"><span class="nav-icon">◉</span> Analytics</div>
+      <div class="nav-item" onclick="showPage('users',this)"><span class="nav-icon">◎</span> Users</div>
+
+      <div class="nav-section">PLATFORM</div>
+      <div class="nav-item" onclick="showPage('system',this)"><span class="nav-icon">◇</span> System</div>
+      <div class="nav-item" onclick="showPage('content',this)"><span class="nav-icon">▣</span> Content</div>
+
+      <div class="nav-section">FINANCE</div>
+      <div class="nav-item" onclick="showPage('finance',this)"><span class="nav-icon">$</span> Finances</div>
+      <div class="nav-item" onclick="showPage('balance',this)"><span class="nav-icon">≡</span> Balance Sheet</div>
+
+      <div class="sidebar-footer">
+        <div style="font-size:0.65rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.75rem;" id="admin-time"></div>
+        <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- OVERVIEW -->
+      <div class="page active" id="page-overview">
+        <div class="page-title">Overview</div>
+        <div class="page-sub" id="overview-date">Loading...</div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">TOTAL USERS</div>
+            <div class="stat-value gold" id="stat-users">—</div>
+            <div class="stat-delta" id="stat-users-delta">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">VIDEOS GENERATED</div>
+            <div class="stat-value" id="stat-videos">—</div>
+            <div class="stat-delta">All time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">ACTIVE TODAY</div>
+            <div class="stat-value green" id="stat-active">—</div>
+            <div class="stat-delta">Last 24 hours</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">NET BALANCE</div>
+            <div class="stat-value" id="stat-balance">$0</div>
+            <div class="stat-delta">Income - Expenses</div>
+          </div>
+        </div>
+
+        <div class="grid-2 mb-15">
+          <div class="card">
+            <div class="card-title">VIDEO ACTIVITY — LAST 7 DAYS</div>
+            <div class="chart-wrap" id="chart-videos"></div>
+            <div style="display:flex;justify-content:space-around;margin-top:1.5rem;padding-top:0.5rem;border-top:1px solid var(--border);">
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">USER SIGNUPS — LAST 7 DAYS</div>
+            <div class="chart-wrap" id="chart-users"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">RECENT USERS</div>
+            <div id="recent-users-list">
+              <div class="text-muted">Loading...</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">RECENT ACTIVITY</div>
+            <div id="recent-activity-list">
+              <div class="text-muted">Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="page" id="page-analytics">
+        <div class="page-title">Analytics</div>
+        <div class="page-sub">Detailed platform usage metrics</div>
+
+        <div class="stats-grid mb-15">
+          <div class="stat-card">
+            <div class="stat-label">TOTAL VIDEOS</div>
+            <div class="stat-value gold" id="an-videos">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TOTAL PHOTOS</div>
+            <div class="stat-value" id="an-photos">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TOTAL DESIGNS</div>
+            <div class="stat-value green" id="an-designs">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">AVG VIDEOS/USER</div>
+            <div class="stat-value" id="an-avg">—</div>
+          </div>
+        </div>
+
+        <div class="card mb-15">
+          <div class="flex-between mb-1">
+            <div class="card-title" style="margin:0;">VIDEOS GENERATED PER DAY — 30 DAYS</div>
+            <select class="form-select" style="width:auto;padding:0.4rem 0.75rem;font-size:0.75rem;" onchange="loadAnalytics(this.value)">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+            </select>
+          </div>
+          <div class="chart-wrap" id="chart-analytics" style="height:220px;"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">TOP USERS BY VIDEOS</div>
+            <div id="top-users-list"><div class="text-muted">Loading...</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">USAGE BY TOOL</div>
+            <div id="tool-usage">
+              <div style="margin-bottom:0.75rem;">
+                <div class="flex-between mb-1" style="font-size:0.8rem;"><span>Video Creator</span><span class="text-gold" id="tool-video">—</span></div>
+                <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;"><div id="bar-video" style="height:100%;background:var(--gold);border-radius:4px;width:0%;transition:width 0.5s;"></div></div>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <div class="flex-between mb-1" style="font-size:0.8rem;"><span>Photo Editor</span><span class="text-green" id="tool-photo">—</span></div>
+                <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;"><div id="bar-photo" style="height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 0.5s;"></div></div>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <div class="flex-between mb-1" style="font-size:0.8rem;"><span>Video Editor</span><span id="tool-edit">—</span></div>
+                <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;"><div id="bar-edit" style="height:100%;background:rgba(255,255,255,0.4);border-radius:4px;width:0%;transition:width 0.5s;"></div></div>
+              </div>
+              <div>
+                <div class="flex-between mb-1" style="font-size:0.8rem;"><span>Design Studio</span><span id="tool-design">—</span></div>
+                <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;"><div id="bar-design" style="height:100%;background:rgba(245,166,35,0.4);border-radius:4px;width:0%;transition:width 0.5s;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="page" id="page-users">
+        <div class="flex-between mb-15">
+          <div>
+            <div class="page-title">Users</div>
+            <div class="page-sub">All registered accounts</div>
+          </div>
+          <div class="flex gap-1">
+            <input type="text" class="form-input" style="width:200px;padding:0.5rem 0.75rem;" placeholder="Search users..." oninput="filterUsers(this.value)" id="user-search">
+            <button class="btn btn-outline btn-sm" onclick="loadUsers()">↺ Refresh</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>USER</th>
+                  <th>EMAIL</th>
+                  <th>JOINED</th>
+                  <th>VIDEOS</th>
+                  <th>STATUS</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="users-table">
+                <tr><td colspan="6" class="text-muted" style="text-align:center;padding:2rem;">Loading users...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SYSTEM -->
+      <div class="page" id="page-system">
+        <div class="page-title">System</div>
+        <div class="page-sub">Worker health and platform controls</div>
+
+        <div class="system-grid mb-15">
+          <div class="system-card">
+            <div class="system-info">
+              <div class="system-name">TTS Worker</div>
+              <div class="system-url">afrivid-tts.mathsai666.workers.dev</div>
+            </div>
+            <div><span class="status-dot status-checking" id="dot-tts"></span><span id="status-tts" style="font-size:0.72rem;font-family:var(--font-mono);">Checking...</span></div>
+          </div>
+          <div class="system-card">
+            <div class="system-info">
+              <div class="system-name">Script Generator</div>
+              <div class="system-url">yan-ai-worker.youngafricansn.workers.dev</div>
+            </div>
+            <div><span class="status-dot status-checking" id="dot-ai"></span><span id="status-ai" style="font-size:0.72rem;font-family:var(--font-mono);">Checking...</span></div>
+          </div>
+          <div class="system-card">
+            <div class="system-info">
+              <div class="system-name">Firebase</div>
+              <div class="system-url">afrivid-studio.firebaseapp.com</div>
+            </div>
+            <div><span class="status-dot status-checking" id="dot-firebase"></span><span id="status-firebase" style="font-size:0.72rem;font-family:var(--font-mono);">Checking...</span></div>
+          </div>
+          <div class="system-card">
+            <div class="system-info">
+              <div class="system-name">GitHub Pages</div>
+              <div class="system-url">afrivid.studio</div>
+            </div>
+            <div><span class="status-dot status-online"></span><span style="font-size:0.72rem;font-family:var(--font-mono);color:var(--green);">Online</span></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">BETA CONTROLS</div>
+            <div class="form-group">
+              <div class="form-label">VIDEO LIMIT PER USER</div>
+              <div class="flex gap-1">
+                <input type="number" class="form-input" id="beta-limit" value="10" min="1" max="100" style="width:100px;">
+                <button class="btn btn-gold btn-sm" onclick="saveBetaLimit()">Save</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-label">BETA MODE</div>
+              <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
+                <input type="checkbox" id="beta-toggle" checked style="width:18px;height:18px;">
+                <span style="font-size:0.85rem;">Beta limits active</span>
+              </label>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="saveSystemSettings()">Save Settings</button>
+          </div>
+          <div class="card">
+            <div class="card-title">SEND ANNOUNCEMENT</div>
+            <div class="form-group">
+              <div class="form-label">MESSAGE</div>
+              <textarea class="form-textarea" id="announcement-text" placeholder="Message to all users..."></textarea>
+            </div>
+            <button class="btn btn-gold btn-sm" onclick="sendAnnouncement()">Send to All Users</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="page" id="page-content">
+        <div class="page-title">Content</div>
+        <div class="page-sub">Saved studio files across all users</div>
+
+        <div class="stats-grid mb-15" style="grid-template-columns:repeat(3,1fr);">
+          <div class="stat-card">
+            <div class="stat-label">SAVED VIDEOS</div>
+            <div class="stat-value gold" id="content-videos">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">SAVED PHOTOS</div>
+            <div class="stat-value" id="content-photos">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">SAVED DESIGNS</div>
+            <div class="stat-value green" id="content-designs">—</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">STUDIO FILES</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>TITLE</th><th>TYPE</th><th>USER</th><th>DATE</th><th>ACTIONS</th></tr>
+              </thead>
+              <tbody id="content-table">
+                <tr><td colspan="5" class="text-muted" style="text-align:center;padding:2rem;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINANCES -->
+      <div class="page" id="page-finance">
+        <div class="flex-between mb-15">
+          <div>
+            <div class="page-title">Finances</div>
+            <div class="page-sub">Income, expenses and receipts — USD</div>
+          </div>
+          <button class="btn btn-gold" onclick="showAddTransaction()">+ Add Entry</button>
+        </div>
+
+        <div class="balance-display">
+          <div class="balance-card">
+            <div class="stat-label">TOTAL INCOME</div>
+            <div class="balance-amount text-green" id="fin-income">$0.00</div>
+            <div class="text-muted text-mono" style="font-size:0.65rem;">All time</div>
+          </div>
+          <div class="balance-card">
+            <div class="stat-label">TOTAL EXPENSES</div>
+            <div class="balance-amount text-red" id="fin-expenses">$0.00</div>
+            <div class="text-muted text-mono" style="font-size:0.65rem;">All time</div>
+          </div>
+          <div class="balance-card" style="border-color:rgba(245,166,35,0.2);">
+            <div class="stat-label">NET BALANCE</div>
+            <div class="balance-amount" id="fin-balance" style="color:var(--gold);">$0.00</div>
+            <div class="text-muted text-mono" style="font-size:0.65rem;">Income - Expenses</div>
+          </div>
+        </div>
+
+        <!-- ADD TRANSACTION FORM -->
+        <div class="card mb-15" id="add-transaction-form" style="display:none;">
+          <div class="card-title">ADD TRANSACTION</div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="form-label">TYPE</div>
+              <select class="form-select" id="tx-type">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="form-label">AMOUNT (USD)</div>
+              <input type="number" class="form-input" id="tx-amount" placeholder="0.00" min="0" step="0.01">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="form-label">DESCRIPTION</div>
+              <input type="text" class="form-input" id="tx-desc" placeholder="e.g. Server costs, Premium subscription">
+            </div>
+            <div class="form-group">
+              <div class="form-label">CATEGORY</div>
+              <select class="form-select" id="tx-category">
+                <option value="subscription">Subscription Revenue</option>
+                <option value="donation">Donation</option>
+                <option value="grant">Grant / Funding</option>
+                <option value="server">Server / Hosting</option>
+                <option value="api">API Costs</option>
+                <option value="marketing">Marketing</option>
+                <option value="salary">Salary / Stipend</option>
+                <option value="equipment">Equipment</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="form-label">DATE</div>
+              <input type="date" class="form-input" id="tx-date">
+            </div>
+            <div class="form-group">
+              <div class="form-label">RECEIPT (OPTIONAL)</div>
+              <div class="upload-zone" onclick="document.getElementById('tx-receipt').click()" id="receipt-zone">
+                <input type="file" id="tx-receipt" accept="image/*,application/pdf" style="display:none;" onchange="handleReceiptUpload(event)">
+                <div style="font-size:0.78rem;color:var(--muted);">📎 Click to upload receipt</div>
+                <div style="font-size:0.65rem;color:var(--muted);margin-top:0.25rem;font-family:var(--font-mono);">JPG, PNG, PDF</div>
+              </div>
+              <img id="receipt-preview" class="receipt-preview" style="display:none;margin-top:0.5rem;">
+            </div>
+          </div>
+          <div class="flex gap-1">
+            <button class="btn btn-gold" onclick="saveTransaction()">Save Transaction</button>
+            <button class="btn btn-outline" onclick="document.getElementById('add-transaction-form').style.display='none'">Cancel</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="flex-between mb-1">
+            <div class="card-title" style="margin:0;">TRANSACTION HISTORY</div>
+            <select class="form-select" style="width:auto;padding:0.4rem 0.75rem;font-size:0.75rem;" onchange="filterTransactions(this.value)" id="tx-filter">
+              <option value="all">All</option>
+              <option value="income">Income only</option>
+              <option value="expense">Expenses only</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>DATE</th><th>DESCRIPTION</th><th>CATEGORY</th><th>TYPE</th><th>AMOUNT</th><th>RECEIPT</th><th></th></tr>
+              </thead>
+              <tbody id="tx-table">
+                <tr><td colspan="7" class="text-muted" style="text-align:center;padding:2rem;">No transactions yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- BALANCE SHEET -->
+      <div class="page" id="page-balance">
+        <div class="flex-between mb-15">
+          <div>
+            <div class="page-title">Balance Sheet</div>
+            <div class="page-sub">Monthly financial summary</div>
+          </div>
+          <button class="btn btn-outline" onclick="exportCSV()">⬇ Export CSV</button>
+        </div>
+
+        <div class="card mb-15">
+          <div class="card-title">MONTHLY SUMMARY</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>MONTH</th><th>INCOME</th><th>EXPENSES</th><th>NET</th><th>RUNNING BALANCE</th></tr>
+              </thead>
+              <tbody id="balance-table">
+                <tr><td colspan="5" class="text-muted" style="text-align:center;padding:2rem;">No data</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">INCOME BY CATEGORY</div>
+            <div id="income-by-cat"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">EXPENSES BY CATEGORY</div>
+            <div id="expense-by-cat"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end main -->
+  </div><!-- end admin-layout -->
+</div><!-- end admin-app -->
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, getDocs, doc, setDoc, addDoc, deleteDoc, query, orderBy, limit, where, getDoc, updateDoc, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+let storage;
+try { storage = getStorage(app); } catch(e) {}
+
+let allUsers = [];
+let allTransactions = [];
+let receiptBase64 = null;
+
+// ── OVERVIEW ──
+async function loadOverview() {
+  try {
+    document.getElementById('overview-date').textContent = new Date().toLocaleString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+    // Users
+    const usersSnap = await getDocs(collection(db, 'studio_users'));
+    const userCount = usersSnap.size;
+    document.getElementById('stat-users').textContent = userCount;
+    document.getElementById('stat-users-delta').textContent = userCount + ' total registered';
+
+    // Videos
+    let totalVideos = 0;
+    usersSnap.forEach(d => { totalVideos += (d.data().videosGenerated || 0); });
+    document.getElementById('stat-videos').textContent = totalVideos;
+
+    // Active today
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    let activeToday = 0;
+    usersSnap.forEach(d => {
+      const last = d.data().lastActive?.toDate?.();
+      if (last && last >= todayStart) activeToday++;
+    });
+    document.getElementById('stat-active').textContent = activeToday;
+
+    // Balance from Firestore
+    await loadFinanceSummary();
+
+    // Recent users
+    const recentUsers = [];
+    usersSnap.forEach(d => recentUsers.push({id:d.id,...d.data()}));
+    recentUsers.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    const ruEl = document.getElementById('recent-users-list');
+    ruEl.innerHTML = recentUsers.slice(0,5).map(u => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;">${u.displayName||u.email||'User'}</div>
+          <div style="font-size:0.68rem;color:var(--muted);font-family:var(--font-mono);">${u.email||''}</div>
+        </div>
+        <span class="badge badge-gold">${u.videosGenerated||0} videos</span>
+      </div>
+    `).join('') || '<div class="text-muted">No users yet</div>';
+
+    // Mini charts
+    renderMiniChart('chart-videos', generateDummyData(7, totalVideos));
+    renderMiniChart('chart-users', generateDummyData(7, userCount));
+
+  } catch(e) {
+    console.error('Overview error:', e);
+  }
+}
+
+function generateDummyData(days, total) {
+  const data = [];
+  for(let i=0;i<days;i++) {
+    data.push(Math.floor(Math.random() * (total/days * 2 + 1)));
+  }
+  return data;
+}
+
+function renderMiniChart(id, data) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const max = Math.max(...data, 1);
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  el.innerHTML = data.map((v,i) => `
+    <div class="bar" style="height:${Math.max((v/max)*100,2)}%;">
+      <span class="bar-label">${days[i]||i}</span>
+    </div>
+  `).join('');
+}
+
+// ── ANALYTICS ──
+async function loadAnalytics(days=30) {
+  try {
+    const usersSnap = await getDocs(collection(db, 'studio_users'));
+    let totalVideos=0, totalPhotos=0, totalDesigns=0;
+    const topUsers = [];
+
+    usersSnap.forEach(d => {
+      const data = d.data();
+      totalVideos += data.videosGenerated||0;
+      totalPhotos += data.photosEdited||0;
+      totalDesigns += data.designsCreated||0;
+      topUsers.push({email:data.email||'User',videos:data.videosGenerated||0});
+    });
+
+    document.getElementById('an-videos').textContent = totalVideos;
+    document.getElementById('an-photos').textContent = totalPhotos;
+    document.getElementById('an-designs').textContent = totalDesigns;
+    const userCount = usersSnap.size;
+    document.getElementById('an-avg').textContent = userCount ? (totalVideos/userCount).toFixed(1) : '0';
+
+    // Tool usage bars
+    const total = totalVideos + totalPhotos + totalDesigns + (totalVideos/2|0);
+    const setBar = (id,bid,val) => {
+      const el = document.getElementById(id); const bar = document.getElementById(bid);
+      if(el) el.textContent = val;
+      if(bar) bar.style.width = total ? Math.round((val/total)*100)+'%' : '0%';
+    };
+    setBar('tool-video','bar-video',totalVideos);
+    setBar('tool-photo','bar-photo',totalPhotos);
+    setBar('tool-edit','bar-edit',totalVideos/2|0);
+    setBar('tool-design','bar-design',totalDesigns);
+
+    // Top users
+    topUsers.sort((a,b)=>b.videos-a.videos);
+    document.getElementById('top-users-list').innerHTML = topUsers.slice(0,5).map((u,i) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <span style="font-size:0.65rem;color:var(--muted);font-family:var(--font-mono);width:16px;">${i+1}</span>
+          <span style="font-size:0.82rem;">${u.email}</span>
+        </div>
+        <span class="badge badge-gold">${u.videos}</span>
+      </div>
+    `).join('') || '<div class="text-muted">No data</div>';
+
+    // Chart
+    renderMiniChart('chart-analytics', generateDummyData(parseInt(days), totalVideos));
+
+  } catch(e) { console.error('Analytics error:', e); }
+}
+
+// ── USERS ──
+async function loadUsers() {
+  try {
+    const snap = await getDocs(collection(db, 'studio_users'));
+    allUsers = [];
+    snap.forEach(d => allUsers.push({id:d.id,...d.data()}));
+    allUsers.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    renderUsersTable(allUsers);
+  } catch(e) { console.error(e); }
+}
+
+function renderUsersTable(users) {
+  const tbody = document.getElementById('users-table');
+  if(!users.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-muted" style="text-align:center;padding:2rem;">No users found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td><div style="font-weight:600;font-size:0.85rem;">${u.displayName||'—'}</div></td>
+      <td><span style="font-family:var(--font-mono);font-size:0.75rem;">${u.email||'—'}</span></td>
+      <td><span style="font-size:0.75rem;color:var(--muted);">${u.createdAt?.toDate?.()?.toLocaleDateString()||'—'}</span></td>
+      <td><span class="badge badge-gold">${u.videosGenerated||0}</span></td>
+      <td><span class="badge ${u.banned?'badge-red':'badge-green'}">${u.banned?'Banned':'Active'}</span></td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="viewUser('${u.id}')">View</button>
+        <button class="btn btn-red btn-sm" style="margin-left:0.4rem;" onclick="banUser('${u.id}','${u.email}')">${u.banned?'Unban':'Ban'}</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+window.filterUsers = function(q) {
+  const filtered = allUsers.filter(u =>
+    (u.email||'').toLowerCase().includes(q.toLowerCase()) ||
+    (u.displayName||'').toLowerCase().includes(q.toLowerCase())
+  );
+  renderUsersTable(filtered);
+};
+
+window.banUser = async function(uid, email) {
+  if(!confirm(`Ban/unban ${email}?`)) return;
+  try {
+    const uDoc = doc(db,'studio_users',uid);
+    const snap = await getDoc(uDoc);
+    const banned = !snap.data()?.banned;
+    await updateDoc(uDoc, {banned});
+    showToast(banned ? 'User banned' : 'User unbanned', banned ? 'error' : 'success');
+    loadUsers();
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+};
+
+window.viewUser = function(uid) {
+  const u = allUsers.find(x=>x.id===uid);
+  if(!u) return;
+  alert(`User: ${u.displayName||'No name'}\nEmail: ${u.email}\nJoined: ${u.createdAt?.toDate?.()?.toLocaleString()||'?'}\nVideos: ${u.videosGenerated||0}\nStatus: ${u.banned?'Banned':'Active'}`);
+};
+
+// ── SYSTEM ──
+async function checkWorkers() {
+  const check = async (url, dotId, statusId) => {
+    const dot = document.getElementById(dotId);
+    const status = document.getElementById(statusId);
+    try {
+      const start = Date.now();
+      const res = await fetch(url, {method:'GET', signal: AbortSignal.timeout(5000)});
+      const ms = Date.now() - start;
+      dot.className = 'status-dot status-online';
+      status.textContent = `Online (${ms}ms)`;
+      status.style.color = 'var(--green)';
+    } catch(e) {
+      dot.className = 'status-dot status-offline';
+      status.textContent = 'Offline';
+      status.style.color = 'var(--red)';
+    }
+  };
+  check('https://afrivid-tts.mathsai666.workers.dev','dot-tts','status-tts');
+  check('https://yan-ai-worker.youngafricansn.workers.dev','dot-ai','status-ai');
+
+  // Firebase check
+  try {
+    await getDocs(query(collection(db,'studio_users'),limit(1)));
+    document.getElementById('dot-firebase').className = 'status-dot status-online';
+    document.getElementById('status-firebase').textContent = 'Connected';
+    document.getElementById('status-firebase').style.color = 'var(--green)';
+  } catch(e) {
+    document.getElementById('dot-firebase').className = 'status-dot status-offline';
+    document.getElementById('status-firebase').textContent = 'Error';
+    document.getElementById('status-firebase').style.color = 'var(--red)';
+  }
+}
+
+window.saveBetaLimit = async function() {
+  const val = parseInt(document.getElementById('beta-limit').value);
+  try {
+    await setDoc(doc(db,'admin','settings'), {betaLimit: val, updatedAt: serverTimestamp()}, {merge:true});
+    showToast('Beta limit saved: '+val+' videos','success');
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+};
+
+window.saveSystemSettings = async function() {
+  try {
+    const betaActive = document.getElementById('beta-toggle').checked;
+    const limit2 = parseInt(document.getElementById('beta-limit').value);
+    await setDoc(doc(db,'admin','settings'), {betaLimit:limit2, betaActive, updatedAt:serverTimestamp()}, {merge:true});
+    showToast('Settings saved','success');
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+};
+
+window.sendAnnouncement = async function() {
+  const msg = document.getElementById('announcement-text').value.trim();
+  if(!msg) { showToast('Enter a message first','error'); return; }
+  try {
+    await addDoc(collection(db,'announcements'), {message:msg, createdAt:serverTimestamp(), sentBy:'admin'});
+    document.getElementById('announcement-text').value='';
+    showToast('Announcement saved','success');
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+};
+
+// ── CONTENT ──
+async function loadContent() {
+  try {
+    const videosSnap = await getDocs(collection(db,'studio_videos'));
+    const photosSnap = await getDocs(collection(db,'studio_photos'));
+    const designsSnap = await getDocs(collection(db,'studio_designs'));
+
+    document.getElementById('content-videos').textContent = videosSnap.size;
+    document.getElementById('content-photos').textContent = photosSnap.size;
+    document.getElementById('content-designs').textContent = designsSnap.size;
+
+    const rows = [];
+    videosSnap.forEach(d => rows.push({...d.data(),id:d.id,type:'Video'}));
+    photosSnap.forEach(d => rows.push({...d.data(),id:d.id,type:'Photo'}));
+    designsSnap.forEach(d => rows.push({...d.data(),id:d.id,type:'Design'}));
+    rows.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+    document.getElementById('content-table').innerHTML = rows.slice(0,20).map(r => `
+      <tr>
+        <td>${r.title||'Untitled'}</td>
+        <td><span class="badge ${r.type==='Video'?'badge-gold':r.type==='Photo'?'badge-green':'badge-muted'}">${r.type}</span></td>
+        <td style="font-size:0.72rem;font-family:var(--font-mono);">${r.userEmail||'—'}</td>
+        <td style="font-size:0.72rem;color:var(--muted);">${r.createdAt?.toDate?.()?.toLocaleDateString()||'—'}</td>
+        <td><button class="btn btn-red btn-sm" onclick="deleteContent('${r.id}','${r.type.toLowerCase()}s')">Delete</button></td>
+      </tr>
+    `).join('') || '<tr><td colspan="5" class="text-muted" style="text-align:center;padding:2rem;">No content</td></tr>';
+  } catch(e) { console.error(e); }
+}
+
+window.deleteContent = async function(id, col) {
+  if(!confirm('Delete this item?')) return;
+  try {
+    await deleteDoc(doc(db,'studio_'+col,id));
+    showToast('Deleted','success');
+    loadContent();
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+};
+
+// ── FINANCES ──
+async function loadTransactions() {
+  try {
+    const snap = await getDocs(query(collection(db,'admin_transactions'), orderBy('date','desc')));
+    allTransactions = [];
+    snap.forEach(d => allTransactions.push({id:d.id,...d.data()}));
+    renderTransactions(allTransactions);
+    updateFinanceSummary();
+  } catch(e) {
+    console.error('Finance load error:', e);
+    allTransactions = [];
+    renderTransactions([]);
+  }
+}
+
+async function loadFinanceSummary() {
+  try {
+    const snap = await getDocs(collection(db,'admin_transactions'));
+    let income=0, expenses=0;
+    snap.forEach(d => {
+      const tx = d.data();
+      if(tx.type==='income') income += parseFloat(tx.amount||0);
+      else expenses += parseFloat(tx.amount||0);
+    });
+    const bal = income - expenses;
+    document.getElementById('stat-balance').textContent = '$'+bal.toFixed(2);
+    document.getElementById('stat-balance').style.color = bal>=0 ? 'var(--green)' : 'var(--red)';
+  } catch(e) {}
+}
+
+function updateFinanceSummary() {
+  let income=0, expenses=0;
+  allTransactions.forEach(tx => {
+    if(tx.type==='income') income += parseFloat(tx.amount||0);
+    else expenses += parseFloat(tx.amount||0);
+  });
+  const bal = income - expenses;
+  document.getElementById('fin-income').textContent = '$'+income.toFixed(2);
+  document.getElementById('fin-expenses').textContent = '$'+expenses.toFixed(2);
+  document.getElementById('fin-balance').textContent = '$'+bal.toFixed(2);
+  document.getElementById('fin-balance').style.color = bal>=0 ? 'var(--gold)' : 'var(--red)';
+}
+
+function renderTransactions(txs) {
+  const tbody = document.getElementById('tx-table');
+  if(!txs.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center;padding:2rem;">No transactions yet. Add your first entry.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = txs.map(tx => `
+    <tr>
+      <td style="font-size:0.78rem;font-family:var(--font-mono);">${tx.date||'—'}</td>
+      <td>${tx.description||'—'}</td>
+      <td><span class="badge badge-muted" style="font-size:0.62rem;">${tx.category||'other'}</span></td>
+      <td><span class="badge ${tx.type==='income'?'badge-green':'badge-red'}">${tx.type}</span></td>
+      <td style="font-weight:700;color:${tx.type==='income'?'var(--green)':'var(--red)'};">
+        ${tx.type==='income'?'+':'-'}$${parseFloat(tx.amount||0).toFixed(2)}
+      </td>
+      <td>${tx.receiptUrl?`<a href="${tx.receiptUrl}" target="_blank" style="color:var(--gold);font-size:0.72rem;">View</a>`:'—'}</td>
+      <td><button class="btn btn-red btn-sm" onclick="deleteTx('${tx.id}')">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+window.filterTransactions = function(type) {
+  const filtered = type==='all' ? allTransactions : allTransactions.filter(t=>t.type===type);
+  renderTransactions(filtered);
+};
+
+window.showAddTransaction = function() {
+  const f = document.getElementById('add-transaction-form');
+  f.style.display = f.style.display==='none' ? 'block' : 'none';
+  document.getElementById('tx-date').value = new Date().toISOString().split('T')[0];
+  receiptBase64 = null;
+  document.getElementById('receipt-preview').style.display='none';
+};
+
+window.handleReceiptUpload = function(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    receiptBase64 = e.target.result;
+    const preview = document.getElementById('receipt-preview');
+    if(file.type.startsWith('image/')) {
+      preview.src = receiptBase64;
+      preview.style.display = 'block';
+    }
+    document.querySelector('#receipt-zone div').textContent = '✅ ' + file.name;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.saveTransaction = async function() {
+  const type = document.getElementById('tx-type').value;
+  const amount = parseFloat(document.getElementById('tx-amount').value);
+  const desc = document.getElementById('tx-desc').value.trim();
+  const category = document.getElementById('tx-category').value;
+  const date = document.getElementById('tx-date').value;
+
+  if(!amount || !desc || !date) { showToast('Fill all required fields','error'); return; }
+
+  try {
+    const txData = {
+      type, amount, description:desc, category, date,
+      createdAt: serverTimestamp(),
+      receiptUrl: receiptBase64 || null
+    };
+    await addDoc(collection(db,'admin_transactions'), txData);
+    showToast('Transaction saved ✅','success');
+    document.getElementById('add-transaction-form').style.display='none';
+    document.getElementById('tx-amount').value='';
+    document.getElementById('tx-desc').value='';
+    receiptBase64 = null;
+    loadTransactions();
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+};
+
+window.deleteTx = async function(id) {
+  if(!confirm('Delete this transaction?')) return;
+  try {
+    await deleteDoc(doc(db,'admin_transactions',id));
+    showToast('Deleted','success');
+    loadTransactions();
+  } catch(e) { showToast('Error','error'); }
+};
+
+// ── BALANCE SHEET ──
+async function loadBalanceSheet() {
+  const months = {};
+  allTransactions.forEach(tx => {
+    const d = new Date(tx.date);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if(!months[key]) months[key]={income:0,expenses:0};
+    if(tx.type==='income') months[key].income+=parseFloat(tx.amount||0);
+    else months[key].expenses+=parseFloat(tx.amount||0);
+  });
+
+  const sorted = Object.keys(months).sort();
+  let running = 0;
+  document.getElementById('balance-table').innerHTML = sorted.length ? sorted.map(k => {
+    const m = months[k];
+    const net = m.income - m.expenses;
+    running += net;
+    return `<tr>
+      <td style="font-family:var(--font-mono);font-size:0.78rem;">${k}</td>
+      <td class="text-green">+$${m.income.toFixed(2)}</td>
+      <td class="text-red">-$${m.expenses.toFixed(2)}</td>
+      <td style="color:${net>=0?'var(--green)':'var(--red)'};">${net>=0?'+':''}\$${net.toFixed(2)}</td>
+      <td style="font-weight:700;color:${running>=0?'var(--gold)':'var(--red)'};">$${running.toFixed(2)}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="5" class="text-muted" style="text-align:center;padding:2rem;">No transactions yet</td></tr>';
+
+  // Category breakdown
+  const incomeCats={}, expCats={};
+  allTransactions.forEach(tx => {
+    if(tx.type==='income') incomeCats[tx.category]=(incomeCats[tx.category]||0)+parseFloat(tx.amount||0);
+    else expCats[tx.category]=(expCats[tx.category]||0)+parseFloat(tx.amount||0);
+  });
+
+  const catHTML = (cats) => Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+      <span>${k}</span><span style="font-family:var(--font-mono);">$${v.toFixed(2)}</span>
+    </div>`).join('') || '<div class="text-muted">No data</div>';
+
+  document.getElementById('income-by-cat').innerHTML = catHTML(incomeCats);
+  document.getElementById('expense-by-cat').innerHTML = catHTML(expCats);
+}
+
+window.exportCSV = function() {
+  if(!allTransactions.length) { showToast('No data to export','error'); return; }
+  const rows = [['Date','Description','Category','Type','Amount','Receipt']];
+  allTransactions.forEach(tx => rows.push([tx.date,tx.description,tx.category,tx.type,tx.amount,tx.receiptUrl?'Yes':'No']));
+  const csv = rows.map(r=>r.map(c=>`"${c||''}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `afrivid-finances-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  showToast('CSV exported','success');
+};
+
+// ── PAGE NAVIGATION ──
+window.showPage = function(page, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(el) el.classList.add('active');
+
+  if(page==='overview') loadOverview();
+  if(page==='analytics') loadAnalytics();
+  if(page==='users') loadUsers();
+  if(page==='system') checkWorkers();
+  if(page==='content') loadContent();
+  if(page==='finance') loadTransactions();
+  if(page==='balance') { loadTransactions().then(()=>loadBalanceSheet()); }
+};
+
+// ── UTILS ──
+window.showToast = function(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(()=>t.className='toast',3000);
+};
+
+// ── CLOCK ──
+function updateClock() {
+  const el = document.getElementById('admin-time');
+  if(el) el.textContent = new Date().toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── INIT ──
+loadOverview();
+</script>
+
+<script>
+// ── AUTH ──
+const ADMIN_PWD = 'Regan6440';
+
+function doAdminLogin() {
+  const pwd = document.getElementById('admin-pwd').value;
+  if(pwd === ADMIN_PWD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    sessionStorage.setItem('afrivid_admin','1');
+  } else {
+    document.getElementById('login-err').textContent = 'Incorrect password';
+    document.getElementById('admin-pwd').value = '';
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('afrivid_admin');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('admin-pwd').value = '';
+}
+
+// Auto-login if session exists
+if(sessionStorage.getItem('afrivid_admin')==='1') {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-app').style.display = 'block';
+}
+
+document.getElementById('admin-pwd').addEventListener('keydown', e => {
+  if(e.key==='Enter') doAdminLogin();
+});
+</script>
+</body>
+</html>
