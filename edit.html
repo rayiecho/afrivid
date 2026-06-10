@@ -580,32 +580,29 @@ function getFilterCSS() {
 
 function updatePreview() {
   const video = document.getElementById('original-video');
-  const canvas = document.getElementById('original-video');
-  const ctx = canvas.getContext('2d');
+  if (!video) return;
+  const b = document.getElementById('adj-brightness')?.value || 100;
+  const c = document.getElementById('adj-contrast')?.value || 100;
+  const s = document.getElementById('adj-saturation')?.value || 100;
+  const sharp = document.getElementById('adj-sharpness')?.value || 0;
+  const filterType = document.getElementById('enhance-filter')?.value || 'none';
   
-  if (!video.src) return;
+  let css = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+  if (filterType === 'warm') css += ' sepia(30%) saturate(120%)';
+  if (filterType === 'cool') css += ' hue-rotate(20deg) saturate(90%)';
+  if (filterType === 'bw') css += ' grayscale(100%)';
+  if (filterType === 'sepia') css += ' sepia(80%)';
+  if (filterType === 'vivid') css += ' saturate(180%) contrast(110%)';
+  if (parseFloat(sharp) > 0) css += ` contrast(${100 + parseFloat(sharp)*5}%)`;
   
-  ctx.filter = getFilterCSS();
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  ctx.filter = 'none';
-  
-  // Watermark
-  const wm = 'none';
-  if (wm !== 'none') {
-    ctx.fillStyle = 'rgba(245,166,35,0.8)';
-    ctx.font = 'bold 14px Syne, sans-serif';
-    ctx.textAlign = wm.includes('r') ? 'right' : 'left';
-    const x = wm.includes('r') ? canvas.width - 16 : 16;
-    const y = wm.includes('t') ? 30 : canvas.height - 16;
-    ctx.fillText('AfriVid', x, y);
-  }
-  
-  // Subtitles
-  const subType = 'none';
-  document.getElementById('manual-subtitle-card').style.display = subType === 'manual' ? 'block' : 'none';
+  video.style.filter = css;
+  video.style.transition = 'filter 0.2s';
+}
+
+= subType === 'manual' ? 'block' : 'none';
   
   if (subType === 'manual') {
-    const text = document.getElementById('manual-subtitle-text').value;
+    const text = document.getElementById('manual-subtitle-text')?.value || '';
     if (text) {
       ctx.fillStyle = 'rgba(0,0,0,0.6)';
       ctx.fillRect(0, canvas.height - 60, canvas.width, 60);
@@ -736,7 +733,7 @@ startEnhancing = async function() {
     // Subtitles
     const subType = 'none';
     if (subType === 'manual') {
-      const text = document.getElementById('manual-subtitle-text').value;
+      const text = document.getElementById('manual-subtitle-text')?.value || '';
       if (text) {
         const lines = text.split('\n');
         const lineIdx = Math.floor((video.currentTime / video.duration) * lines.length);
