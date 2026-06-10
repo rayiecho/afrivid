@@ -3611,7 +3611,7 @@ Make exactly ${scenes} scenes. Use the provided content for voiceover text - do 
   }
 }
 
-function renderScript() {
+window.renderScript = function renderScript() {
   if (!scriptData) return;
   document.getElementById('script-title-display').textContent = scriptData.title;
   document.getElementById('script-duration-tag').textContent = scriptData.duration + 's';
