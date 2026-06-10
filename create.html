@@ -209,6 +209,7 @@ function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
 function doSignIn(){ if(window._doSignIn) window._doSignIn(); }
 function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
 function toggleSidebar(){ /* no sidebar on this page */ }
+function setMode(m){ if(window._setMode) window._setMode(m); }
 function switchTab(t){ /* no tabs on this page */ }
 function logout(){ if(window._logout) window._logout(); }
 function checkPassword(){ if(window._checkPassword) window._checkPassword(); }
