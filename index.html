@@ -449,10 +449,8 @@ const db = getFirestore(app);
 
 // If already logged in redirect to studio
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // Only redirect if login form is visible (user just logged in or returning)
-    const loginSection = document.getElementById('login-modal') || document.querySelector('.login-card');
-    if (loginSection) window.location.href = 'studio.html';
+  if (user && user.emailVerified) {
+    window.location.href = 'studio.html';
   }
 });
 
