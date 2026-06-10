@@ -175,8 +175,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <div class="navbar-badge">AfriVid Studio</div>
   </div>
   <div class="navbar-actions">
-    <button class="btn-signin" onclick="showLogin()">Sign In</button>
-    <button class="btn-start" onclick="showLogin()">Get Started Free →</button>
+    <button class="btn-signin" id="btn-nav-signin" onclick="showLogin()">Sign In</button>
+    <button class="btn-start" id="btn-nav-start" onclick="showLogin()">Get Started Free →</button><a href="studio.html" class="btn-start" id="btn-nav-studio" style="display:none;text-decoration:none;">Go to Studio →</a><button class="btn-signin" id="btn-nav-user" style="display:none;"></button>
   </div>
 </nav>
 
@@ -463,10 +463,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// If already logged in redirect to studio
+// If already logged in - update navbar, don't redirect
 onAuthStateChanged(auth, (user) => {
   if (user && user.emailVerified) {
-    window.location.href = 'studio.html';
+    // Update navbar to show user is logged in
+    const btnSignin = document.getElementById('btn-nav-signin');
+    const btnStart = document.getElementById('btn-nav-start');
+    const btnUser = document.getElementById('btn-nav-user');
+    const btnStudio = document.getElementById('btn-nav-studio');
+    if(btnSignin) btnSignin.style.display = 'none';
+    if(btnStart) btnStart.style.display = 'none';
+    if(btnUser) { btnUser.style.display = 'inline-flex'; btnUser.textContent = (user.displayName||user.email.split('@')[0]).split(' ')[0]; }
+    if(btnStudio) btnStudio.style.display = 'inline-flex';
   }
 });
 
