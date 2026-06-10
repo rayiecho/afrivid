@@ -492,6 +492,12 @@ function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFro
       </div>
     </div>
 
+<script>
+function openProfile(){ if(window._openProfile) window._openProfile(); }
+function closeProfile(){ if(window._closeProfile) window._closeProfile(); }
+function saveProfileName(){ if(window._saveProfileName) window._saveProfileName(); }
+function requestUpgrade(){ if(window._requestUpgrade) window._requestUpgrade(); }
+</script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, updateProfile, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -941,11 +947,6 @@ window._requestUpgrade = function() {
     </div>
   </div>
 </div>
-<script>
-function openProfile(){ if(window._openProfile) window._openProfile(); }
-function closeProfile(){ if(window._closeProfile) window._closeProfile(); }
-function saveProfileName(){ if(window._saveProfileName) window._saveProfileName(); }
-function requestUpgrade(){ if(window._requestUpgrade) window._requestUpgrade(); }
-</script>
+
 </body>
 </html>
