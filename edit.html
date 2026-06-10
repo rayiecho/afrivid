@@ -595,10 +595,10 @@ window.loadVideoFile = function(event) {
   if (!file) return;
   currentVideoFile = file;
   const url = URL.createObjectURL(file);
-  const video = document.getElementById('preview-video');
+  const video = document.getElementById('original-video');
   video.src = url;
-  document.getElementById('upload-card').style.display = 'none';
-  document.getElementById('editor-card').style.display = 'block';
+  document.getElementById('enhancer-upload-card').style.display = 'none';
+  document.getElementById('enhancer-editor').style.display = 'block';
   addLog('success', `[ok] Loaded: ${file.name}`);
 }
 
@@ -614,13 +614,13 @@ window.updateFilter = function() {
   let filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
   if (w > 0) filter += ` sepia(${w*0.4}%) saturate(${100+w*0.3}%)`;
   if (w < 0) filter += ` hue-rotate(${w*0.2}deg)`;
-  document.getElementById('preview-video').style.filter = filter;
+  document.getElementById('original-video').style.filter = filter;
 }
 
 window.updateAudio = function() {
   const v = document.getElementById('volume').value;
   document.getElementById('volume-val').textContent = v + '%';
-  document.getElementById('preview-video').volume = Math.min(1, v / 100);
+  document.getElementById('original-video').volume = Math.min(1, v / 100);
 }
 
 window.applyPreset = function(preset) {
@@ -673,7 +673,7 @@ function getFilterCSS() {
 
 function updatePreview() {
   const video = document.getElementById('original-video');
-  const canvas = document.getElementById('preview-video');
+  const canvas = document.getElementById('original-video');
   const ctx = canvas.getContext('2d');
   
   if (!video.src) return;
@@ -731,7 +731,7 @@ startEnhancing = async function() {
   document.getElementById('progress-wrap').style.display = 'block';
   
   const video = document.getElementById('original-video');
-  const canvas = document.getElementById('preview-video');
+  const canvas = document.getElementById('original-video');
   canvas.width = video.videoWidth || 1280;
   canvas.height = video.videoHeight || 720;
   
@@ -1373,15 +1373,6 @@ function addEnhanceLog(type, msg) {
 let uploadMode = 'single';
 let multiVideos = []; // Array of {file, url, name, duration}
 
-setUploadMode = function(mode) {
-  uploadMode = mode;
-  document.getElementById('single-upload-zone').style.display = mode === 'single' ? 'block' : 'none';
-  document.getElementById('multi-upload-zone').style.display = mode === 'multi' ? 'block' : 'none';
-  document.getElementById('mode-single').style.background = mode === 'single' ? 'var(--gold)' : 'transparent';
-  document.getElementById('mode-single').style.color = mode === 'single' ? 'var(--navy)' : 'var(--muted)';
-  document.getElementById('mode-multi').style.background = mode === 'multi' ? 'var(--gold)' : 'transparent';
-  document.getElementById('mode-multi').style.color = mode === 'multi' ? 'var(--navy)' : 'var(--muted)';
-}
 
 async function loadMultipleVideos(event) {
   const files = Array.from(event.target.files);
@@ -1752,7 +1743,7 @@ window.toggleCrop = function() {
   cropActive = !cropActive;
   const overlay = document.getElementById('crop-overlay');
   const controls = document.getElementById('crop-controls');
-  const video = document.getElementById('preview-video');
+  const video = document.getElementById('original-video');
   const cropCanvas = document.getElementById('crop-canvas');
   if (cropActive) {
     // Snapshot current video frame to canvas
@@ -1845,7 +1836,7 @@ window.cancelCrop = function() {
   document.getElementById('crop-overlay').style.display = 'none';
   document.getElementById('crop-controls').style.display = 'none';
   document.getElementById('crop-selection').style.display = 'none';
-  document.getElementById('preview-video').style.display = 'block';
+  document.getElementById('original-video').style.display = 'block';
   document.getElementById('crop-canvas').style.display = 'none';
 }
 
