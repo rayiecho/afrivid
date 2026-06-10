@@ -110,6 +110,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 <body>
 <script>
 // Global proxies - onclick handlers need global scope
+function switchToolTab(tab, btn) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('tab-' + tab);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
 function setMode(a,b){ if(window._setMode) window._setMode(a,b); else if(window['setMode']) window['setMode'](a,b); }
 function loadVideoFile(a,b){ if(window._loadVideoFile) window._loadVideoFile(a,b); else if(window['loadVideoFile']) window['loadVideoFile'](a,b); }
 function applyQualityPreset(a,b){ if(window._applyQualityPreset) window._applyQualityPreset(a,b); else if(window['applyQualityPreset']) window['applyQualityPreset'](a,b); }
