@@ -163,11 +163,18 @@ function handleGenerateScript(){ if(window._handleGenerateScript) window._handle
 function startRecording(){ if(window._startRecording) window._startRecording(); }
 function stopRecording(){ if(window._stopRecording) window._stopRecording(); }
 function makeAnother(){ if(window._makeAnother) window._makeAnother(); }
-function handleSaveToStudio(){ if(window._handleSaveToStudio) window._handleSaveToStudio(); }
+function handleSaveToStudio(){ 
+  if(window._handleSaveToStudio) { window._handleSaveToStudio(); return; }
+  // Fallback: not logged in
+  if(window._showLogin) window._showLogin(); else alert('Please sign in to save to Studio');
+}
 function downloadVideo(){ if(window._downloadVideo) window._downloadVideo(); }
 function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
 function shareWhatsApp(){ if(window._shareWhatsApp) window._shareWhatsApp(); }
-function uploadToYouTube(){ if(window._uploadToYouTube) window._uploadToYouTube(); }
+function uploadToYouTube(){ 
+  if(window._uploadToYouTube) { window._uploadToYouTube(); return; }
+  alert('YouTube upload requires a generated video. Please generate a video first.');
+}
 function loadPresenterPhoto(e){ if(window._loadPresenterPhoto) window._loadPresenterPhoto(e); }
 function clearPresenterPhoto(){ if(window._clearPresenterPhoto) window._clearPresenterPhoto(); }
 function updateDurationWarning(){ if(window._updateDurationWarning) window._updateDurationWarning(); }
@@ -2400,6 +2407,14 @@ function updatePreview() {
 
 // Live preview as video plays
 document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    console.log('AfriVid functions registered:', {
+      saveToStudio: !!window._handleSaveToStudio,
+      youtube: !!window._uploadToYouTube,
+      download: !!window._downloadVideo,
+      shareWA: !!window._shareWhatsApp,
+    });
+  }, 2000);
   const video = document.getElementById('original-video');
   if (video) {
     video.addEventListener('timeupdate', updatePreview);
