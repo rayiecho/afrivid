@@ -2004,11 +2004,11 @@ window._startRecording = async function startRecording() {
   const canvas = document.getElementById('video-canvas');
   // Set canvas size based on aspect ratio
   const ar = document.getElementById('video-aspect-ratio') ? document.getElementById('video-aspect-ratio').value : '16:9';
-  if (ar === '16:9') { canvas.width = 1280; canvas.height = 720; }
-  else if (ar === '9:16') { canvas.width = 720; canvas.height = 1280; }
-  else if (ar === '1:1') { canvas.width = 720; canvas.height = 720; }
-  else if (ar === '4:3') { canvas.width = 960; canvas.height = 720; }
-  else { canvas.width = 1280; canvas.height = 720; }
+  if (ar === '16:9') { canvas.width = 854; canvas.height = 480; }
+  else if (ar === '9:16') { canvas.width = 480; canvas.height = 854; }
+  else if (ar === '1:1') { canvas.width = 480; canvas.height = 480; }
+  else if (ar === '4:3') { canvas.width = 640; canvas.height = 480; }
+  else { canvas.width = 854; canvas.height = 480; }
 
   document.getElementById('canvas-overlay').style.display = 'none';
   document.getElementById('btn-record').style.display = 'none';
