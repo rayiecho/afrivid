@@ -159,6 +159,7 @@ body{padding-top:70px;}
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <nav class="navbar">
@@ -188,19 +189,26 @@ function handleSaveToStudio(){
 function downloadVideo(){ if(window._downloadVideo) window._downloadVideo(); }
 function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
 function shareWhatsApp(){ if(window._shareWhatsApp) window._shareWhatsApp(); }
-function uploadToYouTube(){ 
-  if(!window._videoBlob) { alert('Please generate a video first.'); return; }
-  // Download the video first, then open YouTube
-  const url = URL.createObjectURL(window._videoBlob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'afrivid-video.webm';
-  a.click();
-  setTimeout(() => {
-    if(confirm('Video downloaded! Open YouTube to upload it?')) {
-      window.open('https://www.youtube.com/upload', '_blank');
+function uploadToYouTube(){
+  if(!window._videoBlob) { alert('Please generate a video first, then click Upload to YouTube.'); return; }
+  
+  // Get title from script data
+  const title = window._scriptData?.title || document.getElementById('video-topic')?.value || 'AfriVid Studio Video';
+  const description = window._scriptData?.description || 'Created with AfriVid Studio — afrivid.studio';
+  
+  // Request YouTube OAuth token
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id:  + YOUTUBE_CLIENT_ID + ,
+    scope: 'https://www.googleapis.com/auth/youtube.upload',
+    callback: async (tokenResponse) => {
+      if(tokenResponse.error) {
+        alert('Google sign-in failed: ' + tokenResponse.error);
+        return;
+      }
+      await doYouTubeUpload(tokenResponse.access_token, title, description);
     }
-  }, 1000);
+  });
+  client.requestAccessToken();
 }
 function loadPresenterPhoto(e){ if(window._loadPresenterPhoto) window._loadPresenterPhoto(e); }
 function clearPresenterPhoto(){ if(window._clearPresenterPhoto) window._clearPresenterPhoto(); }
@@ -3799,6 +3807,82 @@ window.removeSceneAsset = function(id) {
       <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;">✕</button>`;
     list.appendChild(thumb);
   });
+};
+
+
+// ── YOUTUBE UPLOAD ──
+window.doYouTubeUpload = async function(accessToken, title, description) {
+  const btn = document.querySelector('[onclick="uploadToYouTube()"]');
+  if(btn) { btn.textContent = '↑ Uploading...'; btn.disabled = true; }
+  
+  try {
+    // Convert blob to mp4-compatible format
+    const blob = window._videoBlob;
+    
+    // Step 1: Initialize upload
+    const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json',
+        'X-Upload-Content-Type': blob.type || 'video/webm',
+        'X-Upload-Content-Length': blob.size
+      },
+      body: JSON.stringify({
+        snippet: {
+          title: title,
+          description: description + '\n\nCreated with AfriVid Studio — Africa\'s first smart video suite. Visit afrivid.studio',
+          tags: ['AfriVid', 'Africa', 'Video Creator', 'Young Africans Network'],
+          categoryId: '27' // Education
+        },
+        status: {
+          privacyStatus: 'public'
+        }
+      })
+    });
+
+    if(!initRes.ok) {
+      const err = await initRes.json();
+      throw new Error(err.error?.message || 'Upload initialization failed');
+    }
+
+    const uploadUrl = initRes.headers.get('Location');
+    if(!uploadUrl) throw new Error('No upload URL received');
+
+    if(btn) btn.textContent = '↑ Uploading video...';
+
+    // Step 2: Upload video
+    const uploadRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': blob.type || 'video/webm',
+        'Content-Length': blob.size
+      },
+      body: blob
+    });
+
+    if(!uploadRes.ok) {
+      const err = await uploadRes.json();
+      throw new Error(err.error?.message || 'Video upload failed');
+    }
+
+    const videoData = await uploadRes.json();
+    const videoId = videoData.id;
+
+    if(btn) { btn.textContent = '✅ Uploaded!'; btn.disabled = false; }
+    
+    // Show success
+    setTimeout(() => { if(btn) btn.textContent = '▶ Upload to YouTube'; }, 3000);
+    
+    if(confirm('✅ Video uploaded to YouTube!\n\nVideo ID: ' + videoId + '\n\nOpen your video now?')) {
+      window.open('https://www.youtube.com/watch?v=' + videoId, '_blank');
+    }
+
+  } catch(e) {
+    console.error('YouTube upload error:', e);
+    if(btn) { btn.textContent = '▶ Upload to YouTube'; btn.disabled = false; }
+    alert('Upload failed: ' + e.message + '\n\nMake sure you are signed into the correct Google account.');
+  }
 };
 
 </script>
