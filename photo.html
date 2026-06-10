@@ -775,14 +775,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateCropVisual() {
-  const _cv = document.getElementById('photo-canvas');
-  if (!_cv) return;
   const canvas = document.getElementById('photo-canvas');
+  if (!canvas || !canvas.width) return;
   const rect = canvas.getBoundingClientRect();
   const scaleX = rect.width / canvas.width;
   const scaleY = rect.height / canvas.height;
   const sel = document.getElementById('crop-selection');
-  const wrap = document.getElementById('canvas-wrap');
+  const wrap = canvas.parentElement;
+  if (!wrap) return;
   const wrapRect = wrap.getBoundingClientRect();
   const canvasRect = canvas.getBoundingClientRect();
   const offsetX = canvasRect.left - wrapRect.left;
