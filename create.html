@@ -173,7 +173,7 @@ body{padding-top:70px;}
 
 <script>
 // Global proxies - required because main script is type="module"
-function setMode(m){ const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
+window._setMode = function setMode(m) { const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
 function goToStep(n){ if(window._goToStep) window._goToStep(n); }
 function generateScript(){ if(window._generateScript) window._generateScript(); }
 function handleGenerateScript(){ if(window._handleGenerateScript) window._handleGenerateScript(); }
@@ -2140,7 +2140,7 @@ window.finishVideo = function finishVideo() {
   trackVideoGeneration(scriptData.title, scriptData.duration);
 }
 
-downloadVideo = function() {
+window._downloadVideo = function() {
   if (!videoBlob) { alert('No video to download yet.'); return; }
   const url = URL.createObjectURL(videoBlob);
   const a = document.createElement('a');
