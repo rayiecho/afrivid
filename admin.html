@@ -178,8 +178,8 @@ document.addEventListener('click', function(e) {
   <div class="login-box">
     <div class="login-logo">AfriVid</div>
     <div class="login-sub">ADMIN DASHBOARD</div>
-    <input type="password" class="login-input" id="admin-pwd" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()">
-    <button class="login-btn" onclick="doAdminLogin()">Access Dashboard</button>
+    <form onsubmit="doAdminLogin();return false;"><input type="password" class="login-input" id="admin-pwd" autocomplete="current-password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    <button class="login-btn" type="submit">Access Dashboard</button></form>
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
@@ -640,6 +640,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+// Sign in admin with Firebase Auth so Firestore rules pass
+async function adminFirebaseSignIn() {
+  try {
+    const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+    // Try to use current session first
+    if (auth.currentUser) return;
+    // Silent sign in using stored credentials
+    const storedEmail = sessionStorage.getItem('admin_fb_email');
+    const storedPwd = sessionStorage.getItem('admin_fb_pwd');
+    if (storedEmail && storedPwd) {
+      await signInWithEmailAndPassword(auth, storedEmail, storedPwd);
+    }
+  } catch(e) {
+    console.log('Admin Firebase auth:', e.message);
+  }
+}
 let storage;
 try { storage = getStorage(app); } catch(e) {}
 
@@ -1155,6 +1172,13 @@ function doAdminLogin() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-app').style.display = 'block';
     sessionStorage.setItem('afrivid_admin','1');
+    // Store admin credentials for Firebase auth
+    sessionStorage.setItem('admin_fb_email','r.ayiecho@alustudent.com');
+    sessionStorage.setItem('admin_fb_pwd', pwd);
+    // Sign in to Firebase
+    adminFirebaseSignIn().then(() => {
+      loadOverview();
+    });
   } else {
     document.getElementById('login-err').textContent = 'Incorrect password';
     document.getElementById('admin-pwd').value = '';
