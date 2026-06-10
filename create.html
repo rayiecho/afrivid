@@ -151,9 +151,25 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .loading-text{font-size:1rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;margin-bottom:0.5rem;}
 .loading-sub{font-size:0.78rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.navbar-brand{display:flex;align-items:center;gap:10px;}
+.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
+.navbar-actions{display:flex;align-items:center;gap:1rem;}
+body{padding-top:70px;}
 </style>
 </head>
 <body>
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand" style="text-decoration:none;">
+    <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
+    <div class="navbar-badge">AfriVid Studio</div>
+  </a>
+  <div class="navbar-actions">
+    <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+  </div>
+</nav>
+
 <script>
 // Global proxies - required because main script is type="module"
 function setMode(m){ const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
@@ -224,11 +240,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
 </div>
 
 <div class="main">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 0;margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.06);">
-    <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-      <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
-      <div style="font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;">AfriVid Studio</div>
-    </a>
+</a>
     <a href="index.html" style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
   </div>
 
