@@ -494,7 +494,7 @@ function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFro
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, updateProfile, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, collection, query, where, orderBy, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -810,6 +810,79 @@ function deleteFromLibrary(id) {
 document.getElementById('login-modal').addEventListener('click', function(e) {
   if (e.target === this) hideLogin();
 });
+
+// ── PROFILE ──
+window.openProfile = async function() {
+  const user = auth.currentUser;
+  if(!user) return;
+  document.getElementById('profile-overlay').classList.add('active');
+  const name = user.displayName || user.email.split('@')[0];
+  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('profile-avatar').textContent = initials;
+  document.getElementById('profile-display-name').textContent = name;
+  document.getElementById('profile-email').textContent = user.email;
+  document.getElementById('profile-name-input').value = name;
+  try {
+    const snap = await getDoc(doc(db,'studio_users',user.uid));
+    if(snap.exists()) {
+      const data = snap.data();
+      const plan = data.plan || 'beta';
+      const used = data.videosGenerated || 0;
+      const limit = data.betaLimit || 10;
+      const joined = data.createdAt?.toDate?.()?.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) || '—';
+      document.getElementById('profile-videos').textContent = used;
+      document.getElementById('profile-photos').textContent = data.photosEdited || 0;
+      document.getElementById('profile-designs').textContent = data.designsCreated || 0;
+      document.getElementById('profile-joined').textContent = joined;
+      if(plan === 'pro') {
+        document.getElementById('profile-plan-badge').className = 'plan-badge plan-pro';
+        document.getElementById('profile-plan-name').textContent = 'Pro';
+        document.getElementById('profile-beta-box').style.display = 'none';
+        document.getElementById('profile-pro-box').style.display = 'block';
+        document.getElementById('profile-remaining').textContent = 'Unlimited';
+        document.getElementById('profile-remaining').style.color = '#74C69D';
+      } else {
+        document.getElementById('profile-plan-badge').className = 'plan-badge plan-beta';
+        document.getElementById('profile-plan-name').textContent = 'Beta';
+        document.getElementById('profile-beta-box').style.display = 'block';
+        document.getElementById('profile-pro-box').style.display = 'none';
+        const remaining = Math.max(0, limit - used);
+        document.getElementById('profile-remaining').textContent = remaining + ' of ' + limit;
+        document.getElementById('profile-remaining').style.color = remaining > 3 ? '#F5A623' : '#E63329';
+      }
+    }
+  } catch(e) { console.error('Profile error:', e); }
+};
+
+window.closeProfile = function() {
+  document.getElementById('profile-overlay').classList.remove('active');
+};
+
+window.saveProfileName = async function() {
+  const user = auth.currentUser;
+  if(!user) return;
+  const newName = document.getElementById('profile-name-input').value.trim();
+  if(!newName) return;
+  const btn = document.querySelector('.btn-profile-save');
+  try {
+    btn.textContent = 'Saving...'; btn.disabled = true;
+    await updateProfile(user, { displayName: newName });
+    await updateDoc(doc(db,'studio_users',user.uid), { displayName: newName });
+    document.getElementById('user-name').textContent = newName;
+    document.getElementById('profile-display-name').textContent = newName;
+    document.getElementById('profile-avatar').textContent = newName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    btn.textContent = 'Saved ✅'; btn.disabled = false;
+    setTimeout(()=>{ btn.textContent='Save Changes'; }, 2000);
+  } catch(e) {
+    btn.textContent = 'Save Changes'; btn.disabled = false;
+    alert('Error: ' + e.message);
+  }
+};
+
+window.requestUpgrade = function() {
+  alert('To upgrade to Pro ($3/month), contact us at afrividstudio@gmail.com!');
+};
+
 </script>
 
 <!-- PROFILE MODAL -->
