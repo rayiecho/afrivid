@@ -551,7 +551,7 @@ window.signUp = async function() {
       createdAt: serverTimestamp(), lastActive: serverTimestamp(), plan: 'beta'
     });
     if(btn){ btn.textContent='Account Created! ✅'; btn.disabled=true; }
-    if(err){ err.style.display='block'; err.style.color='#74C69D'; err.textContent='✅ Account created! Check your email to verify, then sign in.'; }
+    if(err){ err.style.display='block'; err.style.color='#74C69D'; err.textContent='✅ Account created! Check your inbox AND spam/junk folder for the verification email, then sign in.'; }
     setTimeout(()=>window.showAuthTab('signin'), 2500);
   } catch(e) {
     if(btn){ btn.textContent='Create Account →'; btn.disabled=false; }
