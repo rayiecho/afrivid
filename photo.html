@@ -114,7 +114,7 @@ document.addEventListener('click', function(e) {
 
 <script>
 // Global proxies - onclick handlers need global scope
-function loadPhotoFile(e){ if(window._loadPhotoFile) window._loadPhotoFile(e); else if(window.loadPhotoFile) window.loadPhotoFile(e); }
+function loadPhotoFile(e){ if(window.loadPhoto) { window.loadPhoto(e); return; } if(window._loadPhotoFile) window._loadPhotoFile(e); }
 function loadPhoto(a,b){ if(window._loadPhoto) window._loadPhoto(a,b); else if(window['loadPhoto']) window['loadPhoto'](a,b); }
 function applyPreset(a,b){ if(window._applyPreset) window._applyPreset(a,b); else if(window['applyPreset']) window['applyPreset'](a,b); }
 function updatePreview(){ if(window._updatePreview) window._updatePreview(); else if(window['updatePreview']) window['updatePreview'](); }
