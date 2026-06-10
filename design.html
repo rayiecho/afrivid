@@ -90,6 +90,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </head>
 <body>
 <script>
+window.onerror = function(msg, src, line) {
+  console.error('[Design Error]', msg, 'line', line);
+};
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('[Design Promise]', e.reason);
+});
+document.addEventListener('click', function(e) {
+  if(e.target.tagName === 'BUTTON' && (e.target.onclick || e.target.getAttribute('onclick'))) {
+    console.log('[Click]', e.target.textContent.trim().slice(0,30));
+  }
+});
+</script>
+
+<script>
 // Global proxies - onclick handlers need global scope
 function generateAIDesign(){ if(window._generateAIDesign) window._generateAIDesign(); else if(window['generateAIDesign']) window['generateAIDesign'](); }
 function loadTemplate(a,b){ if(window._loadTemplate) window._loadTemplate(a,b); else if(window['loadTemplate']) window['loadTemplate'](a,b); }
