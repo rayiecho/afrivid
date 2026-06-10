@@ -125,132 +125,9 @@ body{padding-top:70px;}
   </div>
 </nav>
 
-<script>
-function updatePreview() {
-  var video = document.getElementById('original-video');
-  if (!video) return;
-  var b = (document.getElementById('adj-brightness') || {value:100}).value;
-  var c = (document.getElementById('adj-contrast') || {value:100}).value;
-  var s = (document.getElementById('adj-saturation') || {value:100}).value;
-  var sharp = (document.getElementById('adj-sharpness') || {value:0}).value;
-  var filterType = (document.getElementById('enhance-filter') || {value:'none'}).value;
-  var css = 'brightness('+b+'%) contrast('+c+'%) saturate('+s+'%)';
-  if (filterType === 'warm') css += ' sepia(30%) saturate(120%)';
-  if (filterType === 'cool') css += ' hue-rotate(20deg) saturate(90%)';
-  if (filterType === 'bw') css += ' grayscale(100%)';
-  if (filterType === 'sepia') css += ' sepia(80%)';
-  if (filterType === 'vivid') css += ' saturate(180%) contrast(110%)';
-  video.style.filter = css;
-  video.style.transition = 'filter 0.2s';
-}
-function updateTrimPreview() {
-  var video = document.getElementById('original-video');
-  if (!video || !video.duration) return;
-  var startEl = document.getElementById('trim-start');
-  var endEl = document.getElementById('trim-end');
-  if (!startEl || !endEl) return;
-  if(!video.duration || !isFinite(video.duration)) return;
-  var s = (startEl.value / 100) * video.duration;
-  var e = (endEl.value / 100) * video.duration;
-  var sv = document.getElementById('trim-start-val');
-  var ev = document.getElementById('trim-end-val');
-  var tt = document.getElementById('timeline-time');
-  if(sv) sv.textContent = s.toFixed(1) + 's';
-  if(ev) ev.textContent = e.toFixed(1) + 's';
-  if(tt) tt.textContent = Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')+' - '+Math.floor(e/60)+':'+String(Math.floor(e%60)).padStart(2,'0');
-  if(isFinite(s)) video.currentTime = s;
-}
-function applyQualityPreset(preset) {
-  var presets = {
-    auto:{b:108,c:115,s:115}, iphone:{b:108,c:115,s:125},
-    dslr:{b:102,c:120,s:110}, cinema:{b:90,c:135,s:75},
-    broadcast:{b:105,c:110,s:105}, reset:{b:100,c:100,s:100}
-  };
-  var p = presets[preset]; if (!p) return;
-  var bEl=document.getElementById('adj-brightness');
-  var cEl=document.getElementById('adj-contrast');
-  var sEl=document.getElementById('adj-saturation');
-  if(bEl){bEl.value=p.b; var bv=document.getElementById('brightness-val'); if(bv) bv.textContent=p.b+'%';}
-  if(cEl){cEl.value=p.c; var cv=document.getElementById('contrast-val'); if(cv) cv.textContent=p.c+'%';}
-  if(sEl){sEl.value=p.s; var sv2=document.getElementById('saturation-val'); if(sv2) sv2.textContent=p.s+'%';}
-  updatePreview();
-}
-function applyAIEdit() {
-  if(window._applyAIEdit) { window._applyAIEdit(); return; }
-  var instructions = document.getElementById('ai-edit-instructions');
-  var text = instructions ? instructions.value.trim() : '';
-  if(!text) { alert('Please describe what you want to change.'); return; }
-  alert('AI Edit: "' + text + '" - Processing...');
-}
-function addManualCaption() {
-  var list = document.getElementById('caption-list');
-  var items = document.getElementById('caption-items');
-  var text = prompt('Enter caption text:');
-  if(!text) return;
-  if(items) {
-    var div = document.createElement('div');
-    div.style.cssText = 'padding:0.4rem;background:#1a1a1a;border-radius:6px;margin-bottom:0.4rem;font-size:0.75rem;color:rgba(255,255,255,0.7);display:flex;justify-content:space-between;';
-    div.innerHTML = text + '<span onclick="this.parentNode.remove()" style="cursor:pointer;color:#E63329;">✕</span>';
-    items.appendChild(div);
-  }
-  if(list) list.style.display = 'block';
-}
-function generateCaptions() {
-  if(window._generateCaptions) { window._generateCaptions(); return; }
-  var status = document.getElementById('caption-status');
-  if(status) status.textContent = 'Generating captions...';
-  setTimeout(function(){ if(status) status.textContent = 'Caption generation requires a loaded video.'; }, 1000);
-}
-</script>
 
-<script>
-// Global proxies - onclick handlers need global scope
 
-function switchToolTab(tab, btn) {
-  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
-  const panel = document.getElementById('tab-' + tab);
-  if (panel) panel.classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-function setMode(a,b){ if(window._setMode) window._setMode(a,b); else if(window['setMode']) window['setMode'](a,b); }
-function loadVideoFile(a,b){ if(window._loadVideoFile) window._loadVideoFile(a,b); else if(window['loadVideoFile']) window['loadVideoFile'](a,b); }
-function applyAudioPreset(){ if(window._applyAudioPreset) window._applyAudioPreset(); else if(window['applyAudioPreset']) window['applyAudioPreset'](); }
-function previewAudioFilters(){ if(window._previewAudioFilters) window._previewAudioFilters(); else if(window['previewAudioFilters']) window['previewAudioFilters'](); }
-function startEnhancing(){ if(window._startEnhancing) window._startEnhancing(); else if(window['startEnhancing']) window['startEnhancing'](); }
-function downloadEnhanced(){ if(window._downloadEnhanced) window._downloadEnhanced(); else if(window['downloadEnhanced']) window['downloadEnhanced'](); }
-function resetEnhancer(){ if(window._resetEnhancer) window._resetEnhancer(); else if(window['resetEnhancer']) window['resetEnhancer'](); }
-function addClip(){ if(window._addClip) window._addClip(); else if(window['addClip']) window['addClip'](); }
-function removeClip(a,b){ if(window._removeClip) window._removeClip(a,b); else if(window['removeClip']) window['removeClip'](a,b); }
-function clearClips(){ if(window._clearClips) window._clearClips(); else if(window['clearClips']) window['clearClips'](); }
-function combineVideos(){ if(window._combineVideos) window._combineVideos(); else if(window['combineVideos']) window['combineVideos'](); }
-function setCaptionStyle(a,b){ if(window._setCaptionStyle) window._setCaptionStyle(a,b); else if(window['setCaptionStyle']) window['setCaptionStyle'](a,b); }
-function generateCaptions(){ if(window._generateCaptions) { window._generateCaptions(); return; } alert('Generating captions... (feature coming soon)'); }
-function addManualCaption(){ if(window._addManualCaption) window._addManualCaption(); else if(window['addManualCaption']) window['addManualCaption'](); }
-function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
-function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
-function applyCrop(){ if(window._applyCrop) window._applyCrop(); else if(window['applyCrop']) window['applyCrop'](); }
-function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); else if(window['cancelCrop']) window['cancelCrop'](); }
-function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
-function hideLogin(){ if(window._hideLogin) window._hideLogin(); else if(window['hideLogin']) window['hideLogin'](); }
-function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); else if(window['showAuthTab']) window['showAuthTab'](a,b); }
-function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
-function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
-function uploadEnhancedToYouTube(){ if(window._uploadEnhancedToYouTube) window._uploadEnhancedToYouTube(); else if(window['uploadEnhancedToYouTube']) window['uploadEnhancedToYouTube'](); }
-function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shareEnhancedWhatsApp(); else if(window['shareEnhancedWhatsApp']) window['shareEnhancedWhatsApp'](); }
-window.onerror = function(msg, src, line, col, err) {
-  console.error('[AfriVid Error]', msg, 'at line', line);
-};
-window.addEventListener('unhandledrejection', function(e) {
-  console.error('[AfriVid Promise Error]', e.reason);
-});
-// Debug helper - log when any button is clicked
-document.addEventListener('click', function(e) {
-  if(e.target.tagName === 'BUTTON' && e.target.onclick) {
-    console.log('[Click]', e.target.textContent.trim(), e.target.onclick.toString().slice(0,60));
-  }
-});
-</script>
+
 
 
 <div class="topbar">
@@ -551,6 +428,130 @@ document.addEventListener('click', function(e) {
       </div>
     </div>
 
+<script>
+function updatePreview() {
+  var video = document.getElementById('original-video');
+  if (!video) return;
+  var b = (document.getElementById('adj-brightness') || {value:100}).value;
+  var c = (document.getElementById('adj-contrast') || {value:100}).value;
+  var s = (document.getElementById('adj-saturation') || {value:100}).value;
+  var sharp = (document.getElementById('adj-sharpness') || {value:0}).value;
+  var filterType = (document.getElementById('enhance-filter') || {value:'none'}).value;
+  var css = 'brightness('+b+'%) contrast('+c+'%) saturate('+s+'%)';
+  if (filterType === 'warm') css += ' sepia(30%) saturate(120%)';
+  if (filterType === 'cool') css += ' hue-rotate(20deg) saturate(90%)';
+  if (filterType === 'bw') css += ' grayscale(100%)';
+  if (filterType === 'sepia') css += ' sepia(80%)';
+  if (filterType === 'vivid') css += ' saturate(180%) contrast(110%)';
+  video.style.filter = css;
+  video.style.transition = 'filter 0.2s';
+}
+function updateTrimPreview() {
+  var video = document.getElementById('original-video');
+  if (!video || !video.duration) return;
+  var startEl = document.getElementById('trim-start');
+  var endEl = document.getElementById('trim-end');
+  if (!startEl || !endEl) return;
+  if(!video.duration || !isFinite(video.duration)) return;
+  var s = (startEl.value / 100) * video.duration;
+  var e = (endEl.value / 100) * video.duration;
+  var sv = document.getElementById('trim-start-val');
+  var ev = document.getElementById('trim-end-val');
+  var tt = document.getElementById('timeline-time');
+  if(sv) sv.textContent = s.toFixed(1) + 's';
+  if(ev) ev.textContent = e.toFixed(1) + 's';
+  if(tt) tt.textContent = Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')+' - '+Math.floor(e/60)+':'+String(Math.floor(e%60)).padStart(2,'0');
+  if(isFinite(s)) video.currentTime = s;
+}
+function applyQualityPreset(preset) {
+  var presets = {
+    auto:{b:108,c:115,s:115}, iphone:{b:108,c:115,s:125},
+    dslr:{b:102,c:120,s:110}, cinema:{b:90,c:135,s:75},
+    broadcast:{b:105,c:110,s:105}, reset:{b:100,c:100,s:100}
+  };
+  var p = presets[preset]; if (!p) return;
+  var bEl=document.getElementById('adj-brightness');
+  var cEl=document.getElementById('adj-contrast');
+  var sEl=document.getElementById('adj-saturation');
+  if(bEl){bEl.value=p.b; var bv=document.getElementById('brightness-val'); if(bv) bv.textContent=p.b+'%';}
+  if(cEl){cEl.value=p.c; var cv=document.getElementById('contrast-val'); if(cv) cv.textContent=p.c+'%';}
+  if(sEl){sEl.value=p.s; var sv2=document.getElementById('saturation-val'); if(sv2) sv2.textContent=p.s+'%';}
+  updatePreview();
+}
+function applyAIEdit() {
+  if(window._applyAIEdit) { window._applyAIEdit(); return; }
+  var instructions = document.getElementById('ai-edit-instructions');
+  var text = instructions ? instructions.value.trim() : '';
+  if(!text) { alert('Please describe what you want to change.'); return; }
+  alert('AI Edit: "' + text + '" - Processing...');
+}
+function addManualCaption() {
+  var list = document.getElementById('caption-list');
+  var items = document.getElementById('caption-items');
+  var text = prompt('Enter caption text:');
+  if(!text) return;
+  if(items) {
+    var div = document.createElement('div');
+    div.style.cssText = 'padding:0.4rem;background:#1a1a1a;border-radius:6px;margin-bottom:0.4rem;font-size:0.75rem;color:rgba(255,255,255,0.7);display:flex;justify-content:space-between;';
+    div.innerHTML = text + '<span onclick="this.parentNode.remove()" style="cursor:pointer;color:#E63329;">✕</span>';
+    items.appendChild(div);
+  }
+  if(list) list.style.display = 'block';
+}
+function generateCaptions() {
+  if(window._generateCaptions) { window._generateCaptions(); return; }
+  var status = document.getElementById('caption-status');
+  if(status) status.textContent = 'Generating captions...';
+  setTimeout(function(){ if(status) status.textContent = 'Caption generation requires a loaded video.'; }, 1000);
+}
+
+// Global proxies - onclick handlers need global scope
+
+function switchToolTab(tab, btn) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('tab-' + tab);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+function setMode(a,b){ if(window._setMode) window._setMode(a,b); else if(window['setMode']) window['setMode'](a,b); }
+function loadVideoFile(a,b){ if(window._loadVideoFile) window._loadVideoFile(a,b); else if(window['loadVideoFile']) window['loadVideoFile'](a,b); }
+function applyAudioPreset(){ if(window._applyAudioPreset) window._applyAudioPreset(); else if(window['applyAudioPreset']) window['applyAudioPreset'](); }
+function previewAudioFilters(){ if(window._previewAudioFilters) window._previewAudioFilters(); else if(window['previewAudioFilters']) window['previewAudioFilters'](); }
+function startEnhancing(){ if(window._startEnhancing) window._startEnhancing(); else if(window['startEnhancing']) window['startEnhancing'](); }
+function downloadEnhanced(){ if(window._downloadEnhanced) window._downloadEnhanced(); else if(window['downloadEnhanced']) window['downloadEnhanced'](); }
+function resetEnhancer(){ if(window._resetEnhancer) window._resetEnhancer(); else if(window['resetEnhancer']) window['resetEnhancer'](); }
+function addClip(){ if(window._addClip) window._addClip(); else if(window['addClip']) window['addClip'](); }
+function removeClip(a,b){ if(window._removeClip) window._removeClip(a,b); else if(window['removeClip']) window['removeClip'](a,b); }
+function clearClips(){ if(window._clearClips) window._clearClips(); else if(window['clearClips']) window['clearClips'](); }
+function combineVideos(){ if(window._combineVideos) window._combineVideos(); else if(window['combineVideos']) window['combineVideos'](); }
+function setCaptionStyle(a,b){ if(window._setCaptionStyle) window._setCaptionStyle(a,b); else if(window['setCaptionStyle']) window['setCaptionStyle'](a,b); }
+function generateCaptions(){ if(window._generateCaptions) { window._generateCaptions(); return; } alert('Generating captions... (feature coming soon)'); }
+function addManualCaption(){ if(window._addManualCaption) window._addManualCaption(); else if(window['addManualCaption']) window['addManualCaption'](); }
+function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
+function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
+function applyCrop(){ if(window._applyCrop) window._applyCrop(); else if(window['applyCrop']) window['applyCrop'](); }
+function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); else if(window['cancelCrop']) window['cancelCrop'](); }
+function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
+function hideLogin(){ if(window._hideLogin) window._hideLogin(); else if(window['hideLogin']) window['hideLogin'](); }
+function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); else if(window['showAuthTab']) window['showAuthTab'](a,b); }
+function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
+function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
+function uploadEnhancedToYouTube(){ if(window._uploadEnhancedToYouTube) window._uploadEnhancedToYouTube(); else if(window['uploadEnhancedToYouTube']) window['uploadEnhancedToYouTube'](); }
+function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shareEnhancedWhatsApp(); else if(window['shareEnhancedWhatsApp']) window['shareEnhancedWhatsApp'](); }
+window.onerror = function(msg, src, line, col, err) {
+  console.error('[AfriVid Error]', msg, 'at line', line);
+};
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('[AfriVid Promise Error]', e.reason);
+});
+// Debug helper - log when any button is clicked
+document.addEventListener('click', function(e) {
+  if(e.target.tagName === 'BUTTON' && e.target.onclick) {
+    console.log('[Click]', e.target.textContent.trim(), e.target.onclick.toString().slice(0,60));
+  }
+});
+</script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';

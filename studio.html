@@ -178,20 +178,7 @@ body{padding-top:70px;}
   </div>
 </nav>
 
-<script>
-// Global proxies - onclick handlers need global scope
-function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
-function hideLogin(){ if(window._hideLogin) window._hideLogin(); else if(window['hideLogin']) window['hideLogin'](); }
-function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); else if(window['showAuthTab']) window['showAuthTab'](a,b); }
-function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
-function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
-function filterContent(a,b){ if(window._filterContent) window._filterContent(a,b); else if(window['filterContent']) window['filterContent'](a,b); }
-function previewItem(a,b){ if(window._previewItem) window._previewItem(a,b); else if(window['previewItem']) window['previewItem'](a,b); }
-function signOut(){ if(window._signOut) window._signOut(); else if(window['signOut']) window['signOut'](); }
-function sendLibraryToEditor(a,b){ if(window._sendLibraryToEditor) window._sendLibraryToEditor(a,b); else if(window['sendLibraryToEditor']) window['sendLibraryToEditor'](a,b); }
-function downloadFromLibrary(a,b){ if(window._downloadFromLibrary) window._downloadFromLibrary(a,b); else if(window['downloadFromLibrary']) window['downloadFromLibrary'](a,b); }
-function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFromLibrary(a,b); else if(window['deleteFromLibrary']) window['deleteFromLibrary'](a,b); }
-</script>
+
 
 
 <!-- TOPBAR -->
@@ -492,7 +479,21 @@ function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFro
       </div>
     </div>
 
+
 <script>
+// Global proxies - onclick handlers need global scope
+function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
+function hideLogin(){ if(window._hideLogin) window._hideLogin(); else if(window['hideLogin']) window['hideLogin'](); }
+function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); else if(window['showAuthTab']) window['showAuthTab'](a,b); }
+function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
+function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
+function filterContent(a,b){ if(window._filterContent) window._filterContent(a,b); else if(window['filterContent']) window['filterContent'](a,b); }
+function previewItem(a,b){ if(window._previewItem) window._previewItem(a,b); else if(window['previewItem']) window['previewItem'](a,b); }
+function signOut(){ if(window._signOut) window._signOut(); else if(window['signOut']) window['signOut'](); }
+function sendLibraryToEditor(a,b){ if(window._sendLibraryToEditor) window._sendLibraryToEditor(a,b); else if(window['sendLibraryToEditor']) window['sendLibraryToEditor'](a,b); }
+function downloadFromLibrary(a,b){ if(window._downloadFromLibrary) window._downloadFromLibrary(a,b); else if(window['downloadFromLibrary']) window['downloadFromLibrary'](a,b); }
+function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFromLibrary(a,b); else if(window['deleteFromLibrary']) window['deleteFromLibrary'](a,b); }
+
 function openProfile(){
   var overlay = document.getElementById('profile-overlay');
   if(overlay) overlay.classList.add('active');
