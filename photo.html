@@ -99,7 +99,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </head>
 <body>
 <script>
+window.onerror = function(msg, src, line, col, err) {
+  console.error('[Photo Error]', msg, 'line', line);
+};
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('[Photo Promise Error]', e.reason);
+});
+document.addEventListener('click', function(e) {
+  if(e.target.tagName === 'BUTTON' && e.target.onclick) {
+    console.log('[Click]', e.target.textContent.trim().slice(0,30));
+  }
+});
+</script>
+
+<script>
 // Global proxies - onclick handlers need global scope
+function loadPhotoFile(e){ if(window._loadPhotoFile) window._loadPhotoFile(e); else if(window.loadPhotoFile) window.loadPhotoFile(e); }
 function loadPhoto(a,b){ if(window._loadPhoto) window._loadPhoto(a,b); else if(window['loadPhoto']) window['loadPhoto'](a,b); }
 function applyPreset(a,b){ if(window._applyPreset) window._applyPreset(a,b); else if(window['applyPreset']) window['applyPreset'](a,b); }
 function updatePreview(){ if(window._updatePreview) window._updatePreview(); else if(window['updatePreview']) window['updatePreview'](); }
@@ -822,7 +837,7 @@ window.doSignUp = async function() {
 
 
 // ---- PHOTO FUNCTIONS ----
-function loadPhotoFile(event) {
+window.loadPhotoFile = function loadPhotoFile(event) {
   const file = event.target.files[0];
   if (!file) return;
   const url = URL.createObjectURL(file);
