@@ -1925,32 +1925,6 @@ window.doSignUp = async function() {
   } catch(e){err.style.display='block';err.textContent='[!] '+e.message.replace('Firebase: ','');}
 }
 
-async function finishEnhancing() {
-  enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
-  const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
-  addEnhanceLog('success', `[ok] Enhanced video ready! Size: ${sizeMB}MB`);
-  // Auto-save to library
-  saveEnhancedToLibrary(enhancedBlob, 'Enhanced - ' + new Date().toLocaleDateString());
-
-  const format = document.getElementById('enhance-format')?.value || 'webm';
-
-  if (format === 'mp4') {
-    addEnhanceLog('info', '[sync] Converting to MP4 via FFmpeg...');
-    try {
-      await convertToMP4(enhancedBlob);
-      addEnhanceLog('success', '[ok] MP4 conversion complete!');
-    } catch(e) {
-      addEnhanceLog('error', '[x] MP4 conversion failed, downloading as WebM');
-      downloadEnhanced();
-    }
-  } else {
-    document.getElementById('enhance-export-btns').style.display = 'flex';
-  }
-
-  document.getElementById('enhance-progress-label').textContent = 'Done!';
-  document.getElementById('enhance-progress-pct').textContent = '100%';
-  document.getElementById('enhance-progress-fill').style.width = '100%';
-}
 
 document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)hideLogin();});
 </script>
