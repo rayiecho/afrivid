@@ -889,7 +889,7 @@ let bgMusicAudio = null;
 let transitionProgress = 0;
 let isTransitioning = false;
 let transitionStartTime = 0;
-const TRANSITION_DURATION = 0; // ms - instant cut
+const TRANSITION_DURATION = 500; // ms - smooth crossfade
 
 function startTransition() {
   isTransitioning = true;
@@ -1971,7 +1971,13 @@ window._startRecording = async function startRecording() {
   addLog('info', '[>] Recording video with voice...');
 
   const totalDuration = scriptData.duration * 1000;
-  const sceneDurations = scriptData.scenes.map(s => s.duration * 1000);
+  // Calculate scene durations from voiceover word count for tighter pacing
+  const sceneDurations = scriptData.scenes.map(s => {
+    const words = (s.voiceover || '').split(' ').length;
+    const audioDuration = (words / 2.5) * 1000; // 2.5 words/sec
+    const minDuration = (s.duration || 10) * 1000;
+    return Math.max(audioDuration + 500, minDuration * 0.8); // use whichever fits better
+  });
   let sceneIndex = 0;
   let sceneStart = Date.now();
   let totalStart = Date.now();
@@ -2043,10 +2049,10 @@ window._startRecording = async function startRecording() {
     document.getElementById('progress-label-text').textContent = `Scene ${sceneIndex + 1} of ${scriptData.scenes.length}`;
     drawScene(canvas, scriptData.scenes[sceneIndex], totalProgress, window.currentWord || 0);
     if (sceneElapsed >= sceneDurations[sceneIndex]) {
-      sceneIndex++;
-      sceneStart = now;
-      startTransition();
-      if (sceneIndex < scriptData.scenes.length) {
+      if (sceneIndex < scriptData.scenes.length - 1) {
+        sceneIndex++;
+        sceneStart = now;
+        startTransition();
         playSceneAudio(sceneIndex);
       }
     }
