@@ -174,7 +174,7 @@ body{padding-top:70px;}
 
 <script>
 // Global proxies - required because main script is type="module"
-window._setMode = function setMode(m) { const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
+window._setMode = function setMode(m) { const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); const os=document.getElementById('own-settings'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(os) os.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
 function goToStep(n){ if(window._goToStep) window._goToStep(n); }
 function generateScript(){ if(window._generateScript) window._generateScript(); }
 function handleGenerateScript(){ if(window._handleGenerateScript) window._handleGenerateScript(); }
@@ -272,44 +272,41 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <div class="card-title"><div class="card-title-icon">🎬</div>Video Creator</div>
 
         <!-- MODE TOGGLE -->
-        <div class="mode-toggle" style="margin-bottom:1.25rem;">
+        <div class="mode-toggle" style="margin-bottom:1rem;">
           <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">✦ AI Generate</button>
           <button class="mode-btn" id="mode-own" onclick="setMode('own')">✍ Own Script</button>
         </div>
 
-        <!-- STUDIO LAYOUT -->
-        <div>
+        <!-- TWO COLUMN NO-SCROLL LAYOUT -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
 
-          <!-- LEFT: MAIN INPUT -->
+          <!-- LEFT: WHAT THE VIDEO IS ABOUT -->
           <div>
-            <!-- AI FIELDS -->
             <div id="ai-fields">
-              <div class="form-group" style="margin-bottom:1rem;">
+              <div class="form-group" style="margin-bottom:0.75rem;">
                 <label class="form-label">VIDEO TOPIC</label>
                 <input type="text" id="video-topic" class="form-input" placeholder="e.g. How to Apply for Scholarships in Africa">
-                <span class="form-hint">What is this video about?</span>
               </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
                 <div class="form-group">
                   <label class="form-label">AUDIENCE</label>
                   <select id="video-audience" class="form-select">
                     <option value="African students aged 16-25">Students (16-25)</option>
-                    <option value="African graduates and young professionals aged 22-35">Graduates & Professionals</option>
-                    <option value="African youth entrepreneurs aged 18-35">Young Entrepreneurs</option>
+                    <option value="African graduates and young professionals aged 22-35">Graduates</option>
+                    <option value="African youth entrepreneurs aged 18-35">Entrepreneurs</option>
                     <option value="African youth leaders aged 18-30">Youth Leaders</option>
-                    <option value="All African youth aged 16-35">All African Youth</option>
+                    <option value="All African youth aged 16-35">All Youth</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label class="form-label">DURATION</label>
                   <select id="video-duration" class="form-select">
-                    <option value="30">30 seconds</option>
-                    <option value="60" selected>1 minute</option>
-                    <option value="90">90 seconds</option>
-                    <option value="120">2 minutes</option>
-                    <option value="180">3 minutes</option>
-                    <option value="300">5 minutes</option>
-                    <option value="600">10 minutes</option>
+                    <option value="30">30 sec</option>
+                    <option value="60" selected>1 min</option>
+                    <option value="90">90 sec</option>
+                    <option value="120">2 min</option>
+                    <option value="180">3 min</option>
+                    <option value="300">5 min</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -325,240 +322,149 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
                 <div class="form-group">
                   <label class="form-label">CATEGORY</label>
                   <select id="video-program" class="form-select">
-                    <option value="General knowledge and education">📚 General Education</option>
-                    <option value="Artificial Intelligence and technology">Technology & AI</option>
+                    <option value="General knowledge and education">📚 Education</option>
+                    <option value="Artificial Intelligence and technology">Technology</option>
                     <option value="Finance money and financial literacy">💰 Finance</option>
                     <option value="Business and entrepreneurship">📊 Business</option>
-                    <option value="IT Training and digital skills">💻 IT & Digital</option>
                     <option value="Scholarships and global opportunities">🎓 Scholarships</option>
                     <option value="Career development and public speaking">💼 Career</option>
                     <option value="Leadership and 21st century skills">🎯 Leadership</option>
                     <option value="Community impact and social change">🌍 Community</option>
-                    <option value="Mental health and wellbeing">🧠 Mental Health</option>
                   </select>
                 </div>
               </div>
-              <div id="duration-warning" style="display:none;margin-bottom:1rem;padding:0.6rem 0.85rem;border-radius:8px;font-size:0.78rem;font-family:var(--font-mono);"></div>
             </div>
 
-            <!-- OWN SCRIPT FIELDS -->
+            <!-- OWN SCRIPT -->
             <div id="own-fields" style="display:none;">
               <div class="form-group">
                 <label class="form-label">YOUR SCRIPT</label>
-                <textarea id="own-script" class="form-textarea" style="min-height:200px;" placeholder="Paste your full script here...&#10;&#10;AfriVid will turn it into a complete video with voice, slides and music."></textarea>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                <div class="form-group">
-                  <label class="form-label">DURATION</label>
-                  <select id="video-duration-own" class="form-select">
-                    <option value="30">30 seconds</option>
-                    <option value="60" selected>1 minute</option>
-                    <option value="90">90 seconds</option>
-                    <option value="120">2 minutes</option>
-                    <option value="180">3 minutes</option>
-                    <option value="300">5 minutes</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">STYLE</label>
-                  <select id="video-style-own" class="form-select">
-                    <option value="educational and informative">Educational</option>
-                    <option value="motivational and inspiring">Motivational</option>
-                    <option value="promotional and engaging">Promotional</option>
-                    <option value="storytelling and narrative">Storytelling</option>
-                  </select>
-                </div>
+                <textarea id="own-script" class="form-textarea" style="min-height:160px;" placeholder="Paste your full script here..."></textarea>
               </div>
             </div>
           </div>
 
-          <!-- RIGHT: SETTINGS SIDEBAR -->
-          <div style="display:flex;flex-direction:column;gap:0.75rem;">
-            <div style="font-size:0.6rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.25rem;">VIDEO SETTINGS</div>
-
-            <div class="form-group">
-              <label class="form-label">ASPECT RATIO</label>
-              <select id="video-aspect-ratio" class="form-select">
-                <option value="16:9">16:9 Landscape</option>
-                <option value="9:16">9:16 Portrait</option>
-                <option value="1:1">1:1 Square</option>
-                <option value="4:3">4:3 Classic</option>
-              </select>
+          <!-- RIGHT: HOW IT LOOKS + GENERATE -->
+          <div style="display:flex;flex-direction:column;gap:0.65rem;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;">
+              <div class="form-group">
+                <label class="form-label">ASPECT RATIO</label>
+                <select id="video-aspect-ratio" class="form-select">
+                  <option value="16:9">16:9 Landscape</option>
+                  <option value="9:16">9:16 Portrait</option>
+                  <option value="1:1">1:1 Square</option>
+                  <option value="4:3">4:3 Classic</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">SLIDE THEME</label>
+                <select id="video-visual-style" class="form-select">
+                  <option value="slides_light">☀ Light</option>
+                  <option value="slides_dark">🌙 Dark</option>
+                  <option value="slides_gold">✨ Gold</option>
+                  <option value="whiteboard">🖊 Whiteboard</option>
+                  <option value="cinematic">🎬 Cinematic</option>
+                  <option value="photobg">🌍 Photo BG</option>
+                  <option value="splitflow">⚡ Split Flow</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">VOICE</label>
+                <select id="voice-select" class="form-select">
+                  <optgroup label="Female">
+                    <option value="asteria">Asteria</option>
+                    <option value="athena">Athena</option>
+                    <option value="hera">Hera</option>
+                    <option value="luna">Luna</option>
+                  </optgroup>
+                  <optgroup label="Male">
+                    <option value="helios">Helios</option>
+                    <option value="orion">Orion</option>
+                    <option value="zeus">Zeus</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">MUSIC</label>
+                <select id="bg-music" class="form-select">
+                  <option value="none">🔇 None</option>
+                  <option value="inspirational">🌍 Inspirational</option>
+                  <option value="upbeat">⚡ Upbeat</option>
+                  <option value="calm">🌊 Calm</option>
+                  <option value="corporate">💼 Corporate</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">TRANSITION</label>
+                <select id="scene-transition" class="form-select">
+                  <option value="fade">✨ Fade</option>
+                  <option value="slide">➡ Slide</option>
+                  <option value="zoom">🔍 Zoom</option>
+                  <option value="none">⚡ Cut</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">LANGUAGE</label>
+                <select id="video-language" class="form-select">
+                  <option value="English">English</option>
+                  <option value="French">French</option>
+                  <option value="Swahili">Swahili</option>
+                  <option value="Arabic">Arabic</option>
+                  <option value="Portuguese">Portuguese</option>
+                </select>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">SLIDE THEME</label>
-              <select id="video-visual-style" class="form-select">
-                <option value="slides_light">☀ Light</option>
-                <option value="slides_dark">🌙 Dark</option>
-                <option value="slides_gold">✨ Gold</option>
-                <option value="whiteboard">🖊 Whiteboard</option>
-                <option value="cinematic">🎬 Cinematic</option>
-                <option value="photobg">🌍 Photo BG</option>
-                <option value="splitflow">⚡ Split Flow (New)</option>
-              </select>
+            <!-- PRESENTER + ASSETS -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;">
+              <div class="form-group">
+                <label class="form-label">PRESENTER PHOTO</label>
+                <input type="file" id="presenter-photo" accept="image/*" style="display:none" onchange="loadPresenterPhoto(event)">
+                <button onclick="document.getElementById('presenter-photo').click()" style="width:100%;background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.5rem;border-radius:8px;font-size:0.72rem;cursor:pointer;">📷 Upload Photo</button>
+                <span id="presenter-photo-name" style="font-size:0.65rem;color:var(--muted);font-family:var(--font-mono);display:block;margin-top:0.25rem;">No photo</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">SCENE ASSETS</label>
+                <input type="file" id="scene-assets-input" accept="image/*" multiple style="display:none" onchange="loadSceneAssets(event)">
+                <button onclick="document.getElementById('scene-assets-input').click()" style="width:100%;background:var(--navy3);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;font-size:0.72rem;cursor:pointer;font-weight:600;">+ Upload Images</button>
+                <div id="scene-assets-list" style="margin-top:0.35rem;display:flex;flex-wrap:wrap;gap:0.3rem;"></div>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">VOICE</label>
-              <select id="voice-select" class="form-select">
-                <optgroup label="Female">
-                  <option value="asteria">Asteria — Warm</option>
-                  <option value="athena">Athena — Clear</option>
-                  <option value="hera">Hera — Bold</option>
-                  <option value="luna">Luna — Soft</option>
-                </optgroup>
-                <optgroup label="Male">
-                  <option value="helios">Helios — Deep</option>
-                  <option value="orion">Orion — Strong</option>
-                  <option value="zeus">Zeus — Powerful</option>
-                </optgroup>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">MUSIC</label>
-              <select id="bg-music" class="form-select">
-                <option value="none">🔇 None</option>
-                <option value="inspirational">🌍 Inspirational</option>
-                <option value="upbeat">⚡ Upbeat</option>
-                <option value="calm">🌊 Calm</option>
-                <option value="corporate">💼 Corporate</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">TRANSITION</label>
-              <select id="scene-transition" class="form-select">
-                <option value="fade">✨ Fade</option>
-                <option value="slide">➡ Slide</option>
-                <option value="zoom">🔍 Zoom</option>
-                <option value="none">⚡ Cut</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">LANGUAGE</label>
-              <select id="video-language" class="form-select">
-                <option value="English">English</option>
-                <option value="French">French</option>
-                <option value="Swahili">Swahili</option>
-                <option value="Arabic">Arabic</option>
-                <option value="Portuguese">Portuguese</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">PRESENTER PHOTO</label>
-              <input type="file" id="presenter-photo" accept="image/*" style="display:none" onchange="loadPresenterPhoto(event)">
-              <button onclick="document.getElementById('presenter-photo').click()" style="width:100%;background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.75rem;cursor:pointer;text-align:left;">📷 Upload Photo</button>
-              <span id="presenter-photo-name" style="font-size:0.68rem;color:var(--muted);font-family:var(--font-mono);display:block;margin-top:0.3rem;">No photo</span>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">PHOTO POSITION</label>
-              <select id="presenter-position" class="form-select">
-                <option value="br">Bottom Right</option>
-                <option value="bl">Bottom Left</option>
-                <option value="tr">Top Right</option>
-                <option value="tl">Top Left</option>
-              </select>
-            </div>
-
-            <!-- SCENE ASSETS -->
-            <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0;"></div>
-            <div style="font-size:0.6rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.5rem;">SCENE ASSETS</div>
-            <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem;">Upload images to display on slides — logos, products, photos</div>
-
-            <input type="file" id="scene-assets-input" accept="image/*" multiple style="display:none" onchange="loadSceneAssets(event)">
-            <button onclick="document.getElementById('scene-assets-input').click()" style="width:100%;background:var(--navy3);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.55rem 0.75rem;border-radius:8px;font-size:0.75rem;cursor:pointer;text-align:left;font-weight:600;">+ Upload Images</button>
-
-            <div id="scene-assets-list" style="margin-top:0.5rem;display:flex;flex-wrap:wrap;gap:0.4rem;"></div>
-
-            <div class="form-group" style="margin-top:0.5rem;">
-              <label class="form-label">ASSET POSITION</label>
-              <select id="asset-position" class="form-select">
-                <option value="center">Center</option>
-                <option value="top-right">Top Right</option>
-                <option value="top-left">Top Left</option>
-                <option value="bottom-right">Bottom Right</option>
-                <option value="bottom-left">Bottom Left</option>
-                <option value="full">Full Background</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">ASSET SIZE</label>
-              <select id="asset-size" class="form-select">
-                <option value="small">Small (20%)</option>
-                <option value="medium" selected>Medium (35%)</option>
-                <option value="large">Large (50%)</option>
-                <option value="xlarge">X-Large (70%)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">SHOW ON</label>
-              <select id="asset-display" class="form-select">
-                <option value="all">All Slides</option>
-                <option value="first">First Slide Only</option>
-                <option value="last">Last Slide Only</option>
-                <option value="alternate">Alternate Slides</option>
-              </select>
-            </div>
-
+            <!-- GENERATE BUTTON -->
+            <button class="btn btn-gold" id="btn-generate" onclick="handleGenerateScript()" style="width:100%;padding:0.85rem;font-size:0.95rem;margin-top:auto;">
+              ✨ Generate Script →
+            </button>
           </div>
-        </div><!-- end studio layout -->
-        </div><!-- end ai-fields -->
 
-        <!-- OWN SCRIPT MODE -->
-        <div id="own-fields" style="display:none;">
-          <div class="form-group full" style="margin-bottom:1.25rem;">
-            <label class="form-label">Your Script / Content</label>
-            <textarea id="own-script" class="form-textarea" style="min-height:250px;" placeholder="Paste your full script here...
+        </div><!-- end two column -->
 
-Example:
-Scene 1: Introduction
-Welcome to Young Africans Network. We are a pan-African organization...
-
-Scene 2: Our Programs
-We offer 6 programs including IT Training, Scholarships...
-
-Or just paste your raw content and we will structure it into scenes automatically."></textarea>
-            <span class="form-hint">Paste your script, article, notes or any content. AfriVid will structure it into video scenes.</span>
-          </div>
-          <div class="form-grid">
+        <!-- OWN SCRIPT DURATION/STYLE (shown in own mode) -->
+        <div id="own-settings" style="display:none;margin-top:0.75rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
             <div class="form-group">
-              <label class="form-label">Video Duration</label>
-              <select id="own-duration" class="form-select">
-                <option value="30">30 seconds</option>
-                <option value="60" selected>1 minute</option>
-                <option value="90">90 seconds</option>
-                <option value="120">2 minutes</option>
-                <option value="180">3 minutes</option>
-                <option value="300">5 minutes</option>
-                <option value="600">10 minutes</option>
-                <option value="900">15 minutes</option>
-                <option value="1200">20 minutes</option>
+              <label class="form-label">DURATION</label>
+              <select id="video-duration-own" class="form-select">
+                <option value="30">30 sec</option>
+                <option value="60" selected>1 min</option>
+                <option value="90">90 sec</option>
+                <option value="120">2 min</option>
+                <option value="180">3 min</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Voice Speed</label>
-              <select id="own-voice-speed" class="form-select">
-                <option value="0.85">Slow & Clear</option>
-                <option value="0.95" selected>Normal</option>
-                <option value="1.05">Slightly Fast</option>
+              <label class="form-label">STYLE</label>
+              <select id="video-style-own" class="form-select">
+                <option value="educational and informative">Educational</option>
+                <option value="motivational and inspiring">Motivational</option>
+                <option value="promotional and engaging">Promotional</option>
+                <option value="storytelling and narrative">Storytelling</option>
               </select>
             </div>
           </div>
         </div>
 
-        <div class="btn-row">
-          <button class="btn btn-gold" id="btn-generate" onclick="handleGenerateScript()">
-            ✨ Generate Script
-          </button>
-        </div>
-      </div>
+        <div id="duration-warning" style="display:none;margin-top:0.5rem;padding:0.6rem 0.85rem;border-radius:8px;font-size:0.78rem;font-family:var(--font-mono);"></div>
 
       <!-- LOADING -->
       <div class="loading-state" id="loading-script" style="display:none;">
