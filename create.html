@@ -26,7 +26,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
 
 /* MAIN LAYOUT */
-.main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:2.5rem 2rem 6rem;}
+.main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 2rem 6rem;}
 
 /* STEPS */
 .steps-bar{display:flex;gap:8px;margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
@@ -252,202 +252,203 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
   <!-- PANEL 1: INPUT -->
     <div class="panel active" id="panel-1">
       <div class="card">
-        <div class="card-title">
-          <div class="card-title-icon">📝</div>
-          Video Details
-        </div>
+        <div class="card-title"><div class="card-title-icon">🎬</div>Video Creator</div>
+
         <!-- MODE TOGGLE -->
-        <div class="mode-toggle" style="margin-bottom:1.5rem;">
-          <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">AfriVid Script Generator</button>
-          <button class="mode-btn" id="mode-own" onclick="setMode('own')">✍️ Use My Own Script</button>
+        <div class="mode-toggle" style="margin-bottom:1.25rem;">
+          <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">✦ AI Generate</button>
+          <button class="mode-btn" id="mode-own" onclick="setMode('own')">✍ Own Script</button>
         </div>
 
-        <!-- SCRIPT MODE FIELDS -->
-        <div id="ai-fields">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Video Topic / Title</label>
-            <input type="text" id="video-topic" class="form-input" placeholder="e.g. How to Apply for Scholarships in Africa">
-            <span class="form-hint">What is this video about?</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Target Audience</label>
-            <select id="video-audience" class="form-select">
-              <option value="African students aged 16-25">Students (16-25)</option>
-              <option value="African graduates and young professionals aged 22-35">Graduates & Young Professionals</option>
-              <option value="African youth entrepreneurs aged 18-35">Young Entrepreneurs</option>
-              <option value="African youth leaders aged 18-30">Youth Leaders</option>
-              <option value="All African youth aged 16-35">All African Youth</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Video Duration</label>
-            <select id="video-duration" class="form-select">
-              <option value="30">30 seconds</option>
-              <option value="60" selected>1 minute</option>
-              <option value="90">90 seconds</option>
-              <option value="120">2 minutes</option>
-              <option value="180">3 minutes</option>
-              <option value="300">5 minutes</option>
-              <option value="600">10 minutes</option>
-              <option value="900">15 minutes</option>
-              <option value="1200">20 minutes</option>
-            </select>
-            <div id="duration-warning" style="display:none;margin-top:0.5rem;padding:0.6rem 0.85rem;border-radius:8px;font-size:0.78rem;font-family:var(--font-mono);"></div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Video Style</label>
-            <select id="video-style" class="form-select">
-              <option value="educational and informative">Educational</option>
-              <option value="motivational and inspiring">Motivational</option>
-              <option value="promotional and engaging">Promotional</option>
-              <option value="news and announcement style">Announcement</option>
-              <option value="storytelling and narrative">Storytelling</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Aspect Ratio</label>
-            <select id="video-aspect-ratio" class="form-select">
-              <option value="16:9">16:9 — Landscape (YouTube/Presentation)</option>
-              <option value="9:16">9:16 — Portrait (TikTok/Reels)</option>
-              <option value="1:1">1:1 — Square (Instagram)</option>
-              <option value="4:3">4:3 — Classic</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Slide Theme</label>
-            <select id="video-visual-style" class="form-select">
-              <option value="slides_light">☀️ Light (Clean White)</option>
-              <option value="slides_dark">🌙 Dark (Professional)</option>
-              <option value="slides_gold">✨ Gold (AfriVid Brand)</option>
-              <option value="whiteboard">🖊 Whiteboard</option>
-              <option value="cinematic">🎬 Cinematic</option>
-              <option value="photobg">🌍 Photo Background</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Presenter Photo</label>
-            <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
-              <input type="file" id="presenter-photo" accept="image/*" style="display:none" onchange="loadPresenterPhoto(event)">
-              <button onclick="document.getElementById('presenter-photo').click()" style="background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.65rem 1rem;border-radius:8px;font-size:0.82rem;cursor:pointer;">📷 Upload Photo</button>
-              <span id="presenter-photo-name" style="font-size:0.75rem;color:var(--muted);font-family:var(--font-mono);">No photo</span>
-              <button id="presenter-clear-btn" onclick="clearPresenterPhoto()" style="display:none;background:none;border:none;color:var(--red);cursor:pointer;">✕</button>
+        <!-- STUDIO LAYOUT -->
+        <div style="display:grid;grid-template-columns:1fr 260px;gap:1.25rem;align-items:start;">
+
+          <!-- LEFT: MAIN INPUT -->
+          <div>
+            <!-- AI FIELDS -->
+            <div id="ai-fields">
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label class="form-label">VIDEO TOPIC</label>
+                <input type="text" id="video-topic" class="form-input" placeholder="e.g. How to Apply for Scholarships in Africa">
+                <span class="form-hint">What is this video about?</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+                <div class="form-group">
+                  <label class="form-label">AUDIENCE</label>
+                  <select id="video-audience" class="form-select">
+                    <option value="African students aged 16-25">Students (16-25)</option>
+                    <option value="African graduates and young professionals aged 22-35">Graduates & Professionals</option>
+                    <option value="African youth entrepreneurs aged 18-35">Young Entrepreneurs</option>
+                    <option value="African youth leaders aged 18-30">Youth Leaders</option>
+                    <option value="All African youth aged 16-35">All African Youth</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">DURATION</label>
+                  <select id="video-duration" class="form-select">
+                    <option value="30">30 seconds</option>
+                    <option value="60" selected>1 minute</option>
+                    <option value="90">90 seconds</option>
+                    <option value="120">2 minutes</option>
+                    <option value="180">3 minutes</option>
+                    <option value="300">5 minutes</option>
+                    <option value="600">10 minutes</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">STYLE</label>
+                  <select id="video-style" class="form-select">
+                    <option value="educational and informative">Educational</option>
+                    <option value="motivational and inspiring">Motivational</option>
+                    <option value="promotional and engaging">Promotional</option>
+                    <option value="news and announcement style">Announcement</option>
+                    <option value="storytelling and narrative">Storytelling</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CATEGORY</label>
+                  <select id="video-program" class="form-select">
+                    <option value="General knowledge and education">📚 General Education</option>
+                    <option value="Artificial Intelligence and technology">Technology & AI</option>
+                    <option value="Finance money and financial literacy">💰 Finance</option>
+                    <option value="Business and entrepreneurship">📊 Business</option>
+                    <option value="IT Training and digital skills">💻 IT & Digital</option>
+                    <option value="Scholarships and global opportunities">🎓 Scholarships</option>
+                    <option value="Career development and public speaking">💼 Career</option>
+                    <option value="Leadership and 21st century skills">🎯 Leadership</option>
+                    <option value="Community impact and social change">🌍 Community</option>
+                    <option value="Mental health and wellbeing">🧠 Mental Health</option>
+                  </select>
+                </div>
+              </div>
+              <div id="duration-warning" style="display:none;margin-bottom:1rem;padding:0.6rem 0.85rem;border-radius:8px;font-size:0.78rem;font-family:var(--font-mono);"></div>
+            </div>
+
+            <!-- OWN SCRIPT FIELDS -->
+            <div id="own-fields" style="display:none;">
+              <div class="form-group">
+                <label class="form-label">YOUR SCRIPT</label>
+                <textarea id="own-script" class="form-textarea" style="min-height:200px;" placeholder="Paste your full script here...&#10;&#10;AfriVid will turn it into a complete video with voice, slides and music."></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div class="form-group">
+                  <label class="form-label">DURATION</label>
+                  <select id="video-duration-own" class="form-select">
+                    <option value="30">30 seconds</option>
+                    <option value="60" selected>1 minute</option>
+                    <option value="90">90 seconds</option>
+                    <option value="120">2 minutes</option>
+                    <option value="180">3 minutes</option>
+                    <option value="300">5 minutes</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">STYLE</label>
+                  <select id="video-style-own" class="form-select">
+                    <option value="educational and informative">Educational</option>
+                    <option value="motivational and inspiring">Motivational</option>
+                    <option value="promotional and engaging">Promotional</option>
+                    <option value="storytelling and narrative">Storytelling</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Photo Position</label>
-            <select id="presenter-position" class="form-select">
-              <option value="br">Bottom Right</option>
-              <option value="bl">Bottom Left</option>
-              <option value="tr">Top Right</option>
-              <option value="tl">Top Left</option>
-            </select>
+
+          <!-- RIGHT: SETTINGS SIDEBAR -->
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="font-size:0.6rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.25rem;">VIDEO SETTINGS</div>
+
+            <div class="form-group">
+              <label class="form-label">ASPECT RATIO</label>
+              <select id="video-aspect-ratio" class="form-select">
+                <option value="16:9">16:9 Landscape</option>
+                <option value="9:16">9:16 Portrait</option>
+                <option value="1:1">1:1 Square</option>
+                <option value="4:3">4:3 Classic</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">SLIDE THEME</label>
+              <select id="video-visual-style" class="form-select">
+                <option value="slides_light">☀ Light</option>
+                <option value="slides_dark">🌙 Dark</option>
+                <option value="slides_gold">✨ Gold</option>
+                <option value="whiteboard">🖊 Whiteboard</option>
+                <option value="cinematic">🎬 Cinematic</option>
+                <option value="photobg">🌍 Photo BG</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">VOICE</label>
+              <select id="voice-select" class="form-select">
+                <optgroup label="Female">
+                  <option value="asteria">Asteria — Warm</option>
+                  <option value="athena">Athena — Clear</option>
+                  <option value="hera">Hera — Bold</option>
+                  <option value="luna">Luna — Soft</option>
+                </optgroup>
+                <optgroup label="Male">
+                  <option value="helios">Helios — Deep</option>
+                  <option value="orion">Orion — Strong</option>
+                  <option value="zeus">Zeus — Powerful</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">MUSIC</label>
+              <select id="bg-music" class="form-select">
+                <option value="none">🔇 None</option>
+                <option value="inspirational">🌍 Inspirational</option>
+                <option value="upbeat">⚡ Upbeat</option>
+                <option value="calm">🌊 Calm</option>
+                <option value="corporate">💼 Corporate</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">TRANSITION</label>
+              <select id="scene-transition" class="form-select">
+                <option value="fade">✨ Fade</option>
+                <option value="slide">➡ Slide</option>
+                <option value="zoom">🔍 Zoom</option>
+                <option value="none">⚡ Cut</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">LANGUAGE</label>
+              <select id="video-language" class="form-select">
+                <option value="English">English</option>
+                <option value="French">French</option>
+                <option value="Swahili">Swahili</option>
+                <option value="Arabic">Arabic</option>
+                <option value="Portuguese">Portuguese</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">PRESENTER PHOTO</label>
+              <input type="file" id="presenter-photo" accept="image/*" style="display:none" onchange="loadPresenterPhoto(event)">
+              <button onclick="document.getElementById('presenter-photo').click()" style="width:100%;background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.75rem;cursor:pointer;text-align:left;">📷 Upload Photo</button>
+              <span id="presenter-photo-name" style="font-size:0.68rem;color:var(--muted);font-family:var(--font-mono);display:block;margin-top:0.3rem;">No photo</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">PHOTO POSITION</label>
+              <select id="presenter-position" class="form-select">
+                <option value="br">Bottom Right</option>
+                <option value="bl">Bottom Left</option>
+                <option value="tr">Top Right</option>
+                <option value="tl">Top Left</option>
+              </select>
+            </div>
+
           </div>
-          <div class="form-group">
-            <label class="form-label">Photo Shape</label>
-            <select id="presenter-shape" class="form-select">
-              <option value="circle">Circle</option>
-              <option value="square">Rounded Square</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Background Theme</label>
-            <select id="bg-theme" class="form-select">
-              <option value="africa">🌍 Africa</option>
-              <option value="education">📚 Education</option>
-              <option value="technology">💻 Technology</option>
-              <option value="nature">🌿 Nature</option>
-              <option value="youth">👥 Youth</option>
-              <option value="city">🏙 City</option>
-              <option value="abstract">✨ Abstract</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Topic Category</label>
-            <select id="video-program" class="form-select">
-              <option value="General knowledge and education">📚 General Education</option>
-              <option value="Artificial Intelligence and technology">Technology & AI</option>
-              <option value="Finance money and financial literacy">💰 Finance & Money</option>
-              <option value="Business and entrepreneurship">📊 Business & Entrepreneurship</option>
-              <option value="IT Training and digital skills">💻 IT & Digital Skills</option>
-              <option value="Scholarships and global opportunities">🎓 Scholarships</option>
-              <option value="Career development and public speaking">💼 Career Development</option>
-              <option value="Leadership and 21st century skills">🎯 Leadership</option>
-              <option value="Community impact and social change">🌍 Community Impact</option>
-              <option value="Mental health and wellbeing">🧠 Mental Health</option>
-              <option value="Health and wellness">🏥 Health & Wellness</option>
-              <option value="Environment and climate change">🌿 Environment</option>
-              <option value="Arts culture and creativity">🎨 Arts & Culture</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Background Music</label>
-            <select id="bg-music" class="form-select">
-              <option value="none">🔇 No Music</option>
-              <option value="inspirational">🌍 Inspirational (Africa)</option>
-              <option value="upbeat">⚡ Upbeat & Energetic</option>
-              <option value="calm">🌊 Calm & Focus</option>
-              <option value="corporate">💼 Corporate & Professional</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Scene Transition</label>
-            <select id="scene-transition" class="form-select">
-              <option value="fade">✨ Fade</option>
-              <option value="slide">➡ Slide Left</option>
-              <option value="zoom">🔍 Zoom In</option>
-              <option value="none">⚡ Cut (No Transition)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Language</label>
-            <select id="video-language" class="form-select">
-              <option value="English">English</option>
-              <option value="French">French</option>
-              <option value="Swahili">Swahili</option>
-              <option value="Arabic">Arabic</option>
-              <option value="Portuguese">Portuguese</option>
-              <option value="Amharic">Amharic</option>
-              <option value="Yoruba">Yoruba</option>
-              <option value="Zulu">Zulu</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Voice</label>
-            <select id="voice-select" class="form-select">
-              <optgroup label="Female Voices">
-                <option value="asteria">Asteria — Warm Female</option>
-                <option value="athena">Athena — Clear Female</option>
-                <option value="hera">Hera — Strong Female</option>
-                <option value="luna">Luna — Soft Female</option>
-                <option value="stella">Stella — Bright Female</option>
-              </optgroup>
-              <optgroup label="Male Voices">
-                <option value="orion">Orion — Deep Male</option>
-                <option value="zeus">Zeus — Powerful Male</option>
-                <option value="orpheus">Orpheus — Smooth Male</option>
-                <option value="angus">Angus — Warm Male</option>
-                <option value="arcas">Arcas — Clear Male</option>
-                <option value="perseus">Perseus — Strong Male</option>
-                <option value="helios" selected>Helios — Energetic Male</option>
-              </optgroup>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Voice Speed</label>
-            <select id="voice-speed" class="form-select">
-              <option value="0.85">Slow & Clear</option>
-              <option value="0.95" selected>Normal</option>
-              <option value="1.05">Slightly Fast</option>
-            </select>
-          </div>
-          <div class="form-group full">
-            <label class="form-label">Additional Content / Notes (Optional)</label>
-            <textarea id="video-content" class="form-textarea" placeholder="Paste any additional text, key points, statistics or specific information you want included in the video..."></textarea>
-            <span class="form-hint">This helps AfriVid generate more accurate and specific content</span>
-          </div>
-        </div>
-        </div><!-- end form-grid -->
+        </div><!-- end studio layout -->
         </div><!-- end ai-fields -->
 
         <!-- OWN SCRIPT MODE -->
