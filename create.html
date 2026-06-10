@@ -198,7 +198,7 @@ function uploadToYouTube(){
   
   // Request YouTube OAuth token
   const client = google.accounts.oauth2.initTokenClient({
-    client_id:  + YOUTUBE_CLIENT_ID + ,
+    client_id: '957196729758-e50mss0sujt5jo70matst27mbc3kiapb.apps.googleusercontent.com',
     scope: 'https://www.googleapis.com/auth/youtube.upload',
     callback: async (tokenResponse) => {
       if(tokenResponse.error) {
