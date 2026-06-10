@@ -155,6 +155,23 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 <link rel="apple-touch-icon" href="images/logo.png">
 </head>
 <body>
+<script>
+window.onerror = function(msg, src, line) {
+  console.error('[Admin Error]', msg, 'line', line);
+  showToast('[!] JS Error: ' + msg.slice(0,60), 'error');
+};
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('[Admin Promise Error]', e.reason);
+  const msg = e.reason?.message || String(e.reason);
+  showToast('[!] ' + msg.slice(0,60), 'error');
+});
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('button');
+  if(btn && btn.textContent.trim()) {
+    console.log('[Admin Click]', btn.textContent.trim().slice(0,30));
+  }
+});
+</script>
 
 <!-- LOGIN -->
 <div id="login-screen">
