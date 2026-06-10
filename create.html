@@ -192,6 +192,15 @@ function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
 function doSignIn(){ if(window._doSignIn) window._doSignIn(); }
 function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
 function toggleSidebar(){ /* no sidebar on this page */ }
+function testPanel4(){
+  // Simulate a generated video for testing
+  const canvas = document.getElementById('video-canvas');
+  if(canvas){ canvas.width=1280; canvas.height=720; const ctx=canvas.getContext('2d'); ctx.fillStyle='#050A14'; ctx.fillRect(0,0,1280,720); ctx.fillStyle='#F5A623'; ctx.font='bold 60px Arial'; ctx.textAlign='center'; ctx.fillText('AfriVid Studio',640,360); }
+  window._videoBlob = new Blob(['test'], {type:'video/webm'});
+  window._currentUser = {uid:'test', email:'test@test.com'};
+  if(window._goToStep) window._goToStep(4);
+  console.log('Test mode: Panel 4 active, videoBlob set');
+}
 function switchTab(t){ /* no tabs on this page */ }
 function logout(){ if(window._logout) window._logout(); }
 function checkPassword(){ if(window._checkPassword) window._checkPassword(); }
