@@ -166,8 +166,17 @@ function applyAIEdit() {
   alert('AI Edit: "' + text + '" - Processing...');
 }
 function addManualCaption() {
-  if(window._addManualCaption) { window._addManualCaption(); return; }
-  alert('Manual caption feature - type your caption and it will appear on the video.');
+  var list = document.getElementById('caption-list');
+  var items = document.getElementById('caption-items');
+  var text = prompt('Enter caption text:');
+  if(!text) return;
+  if(items) {
+    var div = document.createElement('div');
+    div.style.cssText = 'padding:0.4rem;background:#1a1a1a;border-radius:6px;margin-bottom:0.4rem;font-size:0.75rem;color:rgba(255,255,255,0.7);display:flex;justify-content:space-between;';
+    div.innerHTML = text + '<span onclick="this.parentNode.remove()" style="cursor:pointer;color:#E63329;">✕</span>';
+    items.appendChild(div);
+  }
+  if(list) list.style.display = 'block';
 }
 function generateCaptions() {
   if(window._generateCaptions) { window._generateCaptions(); return; }
@@ -542,6 +551,7 @@ const db = getFirestore(app);
 let currentUser = null;
 let currentVideoFile = null;
 let enhanceVideo = null;
+let enhanceRecordedChunks = [];
 let enhanceCanvas = null;
 let enhanceAR = "16:9";
 let combineFiles = [];
@@ -720,9 +730,9 @@ startEnhancing = async function() {
   const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') 
     ? 'video/webm;codecs=vp9,opus' : 'video/webm';
   
-  enhanceRecordedChunks = [];
+  window._enhanceRecordedChunks || [] = [];
   enhanceMediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 3000000 });
-  enhanceMediaRecorder.ondataavailable = e => { if (e.data.size > 0) enhanceRecordedChunks.push(e.data); };
+  enhanceMediaRecorder.ondataavailable = e => { if (e.data.size > 0) window._enhanceRecordedChunks || [].push(e.data); };
   enhanceMediaRecorder.onstop = finishEnhancing;
   enhanceMediaRecorder.start(100);
   
@@ -996,7 +1006,7 @@ function buildAudioChain(audioCtx, source, dest) {
 }
 
 async function finishEnhancing() {
-  enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
+  enhancedBlob = new Blob(window._enhanceRecordedChunks || [], { type: 'video/webm' });
   const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
   addEnhanceLog('success', `[ok] Enhanced video ready! Size: ${sizeMB}MB`);
   // Auto-save to library
