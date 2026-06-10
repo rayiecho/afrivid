@@ -140,7 +140,7 @@ function updateTrimPreview() {
   if(sv) sv.textContent = s.toFixed(1) + 's';
   if(ev) ev.textContent = e.toFixed(1) + 's';
   if(tt) tt.textContent = Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')+' - '+Math.floor(e/60)+':'+String(Math.floor(e%60)).padStart(2,'0');
-  video.currentTime = s;
+  if(isFinite(s)) video.currentTime = s;
 }
 function applyQualityPreset(preset) {
   var presets = {
@@ -156,6 +156,17 @@ function applyQualityPreset(preset) {
   if(cEl){cEl.value=p.c; var cv=document.getElementById('contrast-val'); if(cv) cv.textContent=p.c+'%';}
   if(sEl){sEl.value=p.s; var sv2=document.getElementById('saturation-val'); if(sv2) sv2.textContent=p.s+'%';}
   updatePreview();
+}
+function applyAIEdit() {
+  if(window._applyAIEdit) { window._applyAIEdit(); return; }
+  var instructions = document.getElementById('ai-edit-instructions');
+  var text = instructions ? instructions.value.trim() : '';
+  if(!text) { alert('Please describe what you want to change.'); return; }
+  alert('AI Edit: "' + text + '" - Processing...');
+}
+function addManualCaption() {
+  if(window._addManualCaption) { window._addManualCaption(); return; }
+  alert('Manual caption feature - type your caption and it will appear on the video.');
 }
 function generateCaptions() {
   if(window._generateCaptions) { window._generateCaptions(); return; }
