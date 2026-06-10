@@ -110,6 +110,57 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 <body>
 <script>
 // Global proxies - onclick handlers need global scope
+function updatePreview() {
+  const video = document.getElementById('original-video');
+  if (!video) return;
+  const b = document.getElementById('adj-brightness')?.value || 100;
+  const c = document.getElementById('adj-contrast')?.value || 100;
+  const s = document.getElementById('adj-saturation')?.value || 100;
+  const sharp = document.getElementById('adj-sharpness')?.value || 0;
+  const filterType = document.getElementById('enhance-filter')?.value || 'none';
+  let css = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+  if (filterType === 'warm') css += ' sepia(30%) saturate(120%)';
+  if (filterType === 'cool') css += ' hue-rotate(20deg) saturate(90%)';
+  if (filterType === 'bw') css += ' grayscale(100%)';
+  if (filterType === 'sepia') css += ' sepia(80%)';
+  if (filterType === 'vivid') css += ' saturate(180%) contrast(110%)';
+  if (parseFloat(sharp) > 0) css += ` contrast(${100 + parseFloat(sharp)*5}%)`;
+  video.style.filter = css;
+  video.style.transition = 'filter 0.2s';
+}
+function updateTrimPreview() {
+  const video = document.getElementById('original-video');
+  if (!video || !video.duration) return;
+  const start = document.getElementById('trim-start');
+  const end = document.getElementById('trim-end');
+  if (!start || !end) return;
+  const s = (start.value / 100) * video.duration;
+  const e = (end.value / 100) * video.duration;
+  document.getElementById('trim-start-val').textContent = s.toFixed(1) + 's';
+  document.getElementById('trim-end-val').textContent = e.toFixed(1) + 's';
+  document.getElementById('timeline-time').textContent = 
+    `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')} — ${Math.floor(e/60)}:${String(Math.floor(e%60)).padStart(2,'0')}`;
+  video.currentTime = s;
+}
+function applyQualityPreset(preset) {
+  if(window._applyQualityPreset) { window._applyQualityPreset(preset); return; }
+  const presets = {
+    auto:{b:108,c:115,s:115,w:5}, iphone:{b:108,c:115,s:125,w:15},
+    dslr:{b:102,c:120,s:110,w:0}, cinema:{b:90,c:135,s:75,w:-10},
+    broadcast:{b:105,c:110,s:105,w:5}, reset:{b:100,c:100,s:100,w:0}
+  };
+  const p = presets[preset]; if (!p) return;
+  const bEl = document.getElementById('adj-brightness');
+  const cEl = document.getElementById('adj-contrast');
+  const sEl = document.getElementById('adj-saturation');
+  if(bEl) bEl.value = p.b;
+  if(cEl) cEl.value = p.c;
+  if(sEl) sEl.value = p.s;
+  document.getElementById('brightness-val').textContent = p.b + '%';
+  document.getElementById('contrast-val').textContent = p.c + '%';
+  document.getElementById('saturation-val').textContent = p.s + '%';
+  updatePreview();
+}
 function switchToolTab(tab, btn) {
   document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
@@ -130,7 +181,7 @@ function removeClip(a,b){ if(window._removeClip) window._removeClip(a,b); else i
 function clearClips(){ if(window._clearClips) window._clearClips(); else if(window['clearClips']) window['clearClips'](); }
 function combineVideos(){ if(window._combineVideos) window._combineVideos(); else if(window['combineVideos']) window['combineVideos'](); }
 function setCaptionStyle(a,b){ if(window._setCaptionStyle) window._setCaptionStyle(a,b); else if(window['setCaptionStyle']) window['setCaptionStyle'](a,b); }
-function generateCaptions(){ if(window._generateCaptions) window._generateCaptions(); else if(window['generateCaptions']) window['generateCaptions'](); }
+function generateCaptions(){ if(window._generateCaptions) { window._generateCaptions(); return; } alert('Generating captions... (feature coming soon)'); }
 function addManualCaption(){ if(window._addManualCaption) window._addManualCaption(); else if(window['addManualCaption']) window['addManualCaption'](); }
 function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
 function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
