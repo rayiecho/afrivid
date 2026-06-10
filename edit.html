@@ -143,6 +143,18 @@ function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['do
 function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
 function uploadEnhancedToYouTube(){ if(window._uploadEnhancedToYouTube) window._uploadEnhancedToYouTube(); else if(window['uploadEnhancedToYouTube']) window['uploadEnhancedToYouTube'](); }
 function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shareEnhancedWhatsApp(); else if(window['shareEnhancedWhatsApp']) window['shareEnhancedWhatsApp'](); }
+window.onerror = function(msg, src, line, col, err) {
+  console.error('[AfriVid Error]', msg, 'at line', line);
+};
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('[AfriVid Promise Error]', e.reason);
+});
+// Debug helper - log when any button is clicked
+document.addEventListener('click', function(e) {
+  if(e.target.tagName === 'BUTTON' && e.target.onclick) {
+    console.log('[Click]', e.target.textContent.trim(), e.target.onclick.toString().slice(0,60));
+  }
+});
 </script>
 
 
@@ -485,6 +497,7 @@ window.setMode = function(mode) {
 }
 
 window.loadVideoFile = function(event) {
+  console.log("[loadVideoFile] called");
   const file = event.target.files[0];
   if (!file) return;
   currentVideoFile = file;
@@ -1633,6 +1646,7 @@ let cropRect = {x:0,y:0,w:0,h:0};
 let isCropping = false;
 
 window.toggleCrop = function() {
+  console.log("[toggleCrop] called");
   if (!currentVideoFile) { alert('Load a video first'); return; }
   cropActive = !cropActive;
   const overlay = document.getElementById('crop-overlay');
