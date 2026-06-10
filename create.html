@@ -2128,6 +2128,25 @@ window._startRecording = async function startRecording() {
     document.getElementById('progress-pct').textContent = pct + '%';
     document.getElementById('progress-label-text').textContent = `Scene ${sceneIndex + 1} of ${scriptData.scenes.length}`;
     drawScene(canvas, scriptData.scenes[sceneIndex], totalProgress, window.currentWord || 0);
+    // Draw scene assets overlay
+    if(window.sceneAssets && window.sceneAssets.length > 0) {
+      const _pos = (document.getElementById('asset-position')||{value:'center'}).value;
+      const _sf = {small:0.2,medium:0.35,large:0.5,xlarge:0.7}[(document.getElementById('asset-size')||{value:'medium'}).value]||0.35;
+      const _disp = (document.getElementById('asset-display')||{value:'all'}).value;
+      const _show = _disp==='all'||(_disp==='first'&&sceneIndex===0)||(_disp==='last'&&sceneIndex===scriptData.scenes.length-1)||(_disp==='alternate'&&sceneIndex%2===0);
+      if(_show) window.sceneAssets.forEach(a => {
+        const W=canvas.width,H=canvas.height;
+        let aw=W*_sf,ah=aw*(a.img.height/a.img.width),ax=W/2-aw/2,ay=H/2-ah/2;
+        if(_pos==='top-right'){ax=W-aw-20;ay=20;}
+        else if(_pos==='top-left'){ax=20;ay=20;}
+        else if(_pos==='bottom-right'){ax=W-aw-20;ay=H-ah-20;}
+        else if(_pos==='bottom-left'){ax=20;ay=H-ah-20;}
+        else if(_pos==='full'){ax=0;ay=0;aw=W;ah=H;}
+        ctx.globalAlpha=0.88;
+        ctx.drawImage(a.img,ax,ay,aw,ah);
+        ctx.globalAlpha=1;
+      });
+    }
     if (sceneElapsed >= sceneDurations[sceneIndex]) {
       if (sceneIndex < scriptData.scenes.length - 1) {
         sceneIndex++;
