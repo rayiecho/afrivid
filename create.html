@@ -750,7 +750,7 @@ window._goToStep = window.goToStep = function(n) {
 
 // DURATION WARNING
 window.updateDurationWarning = function() {
-  const dur = parseInt(document.getElementById('video-duration').value);
+  const _durEl2 = document.getElementById('video-duration') || document.getElementById('video-duration-own'); const dur = parseInt(_durEl2 ? _durEl2.value : 60);
   const warn = document.getElementById('duration-warning');
   if (dur <= 300) { warn.style.display = 'none'; return; }
   warn.style.display = 'block';
@@ -777,10 +777,10 @@ window._handleGenerateScript = window.handleGenerateScript = async function() {
   btn.textContent = 'Generating...';
   btn.disabled = true;
   try {
-    const duration = parseInt(document.getElementById('video-duration').value);
+    const _durEl = document.getElementById('video-duration') || document.getElementById('video-duration-own'); const duration = parseInt(_durEl ? _durEl.value : 60);
     const language = document.getElementById('video-language') ? document.getElementById('video-language').value : 'English';
     const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-    const context = document.getElementById('video-content').value.trim();
+    const context = (document.getElementById('video-content') || {value:''}).value.trim();
     const sceneCount = Math.max(3, Math.floor(duration / 20));
     const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
       method: 'POST',
@@ -2168,7 +2168,7 @@ window.finishVideo = function finishVideo() {
     Scenes: ${scriptData.scenes.length}<br>
     File size: ${sizeMB}MB<br>
     Format: WebM Video<br>
-    Category: ${document.getElementById('video-program').value}<br>
+    Category: ${(document.getElementById('video-program')||{value:'General knowledge and education'}).value}<br>
     Generated: ${new Date().toLocaleString()}
   `;
 
@@ -2412,10 +2412,10 @@ let enhanceMediaRecorder = null;
 
 
 function getFilterCSS() {
-  const b = document.getElementById('adj-brightness').value;
-  const c = document.getElementById('adj-contrast').value;
-  const s = document.getElementById('adj-saturation').value;
-  const sharp = parseFloat(document.getElementById('adj-sharpness').value);
+  const b = (document.getElementById('adj-brightness')||{value:'100'}).value;
+  const c = (document.getElementById('adj-contrast')||{value:'100'}).value;
+  const s = (document.getElementById('adj-saturation')||{value:'100'}).value;
+  const sharp = parseFloat((document.getElementById('adj-sharpness')||{value:'100'}).value);
   const filter = document.getElementById('enhance-filter').value;
 
   document.getElementById('brightness-val').textContent = b + '%';
@@ -2695,7 +2695,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -2793,7 +2793,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -2891,7 +2891,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -2989,7 +2989,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -3087,7 +3087,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -3185,7 +3185,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -3283,7 +3283,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -3381,7 +3381,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
@@ -3479,7 +3479,7 @@ generateScript = async function() {
   const audience = document.getElementById('video-audience').value;
   const duration = document.getElementById('video-duration').value;
   const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
-  const program = document.getElementById('video-program').value;
+  const program = (document.getElementById('video-program')||{value:'General knowledge and education'}).value;
   const content = document.getElementById('video-content').value.trim();
 
   document.getElementById('loading-script').style.display = 'block';
