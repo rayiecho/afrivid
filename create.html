@@ -2325,30 +2325,6 @@ let enhanceVideo = null;
 let enhanceRecordedChunks = [];
 let enhanceMediaRecorder = null;
 
-loadVideoFile = function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  enhanceVideo = file;
-  const url = URL.createObjectURL(file);
-  const video = document.getElementById('original-video');
-  video.src = url;
-  video.load();
-  document.getElementById('enhance-filename').textContent = file.name;
-  document.getElementById('enhancer-editor').style.display = 'block';
-  document.getElementById('enhancer-upload-card').style.display = 'none';
-  addEnhanceLog('success', `[ok] Loaded: ${file.name}`);
-  
-  video.onloadedmetadata = () => {
-    trimStart = 0;
-    trimEnd = video.duration;
-    clips = [];
-    updateTimeline();
-    const canvas = document.getElementById('enhance-canvas');
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
-    updatePreview();
-  };
-}
 
 function getFilterCSS() {
   const b = document.getElementById('adj-brightness').value;
@@ -2581,84 +2557,7 @@ startEnhancing = async function() {
 let enhancedBlob = null;
 
 // -- AUDIO PROCESSING --
-function applyQualityPreset(preset) {
-  const presets = {
-    iphone: {
-      brightness: 108, contrast: 115, saturation: 125,
-      sharpness: 2.5, filter: 'warm',
-      label: '[ph] iPhone Look applied'
-    },
-    dslr: {
-      brightness: 102, contrast: 120, saturation: 110,
-      sharpness: 3.5, filter: 'none',
-      label: '[cam] DSLR Look applied'
-    },
-    cinema: {
-      brightness: 95, contrast: 130, saturation: 85,
-      sharpness: 2, filter: 'cinematic',
-      label: '[vid] Cinema Look applied'
-    },
-    broadcast: {
-      brightness: 110, contrast: 112, saturation: 118,
-      sharpness: 3, filter: 'none',
-      label: '[tv] Broadcast Look applied'
-    },
-    auto: {
-      brightness: 105, contrast: 115, saturation: 115,
-      sharpness: 2, filter: 'vivid',
-      label: '[*] Auto Enhanced'
-    },
-    reset: {
-      brightness: 100, contrast: 100, saturation: 100,
-      sharpness: 0, filter: 'none',
-      label: '[r] Reset to original'
-    }
-  };
 
-  const p = presets[preset];
-  if (!p) return;
-
-  document.getElementById('adj-brightness').value = p.brightness;
-  document.getElementById('adj-contrast').value = p.contrast;
-  document.getElementById('adj-saturation').value = p.saturation;
-  document.getElementById('adj-sharpness').value = p.sharpness;
-  document.getElementById('enhance-filter').value = p.filter;
-
-  document.getElementById('brightness-val').textContent = p.brightness + '%';
-  document.getElementById('contrast-val').textContent = p.contrast + '%';
-  document.getElementById('saturation-val').textContent = p.saturation + '%';
-  document.getElementById('sharpness-val').textContent = p.sharpness;
-
-  const label = document.getElementById('preset-applied');
-  label.textContent = p.label;
-  label.style.display = 'block';
-
-  updatePreview();
-  addEnhanceLog('success', '[ok] ' + p.label);
-}
-
-function applyAudioPreset() {
-  const preset = document.getElementById('audio-preset').value;
-  const presets = {
-    crowd:   { noise: 85, voice: 70, echo: 30, wind: 20, volume: 120 },
-    outdoor: { noise: 60, voice: 50, echo: 10, wind: 90, volume: 110 },
-    room:    { noise: 40, voice: 60, echo: 80, wind: 10, volume: 100 },
-    phone:   { noise: 70, voice: 90, echo: 50, wind: 30, volume: 150 },
-    studio:  { noise: 20, voice: 40, echo: 20, wind: 10, volume: 100 },
-    none:    { noise: 0,  voice: 0,  echo: 0,  wind: 0,  volume: 100 }
-  };
-  const p = presets[preset] || presets.none;
-  document.getElementById('noise-reduction').value = p.noise;
-  document.getElementById('voice-boost').value = p.voice;
-  document.getElementById('echo-removal').value = p.echo;
-  document.getElementById('wind-filter').value = p.wind;
-  document.getElementById('audio-volume').value = p.volume;
-  document.getElementById('noise-val').textContent = p.noise + '%';
-  document.getElementById('voice-val').textContent = p.voice + '%';
-  document.getElementById('echo-val').textContent = p.echo + '%';
-  document.getElementById('wind-val').textContent = p.wind + '%';
-  document.getElementById('volume-val').textContent = p.volume + '%';
-}
 
 async function previewAudioFilters() {
   const video = document.getElementById('original-video');
@@ -2710,113 +2609,7 @@ async function previewAudioFilters() {
   }
 }
 
-function buildAudioChain(audioCtx, source, dest) {
-  const noiseLevel = parseInt(document.getElementById('noise-reduction').value) / 100;
-  const voiceLevel = parseInt(document.getElementById('voice-boost').value) / 100;
-  const echoLevel = parseInt(document.getElementById('echo-removal').value) / 100;
-  const windLevel = parseInt(document.getElementById('wind-filter').value) / 100;
-  const volume = parseInt(document.getElementById('audio-volume').value) / 100;
 
-  let node = source;
-
-  // Wind/Rumble filter - high pass filter removes low freq rumble
-  if (windLevel > 0) {
-    const highPass = audioCtx.createBiquadFilter();
-    highPass.type = 'highpass';
-    highPass.frequency.value = 80 + (windLevel * 120); // 80-200Hz cutoff
-    highPass.Q.value = 0.7;
-    node.connect(highPass);
-    node = highPass;
-  }
-
-  // Noise reduction - combination of filters
-  if (noiseLevel > 0) {
-    // Low pass to cut high freq hiss
-    const lowPass = audioCtx.createBiquadFilter();
-    lowPass.type = 'lowpass';
-    lowPass.frequency.value = 8000 - (noiseLevel * 4000); // 4000-8000Hz
-    lowPass.Q.value = 0.5;
-    node.connect(lowPass);
-    node = lowPass;
-
-    // Dynamics compressor to reduce noise floor
-    const compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.value = -50 + (noiseLevel * 30); // -50 to -20dB
-    compressor.knee.value = 10;
-    compressor.ratio.value = 4 + (noiseLevel * 8); // 4:1 to 12:1
-    compressor.attack.value = 0.003;
-    compressor.release.value = 0.1 + (noiseLevel * 0.2);
-    node.connect(compressor);
-    node = compressor;
-  }
-
-  // Voice boost - peaking EQ around speech frequencies
-  if (voiceLevel > 0) {
-    // Boost 1-4kHz (speech clarity)
-    const voiceEQ = audioCtx.createBiquadFilter();
-    voiceEQ.type = 'peaking';
-    voiceEQ.frequency.value = 2000;
-    voiceEQ.Q.value = 1.5;
-    voiceEQ.gain.value = voiceLevel * 12; // 0-12dB boost
-    node.connect(voiceEQ);
-    node = voiceEQ;
-
-    // Boost presence 4-8kHz
-    const presenceEQ = audioCtx.createBiquadFilter();
-    presenceEQ.type = 'peaking';
-    presenceEQ.frequency.value = 5000;
-    presenceEQ.Q.value = 1;
-    presenceEQ.gain.value = voiceLevel * 6;
-    node.connect(presenceEQ);
-    node = presenceEQ;
-  }
-
-  // Echo/reverb reduction - gate
-  if (echoLevel > 0) {
-    const echoComp = audioCtx.createDynamicsCompressor();
-    echoComp.threshold.value = -30 - (echoLevel * 20);
-    echoComp.ratio.value = 8 + (echoLevel * 12);
-    echoComp.attack.value = 0.001;
-    echoComp.release.value = 0.05 + (echoLevel * 0.1);
-    node.connect(echoComp);
-    node = echoComp;
-  }
-
-  // Volume
-  const gainNode = audioCtx.createGain();
-  gainNode.gain.value = volume;
-  node.connect(gainNode);
-  gainNode.connect(dest);
-
-  return gainNode;
-}
-
-async function finishEnhancing() {
-  enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
-  const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
-  addEnhanceLog('success', `[ok] Enhanced video ready! Size: ${sizeMB}MB`);
-  // Auto-save to library
-  saveEnhancedToLibrary(enhancedBlob, 'Enhanced - ' + new Date().toLocaleDateString());
-
-  const format = document.getElementById('enhance-format')?.value || 'webm';
-
-  if (format === 'mp4') {
-    addEnhanceLog('info', '[sync] Converting to MP4 via FFmpeg...');
-    try {
-      await convertToMP4(enhancedBlob);
-      addEnhanceLog('success', '[ok] MP4 conversion complete!');
-    } catch(e) {
-      addEnhanceLog('error', '[x] MP4 conversion failed, downloading as WebM');
-      downloadEnhanced();
-    }
-  } else {
-    document.getElementById('enhance-export-btns').style.display = 'flex';
-  }
-
-  document.getElementById('enhance-progress-label').textContent = 'Done!';
-  document.getElementById('enhance-progress-pct').textContent = '100%';
-  document.getElementById('enhance-progress-fill').style.width = '100%';
-}
 
 async function convertToMP4(webmBlob) {
   // Dynamically load FFmpeg
@@ -2860,16 +2653,6 @@ async function convertToMP4(webmBlob) {
   document.getElementById('enhance-export-btns').style.display = 'flex';
 }
 
-function downloadEnhanced() {
-  if (!enhancedBlob) return;
-  const url = URL.createObjectURL(enhancedBlob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `AfriVid-Enhanced-${Date.now()}.webm`;
-  a.click();
-  URL.revokeObjectURL(url);
-  addEnhanceLog('success', '[dn] Downloaded!');
-}
 
 async function uploadEnhancedToYouTube() {
   if (!enhancedBlob) { alert('No enhanced video yet.'); return; }
@@ -2898,32 +2681,7 @@ function formatTime(secs) {
   return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-function updateTrimPreview() {
-  const video = document.getElementById('original-video');
-  if (!video.duration) return;
-  const start = parseTime(document.getElementById('trim-start').value) || 0;
-  const end = parseTime(document.getElementById('trim-end').value) || video.duration;
-  trimStart = Math.max(0, Math.min(start, video.duration));
-  trimEnd = Math.max(trimStart, Math.min(end, video.duration));
-  updateTimeline();
-}
 
-function updateTimeline() {
-  const video = document.getElementById('original-video');
-  if (!video.duration) return;
-  const dur = video.duration;
-  const leftPct = (trimStart / dur) * 100;
-  const rightPct = ((dur - trimEnd) / dur) * 100;
-  const seg = document.getElementById('timeline-segment');
-  const hl = document.getElementById('handle-left');
-  const hr = document.getElementById('handle-right');
-  if (seg) { seg.style.left = leftPct + '%'; seg.style.right = rightPct + '%'; }
-  if (hl) hl.style.left = leftPct + '%';
-  if (hr) hr.style.right = rightPct + '%';
-  document.getElementById('timeline-time').textContent = `${formatTime(trimStart)} -> ${formatTime(trimEnd)} / ${formatTime(dur)}`;
-  document.getElementById('trim-start').value = formatTime(trimStart);
-  document.getElementById('trim-end').value = formatTime(trimEnd);
-}
 
 function seekToPosition(e) {
   const video = document.getElementById('original-video');
@@ -2970,42 +2728,9 @@ setInterval(() => {
   }
 }, 100);
 
-function addClip() {
-  const video = document.getElementById('original-video');
-  if (!video.duration) { alert('Upload a video first'); return; }
-  const clip = { start: trimStart, end: trimEnd };
-  clips.push(clip);
-  renderClips();
-  addEnhanceLog('success', `[ok] Clip added: ${formatTime(clip.start)} -> ${formatTime(clip.end)}`);
-}
 
-function renderClips() {
-  const list = document.getElementById('clips-list');
-  if (!clips.length) { list.innerHTML = ''; return; }
-  list.innerHTML = `<div style="font-size:0.75rem;font-family:var(--font-mono);color:var(--gold);margin-bottom:0.5rem;">SELECTED CLIPS (${clips.length})</div>` +
-    clips.map((c, i) => `
-      <div class="clip-item">
-        <span style="font-size:0.82rem;background:rgba(245,166,35,0.1);padding:0.2rem 0.6rem;border-radius:4px;font-family:var(--font-mono);color:var(--gold);">${i+1}</span>
-        <span class="clip-time">${formatTime(c.start)} -> ${formatTime(c.end)}</span>
-        <span style="font-size:0.78rem;color:var(--muted);">(${formatTime(c.end - c.start)})</span>
-        <button class="clip-remove" onclick="removeClip(${i})">[x]</button>
-      </div>
-    `).join('');
-}
 
-function removeClip(i) {
-  clips.splice(i, 1);
-  renderClips();
-}
 
-function clearClips() {
-  clips = [];
-  renderClips();
-  trimStart = 0;
-  const video = document.getElementById('original-video');
-  trimEnd = video.duration || 0;
-  updateTimeline();
-}
 
 async function applyAIEdit() {
   const instructions = document.getElementById('ai-edit-instructions').value.trim();
@@ -3066,14 +2791,6 @@ function shareEnhancedWhatsApp() {
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
-function addEnhanceLog(type, msg) {
-  const log = document.getElementById('enhance-log');
-  const line = document.createElement('span');
-  line.className = `log-line ${type}`;
-  line.textContent = msg;
-  log.appendChild(line);
-  log.scrollTop = log.scrollHeight;
-}
 
 // -- UPLOAD MODE --
 let uploadMode = 'single';
@@ -3089,19 +2806,6 @@ setUploadMode = function(mode) {
   document.getElementById('mode-multi').style.color = mode === 'multi' ? 'var(--navy)' : 'var(--muted)';
 }
 
-async function loadMultipleVideos(event) {
-  const files = Array.from(event.target.files);
-  if (!files.length) return;
-
-  for (const file of files) {
-    const url = URL.createObjectURL(file);
-    const duration = await getVideoDuration(url);
-    multiVideos.push({ file, url, name: file.name, duration, size: (file.size/1024/1024).toFixed(1) });
-  }
-
-  renderVideoList();
-  document.getElementById('multi-video-list').style.display = 'block';
-}
 
 function getVideoDuration(url) {
   return new Promise(resolve => {
@@ -3248,13 +2952,6 @@ combineVideos = async function() {
   }
 }
 
-function resetEnhancer() {
-  enhanceVideo = null;
-  document.getElementById('enhancer-editor').style.display = 'none';
-  document.getElementById('enhancer-upload-card').style.display = 'block';
-  document.getElementById('video-file-input').value = '';
-  document.getElementById('enhance-log').innerHTML = '<span class="log-line info">// Upload a video to get started.</span>';
-}
 
 // -- YOUTUBE UPLOAD --
 const YT_CLIENT_ID = '224204618916-014ts9p8mj2vs9b0rtnq1b2o8gaetehk.apps.googleusercontent.com';
