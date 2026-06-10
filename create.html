@@ -2094,7 +2094,7 @@ window._stopRecording = function stopRecording() {
 }
 
 window.finishVideo = function finishVideo() {
-  videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+  videoBlob = new Blob(recordedChunks, { type: 'video/webm' }); window._videoBlob = videoBlob;
   const sizeMB = (videoBlob.size / 1024 / 1024).toFixed(1);
 
   addLog('success', `[ok] Video ready! Size: ${sizeMB}MB`);
