@@ -600,15 +600,31 @@ window.sendPasswordReset = async function() {
 };
 
 // Resend verification email
+window._lastResend = 0;
 window.resendVerification = async function() {
+  const now = Date.now();
+  if(now - window._lastResend < 60000) {
+    const secs = Math.ceil((60000 - (now - window._lastResend)) / 1000);
+    const err = document.getElementById('login-error-signin');
+    if(err){ err.style.display='block'; err.style.color='var(--red,#E63329)'; err.textContent='[!] Please wait '+secs+'s before resending.'; }
+    return;
+  }
   const user = window._unverifiedUser || auth.currentUser;
-  if(!user) return;
+  if(!user) { alert('Please sign in first.'); return; }
+  const btn = document.getElementById('resend-div')?.querySelector('button');
+  if(btn){ btn.textContent='Sending...'; btn.disabled=true; }
   try {
     await sendEmailVerification(user);
+    window._lastResend = Date.now();
     const err = document.getElementById('login-error-signin');
-    if(err){ err.textContent='✅ Verification email resent! Check your inbox.'; err.style.color='var(--green,#74C69D)'; }
+    if(err){ err.style.display='block'; err.style.color='#74C69D'; err.textContent='✅ Verification email sent! Check your inbox and spam folder.'; }
+    if(btn){ btn.textContent='Sent ✅ (wait 60s to resend)'; btn.disabled=true; setTimeout(()=>{ btn.textContent='Resend verification email →'; btn.disabled=false; }, 60000); }
   } catch(e) {
-    alert('Error: ' + e.message);
+    if(btn){ btn.textContent='Resend verification email →'; btn.disabled=false; }
+    const err = document.getElementById('login-error-signin');
+    let msg = e.message.replace('Firebase: ','');
+    if(msg.includes('too-many-requests')) msg = 'Too many attempts. Please wait a few minutes before trying again.';
+    if(err){ err.style.display='block'; err.style.color='var(--red,#E63329)'; err.textContent='[!] '+msg; }
   }
 };
 
