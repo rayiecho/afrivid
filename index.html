@@ -408,9 +408,25 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <label class="form-label">PASSWORD</label>
         <input type="password" id="login-password" class="form-input" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()">
         <div id="login-error-signin" class="login-error"></div>
+        <div style="text-align:right;margin-bottom:0.75rem;"><button type="button" onclick="showForgotPassword()" style="background:none;border:none;color:rgba(255,255,255,0.35);cursor:pointer;font-size:0.72rem;font-family:'Space Mono',monospace;">Forgot password?</button></div>
         <button class="btn-auth" type="submit">Sign In →</button>
         <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Don't have an account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </form>
+
+      <!-- FORGOT PASSWORD -->
+      <div id="form-forgot" style="display:none;">
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;">Reset Password</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);">Enter your email and we'll send you a reset link.</div>
+        </div>
+        <label class="form-label">EMAIL</label>
+        <input type="email" id="forgot-email" class="form-input" placeholder="you@example.com" autocomplete="email">
+        <div id="forgot-msg" style="display:none;font-size:0.78rem;margin:0.5rem 0;font-family:'Space Mono',monospace;"></div>
+        <button class="btn-auth" type="button" onclick="sendPasswordReset()">Send Reset Link →</button>
+        <div style="text-align:center;margin-top:1rem;">
+          <button type="button" onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.75rem;font-family:'Syne',sans-serif;font-weight:600;">← Back to Sign In</button>
+        </div>
+      </div>
 
       <!-- SIGN UP -->
       <form id="form-signup" onsubmit="signUp();return false;">
@@ -431,7 +447,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -463,6 +479,7 @@ window.hideLogin = function() {
 window.showAuthTab = function(tab) {
   document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
   document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('form-forgot').style.display = 'none';
   document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
 }
@@ -537,6 +554,42 @@ window.signUp = async function() {
     if(err){ err.style.display='block'; err.style.color=''; err.textContent='[!] '+msg; }
   }
 }
+
+// Show forgot password form
+window.showForgotPassword = function() {
+  document.getElementById('form-signin').style.display = 'none';
+  document.getElementById('form-signup').style.display = 'none';
+  document.getElementById('form-forgot').style.display = 'block';
+  document.getElementById('tab-signin').classList.remove('active');
+  document.getElementById('tab-signup').classList.remove('active');
+  const email = document.getElementById('login-email').value;
+  if(email) document.getElementById('forgot-email').value = email;
+};
+
+// Send password reset email
+window.sendPasswordReset = async function() {
+  const email = document.getElementById('forgot-email').value.trim();
+  const msg = document.getElementById('forgot-msg');
+  const btn = document.querySelector('#form-forgot .btn-auth');
+  if(!email){ msg.style.display='block'; msg.style.color='var(--red,#E63329)'; msg.textContent='[!] Enter your email address'; return; }
+  if(btn){ btn.textContent='Sending...'; btn.disabled=true; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    msg.style.display='block';
+    msg.style.color='#74C69D';
+    msg.textContent='✅ Reset link sent! Check your inbox.';
+    if(btn){ btn.textContent='Email Sent ✅'; }
+    setTimeout(()=>window.showAuthTab('signin'), 3000);
+  } catch(e) {
+    if(btn){ btn.textContent='Send Reset Link →'; btn.disabled=false; }
+    let errMsg = e.message.replace('Firebase: ','');
+    if(errMsg.includes('user-not-found')) errMsg = 'No account found with this email.';
+    if(errMsg.includes('invalid-email')) errMsg = 'Please enter a valid email.';
+    msg.style.display='block';
+    msg.style.color='var(--red,#E63329)';
+    msg.textContent='[!] '+errMsg;
+  }
+};
 
 // Resend verification email
 window.resendVerification = async function() {
