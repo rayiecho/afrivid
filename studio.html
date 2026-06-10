@@ -812,7 +812,7 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
 });
 
 // ── PROFILE ──
-window.openProfile = async function() {
+window._openProfile = async function() {
   const user = auth.currentUser;
   if(!user) return;
   document.getElementById('profile-overlay').classList.add('active');
@@ -854,11 +854,11 @@ window.openProfile = async function() {
   } catch(e) { console.error('Profile error:', e); }
 };
 
-window.closeProfile = function() {
+window._closeProfile = function() {
   document.getElementById('profile-overlay').classList.remove('active');
 };
 
-window.saveProfileName = async function() {
+window._saveProfileName = async function() {
   const user = auth.currentUser;
   if(!user) return;
   const newName = document.getElementById('profile-name-input').value.trim();
@@ -879,7 +879,7 @@ window.saveProfileName = async function() {
   }
 };
 
-window.requestUpgrade = function() {
+window._requestUpgrade = function() {
   alert('To upgrade to Pro ($3/month), contact us at afrividstudio@gmail.com!');
 };
 
@@ -942,10 +942,10 @@ window.requestUpgrade = function() {
   </div>
 </div>
 <script>
-function openProfile(){ if(window.openProfile) window.openProfile(); }
-function closeProfile(){ if(window.closeProfile) window.closeProfile(); }
-function saveProfileName(){ if(window.saveProfileName) window.saveProfileName(); }
-function requestUpgrade(){ if(window.requestUpgrade) window.requestUpgrade(); }
+function openProfile(){ if(window._openProfile) window._openProfile(); }
+function closeProfile(){ if(window._closeProfile) window._closeProfile(); }
+function saveProfileName(){ if(window._saveProfileName) window._saveProfileName(); }
+function requestUpgrade(){ if(window._requestUpgrade) window._requestUpgrade(); }
 </script>
 </body>
 </html>
