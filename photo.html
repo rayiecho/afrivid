@@ -222,8 +222,8 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['do
       <div class="photo-center">
 
         <!-- SINGLE PHOTO PREVIEW -->
-        <div style="position:relative;background:#000;border-radius:12px;overflow:hidden;min-height:300px;display:flex;align-items:center;justify-content:center;">
-          <canvas id="photo-canvas" style="max-width:100%;max-height:400px;display:block;"></canvas>
+        <div style="position:relative;background:#000;border-radius:12px;overflow:hidden;min-height:200px;display:flex;align-items:center;justify-content:center;">
+          <canvas id="photo-canvas" style="max-width:100%;max-height:260px;display:block;"></canvas>
           <img id="original-photo" style="display:none;">
           <div class="crop-overlay" id="crop-overlay"></div>
           <div class="crop-selection" id="crop-selection" style="display:none;"></div>
@@ -654,7 +654,7 @@ window.setCropRatio = function(ratio) {
 function applyRatioToSelection() {
   if (cropRatio === 'free') return;
   const canvas = document.getElementById('photo-canvas');
-  const rect = canvas.getBoundingClientRect();
+  const _el = canvas; if(!_el) return; const rect = _el.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
   const ratios = {'1:1':1,'16:9':16/9,'9:16':9/16,'4:3':4/3,'3:4':3/4,'A4':1/1.414};
@@ -730,6 +730,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateCropVisual() {
+  var canvas = document.getElementById('photo-canvas');
+  if (!canvas) return;
   const canvas = document.getElementById('photo-canvas');
   const rect = canvas.getBoundingClientRect();
   const scaleX = rect.width / canvas.width;
