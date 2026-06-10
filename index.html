@@ -401,28 +401,29 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       </div>
 
       <!-- SIGN IN -->
-      <form id="form-signin" onsubmit="doSignIn();return false;" style="display:none;">
+      <form id="form-signin" onsubmit="signIn();return false;" style="display:none;">
         <label class="form-label">EMAIL</label>
         <input type="email" id="login-email" class="form-input" placeholder="you@example.com">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="login-password" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')signIn()">
-        <button class="btn-auth" onclick="signIn()">Sign In →</button>
+        <div id="login-error-signin" class="login-error"></div>
+        <button class="btn-auth" type="submit">Sign In →</button>
         <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Don't have an account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
-      </div>
+      </form>
 
       <!-- SIGN UP -->
-      <form id="form-signup" onsubmit="doSignUp();return false;">
+      <form id="form-signup" onsubmit="signUp();return false;">
         <label class="form-label">FULL NAME</label>
         <input type="text" id="signup-name" class="form-input" placeholder="Your full name">
         <label class="form-label">EMAIL</label>
         <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')signUp()">
-        <button class="btn-auth" onclick="signUp()">Create Account →</button>
+        <div id="login-error-signup" class="login-error"></div>
+        <button class="btn-auth" type="submit">Create Account →</button>
         <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Already have an account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
-      </div>
+      </form>
 
-      <div class="login-error" id="login-error"></div>
       <div style="text-align:center;margin-top:1.25rem;font-size:0.72rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;">Beta v1.0 · Free during testing</form>
       </div>
     </div>
@@ -448,7 +449,9 @@ const db = getFirestore(app);
 // If already logged in redirect to studio
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    window.location.href = 'studio.html';
+    // Only redirect if login form is visible (user just logged in or returning)
+    const loginSection = document.getElementById('login-modal') || document.querySelector('.login-card');
+    if (loginSection) window.location.href = 'studio.html';
   }
 });
 
@@ -467,13 +470,18 @@ window.showAuthTab = function(tab) {
 window.signIn = async function() {
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
-  const err = document.getElementById('login-error');
+  const err = document.getElementById('login-error-signin') || document.getElementById('login-error');
+  if(err) { err.style.display='none'; err.textContent=''; }
+  if(!email||!password){ if(err){err.style.display='block';err.textContent='[!] Enter email and password';} return; }
   try {
+    const btn = document.querySelector('#form-signin .btn-auth');
+    if(btn){ btn.textContent='Signing in...'; btn.disabled=true; }
     await signInWithEmailAndPassword(auth, email, password);
     window.location.href = 'studio.html';
   } catch(e) {
-    err.style.display = 'block';
-    err.textContent = '[!] ' + e.message.replace('Firebase: ', '');
+    const btn = document.querySelector('#form-signin .btn-auth');
+    if(btn){ btn.textContent='Sign In →'; btn.disabled=false; }
+    if(err){ err.style.display='block'; err.textContent='[!] ' + e.message.replace('Firebase: ','').replace('Error (auth/','').replace(')',''); }
   }
 }
 window.signUp = async function() {
