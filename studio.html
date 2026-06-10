@@ -131,6 +131,38 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
+
+/* PROFILE MODAL */
+.profile-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:none;align-items:center;justify-content:center;}
+.profile-overlay.active{display:flex;}
+.profile-modal{background:#0d1f35;border:1px solid rgba(255,255,255,0.08);border-radius:16px;width:420px;max-width:95vw;overflow:hidden;}
+.profile-header{background:linear-gradient(135deg,#0a1628,#0d2040);padding:1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+.profile-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#000;flex-shrink:0;}
+.profile-info{flex:1;}
+.profile-name{font-size:1rem;font-weight:700;}
+.profile-email{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-top:0.2rem;}
+.profile-body{padding:1.25rem;}
+.profile-section{margin-bottom:1.25rem;}
+.profile-section-title{font-size:0.6rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.plan-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:8px;font-size:0.82rem;font-weight:700;}
+.plan-beta{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;}
+.plan-pro{background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;}
+.plan-dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
+.stat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem;}
+.stat-row:last-child{border-bottom:none;}
+.stat-row-label{color:rgba(255,255,255,0.4);}
+.stat-row-value{font-weight:600;font-family:'Space Mono',monospace;font-size:0.75rem;}
+.profile-input{width:100%;background:#1a2a3a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.9rem;border-radius:8px;font-size:0.85rem;font-family:'Syne',sans-serif;outline:none;margin-top:0.4rem;}
+.profile-input:focus{border-color:rgba(245,166,35,0.4);}
+.profile-actions{display:flex;gap:0.75rem;padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.06);}
+.btn-profile-save{flex:1;background:#F5A623;color:#000;border:none;padding:0.65rem;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-profile-close{background:transparent;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.65rem 1rem;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-signout-profile{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.65rem 1rem;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.upgrade-box{background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:1rem;margin-top:0.75rem;}
+.upgrade-price{font-size:1.5rem;font-weight:800;color:#74C69D;}
+.upgrade-price span{font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:400;}
+.user-name{cursor:pointer;}
+.user-name:hover{color:#F5A623;}
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
@@ -174,7 +206,7 @@ function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFro
   </div>
   <div class="topbar-right">
     <div class="user-info" id="user-info" style="display:none;">
-      <div class="user-name" id="user-name">Loading...</div>
+      <div class="user-name" id="user-name" onclick="openProfile()" title="View profile">Loading...</div>
       <div class="user-plan" id="user-plan"></div>
     </div>
     <button class="btn-signin" id="btn-signin" onclick="showLogin()">Sign In</button>
@@ -779,5 +811,62 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
   if (e.target === this) hideLogin();
 });
 </script>
+
+<!-- PROFILE MODAL -->
+<div class="profile-overlay" id="profile-overlay" onclick="if(event.target===this)closeProfile()">
+  <div class="profile-modal">
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar">A</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profile-display-name">Loading...</div>
+        <div class="profile-email" id="profile-email"></div>
+      </div>
+    </div>
+    <div class="profile-body">
+
+      <!-- PLAN -->
+      <div class="profile-section">
+        <div class="profile-section-title">CURRENT PLAN</div>
+        <div id="profile-plan-badge" class="plan-badge plan-beta">
+          <span class="plan-dot"></span>
+          <span id="profile-plan-name">Beta</span>
+        </div>
+        <div id="profile-beta-box" style="margin-top:0.75rem;">
+          <div class="upgrade-box">
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:0.5rem;">Upgrade to Pro</div>
+            <div class="upgrade-price">$3<span>/month</span></div>
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:0.4rem;margin-bottom:0.75rem;">Unlimited videos · All tools · Priority support</div>
+            <button style="width:100%;background:#74C69D;color:#000;border:none;padding:0.6rem;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;" onclick="requestUpgrade()">Upgrade to Pro →</button>
+          </div>
+        </div>
+        <div id="profile-pro-box" style="display:none;margin-top:0.75rem;">
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">✅ Full access · All features unlocked</div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="profile-section">
+        <div class="profile-section-title">YOUR ACTIVITY</div>
+        <div class="stat-row"><span class="stat-row-label">Videos generated</span><span class="stat-row-value" id="profile-videos">0</span></div>
+        <div class="stat-row"><span class="stat-row-label">Photos edited</span><span class="stat-row-value" id="profile-photos">0</span></div>
+        <div class="stat-row"><span class="stat-row-label">Designs created</span><span class="stat-row-value" id="profile-designs">0</span></div>
+        <div class="stat-row"><span class="stat-row-label">Member since</span><span class="stat-row-value" id="profile-joined">—</span></div>
+        <div class="stat-row"><span class="stat-row-label">Videos remaining</span><span class="stat-row-value" id="profile-remaining" style="color:#F5A623;">—</span></div>
+      </div>
+
+      <!-- EDIT NAME -->
+      <div class="profile-section">
+        <div class="profile-section-title">DISPLAY NAME</div>
+        <input type="text" class="profile-input" id="profile-name-input" placeholder="Your display name">
+      </div>
+
+    </div>
+    <div class="profile-actions">
+      <button class="btn-profile-save" onclick="saveProfileName()">Save Changes</button>
+      <button class="btn-signout-profile" onclick="signOut()">Sign Out</button>
+      <button class="btn-profile-close" onclick="closeProfile()">✕</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
