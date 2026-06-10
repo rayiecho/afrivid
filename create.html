@@ -95,7 +95,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .progress-fill{height:100%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:2px;transition:width 0.3s;width:0%;}
 
 /* LOG */
-.status-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1rem 1.25rem;font-family:'Space Mono',monospace;font-size:0.72rem;color:rgba(255,255,255,0.4);max-height:120px;overflow-y:auto;margin-bottom:1rem;line-height:1.9;}
+.status-log{max-height:120px;overflow-y:auto;background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1rem 1.25rem;font-family:'Space Mono',monospace;font-size:0.72rem;color:rgba(255,255,255,0.4);max-height:120px;overflow-y:auto;margin-bottom:1rem;line-height:1.9;}
 .log-line{display:block;}
 .log-line.success{color:#74C69D;}
 .log-line.error{color:#E63329;}
@@ -611,8 +611,8 @@ Or just paste your raw content and we will structure it into scenes automaticall
           Video Preview
         </div>
 
-        <div id="canvas-container" style="position:relative;">
-          <canvas id="video-canvas"></canvas>
+        <div id="canvas-container" style="position:relative;max-height:380px;overflow:hidden;">
+          <canvas id="video-canvas" style="max-width:100%;max-height:360px;display:block;margin:0 auto;"></canvas>
           <div class="crop-overlay" id="crop-overlay"></div>
           <div class="crop-selection" id="crop-selection" style="display:none;"></div>
           <div class="canvas-overlay" id="canvas-overlay">
