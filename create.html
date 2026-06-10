@@ -190,7 +190,8 @@ function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
 function shareWhatsApp(){ if(window._shareWhatsApp) window._shareWhatsApp(); }
 function uploadToYouTube(){ 
   if(window._uploadToYouTube) { window._uploadToYouTube(); return; }
-  alert('YouTube upload requires a generated video. Please generate a video first.');
+  if(!window._videoBlob) { alert('Please generate and record a video first.'); return; }
+  alert('YouTube OAuth not yet configured. Share your video via WhatsApp or download it instead.');
 }
 function loadPresenterPhoto(e){ if(window._loadPresenterPhoto) window._loadPresenterPhoto(e); }
 function clearPresenterPhoto(){ if(window._clearPresenterPhoto) window._clearPresenterPhoto(); }
@@ -3581,8 +3582,8 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
       createdAt: serverTimestamp()
     });
     userProfile.videosGenerated = (userProfile.videosGenerated || 0) + 1;
-    updateUserUI(); // Update display immediately
-    updateUserUI();
+    if(window.updateUserUI) window.updateUserUI(); // Update display immediately
+    if(window.updateUserUI) window.updateUserUI();
   }
 
 async function structureOwnScript() {
