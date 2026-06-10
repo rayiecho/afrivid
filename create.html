@@ -398,6 +398,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
                 <option value="whiteboard">🖊 Whiteboard</option>
                 <option value="cinematic">🎬 Cinematic</option>
                 <option value="photobg">🌍 Photo BG</option>
+                <option value="splitflow">⚡ Split Flow (New)</option>
               </select>
             </div>
 
@@ -2144,7 +2145,19 @@ window._startRecording = async function startRecording() {
     document.getElementById('progress-fill').style.width = pct + '%';
     document.getElementById('progress-pct').textContent = pct + '%';
     document.getElementById('progress-label-text').textContent = `Scene ${sceneIndex + 1} of ${scriptData.scenes.length}`;
-    drawScene(canvas, scriptData.scenes[sceneIndex], totalProgress, window.currentWord || 0);
+    const _theme = (document.getElementById('video-visual-style')||{value:'slides_dark'}).value;
+    if(_theme === 'splitflow') {
+      window.drawSplitFlowScene(canvas, scriptData.scenes[sceneIndex], totalProgress, window.currentWord||0, sceneIndex, null);
+      // Trigger image generation for current and next scene
+      if(!window._sceneImages[sceneIndex]) {
+        window.generateSceneImage(scriptData.scenes[sceneIndex], sceneIndex);
+      }
+      if(sceneIndex+1 < scriptData.scenes.length && !window._sceneImages[sceneIndex+1]) {
+        window.generateSceneImage(scriptData.scenes[sceneIndex+1], sceneIndex+1);
+      }
+    } else {
+      drawScene(canvas, scriptData.scenes[sceneIndex], totalProgress, window.currentWord || 0);
+    }
     // Draw scene assets overlay
     if(window.sceneAssets && window.sceneAssets.length > 0) {
       const _ctx = canvas.getContext('2d');
@@ -3768,6 +3781,7 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
 
 // ── SCENE ASSETS ──
 window.sceneAssets = [];
+window._sceneImages = {};
 
 window._loadSceneAssets = function(event) {
   const files = Array.from(event.target.files);
@@ -3885,6 +3899,186 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
     alert('Upload failed: ' + e.message + '\n\nMake sure you are signed into the correct Google account.');
   }
 };
+
+
+// ── SPLIT FLOW THEME ──
+window._sceneImages = {}; // cache generated images per scene
+
+window.generateSceneImage = async function(scene, sceneIndex) {
+  if(window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
+  try {
+    const prompt = `Professional illustration for: ${scene.title || scene.voiceover?.slice(0,80)}. Clean, modern, African context, vibrant colors, no text.`;
+    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({prompt})
+    });
+    if(!res.ok) return null;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => { window._sceneImages[sceneIndex] = img; resolve(img); };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+  } catch(e) { return null; }
+};
+
+window.drawSplitFlowScene = function(canvas, scene, progress, currentWord, sceneIndex, logoImg) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  
+  // Background
+  ctx.fillStyle = '#050A14';
+  ctx.fillRect(0, 0, W, H);
+  
+  // Split line
+  const splitX = Math.floor(W * 0.45);
+  
+  // LEFT SIDE — text
+  ctx.fillStyle = '#0a1628';
+  ctx.fillRect(0, 0, splitX, H);
+  
+  // Subtle gold accent line
+  ctx.fillStyle = '#F5A623';
+  ctx.fillRect(splitX - 2, 0, 2, H);
+  
+  // Scene number indicator
+  ctx.fillStyle = 'rgba(245,166,35,0.15)';
+  ctx.beginPath();
+  ctx.arc(40, 40, 18, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#F5A623';
+  ctx.font = `bold ${Math.floor(H*0.022)}px Syne, Arial`;
+  ctx.textAlign = 'center';
+  ctx.fillText(String(sceneIndex+1).padStart(2,'0'), 40, 46);
+  
+  // Scene title
+  if(scene.title) {
+    ctx.fillStyle = '#F5A623';
+    ctx.font = `700 ${Math.floor(H*0.03)}px Syne, Arial`;
+    ctx.textAlign = 'left';
+    const titleWords = wrapTextSplit(ctx, scene.title, 30, 80, splitX - 60, Math.floor(H*0.03));
+    let ty = 90;
+    titleWords.forEach(line => {
+      ctx.fillText(line, 30, ty);
+      ty += Math.floor(H*0.038);
+    });
+  }
+  
+  // Voiceover text with word highlighting
+  const text = scene.voiceover || scene.content || '';
+  const words = text.split(' ');
+  const fontSize = Math.floor(H * 0.028);
+  ctx.font = `400 ${fontSize}px Syne, Arial`;
+  ctx.textAlign = 'left';
+  
+  const maxWidth = splitX - 50;
+  const lineHeight = fontSize * 1.6;
+  let x = 30, y = scene.title ? 180 : 80;
+  let wordIdx = 0;
+  
+  words.forEach((word, i) => {
+    const wordWidth = ctx.measureText(word + ' ').width;
+    if(x + wordWidth > maxWidth && x > 30) {
+      x = 30; y += lineHeight;
+    }
+    // Highlight current word
+    if(i === currentWord) {
+      ctx.fillStyle = 'rgba(245,166,35,0.25)';
+      ctx.fillRect(x-2, y-fontSize, wordWidth+4, fontSize+6);
+      ctx.fillStyle = '#F5A623';
+    } else if(i < currentWord) {
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    }
+    ctx.fillText(word, x, y);
+    x += wordWidth;
+    wordIdx = i;
+  });
+  
+  // RIGHT SIDE — illustration
+  ctx.fillStyle = '#08111f';
+  ctx.fillRect(splitX, 0, W - splitX, H);
+  
+  // Draw generated image if available
+  const sceneImg = window._sceneImages && window._sceneImages[sceneIndex];
+  if(sceneImg) {
+    const iW = W - splitX - 40;
+    const iH = H * 0.6;
+    const ix = splitX + 20;
+    const iy = (H - iH) / 2;
+    // Rounded clip
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(ix, iy, iW, iH, 12);
+    ctx.clip();
+    ctx.drawImage(sceneImg, ix, iy, iW, iH);
+    ctx.restore();
+    // Subtle overlay
+    ctx.fillStyle = 'rgba(5,10,20,0.2)';
+    ctx.fillRect(ix, iy, iW, iH);
+  } else {
+    // Placeholder while generating
+    ctx.fillStyle = 'rgba(245,166,35,0.05)';
+    ctx.beginPath();
+    ctx.roundRect(splitX+20, H*0.2, W-splitX-40, H*0.6, 12);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(245,166,35,0.3)';
+    ctx.font = `${Math.floor(H*0.04)}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.fillText('⟳', W - (W-splitX)/2, H*0.52);
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font = `${Math.floor(H*0.022)}px Syne, Arial`;
+    ctx.fillText('Generating...', W - (W-splitX)/2, H*0.58);
+  }
+  
+  // Presenter photo top right
+  if(window.presenterPhotoImg) {
+    const ps = Math.floor(H * 0.14);
+    const px = W - ps - 16;
+    const py = 16;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(px + ps/2, py + ps/2, ps/2, 0, Math.PI*2);
+    ctx.clip();
+    ctx.drawImage(window.presenterPhotoImg, px, py, ps, ps);
+    ctx.restore();
+    ctx.strokeStyle = '#F5A623';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(px + ps/2, py + ps/2, ps/2, 0, Math.PI*2);
+    ctx.stroke();
+  }
+  
+  // AfriVid logo bottom left
+  ctx.fillStyle = 'rgba(245,166,35,0.6)';
+  ctx.font = `700 ${Math.floor(H*0.022)}px Syne, Arial`;
+  ctx.textAlign = 'left';
+  ctx.fillText('AfriVid Studio', 30, H - 20);
+  
+  // Progress bar bottom
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.fillRect(0, H-4, W, 4);
+  ctx.fillStyle = '#F5A623';
+  ctx.fillRect(0, H-4, W * progress, 4);
+};
+
+function wrapTextSplit(ctx, text, x, y, maxWidth, fontSize) {
+  const words = text.split(' ');
+  const lines = [];
+  let line = '';
+  words.forEach(word => {
+    const test = line + word + ' ';
+    if(ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line.trim());
+      line = word + ' ';
+    } else { line = test; }
+  });
+  if(line) lines.push(line.trim());
+  return lines;
+}
 
 </script>
 
