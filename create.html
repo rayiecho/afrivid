@@ -3765,13 +3765,15 @@ window._makeAnother = makeAnother = function() {
   window.lastCompletedScene = 0;
   localStorage.removeItem('afrivid_last_script');
   const _vt = document.getElementById('video-topic'); if(_vt) _vt.value = '';
-  document.getElementById('video-content').value = '';
-  document.getElementById('script-output').innerHTML = '';
-  document.getElementById('status-log').innerHTML = '<span class="log-line info">// AfriVid Studio ready. Press Start Recording to generate your video.</span>';
-  document.getElementById('canvas-overlay').style.display = 'flex';
-  document.getElementById('btn-record').style.display = 'inline-flex';
-  document.getElementById('progress-wrap').style.display = 'none';
-  document.getElementById('progress-fill').style.width = '0%';
+  const _vc=document.getElementById('video-content'); if(_vc) _vc.value='';
+  const _so=document.getElementById('script-output'); if(_so) _so.innerHTML='';
+  const _sl=document.getElementById('status-log'); if(_sl) _sl.innerHTML='<span class="log-line info">// AfriVid Studio ready.</span>';
+  const _co=document.getElementById('canvas-overlay'); if(_co) _co.style.display='flex';
+  const _br=document.getElementById('btn-record'); if(_br) _br.style.display='inline-flex';
+  const _pw=document.getElementById('progress-wrap'); if(_pw) _pw.style.display='none';
+  const _pf=document.getElementById('progress-fill'); if(_pf) _pf.style.width='0%';
+  window._sceneImages={};
+  window.sceneAssets=[];
   goToStep(1);
 }
 
