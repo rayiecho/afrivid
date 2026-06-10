@@ -189,9 +189,18 @@ function downloadVideo(){ if(window._downloadVideo) window._downloadVideo(); }
 function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
 function shareWhatsApp(){ if(window._shareWhatsApp) window._shareWhatsApp(); }
 function uploadToYouTube(){ 
-  if(window._uploadToYouTube) { window._uploadToYouTube(); return; }
-  if(!window._videoBlob) { alert('Please generate and record a video first.'); return; }
-  alert('YouTube OAuth not yet configured. Share your video via WhatsApp or download it instead.');
+  if(!window._videoBlob) { alert('Please generate a video first.'); return; }
+  // Download the video first, then open YouTube
+  const url = URL.createObjectURL(window._videoBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'afrivid-video.webm';
+  a.click();
+  setTimeout(() => {
+    if(confirm('Video downloaded! Open YouTube to upload it?')) {
+      window.open('https://www.youtube.com/upload', '_blank');
+    }
+  }, 1000);
 }
 function loadPresenterPhoto(e){ if(window._loadPresenterPhoto) window._loadPresenterPhoto(e); }
 function clearPresenterPhoto(){ if(window._clearPresenterPhoto) window._clearPresenterPhoto(); }
