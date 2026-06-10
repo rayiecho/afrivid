@@ -1906,11 +1906,11 @@ window._startRecording = async function startRecording() {
   const canvas = document.getElementById('video-canvas');
   // Set canvas size based on aspect ratio
   const ar = document.getElementById('video-aspect-ratio') ? document.getElementById('video-aspect-ratio').value : '16:9';
-  if (ar === '16:9') { canvas.width = 1920; canvas.height = 1080; }
-  else if (ar === '9:16') { canvas.width = 1080; canvas.height = 1920; }
-  else if (ar === '1:1') { canvas.width = 1080; canvas.height = 1080; }
-  else if (ar === '4:3') { canvas.width = 1440; canvas.height = 1080; }
-  else { canvas.width = 1920; canvas.height = 1080; }
+  if (ar === '16:9') { canvas.width = 1280; canvas.height = 720; }
+  else if (ar === '9:16') { canvas.width = 720; canvas.height = 1280; }
+  else if (ar === '1:1') { canvas.width = 720; canvas.height = 720; }
+  else if (ar === '4:3') { canvas.width = 960; canvas.height = 720; }
+  else { canvas.width = 1280; canvas.height = 720; }
 
   document.getElementById('canvas-overlay').style.display = 'none';
   document.getElementById('btn-record').style.display = 'none';
@@ -1961,7 +1961,7 @@ window._startRecording = async function startRecording() {
     ? 'video/webm;codecs=vp9,opus'
     : 'video/webm';
 
-  mediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 2500000 });
+  mediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 1500000 });
   mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
   mediaRecorder.onstop = window.finishVideo || finishVideo;
   mediaRecorder.start(100);
