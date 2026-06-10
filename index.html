@@ -476,7 +476,26 @@ window.signIn = async function() {
   try {
     const btn = document.querySelector('#form-signin .btn-auth');
     if(btn){ btn.textContent='Signing in...'; btn.disabled=true; }
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    if (!userCred.user.emailVerified) {
+      const btn2 = document.querySelector('#form-signin .btn-auth');
+      if(btn2){ btn2.textContent='Sign In →'; btn2.disabled=false; }
+      if(err){
+        err.style.display='block';
+        err.textContent='[!] Please verify your email first. Check your inbox for the verification link.';
+      }
+      // Add resend button
+      const resendDiv = document.getElementById('resend-div');
+      if(!resendDiv){
+        const div = document.createElement('div');
+        div.id = 'resend-div';
+        div.style.cssText = 'text-align:center;margin-top:0.75rem;font-size:0.75rem;';
+        div.innerHTML = '<button onclick="resendVerification()" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.75rem;font-family:Syne,sans-serif;">Resend verification email →</button>';
+        err.parentNode.insertBefore(div, err.nextSibling);
+      }
+      window._unverifiedUser = userCred.user;
+      return;
+    }
     window.location.href = 'studio.html';
   } catch(e) {
     const btn = document.querySelector('#form-signin .btn-auth');
@@ -504,6 +523,19 @@ window.signUp = async function() {
     err.textContent = '[!] ' + e.message.replace('Firebase: ', '');
   }
 }
+
+// Resend verification email
+window.resendVerification = async function() {
+  const user = window._unverifiedUser || auth.currentUser;
+  if(!user) return;
+  try {
+    await sendEmailVerification(user);
+    const err = document.getElementById('login-error-signin');
+    if(err){ err.textContent='✅ Verification email resent! Check your inbox.'; err.style.color='var(--green,#74C69D)'; }
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+};
 
 // Close modal on overlay click
 document.getElementById('login-modal').addEventListener('click', function(e) {
