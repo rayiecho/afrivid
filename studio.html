@@ -493,7 +493,11 @@ function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFro
     </div>
 
 <script>
-function openProfile(){ if(window._openProfile) window._openProfile(); }
+function openProfile(){
+  var overlay = document.getElementById('profile-overlay');
+  if(overlay) overlay.classList.add('active');
+  if(window._openProfile) window._openProfile();
+}
 function closeProfile(){ if(window._closeProfile) window._closeProfile(); }
 function saveProfileName(){ if(window._saveProfileName) window._saveProfileName(); }
 function requestUpgrade(){ if(window._requestUpgrade) window._requestUpgrade(); }
