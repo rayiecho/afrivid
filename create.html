@@ -767,7 +767,7 @@ window.handleStartRecording = function() {
 
 // RECORD VIDEO
 window._handleRecord = window.handleRecord = async function() {
-  if (!currentUser) { showLogin(); return; }
+  if (!currentUser) { showLogin('Please sign in to save to your Studio'); return; }
   // Check limit
   const used = userProfile?.videosGenerated || 0;
   const limit = userProfile?.betaLimit || BETA_LIMIT;
@@ -3297,7 +3297,7 @@ function initYouTubeAuth() {
 window._uploadToYouTube = async function uploadToYouTube() {
   if (!videoBlob) { alert('No video to upload.'); return; }
   
-  const statusEl = {textContent:''};
+  const statusEl = document.getElementById('download-info') || {textContent:''};
   statusEl.textContent = 'Connecting to YouTube...';
   
   try {
