@@ -547,7 +547,7 @@ function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shar
         <button class="auth-tab" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
         <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
       </div>
-      <div id="form-signin" style="display:none;">
+      <form id="form-signin" onsubmit="doSignIn();return false;" style="display:none;">
         <label class="flabel">EMAIL</label>
         <input type="email" id="login-email" class="finput" placeholder="you@example.com">
         <label class="flabel">PASSWORD</label>
@@ -555,7 +555,7 @@ function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shar
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
         <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </div>
-      <div id="form-signup">
+      <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="flabel">FULL NAME</label>
         <input type="text" id="signup-name" class="finput" placeholder="Your full name">
         <label class="flabel">EMAIL</label>
@@ -565,10 +565,9 @@ function shareEnhancedWhatsApp(){ if(window._shareEnhancedWhatsApp) window._shar
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
         <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </div>
-      <div class="ferror" id="login-error"></div>
+      <div class="ferror" id="login-error"></form>
+      </div>
     </div>
-  </div>
-</div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';

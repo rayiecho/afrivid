@@ -402,7 +402,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       </div>
 
       <!-- SIGN IN -->
-      <div id="form-signin" style="display:none;">
+      <form id="form-signin" onsubmit="doSignIn();return false;" style="display:none;">
         <label class="form-label">EMAIL</label>
         <input type="email" id="login-email" class="form-input" placeholder="you@example.com">
         <label class="form-label">PASSWORD</label>
@@ -412,7 +412,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       </div>
 
       <!-- SIGN UP -->
-      <div id="form-signup">
+      <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="form-label">FULL NAME</label>
         <input type="text" id="signup-name" class="form-input" placeholder="Your full name">
         <label class="form-label">EMAIL</label>
@@ -424,10 +424,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       </div>
 
       <div class="login-error" id="login-error"></div>
-      <div style="text-align:center;margin-top:1.25rem;font-size:0.72rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;">Beta v1.0 · Free during testing</div>
+      <div style="text-align:center;margin-top:1.25rem;font-size:0.72rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;">Beta v1.0 · Free during testing</form>
+      </div>
     </div>
-  </div>
-</div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';

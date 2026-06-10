@@ -334,14 +334,14 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['do
         <button class="auth-tab" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
         <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
       </div>
-      <div id="form-signin" style="display:none;">
+      <form id="form-signin" onsubmit="doSignIn();return false;" style="display:none;">
         <label class="flabel">EMAIL</label>
         <input type="email" id="login-email" class="finput" placeholder="you@example.com">
         <label class="flabel">PASSWORD</label>
         <input type="password" id="login-password" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
       </div>
-      <div id="form-signup">
+      <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="flabel">FULL NAME</label>
         <input type="text" id="signup-name" class="finput" placeholder="Your full name">
         <label class="flabel">EMAIL</label>
@@ -350,10 +350,9 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['do
         <input type="password" id="signup-password" class="finput" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
       </div>
-      <div class="ferror" id="login-error"></div>
+      <div class="ferror" id="login-error"></form>
+      </div>
     </div>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
 <script type="module">
