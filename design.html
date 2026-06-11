@@ -636,14 +636,14 @@ window._addText = window.addText = function() {
   saveHistory(); renderCanvas(); updateElementControls();
 }
 
-window.addShape = function(type) {
+window._addShape = window.addShape = function(type) {
   if (type==='rect') elements.push({type:'rect',x:W/2-100,y:H/2-50,w:200,h:100,color:'#F5A623'});
   if (type==='circle') elements.push({type:'circle',x:W/2,y:H/2,r:60,color:'#F5A623'});
   selectedEl=elements.length-1;
   saveHistory(); renderCanvas(); updateElementControls();
 }
 
-window.addImageElement = function(event) {
+window._addImageElement = window.addImageElement = function(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
@@ -659,38 +659,38 @@ window.addImageElement = function(event) {
   reader.readAsDataURL(file);
 }
 
-window.updateElement = function(prop, val) {
+window._updateElement = window.updateElement = function(prop, val) {
   if (selectedEl===null) return;
   if (prop==='color') elements[selectedEl].color=val;
   if (prop==='size') { elements[selectedEl].size=parseInt(val); elements[selectedEl].r=parseInt(val); }
   renderCanvas();
 }
 
-window.deleteElement = function() {
+window._deleteElement = window.deleteElement = function() {
   if (selectedEl===null) return;
   elements.splice(selectedEl,1);
   selectedEl=null;
   updateElementControls(); saveHistory(); renderCanvas();
 }
 
-window.undoDesign = function() {
+window._undoDesign = window.undoDesign = function() {
   if (history.length<2) return;
   history.pop();
   elements = JSON.parse(history[history.length-1]).filter(e=>e.img!=='img');
   renderCanvas();
 }
 
-window.clearCanvas = function() {
+window._clearCanvas = window.clearCanvas = function() {
   if (!confirm('Clear all elements?')) return;
   elements=[]; selectedEl=null;
   updateElementControls(); saveHistory(); renderCanvas();
 }
 
-window.setDesignBg = function(color) {
+window._setDesignBg = window.setDesignBg = function(color) {
   designBg=color; renderCanvas();
 }
 
-window.resizeDesignCanvas = function() {
+window._resizeDesignCanvas = window.resizeDesignCanvas = function() {
   const size = document.getElementById('design-size').value.split('x');
   W=parseInt(size[0]); H=parseInt(size[1]);
   const canvas = document.getElementById('design-canvas');
@@ -698,7 +698,7 @@ window.resizeDesignCanvas = function() {
   renderCanvas();
 }
 
-window.loadTemplate = function(type) {
+window._loadTemplate = window.loadTemplate = function(type) {
   const templates = {
     logo: {bg:'linear-gradient(135deg,#050A14,#0D1F35)',size:'800x800',els:[
       {type:'circle',x:400,y:280,r:160,color:'rgba(245,166,35,0.12)'},
@@ -990,7 +990,7 @@ Return ONLY a valid JSON object, no markdown, no explanation:
 {"background":"#hex or linear-gradient(135deg,#hex1,#hex2)","elements":[...]}`;
 }
 
-window.generateAIDesign = async function() {
+window._generateAIDesign = window.generateAIDesign = async function() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   const type = document.getElementById('design-type').value;
   if (!prompt) { alert('Describe your design first'); return; }
@@ -1054,7 +1054,7 @@ window.generateAIDesign = async function() {
   btn.textContent='✦ Generate Design'; btn.disabled=false;
 }
 
-window.downloadDesign = function(format, scale=1) {
+window._downloadDesign = window.downloadDesign = function(format, scale=1) {
   const canvas=document.getElementById('design-canvas');
   selectedEl=null; renderCanvas();
   if (scale>1) {
@@ -1073,7 +1073,7 @@ window.downloadDesign = function(format, scale=1) {
   addLog('success',`[ok] Downloaded as ${format.toUpperCase()}`);
 }
 
-window.downloadDesignSVG = function() {
+window._downloadDesignSVG = window.downloadDesignSVG = function() {
   let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
   if (designBg.includes('gradient')) {
     const colors=designBg.match(/#[a-fA-F0-9]{6}/g)||['#050A14','#0D1F35'];
@@ -1097,7 +1097,7 @@ window.downloadDesignSVG = function() {
   addLog('success','[ok] Downloaded as SVG');
 }
 
-window.handleSaveToStudio = async function() {
+window._handleSaveToStudio = window.handleSaveToStudio = async function() {
   if (!currentUser) { showLogin(); return; }
   try {
     await addDoc(collection(db,'studio_designs'),{
@@ -1512,7 +1512,7 @@ let cropStart = null;
 let cropRect = { x:0, y:0, w:0, h:0 };
 let isCropping = false;
 
-window.toggleCrop = function() {
+window._toggleCrop = window.toggleCrop = function() {
   cropActive = !cropActive;
   const overlay = document.getElementById('crop-overlay');
   const controls = document.getElementById('crop-controls');
@@ -1526,7 +1526,7 @@ window.toggleCrop = function() {
   } else { cancelCrop(); }
 }
 
-window.setCropRatio = function(ratio) {
+window._setCropRatio = window.setCropRatio = function(ratio) {
   cropRatio = ratio;
   document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
@@ -1586,7 +1586,7 @@ function updateDesignCropVisual() {
   sel.style.height = (cropRect.h * scaleY) + 'px';
 }
 
-window.applyCrop = function() {
+window._applyCrop = window.applyCrop = function() {
   const canvas = document.getElementById('design-canvas');
   const cw = Math.round(Math.abs(cropRect.w));
   const ch = Math.round(Math.abs(cropRect.h));
@@ -1600,7 +1600,7 @@ window.applyCrop = function() {
   addLog('success', `[ok] Cropped to ${W}x${H}px`);
 }
 
-window.cancelCrop = function() {
+window._cancelCrop = window.cancelCrop = function() {
   cropActive = false; isCropping = false; cropStart = null;
   document.getElementById('crop-overlay').style.display = 'none';
   document.getElementById('crop-controls').style.display = 'none';
