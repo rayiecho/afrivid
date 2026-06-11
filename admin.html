@@ -1301,7 +1301,6 @@ if(sessionStorage.getItem('afrivid_admin')==='1') {
     console.error('[Admin] Auto Firebase failed:', e.message);
     if(window._adminLog) window._adminLog('PERMISSION', 'Auto Firebase failed: ' + e.message);
   });
-}
 
 document.getElementById('admin-pwd').addEventListener('keydown', e => {
   if(e.key==='Enter') doAdminLogin();
