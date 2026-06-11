@@ -4794,7 +4794,7 @@ window._makeAnother = makeAnother = function() {
   recordedChunks = [];
   window.cachedAudioBuffers = null;
   window.lastCompletedScene = 0;
-  localStorage.removeItem('afrivid_last_script');
+  try { localStorage.removeItem('afrivid_last_script'); } catch(e) {}
   const _vt = document.getElementById('video-topic'); if(_vt) _vt.value = '';
   const _vc=document.getElementById('video-content'); if(_vc) _vc.value='';
   const _so=document.getElementById('script-output'); if(_so) _so.innerHTML='';
