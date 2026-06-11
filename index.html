@@ -1,6 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<!-- AfriVid Error Logger -->
+<script>
+(function() {
+  const _logs = [];
+  const _maxLogs = 100;
+  
+  // Capture all JS errors
+  window.addEventListener('error', function(e) {
+    const entry = {
+      type: 'ERROR',
+      message: e.message,
+      file: e.filename ? e.filename.split('/').pop() : 'unknown',
+      line: e.lineno,
+      col: e.colno,
+      time: new Date().toISOString()
+    };
+    _logs.unshift(entry);
+    if (_logs.length > _maxLogs) _logs.pop();
+    console.error(`[AfriVid ERROR] ${entry.message} (${entry.file}:${entry.line})`);
+    if (window._afrivid_log_ui) window._afrivid_log_ui(entry);
+  });
+
+  // Capture unhandled promise rejections
+  window.addEventListener('unhandledrejection', function(e) {
+    const entry = {
+      type: 'PROMISE',
+      message: e.reason?.message || String(e.reason),
+      file: 'async',
+      line: 0,
+      time: new Date().toISOString()
+    };
+    _logs.unshift(entry);
+    if (_logs.length > _maxLogs) _logs.pop();
+    console.error(`[AfriVid PROMISE] ${entry.message}`);
+    if (window._afrivid_log_ui) window._afrivid_log_ui(entry);
+  });
+
+  // Capture fetch errors
+  const _origFetch = window.fetch;
+  window.fetch = async function(...args) {
+    const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || 'unknown';
+    const shortUrl = url.length > 60 ? url.slice(0,60)+'...' : url;
+    try {
+      const res = await _origFetch(...args);
+      if (!res.ok) {
+        const entry = {
+          type: 'FETCH',
+          message: `HTTP ${res.status} → ${shortUrl}`,
+          file: 'fetch',
+          line: 0,
+          time: new Date().toISOString()
+        };
+        _logs.unshift(entry);
+        if (_logs.length > _maxLogs) _logs.pop();
+        console.warn(`[AfriVid FETCH] ${entry.message}`);
+        if (window._afrivid_log_ui) window._afrivid_log_ui(entry);
+      }
+      return res;
+    } catch(e) {
+      const entry = {
+        type: 'FETCH',
+        message: `FAILED → ${shortUrl}: ${e.message}`,
+        file: 'fetch',
+        line: 0,
+        time: new Date().toISOString()
+      };
+      _logs.unshift(entry);
+      if (_logs.length > _maxLogs) _logs.pop();
+      console.error(`[AfriVid FETCH ERROR] ${entry.message}`);
+      if (window._afrivid_log_ui) window._afrivid_log_ui(entry);
+      throw e;
+    }
+  };
+
+  // Expose logs globally
+  window._afrivid_errors = _logs;
+  window._afrivid_show_errors = function() {
+    console.group('AfriVid Error Log');
+    _logs.forEach(l => console.log(`[${l.type}] ${l.time} - ${l.message}`));
+    console.groupEnd();
+    return _logs;
+  };
+
+  console.log('[AfriVid] Error logger initialized ✅');
+})();
+</script>
+
 <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AfriVid Studio — Africa's First Smart Video Creation Suite</title>
