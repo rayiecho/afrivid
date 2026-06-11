@@ -373,6 +373,21 @@ body{padding-top:70px;}
   #video-canvas{max-height:220px !important;}
 }
 
+
+/* African background images */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background-image:url('images/background1.jpg');
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+  opacity:0.04;
+  pointer-events:none;
+}
+
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
