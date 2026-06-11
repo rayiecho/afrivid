@@ -1,6 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<!-- AfriVid Admin Error Logger -->
+<script>
+(function() {
+  const _adminLogs = [];
+  
+  // Show errors in a visible panel
+  function showAdminError(type, message, detail) {
+    const entry = { type, message, detail, time: new Date().toLocaleTimeString() };
+    _adminLogs.unshift(entry);
+    console.error(`[Admin ${type}]`, message, detail || '');
+    
+    // Show in error panel if exists
+    const panel = document.getElementById('admin-error-panel');
+    if (panel) {
+      const div = document.createElement('div');
+      div.style.cssText = `padding:0.4rem 0.75rem;border-left:3px solid ${type==='ERROR'?'#E63329':type==='PERMISSION'?'#F5A623':'#74C69D'};margin-bottom:0.4rem;font-size:0.72rem;font-family:monospace;`;
+      div.innerHTML = `<span style="color:rgba(255,255,255,0.4)">${entry.time}</span> <span style="color:${type==='ERROR'?'#E63329':type==='PERMISSION'?'#F5A623':'#74C69D'}">[${type}]</span> ${message}${detail?'<br><span style="color:rgba(255,255,255,0.3);font-size:0.65rem;">'+detail+'</span>':''}`;
+      panel.prepend(div);
+      document.getElementById('admin-error-count').textContent = _adminLogs.length + ' events';
+    }
+    
+    // Also show toast for critical errors
+    if (type === 'ERROR' || type === 'PERMISSION') {
+      if (window.showToast) showToast('[!] ' + message.slice(0,80), 'error');
+    }
+  }
+  
+  window._adminLog = showAdminError;
+  window._adminLogs = _adminLogs;
+  
+  // Capture JS errors
+  window.addEventListener('error', e => {
+    showAdminError('ERROR', e.message, `${e.filename?.split('/').pop()}:${e.lineno}`);
+  });
+  
+  // Capture promise rejections
+  window.addEventListener('unhandledrejection', e => {
+    const msg = e.reason?.message || String(e.reason);
+    const isPermission = msg.toLowerCase().includes('permission') || msg.toLowerCase().includes('missing') || msg.toLowerCase().includes('unauthorized');
+    showAdminError(isPermission ? 'PERMISSION' : 'PROMISE', msg);
+  });
+  
+  // Intercept fetch for Firebase errors
+  const _origFetch = window.fetch;
+  window.fetch = async function(...args) {
+    try {
+      const res = await _origFetch(...args);
+      if (!res.ok) {
+        const url = typeof args[0] === 'string' ? args[0].slice(0,60) : 'fetch';
+        showAdminError('FETCH', `HTTP ${res.status}`, url);
+      }
+      return res;
+    } catch(e) {
+      showAdminError('FETCH', e.message);
+      throw e;
+    }
+  };
+
+  console.log('[Admin] Error logger initialized ✅');
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AfriVid Admin</title>
@@ -1222,5 +1285,38 @@ document.getElementById('admin-pwd').addEventListener('keydown', e => {
   if(e.key==='Enter') doAdminLogin();
 });
 </script>
+
+<!-- Admin Error Panel -->
+<div id="admin-error-panel-wrap" style="position:fixed;bottom:1rem;right:1rem;width:380px;z-index:9999;display:none;">
+  <div style="background:#0D1117;border:1px solid rgba(230,51,41,0.3);border-radius:10px;overflow:hidden;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:rgba(230,51,41,0.1);border-bottom:1px solid rgba(230,51,41,0.2);">
+      <span style="color:#E63329;font-size:0.72rem;font-weight:800;font-family:monospace;">⚠ ERROR LOG <span id="admin-error-count" style="color:rgba(255,255,255,0.4);font-weight:400;"></span></span>
+      <div style="display:flex;gap:0.5rem;">
+        <button onclick="document.getElementById('admin-error-panel').innerHTML='';window._adminLogs.length=0;" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:0.65rem;cursor:pointer;">Clear</button>
+        <button onclick="document.getElementById('admin-error-panel-wrap').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:0.9rem;cursor:pointer;">✕</button>
+      </div>
+    </div>
+    <div id="admin-error-panel" style="max-height:300px;overflow-y:auto;padding:0.5rem;"></div>
+  </div>
+</div>
+
+<!-- Error panel toggle button -->
+<button id="admin-error-toggle" onclick="const w=document.getElementById('admin-error-panel-wrap');w.style.display=w.style.display==='none'?'block':'none';" style="position:fixed;bottom:1rem;right:1rem;background:#E63329;border:none;color:#fff;padding:0.4rem 0.75rem;border-radius:8px;font-size:0.72rem;font-weight:800;cursor:pointer;z-index:10000;font-family:monospace;display:none;">⚠ Errors</button>
+
+<script>
+// Show error toggle button when errors occur
+const _origAdminLog = window._adminLog;
+window._adminLog = function(type, message, detail) {
+  _origAdminLog(type, message, detail);
+  if (type === 'ERROR' || type === 'PERMISSION' || type === 'FETCH') {
+    document.getElementById('admin-error-toggle').style.display = 'block';
+    document.getElementById('admin-error-panel-wrap').style.display = 'block';
+  }
+};
+
+// Patch Firebase calls to show permission errors clearly
+const _origGetDocs = window.getDocs;
+</script>
+
 </body>
 </html>
