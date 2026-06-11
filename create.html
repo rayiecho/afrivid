@@ -432,6 +432,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
                 <option value="slides_gold">✨ Gold</option>
                 <option value="cameroon_slide">🎙️ Cameroon Slide</option>
                 <option value="advert_slide">📢 Advert Slide</option>
+                <option value="unite_slide">🌍 Unite Slide</option>
                 <option value="whiteboard">🖊 Whiteboard</option>
                 <option value="cinematic">🎬 Cinematic</option>
                 <option value="photobg">🌍 Photo BG</option>
@@ -1822,6 +1823,238 @@ function drawAdvertSlide(canvas, scene, progress, currentWord, frame) {
   ctx.fillRect(W*0.25, H*0.965, W*0.5*progress, 3);
 }
 
+
+function drawUniteSlide(canvas, scene, progress, currentWord) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // Color themes - user can pick
+  const themes = {
+    sunset:  { bg1: '#FFF8F0', bg2: '#FEF0E0', title_bg: '#F5A623', title_text: '#FFFFFF', text: '#1A0A00', accent: '#E8931A', sub: '#8B5E3C', shape: 'rgba(245,166,35,0.08)' },
+    forest:  { bg1: '#F0F7F2', bg2: '#E8F5EC', title_bg: '#2D8A5E', title_text: '#FFFFFF', text: '#0A1F14', accent: '#F5A623', sub: '#2D6A4F', shape: 'rgba(45,138,94,0.08)' },
+    ocean:   { bg1: '#F0F6FF', bg2: '#E8F0FF', title_bg: '#1A4FBF', title_text: '#FFFFFF', text: '#0A1428', accent: '#F5A623', sub: '#2D5FA8', shape: 'rgba(26,79,191,0.08)' },
+    royal:   { bg1: '#FAF0FF', bg2: '#F5E8FF', title_bg: '#6B2FAE', title_text: '#FFFFFF', text: '#1A0A2E', accent: '#F5A623', sub: '#8B4FCE', shape: 'rgba(107,47,174,0.08)' },
+  };
+
+  // Pick theme based on scene number for variety
+  const themeKeys = Object.keys(themes);
+  const t = themes[themeKeys[(scene.sceneNumber || 1) % themeKeys.length]] || themes.sunset;
+
+  // Soft gradient background
+  const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+  bgGrad.addColorStop(0, t.bg1);
+  bgGrad.addColorStop(1, t.bg2);
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Decorative large circle top right
+  ctx.fillStyle = t.shape;
+  ctx.beginPath();
+  ctx.arc(W * 0.92, H * 0.08, H * 0.45, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Decorative small circle bottom left
+  ctx.fillStyle = t.shape;
+  ctx.beginPath();
+  ctx.arc(W * 0.05, H * 0.88, H * 0.28, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Decorative dots pattern top left
+  for(let r = 0; r < 4; r++) {
+    for(let c = 0; c < 4; c++) {
+      ctx.fillStyle = t.accent + '33';
+      ctx.beginPath();
+      ctx.arc(W*0.04 + c*W*0.025, H*0.06 + r*H*0.04, 3, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  // Decorative dots pattern bottom right
+  for(let r = 0; r < 4; r++) {
+    for(let c = 0; c < 4; c++) {
+      ctx.fillStyle = t.accent + '33';
+      ctx.beginPath();
+      ctx.arc(W*0.86 + c*W*0.025, H*0.72 + r*H*0.04, 3, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  // ── TITLE BOX ──
+  const titleX = W * 0.06;
+  const titleBoxY = H * 0.06;
+  const titleBoxH = H * 0.16;
+  const titleText = scene.slideTitle || '';
+  ctx.font = `900 ${H*0.075}px Arial, sans-serif`;
+  const titleW = Math.min(ctx.measureText(titleText).width + W*0.06, W*0.75);
+
+  // Title background box with rounded corners
+  ctx.fillStyle = t.title_bg;
+  ctx.beginPath();
+  ctx.roundRect(titleX - W*0.02, titleBoxY, titleW + W*0.02, titleBoxH, 12);
+  ctx.fill();
+
+  // Accent corner detail
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  ctx.beginPath();
+  ctx.roundRect(titleX - W*0.02, titleBoxY, W*0.06, titleBoxH, [12, 0, 0, 12]);
+  ctx.fill();
+
+  // Title text
+  ctx.fillStyle = t.title_text;
+  ctx.font = `900 ${H*0.072}px Arial, sans-serif`;
+  ctx.textAlign = 'left';
+  const titleWords = titleText.split(' ');
+  let titleLine = '';
+  let tY = titleBoxY + H*0.105;
+  const maxTW = W * 0.7;
+  titleWords.forEach((word, i) => {
+    const test = titleLine + word + ' ';
+    if (ctx.measureText(test).width > maxTW && titleLine) {
+      ctx.fillText(titleLine.trim(), titleX, tY);
+      titleLine = word + ' ';
+      tY += H * 0.08;
+    } else titleLine = test;
+    if (i === titleWords.length - 1) ctx.fillText(titleLine.trim(), titleX, tY);
+  });
+
+  const afterTitle = titleBoxY + titleBoxH + H * 0.025;
+
+  // Subtitle
+  if (scene.slideSubtitle) {
+    ctx.fillStyle = t.sub;
+    ctx.font = `500 ${H*0.034}px Arial, sans-serif`;
+    ctx.fillText(scene.slideSubtitle, titleX, afterTitle + H*0.02);
+  }
+
+  // Thin divider line
+  const divY = afterTitle + H * 0.065;
+  const divGrad = ctx.createLinearGradient(titleX, 0, titleX + W*0.25, 0);
+  divGrad.addColorStop(0, t.title_bg);
+  divGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = divGrad;
+  ctx.fillRect(titleX, divY, W * 0.25, 2);
+
+  // ── SCENE IMAGE (right side) ──
+  const imgX = W * 0.58;
+  const imgY = H * 0.06;
+  const imgW = W * 0.36;
+  const imgH = H * 0.58;
+  const sceneIdx = scene.sceneNumber ? scene.sceneNumber - 1 : 0;
+  const hasUploadedAsset = window.sceneAssets && window.sceneAssets.length > 0;
+
+  if (hasUploadedAsset) {
+    const asset = window.sceneAssets[sceneIdx % window.sceneAssets.length];
+    if (asset && asset.img) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(imgX, imgY, imgW, imgH, 16);
+      ctx.clip();
+      ctx.drawImage(asset.img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+      // Image border
+      ctx.strokeStyle = t.title_bg;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(imgX, imgY, imgW, imgH, 16);
+      ctx.stroke();
+    }
+  } else if (window._sceneImages && window._sceneImages[sceneIdx]) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(imgX, imgY, imgW, imgH, 16);
+    ctx.clip();
+    ctx.drawImage(window._sceneImages[sceneIdx], imgX, imgY, imgW, imgH);
+    ctx.restore();
+    ctx.strokeStyle = t.title_bg;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(imgX, imgY, imgW, imgH, 16);
+    ctx.stroke();
+  } else {
+    // Placeholder
+    ctx.fillStyle = t.shape;
+    ctx.beginPath();
+    ctx.roundRect(imgX, imgY, imgW, imgH, 16);
+    ctx.fill();
+    ctx.fillStyle = t.accent + '88';
+    ctx.font = `${H*0.08}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.fillText('🌍', imgX + imgW/2, imgY + imgH/2 + H*0.03);
+  }
+
+  // ── BULLET POINTS (left side) ──
+  if (scene.voiceover) {
+    const sentences = scene.voiceover.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 8).slice(0, 4);
+    const totalWords = scene.voiceover.split(' ').length;
+    const wordsPerSentence = Math.max(1, totalWords / sentences.length);
+    const currentSentence = currentWord >= 0 ? Math.min(Math.floor(currentWord / wordsPerSentence), sentences.length - 1) : sentences.length - 1;
+    const bulletStartY = divY + H * 0.06;
+    const lineSpacing = H * 0.115;
+
+    sentences.forEach((sentence, idx) => {
+      if (currentWord >= 0 && idx > currentSentence) return;
+      const y = bulletStartY + idx * lineSpacing;
+      const isActive = idx === currentSentence;
+      ctx.globalAlpha = isActive ? 1 : 0.45;
+
+      // Active bullet gets highlighted background
+      if (isActive) {
+        ctx.fillStyle = t.shape;
+        ctx.beginPath();
+        ctx.roundRect(titleX - W*0.01, y - H*0.038, W*0.5, H*0.055, 8);
+        ctx.fill();
+      }
+
+      // Bullet shape - square for Unite style
+      ctx.fillStyle = t.title_bg;
+      ctx.beginPath();
+      ctx.roundRect(titleX, y - H*0.022, H*0.022, H*0.022, 3);
+      ctx.fill();
+
+      // Bullet text
+      ctx.fillStyle = t.text;
+      ctx.font = `${isActive ? '600' : '400'} ${H*0.028}px Arial, sans-serif`;
+      ctx.textAlign = 'left';
+      const maxBW = W * 0.48;
+      let bLine = '';
+      const bWords = sentence.split(' ');
+      let bY = y;
+      bWords.forEach((w, wi) => {
+        const tt = bLine + w + ' ';
+        if (ctx.measureText(tt).width > maxBW && bLine) {
+          ctx.fillText(bLine.trim(), titleX + H*0.035, bY);
+          bLine = w + ' ';
+          bY += H * 0.034;
+        } else bLine = tt;
+        if (wi === bWords.length - 1) ctx.fillText(bLine.trim(), titleX + H*0.035, bY);
+      });
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  // ── BOTTOM BAR ──
+  ctx.fillStyle = t.title_bg + '22';
+  ctx.fillRect(0, H * 0.93, W, H * 0.07);
+
+  // AfriVid branding
+  ctx.fillStyle = t.title_bg;
+  ctx.font = `700 ${H*0.024}px Arial`;
+  ctx.textAlign = 'left';
+  ctx.fillText('AfriVid Studio', W*0.03, H*0.972);
+
+  // Scene number bottom right
+  ctx.fillStyle = t.sub;
+  ctx.font = `500 ${H*0.022}px Arial`;
+  ctx.textAlign = 'right';
+  ctx.fillText(`${scene.sceneNumber || 1} / ${window._totalScenes || '?'}`, W*0.97, H*0.972);
+
+  // Progress bar
+  ctx.fillStyle = 'rgba(0,0,0,0.08)';
+  ctx.fillRect(W*0.25, H*0.962, W*0.5, 3);
+  ctx.fillStyle = t.title_bg;
+  ctx.fillRect(W*0.25, H*0.962, W*0.5*progress, 3);
+}
+
 function drawPresenterPhoto(ctx, W, H) {
   if (!presenterImage) return;
   const position = 'br';
@@ -2265,6 +2498,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   }
   if (style === 'cameroon_slide') { drawCameroonSlide(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'advert_slide') { drawAdvertSlide(canvas, scene, progress, currentWord, window._karibuFrame); applyTransition(canvas); return; }
+  if (style === 'unite_slide') { drawUniteSlide(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'whiteboard') { drawWhiteboardScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'cinematic') { drawCinematicScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'photobg') {
