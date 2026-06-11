@@ -202,7 +202,12 @@ body{padding-top:70px;}
 
 <script>
 // Global proxies - required because main script is type="module"
-window._setMode = function setMode(m) { const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
+window._setMode = function checkKaribuStyle() {
+  const style = document.getElementById("video-visual-style") ? document.getElementById("video-visual-style").value : "";
+  const kg = document.getElementById("karibu-gender-group");
+  if (kg) kg.style.display = style === "advert_slide" ? "block" : "none";
+}
+function setMode(m) { const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
 function goToStep(n){ if(window._goToStep) window._goToStep(n); }
 function generateScript(){ if(window._generateScript) window._generateScript(); }
 function handleGenerateScript(){ if(window._handleGenerateScript) window._handleGenerateScript(); }
@@ -255,6 +260,11 @@ function showAuthTab(t){ if(window._showAuthTab) window._showAuthTab(t); }
 function doSignIn(){ if(window._doSignIn) window._doSignIn(); }
 function doSignUp(){ if(window._doSignUp) window._doSignUp(); }
 function toggleSidebar(){ /* no sidebar on this page */ }
+function checkKaribuStyle() {
+  const style = document.getElementById("video-visual-style") ? document.getElementById("video-visual-style").value : "";
+  const kg = document.getElementById("karibu-gender-group");
+  if (kg) kg.style.display = style === "advert_slide" ? "block" : "none";
+}
 function setMode(m){ if(window._setMode) window._setMode(m); }
 function loadSceneAssets(e){ if(window._loadSceneAssets) window._loadSceneAssets(e); }
 function removeSceneAsset(id){ if(window.removeSceneAsset) window.removeSceneAsset(id); }
@@ -421,6 +431,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
                 <option value="slides_dark">🌙 Dark</option>
                 <option value="slides_gold">✨ Gold</option>
                 <option value="cameroon_slide">🎙️ Cameroon Slide</option>
+                <option value="advert_slide">📢 Advert Slide</option>
                 <option value="whiteboard">🖊 Whiteboard</option>
                 <option value="cinematic">🎬 Cinematic</option>
                 <option value="photobg">🌍 Photo BG</option>
@@ -569,6 +580,14 @@ Or just paste your raw content and we will structure it into scenes automaticall
                 <option value="600">10 minutes</option>
                 <option value="900">15 minutes</option>
                 <option value="1200">20 minutes</option>
+              </select>
+            </div>
+            
+            <div class="form-group" id="karibu-gender-group" style="display:none;">
+              <label class="form-label">KARIBU GENDER</label>
+              <select id="karibu-gender" class="form-select" onchange="window._karibuGender = this.value">
+                <option value="male">👨🏿 Male</option>
+                <option value="female">👩🏿 Female</option>
               </select>
             </div>
             <div class="form-group">
@@ -1328,6 +1347,481 @@ function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
   ctx.fillRect(W*0.25, H*0.965, W*0.5*progress, 3);
 }
 
+
+// ═══════════════════════════════════════
+// KARIBU - AfriVid African Avatar System
+// ═══════════════════════════════════════
+window._karibuGender = 'male'; // male or female
+window._karibuState = 'idle'; // idle, walking, pointing, holding
+window._karibuX = 0;
+window._karibuFrame = 0;
+window._karibuProp = 'none';
+
+function getKaribuColors(gender) {
+  return {
+    skin: gender === 'female' ? '#8B5E3C' : '#6B3F1F',
+    skinLight: gender === 'female' ? '#A0714F' : '#7D4E2D',
+    hair: '#1A0A00',
+    cloth1: gender === 'female' ? '#E63946' : '#2D6A4F',
+    cloth2: gender === 'female' ? '#F4A261' : '#F5A623',
+    cloth3: gender === 'female' ? '#FFFFFF' : '#FFFFFF',
+    eye: '#1A0A00',
+    teeth: '#FFFFFF'
+  };
+}
+
+function drawKaribuCharacter(ctx, x, y, scale, gender, state, frame, prop) {
+  const c = getKaribuColors(gender);
+  const s = scale;
+  ctx.save();
+  ctx.translate(x, y);
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.beginPath();
+  ctx.ellipse(0, s*1.0, s*0.35, s*0.08, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Walking animation offset
+  const walkCycle = Math.sin(frame * 0.15) * (state === 'walking' ? s*0.04 : 0);
+  const legSwing = state === 'walking' ? Math.sin(frame * 0.15) * 0.3 : 0;
+  const bodyBob = state === 'walking' ? Math.abs(Math.sin(frame * 0.15)) * s * 0.02 : 0;
+
+  // ── LEGS ──
+  // Left leg
+  ctx.save();
+  ctx.translate(-s*0.1, s*0.55 - bodyBob);
+  ctx.rotate(legSwing);
+  ctx.fillStyle = c.cloth1;
+  ctx.fillRect(-s*0.09, 0, s*0.16, s*0.38);
+  // Left shoe
+  ctx.fillStyle = '#1A0A00';
+  ctx.beginPath();
+  ctx.ellipse(0, s*0.4, s*0.1, s*0.055, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  // Right leg
+  ctx.save();
+  ctx.translate(s*0.1, s*0.55 - bodyBob);
+  ctx.rotate(-legSwing);
+  ctx.fillStyle = c.cloth1;
+  ctx.fillRect(-s*0.09, 0, s*0.16, s*0.38);
+  // Right shoe
+  ctx.fillStyle = '#1A0A00';
+  ctx.beginPath();
+  ctx.ellipse(0, s*0.4, s*0.1, s*0.055, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  // ── BODY ──
+  // Torso with African pattern
+  ctx.fillStyle = c.cloth2;
+  ctx.beginPath();
+  ctx.roundRect(-s*0.22, -s*0.05 - bodyBob, s*0.44, s*0.62, s*0.06);
+  ctx.fill();
+
+  // Kente pattern on torso
+  ctx.fillStyle = c.cloth1;
+  for(let i = 0; i < 3; i++) {
+    ctx.fillRect(-s*0.22 + i*s*0.15, -s*0.05 - bodyBob, s*0.06, s*0.62);
+  }
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.fillRect(-s*0.22, s*0.1 - bodyBob, s*0.44, s*0.06);
+  ctx.fillRect(-s*0.22, s*0.25 - bodyBob, s*0.44, s*0.04);
+
+  // Collar
+  ctx.fillStyle = c.cloth3;
+  ctx.beginPath();
+  ctx.moveTo(-s*0.1, -s*0.05 - bodyBob);
+  ctx.lineTo(0, s*0.08 - bodyBob);
+  ctx.lineTo(s*0.1, -s*0.05 - bodyBob);
+  ctx.fill();
+
+  // ── ARMS ──
+  const armSwing = state === 'walking' ? Math.sin(frame * 0.15) * 0.25 : 0;
+  const pointAngle = state === 'pointing' ? -0.6 : armSwing;
+
+  // Left arm
+  ctx.save();
+  ctx.translate(-s*0.22, s*0.02 - bodyBob);
+  ctx.rotate(-pointAngle);
+  ctx.fillStyle = c.skin;
+  ctx.beginPath();
+  ctx.roundRect(-s*0.07, 0, s*0.13, s*0.38, s*0.06);
+  ctx.fill();
+  // Left hand
+  ctx.fillStyle = c.skinLight;
+  ctx.beginPath();
+  ctx.arc(-s*0.005, s*0.4, s*0.08, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  // Right arm
+  ctx.save();
+  ctx.translate(s*0.22, s*0.02 - bodyBob);
+  ctx.rotate(state === 'pointing' ? -0.8 : -armSwing);
+
+  ctx.fillStyle = c.skin;
+  ctx.beginPath();
+  ctx.roundRect(-s*0.06, 0, s*0.13, s*0.38, s*0.06);
+  ctx.fill();
+  // Right hand
+  ctx.fillStyle = c.skinLight;
+  ctx.beginPath();
+  ctx.arc(s*0.025, s*0.4, s*0.08, 0, Math.PI*2);
+  ctx.fill();
+
+  // ── PROP ──
+  if (prop === 'laptop') {
+    // Laptop
+    ctx.fillStyle = '#2D3748';
+    ctx.beginPath();
+    ctx.roundRect(s*0.02, s*0.28, s*0.32, s*0.22, s*0.02);
+    ctx.fill();
+    ctx.fillStyle = '#4CC9F0';
+    ctx.beginPath();
+    ctx.roundRect(s*0.04, s*0.3, s*0.28, s*0.16, s*0.01);
+    ctx.fill();
+    // AfriVid logo on screen
+    ctx.fillStyle = '#F5A623';
+    ctx.font = `bold ${s*0.06}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.fillText('AV', s*0.18, s*0.42);
+    // Keyboard
+    ctx.fillStyle = '#1A202C';
+    ctx.beginPath();
+    ctx.roundRect(s*0.02, s*0.5, s*0.32, s*0.08, s*0.01);
+    ctx.fill();
+  } else if (prop === 'megaphone') {
+    // Megaphone
+    ctx.fillStyle = '#F5A623';
+    ctx.beginPath();
+    ctx.moveTo(s*0.04, s*0.28);
+    ctx.lineTo(s*0.04, s*0.42);
+    ctx.lineTo(s*0.28, s*0.52);
+    ctx.lineTo(s*0.28, s*0.18);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#E8931A';
+    ctx.fillRect(s*0.02, s*0.3, s*0.08, s*0.12);
+    // Sound waves
+    ctx.strokeStyle = '#F5A623';
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = 0.6;
+    for(let w = 0; w < 3; w++) {
+      ctx.beginPath();
+      ctx.arc(s*0.32, s*0.35, s*(0.08 + w*0.07), -0.5, 0.5);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  } else if (prop === 'book') {
+    // Book
+    ctx.fillStyle = '#2D6A4F';
+    ctx.beginPath();
+    ctx.roundRect(s*0.02, s*0.25, s*0.28, s*0.32, s*0.02);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    for(let l = 0; l < 4; l++) {
+      ctx.fillRect(s*0.06, s*0.3 + l*s*0.06, s*0.18, s*0.02);
+    }
+  } else if (prop === 'pointer') {
+    // Pointing stick
+    ctx.strokeStyle = '#8B5E3C';
+    ctx.lineWidth = s*0.03;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(s*0.04, s*0.38);
+    ctx.lineTo(s*0.35, s*0.1);
+    ctx.stroke();
+    ctx.fillStyle = '#F5A623';
+    ctx.beginPath();
+    ctx.arc(s*0.36, s*0.08, s*0.04, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // ── NECK ──
+  ctx.fillStyle = c.skin;
+  ctx.beginPath();
+  ctx.roundRect(-s*0.07, -s*0.18 - bodyBob, s*0.14, s*0.16, s*0.03);
+  ctx.fill();
+
+  // ── HEAD ──
+  const headBob = state === 'walking' ? Math.sin(frame * 0.15) * s * 0.015 : 0;
+  const headY = -s*0.52 - bodyBob - headBob;
+
+  // Hair/Head shape
+  ctx.fillStyle = c.hair;
+  ctx.beginPath();
+  if (gender === 'female') {
+    // Female - natural afro
+    ctx.arc(0, headY + s*0.15, s*0.28, 0, Math.PI*2);
+  } else {
+    // Male - short hair
+    ctx.arc(0, headY + s*0.15, s*0.24, 0, Math.PI*2);
+  }
+  ctx.fill();
+
+  // Face
+  ctx.fillStyle = c.skin;
+  ctx.beginPath();
+  ctx.ellipse(0, headY + s*0.17, s*0.2, s*0.23, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Female hair detail
+  if (gender === 'female') {
+    ctx.fillStyle = c.hair;
+    ctx.beginPath();
+    ctx.arc(0, headY + s*0.04, s*0.21, Math.PI, Math.PI*2);
+    ctx.fill();
+    // Hair highlight
+    ctx.fillStyle = '#2D1A00';
+    ctx.beginPath();
+    ctx.arc(-s*0.08, headY + s*0.02, s*0.06, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Eyes
+  const blinkH = (Math.floor(frame/60) % 8 === 0) ? s*0.01 : s*0.055;
+  // Left eye white
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  ctx.ellipse(-s*0.075, headY + s*0.13, s*0.055, blinkH, 0, 0, Math.PI*2);
+  ctx.fill();
+  // Right eye white
+  ctx.beginPath();
+  ctx.ellipse(s*0.075, headY + s*0.13, s*0.055, blinkH, 0, 0, Math.PI*2);
+  ctx.fill();
+  // Pupils
+  ctx.fillStyle = c.eye;
+  ctx.beginPath();
+  ctx.arc(-s*0.075, headY + s*0.13, s*0.03, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(s*0.075, headY + s*0.13, s*0.03, 0, Math.PI*2);
+  ctx.fill();
+  // Eye shine
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  ctx.arc(-s*0.065, headY + s*0.115, s*0.012, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(s*0.085, headY + s*0.115, s*0.012, 0, Math.PI*2);
+  ctx.fill();
+
+  // Nose
+  ctx.fillStyle = c.skinLight;
+  ctx.beginPath();
+  ctx.ellipse(0, headY + s*0.2, s*0.028, s*0.02, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Mouth - smile
+  const mouthOpen = state === 'talking' ? Math.abs(Math.sin(frame * 0.2)) * s * 0.04 : 0;
+  ctx.strokeStyle = '#5C2D0A';
+  ctx.lineWidth = s*0.025;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(0, headY + s*0.26, s*0.08, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+
+  if (mouthOpen > 0) {
+    ctx.fillStyle = '#3D0000';
+    ctx.beginPath();
+    ctx.ellipse(0, headY + s*0.28, s*0.06, mouthOpen, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.ellipse(0, headY + s*0.275, s*0.04, mouthOpen*0.4, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Earrings for female
+  if (gender === 'female') {
+    ctx.fillStyle = '#F5A623';
+    ctx.beginPath();
+    ctx.arc(-s*0.2, headY + s*0.2, s*0.025, 0, Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(s*0.2, headY + s*0.2, s*0.025, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+// Detect prop from scene content
+function detectKaribuProp(scene) {
+  const text = ((scene.slideTitle || '') + ' ' + (scene.voiceover || '')).toLowerCase();
+  if (text.includes('laptop') || text.includes('computer') || text.includes('tech') ||
+      text.includes('software') || text.includes('app') || text.includes('digital') ||
+      text.includes('afrivid') || text.includes('video') || text.includes('studio')) return 'laptop';
+  if (text.includes('advertis') || text.includes('promo') || text.includes('market') ||
+      text.includes('campaign') || text.includes('brand') || text.includes('announce')) return 'megaphone';
+  if (text.includes('learn') || text.includes('educat') || text.includes('school') ||
+      text.includes('study') || text.includes('read') || text.includes('book') ||
+      text.includes('course') || text.includes('train')) return 'book';
+  if (text.includes('present') || text.includes('show') || text.includes('explain') ||
+      text.includes('demonstrat') || text.includes('point') || text.includes('highlight')) return 'pointer';
+  return 'pointer';
+}
+
+
+function drawAdvertSlide(canvas, scene, progress, currentWord, frame) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  frame = frame || window._karibuFrame || 0;
+  window._karibuFrame = frame + 1;
+
+  // Background - clean white
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, H);
+
+  // Top accent band
+  const topGrad = ctx.createLinearGradient(0, 0, W, 0);
+  topGrad.addColorStop(0, '#F5A623');
+  topGrad.addColorStop(0.5, '#2D8A5E');
+  topGrad.addColorStop(1, '#F5A623');
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, 0, W, H * 0.012);
+
+  // Bottom accent band
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, H * 0.988, W, H * 0.012);
+
+  // Left content area (55%)
+  const contentW = W * 0.55;
+
+  // Scene image - top left area
+  const imgX = W * 0.03;
+  const imgY = H * 0.06;
+  const imgW = contentW * 0.92;
+  const imgH = H * 0.42;
+  const sceneIdx = scene.sceneNumber ? scene.sceneNumber - 1 : 0;
+  const hasUploadedAsset = window.sceneAssets && window.sceneAssets.length > 0;
+
+  if (hasUploadedAsset) {
+    const asset = window.sceneAssets[sceneIdx % window.sceneAssets.length];
+    if (asset && asset.img) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(imgX, imgY, imgW, imgH, 12);
+      ctx.clip();
+      ctx.drawImage(asset.img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+    }
+  } else if (window._sceneImages && window._sceneImages[sceneIdx]) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(imgX, imgY, imgW, imgH, 12);
+    ctx.clip();
+    ctx.drawImage(window._sceneImages[sceneIdx], imgX, imgY, imgW, imgH);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = 'rgba(245,166,35,0.08)';
+    ctx.beginPath();
+    ctx.roundRect(imgX, imgY, imgW, imgH, 12);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(245,166,35,0.3)';
+    ctx.font = `${H*0.07}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.fillText('🎬', imgX + imgW/2, imgY + imgH/2 + H*0.025);
+  }
+
+  // Bold headline below image
+  const headY = imgY + imgH + H * 0.04;
+  ctx.fillStyle = '#0A0F1E';
+  ctx.font = `900 ${H*0.072}px Arial, sans-serif`;
+  ctx.textAlign = 'left';
+  const headWords = (scene.slideTitle || '').split(' ');
+  let headLine = '';
+  let hY = headY;
+  headWords.forEach((word, i) => {
+    const test = headLine + word + ' ';
+    if (ctx.measureText(test).width > contentW * 0.92 && headLine) {
+      ctx.fillText(headLine.trim(), imgX, hY);
+      headLine = word + ' ';
+      hY += H * 0.082;
+    } else headLine = test;
+    if (i === headWords.length - 1) ctx.fillText(headLine.trim(), imgX, hY);
+  });
+
+  // Subtitle/CTA
+  const ctaY = hY + H * 0.065;
+  ctx.fillStyle = '#2D8A5E';
+  ctx.font = `600 ${H*0.033}px Arial, sans-serif`;
+  ctx.fillText(scene.slideSubtitle || 'Learn More →', imgX, ctaY);
+
+  // Divider
+  const divGrad = ctx.createLinearGradient(imgX, 0, imgX + W*0.18, 0);
+  divGrad.addColorStop(0, '#F5A623');
+  divGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = divGrad;
+  ctx.fillRect(imgX, ctaY + H*0.015, W*0.18, 3);
+
+  // ── KARIBU CHARACTER (right side) ──
+  const gender = window._karibuGender || 'male';
+  const karibuX = W * 0.78;
+  const karibuY = H * 0.92;
+  const karibuScale = H * 0.55;
+
+  // Determine state
+  let state = 'pointing';
+  if (progress < 0.15) state = 'walking';
+  else if (progress > 0.85) state = 'walking';
+
+  // Detect prop from scene
+  const prop = detectKaribuProp(scene);
+
+  // Walking in from right
+  let kX = karibuX;
+  if (progress < 0.15) {
+    kX = W + (karibuX - W) * (progress / 0.15);
+  } else if (progress > 0.85) {
+    kX = karibuX + (W - karibuX) * ((progress - 0.85) / 0.15);
+  }
+
+  drawKaribuCharacter(ctx, kX, karibuY, karibuScale, gender, state, frame, prop);
+
+  // Speech bubble when pointing
+  if (state === 'pointing' && scene.voiceover) {
+    const bubbleX = kX - W * 0.28;
+    const bubbleY = karibuY - karibuScale * 0.85;
+    const bubbleW = W * 0.22;
+    const bubbleH = H * 0.12;
+
+    ctx.fillStyle = '#F5A623';
+    ctx.beginPath();
+    ctx.roundRect(bubbleX, bubbleY, bubbleW, bubbleH, 10);
+    ctx.fill();
+    // Bubble tail
+    ctx.beginPath();
+    ctx.moveTo(bubbleX + bubbleW * 0.75, bubbleY + bubbleH);
+    ctx.lineTo(bubbleX + bubbleW * 0.85, bubbleY + bubbleH + H*0.04);
+    ctx.lineTo(bubbleX + bubbleW * 0.65, bubbleY + bubbleH);
+    ctx.fill();
+
+    // Bubble text
+    const bubbleWords = scene.voiceover.split(' ').slice(0, 6).join(' ') + '...';
+    ctx.fillStyle = '#0A0F1E';
+    ctx.font = `600 ${H*0.025}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.fillText(bubbleWords, bubbleX + bubbleW/2, bubbleY + bubbleH/2 + H*0.01);
+  }
+
+  // AfriVid branding bottom left
+  ctx.fillStyle = '#F5A623';
+  ctx.font = `700 ${H*0.022}px Arial`;
+  ctx.textAlign = 'left';
+  ctx.fillText('AfriVid Studio', W*0.03, H*0.975);
+
+  // Progress bar
+  ctx.fillStyle = 'rgba(0,0,0,0.08)';
+  ctx.fillRect(W*0.25, H*0.965, W*0.5, 3);
+  ctx.fillStyle = '#F5A623';
+  ctx.fillRect(W*0.25, H*0.965, W*0.5*progress, 3);
+}
+
 function drawPresenterPhoto(ctx, W, H) {
   if (!presenterImage) return;
   const position = 'br';
@@ -1770,6 +2264,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
     return;
   }
   if (style === 'cameroon_slide') { drawCameroonSlide(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
+  if (style === 'advert_slide') { drawAdvertSlide(canvas, scene, progress, currentWord, window._karibuFrame); applyTransition(canvas); return; }
   if (style === 'whiteboard') { drawWhiteboardScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'cinematic') { drawCinematicScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'photobg') {
