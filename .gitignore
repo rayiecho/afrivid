@@ -1,0 +1,12 @@
+
+# Wrangler local state
+.wrangler/
+
+# AfriVid image library (stored in R2, not needed in git)
+afrivid-library/
+
+# Test files
+test_r2.jpg
+test_voice.wav
+test_image.jpg
+tts_server.py
