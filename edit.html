@@ -1330,7 +1330,7 @@ function clearClips() {
   updateTimeline();
 }
 
-async function applyAIEdit() {
+window._applyAIEdit = async function applyAIEdit() {
   const instructions = document.getElementById('ai-edit-instructions').value.trim();
   if (!instructions) { alert('Please type your edit instructions first.'); return; }
   const video = document.getElementById('original-video');
