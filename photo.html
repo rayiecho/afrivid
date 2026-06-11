@@ -195,6 +195,13 @@ body{padding-top:70px;}
         <button class="photo-quick-btn" onclick="downloadPhoto()" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">⬇ Download</button>
         <button class="photo-quick-btn" onclick="handleSaveToStudio()" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">💾 Save</button>
         <button class="photo-quick-btn" onclick="resetPhotoEditor()" style="color:rgba(230,51,41,0.7);">✕ New Photo</button>
+        <button class="photo-quick-btn" onclick="resizeForPlatform('whatsapp')" style="color:#25D366;border-color:rgba(37,211,102,0.2);">💬 WhatsApp</button>
+        <button class="photo-quick-btn" onclick="resizeForPlatform('instagram')" style="color:#E1306C;border-color:rgba(225,48,108,0.2);">📸 Instagram</button>
+        <button class="photo-quick-btn" onclick="resizeForPlatform('youtube')" style="color:#FF0000;border-color:rgba(255,0,0,0.2);">▶ YouTube</button>
+        <button class="photo-quick-btn" onclick="resizeForPlatform('passport')" style="color:#4CC9F0;border-color:rgba(76,201,240,0.2);">🪪 Passport</button>
+        <button class="photo-quick-btn" onclick="addPhotoFrame('gold')" style="color:#F5A623;border-color:rgba(245,166,35,0.2);">🖼 Gold Frame</button>
+        <button class="photo-quick-btn" onclick="addPhotoFrame('kente')" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">🌿 Kente Frame</button>
+        <button class="photo-quick-btn" onclick="addPhotoFrame('certificate')" style="color:#fff;border-color:rgba(255,255,255,0.2);">📜 Cert Frame</button>
         <div id="bg-remove-status" style="font-size:0.62rem;color:#F5A623;font-family:'Space Mono',monospace;margin-top:0.3rem;"></div>
         <span id="photo-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;word-break:break-all;margin-top:0.3rem;"></span>
       </div>
@@ -816,6 +823,21 @@ function updateCropVisual() {
   sel.style.top = y + 'px';
   sel.style.width = w + 'px';
   sel.style.height = h + 'px';
+
+  // Draw rule of thirds grid lines
+  sel.innerHTML = `
+    <div style="position:absolute;inset:0;pointer-events:none;">
+      <!-- Rule of thirds lines -->
+      <div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.5);"></div>
+      <div style="position:absolute;left:66.66%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.5);"></div>
+      <div style="position:absolute;top:33.33%;left:0;right:0;height:1px;background:rgba(255,255,255,0.5);"></div>
+      <div style="position:absolute;top:66.66%;left:0;right:0;height:1px;background:rgba(255,255,255,0.5);"></div>
+      <!-- Corner handles -->
+      <div style="position:absolute;top:-3px;left:-3px;width:12px;height:12px;border-top:3px solid #F5A623;border-left:3px solid #F5A623;"></div>
+      <div style="position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-top:3px solid #F5A623;border-right:3px solid #F5A623;"></div>
+      <div style="position:absolute;bottom:-3px;left:-3px;width:12px;height:12px;border-bottom:3px solid #F5A623;border-left:3px solid #F5A623;"></div>
+      <div style="position:absolute;bottom:-3px;right:-3px;width:12px;height:12px;border-bottom:3px solid #F5A623;border-right:3px solid #F5A623;"></div>
+    </div>`;
 }
 
 window.applyCrop = function() {
@@ -1084,6 +1106,179 @@ function addPhotoLog(type, msg) {
 }
 
 document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)hideLogin();});
+
+// ── PLATFORM RESIZE ──
+window.resizeForPlatform = function(platform) {
+  if (!photoImage) { alert('Upload a photo first'); return; }
+  const sizes = {
+    whatsapp:   {w: 800,  h: 800,  label: 'WhatsApp (800x800)'},
+    instagram:  {w: 1080, h: 1080, label: 'Instagram Square (1080x1080)'},
+    youtube:    {w: 1280, h: 720,  label: 'YouTube Thumbnail (1280x720)'},
+    passport:   {w: 600,  h: 600,  label: 'Passport Photo (600x600)'},
+  };
+  const s = sizes[platform];
+  if (!s) return;
+  const canvas = document.getElementById('photo-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = s.w;
+  canvas.height = s.h;
+  // Fill white background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, s.w, s.h);
+  // Draw image centered and cropped
+  const imgRatio = photoImage.width / photoImage.height;
+  const canvasRatio = s.w / s.h;
+  let drawW, drawH, drawX, drawY;
+  if (imgRatio > canvasRatio) {
+    drawH = s.h;
+    drawW = drawH * imgRatio;
+    drawX = (s.w - drawW) / 2;
+    drawY = 0;
+  } else {
+    drawW = s.w;
+    drawH = drawW / imgRatio;
+    drawX = 0;
+    drawY = (s.h - drawH) / 2;
+  }
+  ctx.filter = getFilter ? getFilter() : 'none';
+  ctx.drawImage(photoImage, drawX, drawY, drawW, drawH);
+  addLog('success', `[ok] Resized for ${s.label}`);
+}
+
+// ── PHOTO FRAMES ──
+window.addPhotoFrame = function(frameType) {
+  if (!photoImage) { alert('Upload a photo first'); return; }
+  const canvas = document.getElementById('photo-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  if (frameType === 'gold') {
+    // Gold elegant frame
+    const thickness = Math.round(W * 0.025);
+    // Outer gold border
+    ctx.strokeStyle = '#F5A623';
+    ctx.lineWidth = thickness;
+    ctx.strokeRect(thickness/2, thickness/2, W - thickness, H - thickness);
+    // Inner thin line
+    ctx.strokeStyle = 'rgba(245,166,35,0.4)';
+    ctx.lineWidth = Math.round(thickness * 0.4);
+    const offset = thickness * 1.8;
+    ctx.strokeRect(offset, offset, W - offset*2, H - offset*2);
+    // Corner ornaments
+    const cs = thickness * 2.5;
+    const positions = [[offset,offset],[W-offset,offset],[offset,H-offset],[W-offset,H-offset]];
+    positions.forEach(([x,y]) => {
+      ctx.fillStyle = '#F5A623';
+      ctx.beginPath();
+      ctx.arc(x, y, cs*0.3, 0, Math.PI*2);
+      ctx.fill();
+    });
+    addLog('success', '[ok] Gold frame added!');
+
+  } else if (frameType === 'kente') {
+    // African Kente-inspired frame
+    const thickness = Math.round(W * 0.04);
+    const colors = ['#F5A623','#2D8A5E','#E63946','#F5A623','#2D8A5E'];
+    const stripeW = thickness / colors.length;
+    // Top and bottom stripes
+    colors.forEach((color, i) => {
+      ctx.fillStyle = color;
+      ctx.fillRect(0, i * stripeW, W, stripeW);
+      ctx.fillRect(0, H - thickness + i * stripeW, W, stripeW);
+    });
+    // Left and right stripes
+    colors.forEach((color, i) => {
+      ctx.fillStyle = color;
+      ctx.fillRect(i * stripeW, 0, stripeW, H);
+      ctx.fillRect(W - thickness + i * stripeW, 0, stripeW, H);
+    });
+    addLog('success', '[ok] Kente frame added!');
+
+  } else if (frameType === 'certificate') {
+    // Certificate double border
+    const t1 = Math.round(W * 0.018);
+    const t2 = Math.round(W * 0.008);
+    const gap = Math.round(W * 0.015);
+    ctx.strokeStyle = '#2D6A4F';
+    ctx.lineWidth = t1;
+    ctx.strokeRect(t1/2, t1/2, W-t1, H-t1);
+    ctx.strokeStyle = '#F5A623';
+    ctx.lineWidth = t2;
+    const o = t1 + gap;
+    ctx.strokeRect(o, o, W-o*2, H-o*2);
+    addLog('success', '[ok] Certificate frame added!');
+  }
+}
+
+// ── IMPROVED REMOVE BACKGROUND ──
+// Works on all image types using threshold-based removal
+window._removeBackground = async function() {
+  if (!photoImage) { alert('Upload a photo first'); return; }
+  const btn = document.querySelector('[onclick="removeBackground()"]');
+  if(btn){btn.textContent='[..] Removing BG...';btn.disabled=true;}
+  addLog('info', '[~] Removing background...');
+
+  try {
+    const canvas = document.getElementById('photo-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // Draw current image
+    ctx.drawImage(photoImage, 0, 0, W, H);
+    const imageData = ctx.getImageData(0, 0, W, H);
+    const data = imageData.data;
+
+    // Sample background color from corners
+    const corners = [
+      [0,0],[W-1,0],[0,H-1],[W-1,H-1],
+      [Math.floor(W/2),0],[0,Math.floor(H/2)]
+    ];
+    let bgR=0, bgG=0, bgB=0;
+    corners.forEach(([x,y]) => {
+      const idx = (y * W + x) * 4;
+      bgR += data[idx]; bgG += data[idx+1]; bgB += data[idx+2];
+    });
+    bgR = Math.round(bgR/corners.length);
+    bgG = Math.round(bgG/corners.length);
+    bgB = Math.round(bgB/corners.length);
+
+    // Remove pixels similar to background
+    const threshold = 40;
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i+1], b = data[i+2];
+      const diff = Math.sqrt(
+        Math.pow(r-bgR,2) + Math.pow(g-bgG,2) + Math.pow(b-bgB,2)
+      );
+      if (diff < threshold) {
+        data[i+3] = 0; // transparent
+      } else if (diff < threshold * 1.5) {
+        data[i+3] = Math.round((diff - threshold) / (threshold * 0.5) * 255);
+      }
+    }
+
+    // Show checkerboard for transparency
+    const tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = W; tmpCanvas.height = H;
+    const tmpCtx = tmpCanvas.getContext('2d');
+    const cs = 20;
+    for (let x=0; x<W; x+=cs) {
+      for (let y=0; y<H; y+=cs) {
+        tmpCtx.fillStyle = ((Math.floor(x/cs)+Math.floor(y/cs))%2===0) ? '#cccccc' : '#ffffff';
+        tmpCtx.fillRect(x,y,cs,cs);
+      }
+    }
+    ctx.clearRect(0,0,W,H);
+    ctx.drawImage(tmpCanvas,0,0);
+    ctx.putImageData(imageData,0,0);
+
+    addLog('success','[ok] Background removed!');
+  } catch(e) {
+    addLog('error','[x] Failed: ' + e.message);
+  } finally {
+    if(btn){btn.textContent='✂ Remove BG';btn.disabled=false;}
+  }
+}
+
 </script>
 </body>
 </html>
