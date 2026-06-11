@@ -4898,11 +4898,14 @@ async function trackVideoGeneration(title, duration) {
   }
 
 async function structureOwnScript() {
-  const ownScript = document.getElementById('own-script').value.trim();
+  const ownScriptEls = document.querySelectorAll('#own-script');
+  let ownScript = '';
+  ownScriptEls.forEach(el => { if(el.value.trim()) ownScript = el.value.trim(); });
   if (!ownScript) { alert('Please paste your script first.'); return; }
-
-  const duration = document.getElementById('own-duration').value;
-  const speed = document.getElementById('own-voice-speed').value;
+  const durationEl = document.getElementById('own-duration') || document.getElementById('video-duration-own');
+  const speedEl = document.getElementById('own-voice-speed');
+  const duration = durationEl ? durationEl.value : '60';
+  const speed = speedEl ? speedEl.value : '0.95';
 
   // Sync speed to main voice speed
   document.getElementById('voice-speed').value = speed;
