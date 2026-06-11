@@ -706,7 +706,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 // Sign in admin with Firebase Auth so Firestore rules pass
-async function adminFirebaseSignIn() {
+window.adminFirebaseSignIn = async function adminFirebaseSignIn() {
   try {
     const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
     // Try to use current session first
@@ -1282,7 +1282,18 @@ function doLogout() {
 if(sessionStorage.getItem('afrivid_admin')==='1') {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-app').style.display = 'block';
-  // Must sign into Firebase on every page load
+  // Wait for ES modules to load then sign in
+  window.addEventListener('load', () => {
+    if(window.adminFirebaseSignIn) {
+      window.adminFirebaseSignIn().then(() => {
+        console.log('[Admin] Auto Firebase done');
+        if(window.loadOverview) loadOverview();
+      }).catch(e => {
+        console.error('[Admin] Auto Firebase failed:', e.message);
+      });
+    }
+  });
+}
   adminFirebaseSignIn().then(() => {
     console.log('[Admin] Auto-login Firebase done');
     loadOverview();
