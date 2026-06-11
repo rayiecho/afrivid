@@ -714,9 +714,14 @@ async function adminFirebaseSignIn() {
     // Silent sign in using stored credentials
     const adminEmail = 'afrividstudio@gmail.com';
     const adminPwd = 'Regan6440.';
-    await signInWithEmailAndPassword(auth, adminEmail, adminPwd);
+    console.log('[Admin] Signing in as', adminEmail);
+    const cred = await signInWithEmailAndPassword(auth, adminEmail, adminPwd);
+    console.log('[Admin] Signed in! UID:', cred.user.uid);
+    if(window._adminLog) window._adminLog('SUCCESS', 'Firebase signed in as ' + adminEmail + ' UID: ' + cred.user.uid);
   } catch(e) {
-    console.log('Admin Firebase auth:', e.message);
+    console.error('[Admin Firebase Auth FAILED]', e.code, e.message);
+    if(window._adminLog) window._adminLog('PERMISSION', 'Firebase auth failed: ' + e.message + ' (' + e.code + ')');
+    if(window.showToast) showToast('[!] Firebase login failed: ' + e.message, 'error');
   }
 }
 let storage;
