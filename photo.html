@@ -568,7 +568,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
-let photoImage = null;
+window.photoImage = null;
+let photoImage = window.photoImage;
 let selfieSegmentation = null;
 
 onAuthStateChanged(auth, (user) => {
@@ -1681,6 +1682,11 @@ function getFilterSafe() {
 // Override getFilter if it's broken
 if (typeof getFilter === 'undefined' || !document.getElementById('brightness')) {
   window.getFilter = getFilterSafe;
+// Also fix photoImage reference in new script
+Object.defineProperty(window, 'photoImage', {
+  get: function() { return window._photoImage || null; },
+  set: function(v) { window._photoImage = v; }
+});
 }
 </script>
 
