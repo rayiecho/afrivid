@@ -3615,7 +3615,31 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 
 // ---- RESTORED FUNCTIONS ----
-  async function trackVideoGeneration(title, duration) {
+  window._handleSaveToStudio = async function() {
+  if (!currentUser) { showLogin('Sign in to save to Studio'); return; }
+  if (!videoBlob) { alert('No video to save yet. Generate a video first.'); return; }
+  try {
+    const title = (scriptData && scriptData.title) || 'AfriVid Video';
+    const duration = (scriptData && scriptData.duration) || 0;
+    await addDoc(collection(db, 'studio_videos'), {
+      userId: currentUser.uid,
+      userEmail: currentUser.email,
+      title: title,
+      duration: duration,
+      size: (videoBlob.size / 1024 / 1024).toFixed(1) + 'MB',
+      createdAt: serverTimestamp()
+    });
+    await updateDoc(doc(db, 'studio_users', currentUser.uid), {
+      videosGenerated: increment(1),
+      lastActive: serverTimestamp()
+    });
+    alert('✅ Video saved to your Studio!');
+  } catch(e) {
+    alert('Save failed: ' + e.message);
+  }
+};
+
+async function trackVideoGeneration(title, duration) {
     if (!currentUser) return;
     const ref = doc(db, 'studio_users', currentUser.uid);
     await updateDoc(ref, {
