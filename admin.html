@@ -1282,6 +1282,14 @@ function doLogout() {
 if(sessionStorage.getItem('afrivid_admin')==='1') {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-app').style.display = 'block';
+  // Must sign into Firebase on every page load
+  adminFirebaseSignIn().then(() => {
+    console.log('[Admin] Auto-login Firebase done');
+    loadOverview();
+  }).catch(e => {
+    console.error('[Admin] Auto Firebase failed:', e.message);
+    if(window._adminLog) window._adminLog('PERMISSION', 'Auto Firebase failed: ' + e.message);
+  });
 }
 
 document.getElementById('admin-pwd').addEventListener('keydown', e => {
