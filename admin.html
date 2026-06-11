@@ -712,11 +712,9 @@ async function adminFirebaseSignIn() {
     // Try to use current session first
     if (auth.currentUser) return;
     // Silent sign in using stored credentials
-    const storedEmail = sessionStorage.getItem('admin_fb_email');
-    const storedPwd = sessionStorage.getItem('admin_fb_pwd');
-    if (storedEmail && storedPwd) {
-      await signInWithEmailAndPassword(auth, storedEmail, storedPwd);
-    }
+    const adminEmail = 'afrividstudio@gmail.com';
+    const adminPwd = 'Regan6440.';
+    await signInWithEmailAndPassword(auth, adminEmail, adminPwd);
   } catch(e) {
     console.log('Admin Firebase auth:', e.message);
   }
