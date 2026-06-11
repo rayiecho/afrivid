@@ -201,6 +201,9 @@ body{padding-top:70px;}
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 </head>
 <body>
 <nav class="navbar">
@@ -299,7 +302,7 @@ body{padding-top:70px;}
         <button class="quick-btn" onclick="applyQualityPreset('reset')">↺ Reset</button>
         <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0;"></div>
         <button class="quick-btn" onclick="toggleCrop()">⬚ Crop</button>
-        <button class="quick-btn" onclick="startEnhancing()" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">▶ Export</button>
+        <button class="quick-btn" onclick="fastExport()" id="btn-export" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">▶ Export</button>
         <button class="quick-btn" onclick="resetEnhancer()" style="color:rgba(230,51,41,0.7);">✕ New Video</button>
         <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0;"></div>
         <div id="enhance-export-btns" style="display:none;">
@@ -393,7 +396,7 @@ body{padding-top:70px;}
           <div class="slider-row"><label>Watermark</label><select id="enhance-watermark" class="form-select" style="flex:1;font-size:0.72rem;"><option value="none">None</option><option value="afrivid">AfriVid Studio</option></select></div>
           <div class="slider-row"><label>Subtitles</label><select id="enhance-subtitles" class="form-select" style="flex:1;font-size:0.72rem;"><option value="none">None</option><option value="classic">Classic</option><option value="bold">Bold</option></select></div>
           <div class="slider-row"><label>Music</label><select id="enhance-music" class="form-select" style="flex:1;font-size:0.72rem;"><option value="none">None</option><option value="upbeat">Upbeat</option><option value="calm">Calm</option></select></div>
-          <button class="btn btn-gold" style="width:100%;margin-top:0.75rem;" onclick="startEnhancing()">▶ Export Video</button>
+          <button class="btn btn-gold" style="width:100%;margin-top:0.75rem;" onclick="fastExport()" id="btn-export">▶ Export Video</button>
         </div>
 
         <!-- CROP PANEL -->
@@ -1951,6 +1954,113 @@ window._generateCaptions = async function() {
     console.error('[Captions] Error:', e);
     if (btn) { btn.textContent = 'Generate Auto-Captions'; btn.disabled = false; }
     alert('Caption generation failed: ' + e.message);
+  }
+}
+
+
+// ── FFMPEG.WASM FAST EXPORT ──
+let ffmpegInstance = null;
+
+async function loadFFmpeg() {
+  if (ffmpegInstance) return ffmpegInstance;
+  addEnhanceLog('info', '[~] Loading FFmpeg engine (first time only ~30MB)...');
+  const { FFmpeg } = FFmpegWasm;
+  const { fetchFile, toBlobURL } = FFmpegUtil;
+  const ff = new FFmpeg();
+  ff.on('log', ({ message }) => console.log('[FFmpeg]', message));
+  ff.on('progress', ({ progress }) => {
+    const pct = Math.round(progress * 100);
+    const fill = document.getElementById('progress-fill');
+    const pctEl = document.getElementById('progress-pct');
+    const label = document.getElementById('progress-label');
+    if(fill) fill.style.width = pct + '%';
+    if(pctEl) pctEl.textContent = pct + '%';
+    if(label) label.textContent = `FFmpeg processing: ${pct}%`;
+  });
+  const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
+  await ff.load({
+    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+  });
+  ffmpegInstance = ff;
+  addEnhanceLog('success', '[ok] FFmpeg ready!');
+  return ff;
+}
+
+async function fastExport() {
+  const video = document.getElementById('original-video');
+  if (!video.src && !window._editVideoFile) { alert('Upload a video first'); return; }
+
+  const btn = document.getElementById('btn-export') || document.querySelector('[onclick*="startEnhancing"]');
+  if(btn) { btn.textContent = '[..] Processing...'; btn.disabled = true; }
+
+  document.getElementById('progress-wrap').style.display = 'block';
+  addEnhanceLog('info', '[~] Starting fast export with FFmpeg...');
+
+  try {
+    const { fetchFile } = FFmpegUtil;
+    const ff = await loadFFmpeg();
+
+    // Write input file
+    const videoFile = window._editVideoFile || window._editVideoBlob;
+    const inputData = await fetchFile(videoFile);
+    await ff.writeFile('input.mp4', inputData);
+
+    // Build FFmpeg filter chain
+    const filters = [];
+    const b = document.getElementById('brightness')?.value || 100;
+    const c = document.getElementById('contrast')?.value || 100;
+    const s = document.getElementById('saturation')?.value || 100;
+
+    // Convert CSS filter values to FFmpeg eq filter
+    const brightness = (b / 100).toFixed(2);
+    const contrast = (c / 100).toFixed(2);
+    const saturation = (s / 100).toFixed(2);
+
+    let vf = `eq=brightness=${(brightness-1).toFixed(2)}:contrast=${contrast}:saturation=${saturation}`;
+
+    // Add trim if clips defined
+    let inputArgs = ['-i', 'input.mp4'];
+    let trimFilter = '';
+    if (clips && clips.length > 0) {
+      const c0 = clips[0];
+      inputArgs = ['-ss', String(c0.start), '-to', String(c0.end), '-i', 'input.mp4'];
+      addEnhanceLog('info', `[~] Trimming: ${c0.start}s to ${c0.end}s`);
+    }
+
+    // Run FFmpeg
+    await ff.exec([
+      ...inputArgs,
+      '-vf', vf,
+      '-c:v', 'libx264',
+      '-preset', 'fast',
+      '-crf', '23',
+      '-c:a', 'aac',
+      '-movflags', '+faststart',
+      'output.mp4'
+    ]);
+
+    // Read output
+    const outputData = await ff.readFile('output.mp4');
+    const blob = new Blob([outputData.buffer], { type: 'video/mp4' });
+    const url = URL.createObjectURL(blob);
+
+    // Download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `afrivid_export_${Date.now()}.mp4`;
+    a.click();
+
+    addEnhanceLog('success', '[ok] Export complete! MP4 downloaded.');
+    if(btn) { btn.textContent = '▶ Export'; btn.disabled = false; }
+    document.getElementById('progress-wrap').style.display = 'none';
+
+  } catch(e) {
+    addEnhanceLog('error', '[x] FFmpeg failed: ' + e.message + ' — falling back to real-time export');
+    console.error('[FFmpeg Error]', e);
+    if(btn) { btn.textContent = '▶ Export'; btn.disabled = false; }
+    // Fallback to old method
+    startEnhancing();
   }
 }
 
