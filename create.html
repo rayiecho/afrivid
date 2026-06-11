@@ -2038,8 +2038,26 @@ window._startRecording = async function startRecording() {
         addLog('success', `[ok] Scene ${i+1} voice ready`);
         return await blob.arrayBuffer();
       } catch(e) {
-        addLog('error', `[x] Scene ${i+1} failed`);
-        return null;
+        addLog('warn', `[!] Cloud TTS unavailable, using browser voice for scene ${i+1}`);
+        // Fallback to browser speech synthesis
+        return await new Promise((resolve) => {
+          const utterance = new SpeechSynthesisUtterance(scene.voiceover);
+          utterance.rate = 0.9;
+          utterance.pitch = 1;
+          // Record browser speech to audio buffer
+          const audioCtx = new AudioContext();
+          const dest = audioCtx.createMediaStreamDestination();
+          const recorder = new MediaRecorder(dest.stream);
+          const chunks = [];
+          recorder.ondataavailable = e => chunks.push(e.data);
+          recorder.onstop = async () => {
+            const blob = new Blob(chunks, {type:'audio/webm'});
+            resolve(await blob.arrayBuffer());
+          };
+          recorder.start();
+          utterance.onend = () => recorder.stop();
+          window.speechSynthesis.speak(utterance);
+        });
       }
     })
   );
