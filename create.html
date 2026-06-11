@@ -1042,12 +1042,6 @@ window._handleGenerateScript = window.handleGenerateScript = async function() {
     return;
   }
   
-    ? (document.getElementById('own-script')?.value.trim() || document.getElementById('video-topic')?.value.trim())
-    : document.getElementById('video-topic')?.value.trim();
-  if (!topic) { 
-    alert(mode === 'own' ? 'Please paste your script in the Own Script box' : 'Please enter a video topic'); 
-    return; 
-  }
   const btn = event.target;
   btn.textContent = 'Generating...';
   btn.disabled = true;
