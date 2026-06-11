@@ -1104,19 +1104,19 @@ function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
   const W = canvas.width, H = canvas.height;
 
   // Background
-  ctx.fillStyle = '#0A0F1E';
+  ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, W, H);
 
   // Left content panel (63%)
   const panelW = W * 0.63;
   const grad = ctx.createLinearGradient(0, 0, panelW, H);
-  grad.addColorStop(0, 'rgba(245,166,35,0.05)');
-  grad.addColorStop(1, 'rgba(45,138,94,0.03)');
+  grad.addColorStop(0, 'rgba(245,166,35,0.04)');
+  grad.addColorStop(1, 'rgba(45,138,94,0.02)');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, panelW, H);
 
   // Right panel (37%)
-  ctx.fillStyle = '#0D1526';
+  ctx.fillStyle = '#F5F7FA';
   ctx.fillRect(panelW, 0, W - panelW, H);
 
   // Top accent bar
@@ -1231,7 +1231,7 @@ function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
   // LEFT PANEL — Title
   const titleX = W * 0.06;
   const titleSize = H * 0.068;
-  ctx.fillStyle = '#FFFFFF';
+  ctx.fillStyle = '#0A0F1E';
   ctx.font = `800 ${titleSize}px Arial, sans-serif`;
   ctx.textAlign = 'left';
   const maxTitleW = panelW * 0.88;
@@ -1287,7 +1287,7 @@ function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
       ctx.fill();
 
       // Bullet text
-      ctx.fillStyle = '#FFFFFF';
+      ctx.fillStyle = '#0A0F1E';
       ctx.font = `${idx === currentSentence ? '600' : '400'} ${bSize*1.1}px Arial, sans-serif`;
       ctx.textAlign = 'left';
       const maxBW = panelW * 0.82;
@@ -1309,9 +1309,9 @@ function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
 
   // Bottom bar
   const bottomGrad = ctx.createLinearGradient(0, H*0.94, W, H*0.94);
-  bottomGrad.addColorStop(0, 'rgba(245,166,35,0.15)');
-  bottomGrad.addColorStop(0.62, 'rgba(245,166,35,0.1)');
-  bottomGrad.addColorStop(1, 'rgba(45,138,94,0.1)');
+  bottomGrad.addColorStop(0, 'rgba(245,166,35,0.08)');
+  bottomGrad.addColorStop(0.62, 'rgba(245,166,35,0.05)');
+  bottomGrad.addColorStop(1, 'rgba(45,138,94,0.05)');
   ctx.fillStyle = bottomGrad;
   ctx.fillRect(0, H*0.94, W, H*0.06);
 
