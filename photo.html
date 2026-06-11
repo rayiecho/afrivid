@@ -1436,5 +1436,230 @@ window._removeBackground = async function() {
   </div>
 </div>
 
+
+<script>
+// ── AFRICAN FLAG OVERLAYS ──
+function addFlagOverlay(country) {
+  if (!photoImage) { alert('Upload a photo first'); return; }
+  const canvas = document.getElementById('photo-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const flags = {
+    ke:[{c:'#006600'},{c:'#cc0000'},{c:'#000000'}],
+    ng:[{c:'#008751'},{c:'#ffffff'},{c:'#008751'}],
+    rw:[{c:'#20603D'},{c:'#FAD201'},{c:'#E5BE01'}],
+    gh:[{c:'#006B3F'},{c:'#FCD116'},{c:'#CE1126'}],
+    ug:[{c:'#000000'},{c:'#FCDC04'},{c:'#DE3108'}],
+    tz:[{c:'#1EB53A'},{c:'#FCD116'},{c:'#00A3DD'}],
+    za:[{c:'#007A4D'},{c:'#FFB612'},{c:'#DE3831'}],
+    et:[{c:'#078930'},{c:'#FCDD09'},{c:'#DA121A'}],
+  };
+  const stripes = flags[country];
+  if (!stripes) return;
+  const flagH = Math.round(H * 0.08);
+  const stripeH = Math.round(flagH / 3);
+  const flagY = H - flagH;
+  stripes.forEach((stripe, i) => {
+    ctx.fillStyle = stripe.c;
+    ctx.fillRect(0, flagY + i * stripeH, W, stripeH);
+  });
+  const labels = {ke:'🇰🇪 KENYA',ng:'🇳🇬 NIGERIA',rw:'🇷🇼 RWANDA',gh:'🇬🇭 GHANA',ug:'🇺🇬 UGANDA',tz:'🇹🇿 TANZANIA',za:'🇿🇦 S.AFRICA',et:'🇪🇹 ETHIOPIA'};
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, flagY - Math.round(H*0.04), W, Math.round(H*0.04));
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `700 ${Math.round(H*0.025)}px Syne, Arial`;
+  ctx.textAlign = 'center';
+  ctx.fillText(labels[country] || country.toUpperCase(), W/2, flagY - Math.round(H*0.01));
+  if(window.addLog) addLog('success', `[ok] ${labels[country]} overlay added!`);
+}
+
+// ── PHOTO ENHANCEMENT ──
+function enhancePhoto(type) {
+  if (!photoImage) { alert('Upload a photo first'); return; }
+  const canvas = document.getElementById('photo-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  if (type === 'professional') {
+    ctx.filter = 'contrast(108%) brightness(105%) saturate(110%) sepia(5%)';
+    ctx.drawImage(photoImage, 0, 0, W, H);
+    ctx.filter = 'none';
+    if(window.addLog) addLog('success', '[ok] Professional enhancement applied!');
+  } else if (type === 'skin') {
+    ctx.filter = 'contrast(95%) brightness(108%) saturate(115%) sepia(8%) hue-rotate(-5deg)';
+    ctx.drawImage(photoImage, 0, 0, W, H);
+    ctx.filter = 'none';
+    if(window.addLog) addLog('success', '[ok] Skin tone enhancement applied!');
+  } else if (type === 'sharpen') {
+    ctx.drawImage(photoImage, 0, 0, W, H);
+    const imageData = ctx.getImageData(0, 0, W, H);
+    const data = imageData.data;
+    const kernel = [0,-1,0,-1,5,-1,0,-1,0];
+    const result = new Uint8ClampedArray(data.length);
+    for (let y = 1; y < H-1; y++) {
+      for (let x = 1; x < W-1; x++) {
+        for (let c = 0; c < 3; c++) {
+          let val = 0;
+          for (let ky = -1; ky <= 1; ky++)
+            for (let kx = -1; kx <= 1; kx++)
+              val += data[((y+ky)*W+(x+kx))*4+c] * kernel[(ky+1)*3+(kx+1)];
+          result[(y*W+x)*4+c] = Math.min(255, Math.max(0, val));
+        }
+        result[(y*W+x)*4+3] = data[(y*W+x)*4+3];
+      }
+    }
+    ctx.putImageData(new ImageData(result, W, H), 0, 0);
+    if(window.addLog) addLog('success', '[ok] Sharpening applied!');
+  } else if (type === 'denoise') {
+    ctx.drawImage(photoImage, 0, 0, W, H);
+    ctx.filter = 'blur(0.5px)';
+    ctx.drawImage(canvas, 0, 0);
+    ctx.filter = 'none';
+    if(window.addLog) addLog('success', '[ok] Denoise applied!');
+  }
+}
+
+// ── WATERMARK ──
+function addWatermark() {
+  document.getElementById('watermark-modal').style.display = 'flex';
+}
+
+function applyWatermark() {
+  if (!photoImage) { alert('Upload a photo first'); return; }
+  const text = document.getElementById('watermark-text').value.trim();
+  if (!text) { alert('Enter watermark text'); return; }
+  const position = document.getElementById('watermark-position').value;
+  const opacity = parseFloat(document.getElementById('watermark-opacity').value);
+  const canvas = document.getElementById('photo-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const fontSize = Math.round(W * 0.03);
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  ctx.font = `700 ${fontSize}px Syne, Arial`;
+  ctx.textAlign = 'center';
+  if (position === 'center') {
+    ctx.fillStyle = '#ffffff';
+    ctx.translate(W/2, H/2);
+    ctx.rotate(-Math.PI/6);
+    for (let i = -3; i <= 3; i++) ctx.fillText(text, 0, i * fontSize * 3);
+  } else {
+    const pad = fontSize * 0.8;
+    let x, y;
+    if (position === 'bottom-right') { x = W-pad; y = H-pad; ctx.textAlign='right'; }
+    else if (position === 'bottom-left') { x = pad; y = H-pad; ctx.textAlign='left'; }
+    else if (position === 'bottom-center') { x = W/2; y = H-pad; }
+    else if (position === 'top-right') { x = W-pad; y = pad+fontSize; ctx.textAlign='right'; }
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillText(text, x+2, y+2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(text, x, y);
+  }
+  ctx.restore();
+  document.getElementById('watermark-modal').style.display = 'none';
+  if(window.addLog) addLog('success', '[ok] Watermark added!');
+}
+
+// ── COLLAGE ──
+let collageType = null, collageImages = [], collageSlotCount = 0;
+
+function openCollage() {
+  document.getElementById('collage-modal').style.display = 'block';
+  document.getElementById('collage-upload-area').style.display = 'none';
+}
+
+function startCollage(type) {
+  collageType = type;
+  collageImages = [];
+  const counts = {'side-by-side':2,'top-bottom':2,'before-after':2,'grid-4':4};
+  collageSlotCount = counts[type] || 2;
+  const labels = {
+    'side-by-side':'Upload 2 photos for side-by-side:',
+    'top-bottom':'Upload 2 photos for top & bottom:',
+    'before-after':'Upload Before photo first, then After:',
+    'grid-4':'Upload 4 photos for grid:'
+  };
+  document.getElementById('collage-upload-label').textContent = labels[type];
+  document.getElementById('collage-upload-area').style.display = 'block';
+  const slots = document.getElementById('collage-slots');
+  slots.innerHTML = '';
+  for (let i = 0; i < collageSlotCount; i++) {
+    slots.innerHTML += `<div style="flex:1;min-width:120px;">
+      <div style="background:#1a1a1a;border:1px dashed rgba(245,166,35,0.3);border-radius:8px;padding:0.5rem;text-align:center;cursor:pointer;" onclick="document.getElementById('collage-input-${i}').click()">
+        <div id="collage-preview-${i}" style="height:80px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:0.75rem;">+ Photo ${i+1}</div>
+      </div>
+      <input type="file" id="collage-input-${i}" accept="image/*" style="display:none" onchange="loadCollageImage(${i}, this)">
+    </div>`;
+  }
+}
+
+function loadCollageImage(index, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      collageImages[index] = img;
+      document.getElementById(`collage-preview-${index}`).innerHTML = `<img src="${e.target.result}" style="max-height:80px;max-width:100%;border-radius:4px;">`;
+      if (collageImages.filter(Boolean).length === collageSlotCount)
+        document.getElementById('build-collage-btn').style.display = 'block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function buildCollage() {
+  if (collageImages.filter(Boolean).length < collageSlotCount) { alert('Upload all photos first'); return; }
+  const canvas = document.getElementById('photo-canvas');
+  const ctx = canvas.getContext('2d');
+  const gap = 10;
+  if (collageType === 'side-by-side') {
+    canvas.width=1080; canvas.height=540;
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,540);
+    const sw=(1080-gap)/2;
+    [0,1].forEach(i => ctx.drawImage(collageImages[i], i*(sw+gap), 0, sw, 540));
+  } else if (collageType === 'top-bottom') {
+    canvas.width=1080; canvas.height=1080;
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,1080);
+    const sh=(1080-gap)/2;
+    [0,1].forEach(i => ctx.drawImage(collageImages[i], 0, i*(sh+gap), 1080, sh));
+  } else if (collageType === 'before-after') {
+    canvas.width=1080; canvas.height=540;
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,540);
+    const sw=(1080-gap)/2;
+    ctx.drawImage(collageImages[0],0,0,sw,540);
+    ctx.drawImage(collageImages[1],sw+gap,0,sw,540);
+    ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.fillRect(0,500,sw,40); ctx.fillRect(sw+gap,500,sw,40);
+    ctx.fillStyle='#fff'; ctx.font='700 22px Syne,Arial'; ctx.textAlign='center';
+    ctx.fillText('BEFORE',sw/2,526); ctx.fillText('AFTER',sw+gap+sw/2,526);
+  } else if (collageType === 'grid-4') {
+    canvas.width=1080; canvas.height=1080;
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,1080);
+    const sw=(1080-gap)/2, sh=(1080-gap)/2;
+    [0,1,2,3].forEach(i => ctx.drawImage(collageImages[i],(i%2)*(sw+gap),Math.floor(i/2)*(sh+gap),sw,sh));
+  }
+  document.getElementById('collage-modal').style.display = 'none';
+  if(window.addLog) addLog('success', '[ok] Collage created!');
+}
+
+// Fix getFilter null error
+function getFilterSafe() {
+  try {
+    const b = document.getElementById('brightness'); 
+    const brightness = b ? b.value : 100;
+    const c = document.getElementById('contrast');
+    const contrast = c ? c.value : 100;
+    const s = document.getElementById('saturation');
+    const saturation = s ? s.value : 100;
+    return `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+  } catch(e) { return 'none'; }
+}
+// Override getFilter if it's broken
+if (typeof getFilter === 'undefined' || !document.getElementById('brightness')) {
+  window.getFilter = getFilterSafe;
+}
+</script>
+
 </body>
 </html>
