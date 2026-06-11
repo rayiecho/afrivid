@@ -545,26 +545,50 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </section>
 
 <!-- PRICING -->
-<section class="pricing-section" id="pricing">
-  <div class="section-label">PRICING</div>
-  <h2 class="section-title">Free during beta</h2>
-  <div class="pricing-grid">
-    <div class="pricing-card">
-      <div class="pricing-tier" style="color:rgba(255,255,255,0.4);">BETA</div>
-      <div class="pricing-price">Free</div>
-      <div class="pricing-period">During testing period</div>
-      <div class="pricing-features"><div>✓ 10 videos</div><div>✓ All styles</div><div>✓ Smart voice</div><div>✓ Video enhancer</div><div>✓ Photo editor</div></div>
-      <button class="btn-primary" onclick="showLogin()" style="width:100%;margin-top:1.5rem;">Get Started Free</button>
+<section id="demo" style="position:relative;z-index:1;max-width:900px;margin:0 auto 5rem;padding:0 2rem;text-align:center;">
+  <div class="section-label">SEE IT IN ACTION</div>
+  <h2 class="section-title">Watch AfriVid Studio</h2>
+  <p style="color:rgba(255,255,255,0.5);font-size:0.95rem;margin-bottom:2.5rem;max-width:600px;margin-left:auto;margin-right:auto;">See how African creators use AfriVid Studio to create professional videos, edit photos and design graphics in minutes.</p>
+  
+  <!-- Video embed container -->
+  <div style="position:relative;background:rgba(255,255,255,0.03);border:1px solid rgba(245,166,35,0.2);border-radius:20px;overflow:hidden;padding-bottom:56.25%;height:0;">
+    <div id="video-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(8,8,8,0.9),rgba(13,31,53,0.9));">
+      <div style="width:72px;height:72px;background:linear-gradient(135deg,#F5A623,#E8931A);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;cursor:pointer;" onclick="playDemoVideo()">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#050A14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div style="color:#fff;font-size:1.1rem;font-weight:800;margin-bottom:0.5rem;">AfriVid Studio Demo</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.82rem;font-family:'Space Mono',monospace;">3 min · See full platform walkthrough</div>
     </div>
-    <div class="pricing-card featured">
-      <div class="pricing-tier" style="color:#F5A623;">COMING SOON</div>
-      <div class="pricing-price">$5<span style="font-size:1rem;color:rgba(255,255,255,0.4);">/mo</span></div>
-      <div class="pricing-period">After beta period</div>
-      <div class="pricing-features"><div>✓ Unlimited videos</div><div>✓ Priority voice</div><div>✓ No watermark</div><div>✓ Team access</div><div>✓ Priority support</div></div>
-      <button disabled style="width:100%;margin-top:1.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);padding:0.85rem;border-radius:10px;font-weight:700;cursor:not-allowed;font-family:'Syne',sans-serif;">Coming Soon</button>
+    <iframe id="demo-video-iframe" style="position:absolute;inset:0;width:100%;height:100%;display:none;" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+  </div>
+
+  <!-- Upload your own video note -->
+  <div style="margin-top:1.5rem;padding:1rem 1.5rem;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.15);border-radius:12px;display:flex;align-items:center;gap:1rem;text-align:left;">
+    <div style="font-size:1.5rem;">🎬</div>
+    <div>
+      <div style="font-weight:700;font-size:0.88rem;color:#F5A623;margin-bottom:0.2rem;">Demo video coming soon</div>
+      <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);">We're recording a full walkthrough of AfriVid Studio. Check back soon or <button onclick="showLogin()" style="background:none;border:none;color:#F5A623;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;padding:0;">sign up now</button> to try it yourself.</div>
     </div>
   </div>
+
+  <!-- CTA -->
+  <div style="margin-top:2.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <button class="btn-primary" onclick="showLogin()" style="padding:0.85rem 2.5rem;font-size:1rem;">🚀 Start Free — No Credit Card</button>
+    <a href="studio.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 2rem;border-radius:10px;font-weight:700;font-size:0.9rem;text-decoration:none;font-family:'Syne',sans-serif;">Browse Templates →</a>
+  </div>
 </section>
+
+<script>
+function playDemoVideo() {
+  const placeholder = document.getElementById('video-placeholder');
+  const iframe = document.getElementById('demo-video-iframe');
+  // Replace with your YouTube video ID when ready
+  // iframe.src = 'https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1';
+  // iframe.style.display = 'block';
+  // placeholder.style.display = 'none';
+  alert('Demo video coming soon! Sign up to try AfriVid Studio now.');
+}
+</script>
 
 <!-- FOOTER -->
 <footer class="footer">
