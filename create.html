@@ -3798,9 +3798,6 @@ function checkResumePrompt() {
 }
 
 window._makeAnother = makeAnother = function() {
-  if(window._makeAnotherRunning) return;
-  window._makeAnotherRunning = true;
-  setTimeout(()=>window._makeAnotherRunning=false, 1000);
   console.log("[makeAnother] called");
   scriptData = null;
   videoBlob = null;
@@ -3819,8 +3816,6 @@ window._makeAnother = makeAnother = function() {
   window._sceneImages={};
   window.sceneAssets=[];
   console.log("[makeAnother] going to step 1");
-  document.querySelectorAll(".panel").forEach(p=>{p.classList.remove("active");p.style.display="none";});
-  const p1=document.getElementById("panel-1"); if(p1){p1.classList.add("active");p1.style.display="block";}
   goToStep(1);
 }
 
