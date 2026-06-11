@@ -773,7 +773,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
-let currentVideoFile = null;
+let currentVideoFile = null; window.currentVideoFile = null;
 let enhanceVideo = null;
 let enhanceRecordedChunks = [];
 let enhanceCanvas = null;
@@ -806,7 +806,7 @@ window.loadVideoFile = function(event) {
   console.log("[loadVideoFile] called");
   const file = event.target.files[0];
   if (!file) return;
-  currentVideoFile = file;
+  currentVideoFile = file; window.currentVideoFile = file;
   const url = URL.createObjectURL(file);
   const video = document.getElementById('original-video');
   video.src = url;
@@ -1955,6 +1955,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateEditCropVisual() {
+  const _canvas = document.getElementById('crop-canvas'); if (!_canvas || _canvas.style.display === 'none') return;
   const canvas = document.getElementById('crop-canvas');
   const canvasRect = canvas.getBoundingClientRect();
   const areaRect = document.getElementById('preview-area').getBoundingClientRect();
@@ -2034,7 +2035,7 @@ window._generateCaptions = async function() {
   if (btn) { btn.textContent = '[..] Transcribing...'; btn.disabled = true; }
   
   try {
-    const videoSource = window._editVideoFile || window._editVideoBlob;
+    const videoSource = window.currentVideoFile || window._editVideoFile || window._editVideoBlob;
     const formData = new FormData();
     formData.append('audio', videoSource, 'video.webm');
     
@@ -2105,7 +2106,7 @@ async function loadFFmpeg() {
   return ff;
 }
 
-async function fastExport() {
+window.fastExport = async function fastExport() {
   const video = document.getElementById('original-video');
   if (!video.src && !window._editVideoFile) { alert('Upload a video first'); return; }
 
