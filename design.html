@@ -1424,7 +1424,7 @@ window._generateAIImage = window.generateAIImage = async function() {
   btn.disabled = false;
 }
 
-generateDesign = async function() {
+window._generateDesign = window.generateDesign = async function() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   if (!prompt) { alert('Describe your design first'); return; }
 

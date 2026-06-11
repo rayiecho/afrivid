@@ -268,42 +268,65 @@ body{padding-top:70px;}
 
       <!-- LEFT SIDEBAR -->
       <div class="photo-left">
-        <div style="font-size:0.6rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.25rem;">PRESETS</div>
-        <button class="photo-quick-btn" onclick="applyPhotoPreset('iphone')">📱 iPhone</button>
-        <button class="photo-quick-btn" onclick="applyPhotoPreset('dslr')">📷 DSLR</button>
-        <button class="photo-quick-btn" onclick="applyPhotoPreset('cinema')">🎬 Cinema</button>
-        <button class="photo-quick-btn" onclick="applyPhotoPreset('portrait')">👤 Portrait</button>
-        <button class="photo-quick-btn" onclick="applyPhotoPreset('vivid')">🌈 Vivid</button>
-        <button class="photo-quick-btn" onclick="applyPhotoPreset('bw')">⬛ B&W</button>
-        <button class="photo-quick-btn" onclick="applyPhotoPreset('reset')">↺ Reset</button>
-        <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
-        <button class="photo-quick-btn" onclick="toggleCrop()" style="color:#F5A623;border-color:rgba(245,166,35,0.2);">⬚ Crop</button>
-        <button class="photo-quick-btn" onclick="removeBackground()" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">✂ Remove BG</button>
-        <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
-        <button class="photo-quick-btn" onclick="downloadPhoto()" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">⬇ Download</button>
-        <button class="photo-quick-btn" onclick="handleSaveToStudio()" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">💾 Save</button>
-        <button class="photo-quick-btn" onclick="resetPhotoEditor()" style="color:rgba(230,51,41,0.7);">✕ New Photo</button>
-        <button class="photo-quick-btn" onclick="resizeForPlatform('whatsapp')" style="color:#25D366;border-color:rgba(37,211,102,0.2);">💬 WhatsApp</button>
-        <button class="photo-quick-btn" onclick="resizeForPlatform('instagram')" style="color:#E1306C;border-color:rgba(225,48,108,0.2);">📸 Instagram</button>
-        <button class="photo-quick-btn" onclick="resizeForPlatform('youtube')" style="color:#FF0000;border-color:rgba(255,0,0,0.2);">▶ YouTube</button>
-        <button class="photo-quick-btn" onclick="resizeForPlatform('passport')" style="color:#4CC9F0;border-color:rgba(76,201,240,0.2);">🪪 Passport</button>
-        <button class="photo-quick-btn" onclick="addPhotoFrame('gold')" style="color:#F5A623;border-color:rgba(245,166,35,0.2);">🖼 Gold Frame</button>
-        <button class="photo-quick-btn" onclick="addPhotoFrame('kente')" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">🌿 Kente Frame</button>
-        <button class="photo-quick-btn" onclick="addPhotoFrame('certificate')" style="color:#fff;border-color:rgba(255,255,255,0.2);">📜 Cert Frame</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('ke')" style="color:#006600;border-color:rgba(0,102,0,0.3);">🇰🇪 Kenya</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('ng')" style="color:#008751;border-color:rgba(0,135,81,0.3);">🇳🇬 Nigeria</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('rw')" style="color:#20603D;border-color:rgba(32,96,61,0.3);">🇷🇼 Rwanda</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('gh')" style="color:#FCD116;border-color:rgba(252,209,22,0.3);">🇬🇭 Ghana</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('ug')" style="color:#FCDC04;border-color:rgba(252,220,4,0.3);">🇺🇬 Uganda</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('tz')" style="color:#1EB53A;border-color:rgba(30,181,58,0.3);">🇹🇿 Tanzania</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('za')" style="color:#007A4D;border-color:rgba(0,122,77,0.3);">🇿🇦 S.Africa</button>
-        <button class="photo-quick-btn" onclick="addFlagOverlay('et')" style="color:#078930;border-color:rgba(7,137,48,0.3);">🇪🇹 Ethiopia</button>
-        <button class="photo-quick-btn" onclick="enhancePhoto('professional')" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">✨ Professional</button>
-        <button class="photo-quick-btn" onclick="enhancePhoto('skin')" style="color:#8B5E3C;border-color:rgba(139,94,60,0.3);">🌿 Skin Tone</button>
-        <button class="photo-quick-btn" onclick="enhancePhoto('sharpen')" style="color:#4CC9F0;border-color:rgba(76,201,240,0.3);">🔍 Sharpen</button>
-        <button class="photo-quick-btn" onclick="enhancePhoto('denoise')" style="color:#74C69D;border-color:rgba(116,198,157,0.3);">🔇 Denoise</button>
-        <button class="photo-quick-btn" onclick="addWatermark()" style="color:#fff;border-color:rgba(255,255,255,0.2);">💧 Watermark</button>
-        <button class="photo-quick-btn" onclick="openCollage()" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">🖼 Collage</button>
+        <!-- Tab buttons -->
+        <div style="display:flex;gap:0.3rem;margin-bottom:0.5rem;flex-wrap:wrap;">
+          <button onclick="switchSideTab('basic',this)" id="stab-basic" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.3rem;border-radius:6px;font-size:0.65rem;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;">Basic</button>
+          <button onclick="switchSideTab('enhance',this)" id="stab-enhance" style="flex:1;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);padding:0.3rem;border-radius:6px;font-size:0.65rem;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;">Enhance</button>
+          <button onclick="switchSideTab('frames',this)" id="stab-frames" style="flex:1;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);padding:0.3rem;border-radius:6px;font-size:0.65rem;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;">Frames</button>
+          <button onclick="switchSideTab('flags',this)" id="stab-flags" style="flex:1;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);padding:0.3rem;border-radius:6px;font-size:0.65rem;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;">🌍 Flags</button>
+        </div>
+
+        <!-- Basic Tab -->
+        <div id="stab-basic-content">
+          <button class="photo-quick-btn" onclick="applyPhotoPreset('iphone')">📱 iPhone</button>
+          <button class="photo-quick-btn" onclick="applyPhotoPreset('dslr')">📷 DSLR</button>
+          <button class="photo-quick-btn" onclick="applyPhotoPreset('cinema')">🎬 Cinema</button>
+          <button class="photo-quick-btn" onclick="applyPhotoPreset('portrait')">👤 Portrait</button>
+          <button class="photo-quick-btn" onclick="applyPhotoPreset('vivid')">🌈 Vivid</button>
+          <button class="photo-quick-btn" onclick="applyPhotoPreset('bw')">⬛ B&W</button>
+          <button class="photo-quick-btn" onclick="applyPhotoPreset('reset')">↺ Reset</button>
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
+          <button class="photo-quick-btn" onclick="toggleCrop()" style="color:#F5A623;">⬚ Crop</button>
+          <button class="photo-quick-btn" onclick="removeBackground()" style="color:#74C69D;">✂ Remove BG</button>
+          <button class="photo-quick-btn" onclick="addWatermark()" style="color:#fff;">💧 Watermark</button>
+          <button class="photo-quick-btn" onclick="openCollage()" style="color:#F5A623;">🖼 Collage</button>
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
+          <button class="photo-quick-btn" onclick="resizeForPlatform('whatsapp')" style="color:#25D366;">💬 WhatsApp</button>
+          <button class="photo-quick-btn" onclick="resizeForPlatform('instagram')" style="color:#E1306C;">📸 Instagram</button>
+          <button class="photo-quick-btn" onclick="resizeForPlatform('youtube')" style="color:#FF0000;">▶ YouTube</button>
+          <button class="photo-quick-btn" onclick="resizeForPlatform('passport')" style="color:#4CC9F0;">🪪 Passport</button>
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
+          <button class="photo-quick-btn" onclick="downloadPhoto()" style="color:#F5A623;">⬇ Download</button>
+          <button class="photo-quick-btn" onclick="handleSaveToStudio()" style="color:#74C69D;">💾 Save</button>
+          <button class="photo-quick-btn" onclick="resetPhotoEditor()" style="color:rgba(230,51,41,0.7);">✕ New Photo</button>
+        </div>
+
+        <!-- Enhance Tab -->
+        <div id="stab-enhance-content" style="display:none;">
+          <button class="photo-quick-btn" onclick="enhancePhoto('professional')" style="color:#F5A623;">✨ Professional</button>
+          <button class="photo-quick-btn" onclick="enhancePhoto('skin')" style="color:#8B5E3C;">🌿 Skin Tone</button>
+          <button class="photo-quick-btn" onclick="enhancePhoto('sharpen')" style="color:#4CC9F0;">🔍 Sharpen</button>
+          <button class="photo-quick-btn" onclick="enhancePhoto('denoise')" style="color:#74C69D;">🔇 Denoise</button>
+        </div>
+
+        <!-- Frames Tab -->
+        <div id="stab-frames-content" style="display:none;">
+          <button class="photo-quick-btn" onclick="addPhotoFrame('gold')" style="color:#F5A623;">🖼 Gold Frame</button>
+          <button class="photo-quick-btn" onclick="addPhotoFrame('kente')" style="color:#74C69D;">🌿 Kente Frame</button>
+          <button class="photo-quick-btn" onclick="addPhotoFrame('certificate')" style="color:#fff;">📜 Cert Frame</button>
+        </div>
+
+        <!-- Flags Tab -->
+        <div id="stab-flags-content" style="display:none;">
+          <button class="photo-quick-btn" onclick="addFlagOverlay('ke')" style="color:#006600;">🇰🇪 Kenya</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('ng')" style="color:#008751;">🇳🇬 Nigeria</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('rw')" style="color:#20603D;">🇷🇼 Rwanda</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('gh')" style="color:#FCD116;">🇬🇭 Ghana</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('ug')" style="color:#FCDC04;">🇺🇬 Uganda</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('tz')" style="color:#1EB53A;">🇹🇿 Tanzania</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('za')" style="color:#007A4D;">🇿🇦 S.Africa</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('et')" style="color:#078930;">🇪🇹 Ethiopia</button>
+        </div>
         <div id="bg-remove-status" style="font-size:0.62rem;color:#F5A623;font-family:'Space Mono',monospace;margin-top:0.3rem;"></div>
         <span id="photo-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;word-break:break-all;margin-top:0.3rem;"></span>
       </div>
@@ -1658,6 +1681,17 @@ function getFilterSafe() {
 // Override getFilter if it's broken
 if (typeof getFilter === 'undefined' || !document.getElementById('brightness')) {
   window.getFilter = getFilterSafe;
+}
+</script>
+
+
+<script>
+function switchSideTab(tab, btn) {
+  ['basic','enhance','frames','flags'].forEach(t => {
+    document.getElementById('stab-'+t+'-content').style.display = t===tab ? 'block' : 'none';
+    const b = document.getElementById('stab-'+t);
+    if(b) { b.style.background = t===tab ? '#F5A623' : '#1a1a1a'; b.style.color = t===tab ? '#050A14' : 'rgba(255,255,255,0.5)'; b.style.border = t===tab ? 'none' : '1px solid rgba(255,255,255,0.08)'; }
+  });
 }
 </script>
 
