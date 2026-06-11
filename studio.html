@@ -816,8 +816,8 @@ async function loadUserFiles(uid) {
           <div class="card-title">${data.title || 'Untitled Video'}</div>
           <div class="card-meta">${data.duration ? data.duration+'s · ' : ''}${date}</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="window.location.href='create.html'">Open</button>
-            <button class="card-btn" onclick="window.location.href='edit.html'">Edit</button>
+            <button class="card-btn primary" onclick="showVideoInfo('${data.title || 'Untitled Video'}','${date}','${data.duration || 0}s','${data.size || ''}','${data.videoUrl || ''}')">▶ View Info</button>
+            <button class="card-btn" onclick="useTemplate('${data.title || ''}')">Recreate</button>
           </div>
         </div>
       </div>`;
@@ -1167,6 +1167,44 @@ window._requestUpgrade = function() {
       <button class="btn-profile-save" onclick="saveProfileName()">Save Changes</button>
       <button class="btn-signout-profile" onclick="signOut()">Sign Out</button>
       <button class="btn-profile-close" onclick="closeProfile()">✕</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Video Info Modal -->
+<div id="video-info-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.9);align-items:center;justify-content:center;">
+  <div style="background:#111;border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.08);width:90%;max-width:480px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h3 id="vinfo-title" style="color:#F5A623;font-weight:800;font-size:1rem;"></h3>
+      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="background:#1a1a1a;border-radius:12px;padding:1rem;margin-bottom:1rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+        <div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DATE</div>
+          <div id="vinfo-date" style="color:#fff;font-size:0.85rem;font-weight:600;"></div>
+        </div>
+        <div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DURATION</div>
+          <div id="vinfo-duration" style="color:#fff;font-size:0.85rem;font-weight:600;"></div>
+        </div>
+        <div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">SIZE</div>
+          <div id="vinfo-size" style="color:#fff;font-size:0.85rem;font-weight:600;"></div>
+        </div>
+        <div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">STATUS</div>
+          <div style="color:#74C69D;font-size:0.85rem;font-weight:600;">✅ Saved</div>
+        </div>
+      </div>
+    </div>
+    <div id="vinfo-player" style="display:none;margin-bottom:1rem;">
+      <video id="vinfo-video" controls style="width:100%;border-radius:8px;max-height:240px;"></video>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+      <button id="vinfo-recreate-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:800;cursor:pointer;">🔄 Recreate Video</button>
+      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-weight:600;cursor:pointer;">Close</button>
     </div>
   </div>
 </div>
