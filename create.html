@@ -2135,6 +2135,7 @@ window._startRecording = async function startRecording() {
       source.connect(dest);
       source.connect(audioCtx.destination);
       source.start();
+      source.onended = () => { window._sceneAudioDone = true; };
 
       // Word-by-word karaoke timing
       const scene = scriptData.scenes[index];
@@ -2183,6 +2184,13 @@ window._startRecording = async function startRecording() {
       }
     } else {
       drawScene(canvas, scriptData.scenes[sceneIndex], totalProgress, window.currentWord || 0);
+      // Generate images for all themes
+      if(!window._sceneImages[sceneIndex]) {
+        window.generateSceneImage(scriptData.scenes[sceneIndex], sceneIndex);
+      }
+      if(sceneIndex+1 < scriptData.scenes.length && !window._sceneImages[sceneIndex+1]) {
+        window.generateSceneImage(scriptData.scenes[sceneIndex+1], sceneIndex+1);
+      }
     }
     // Draw scene assets overlay
     if(window.sceneAssets && window.sceneAssets.length > 0) {
@@ -3962,7 +3970,7 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   if(window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
   try {
     const prompt = `Professional illustration for: ${scene.title || scene.voiceover?.slice(0,80)}. Clean, modern, African context, vibrant colors, no text.`;
-    const res = await fetch('http://localhost:5051/generate-image', {
+    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({prompt})
     });
