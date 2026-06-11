@@ -788,7 +788,13 @@ window.handleSaveToStudio = async function() {
       createdAt: serverTimestamp()
     });
     addLog('success', '[ok] Saved to Studio!');
-    setTimeout(() => window.location.href = 'studio.html', 1200);
+    
+// Show saved toast notification
+const toast = document.createElement('div');
+toast.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#74C69D;color:#050A14;padding:0.75rem 1.25rem;border-radius:10px;font-weight:800;font-size:0.85rem;z-index:9999;font-family:Syne,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+toast.textContent = '✅ Saved to Studio!';
+document.body.appendChild(toast);
+setTimeout(() => toast.remove(), 3000);
   } catch(e) {
     addLog('error', '[x] Save failed: '+e.message);
   }
