@@ -2146,6 +2146,14 @@ async function fastExport() {
       addEnhanceLog('info', `[~] Trimming: ${c0.start}s to ${c0.end}s`);
     }
 
+    // Get volume and audio settings
+    const volumeVal = parseInt(document.getElementById('audio-volume')?.value || 100) / 100;
+    const af = volumeVal !== 1 ? `volume=${volumeVal.toFixed(2)}` : null;
+
+    // Build FFmpeg audio args
+    const ffAudioArgs = af ? ['-af', af] : [];
+    if(af) addEnhanceLog('info', `[~] Volume: ${Math.round(volumeVal*100)}%`);
+
     // Run FFmpeg
     await ff.exec([
       ...inputArgs,
@@ -2154,6 +2162,7 @@ async function fastExport() {
       '-preset', 'fast',
       '-crf', '23',
       '-c:a', 'aac',
+      ...ffAudioArgs,
       '-movflags', '+faststart',
       'output.mp4'
     ]);
