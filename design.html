@@ -166,6 +166,14 @@ body{padding-top:70px;}
           <button class="template-btn" onclick="loadTemplate('flyer')">📢 Flyer</button>
           <button class="template-btn" onclick="loadTemplate('social')">📱 Social</button>
           <button class="template-btn" onclick="loadTemplate('banner')">🖼 Banner</button>
+          <button class="template-btn" onclick="loadTemplate('wedding')">💒 Wedding</button>
+          <button class="template-btn" onclick="loadTemplate('graduation')">🎓 Graduation</button>
+          <button class="template-btn" onclick="loadTemplate('church')">⛪ Church</button>
+          <button class="template-btn" onclick="loadTemplate('business_open')">🏪 Grand Opening</button>
+          <button class="template-btn" onclick="loadTemplate('whatsapp')">📱 WhatsApp</button>
+          <button class="template-btn" onclick="loadTemplate('youtube')">🎯 YouTube</button>
+          <button class="template-btn" onclick="loadTemplate('school')">🏫 School Notice</button>
+          <button class="template-btn" onclick="loadTemplate('birthday')">🎂 Birthday</button>
         </div>
       </div>
 
@@ -642,6 +650,117 @@ window.loadTemplate = function(type) {
       {type:'text',text:'AfriVid Studio',x:400,y:480,color:'#ffffff',size:90,font:'Syne',weight:800},
       {type:'text',text:"Africa's First Smart Video Suite",x:400,y:570,color:'#F5A623',size:38,font:'Syne',weight:400},
     ]}
+  };
+
+    wedding: {bg:'linear-gradient(135deg,#1A0A00,#3D1A00)',size:'1080x1080',els:[
+      {type:'rect',x:0,y:0,w:1080,h:8,color:'#F5A623'},
+      {type:'rect',x:0,y:1072,w:1080,h:8,color:'#F5A623'},
+      {type:'circle',x:540,y:300,r:180,color:'rgba(245,166,35,0.08)'},
+      {type:'text',text:'💍',x:490,y:220,color:'#F5A623',size:100,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'WE ARE GETTING MARRIED',x:540,y:380,color:'#F5A623',size:38,font:'Syne',weight:800,align:'center'},
+      {type:'text',text:'JOHN & AMARA',x:540,y:480,color:'#ffffff',size:72,font:'Syne',weight:900,align:'center'},
+      {type:'rect',x:240,y:510,w:600,h:4,color:'rgba(245,166,35,0.5)'},
+      {type:'text',text:'Saturday, 15th February 2025',x:540,y:580,color:'rgba(255,255,255,0.8)',size:34,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'St. Mary Church, Nairobi · 2:00 PM',x:540,y:630,color:'#74C69D',size:28,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Reception to follow · RSVP: +254 700 000 000',x:540,y:700,color:'rgba(255,255,255,0.6)',size:24,font:'Syne',weight:400,align:'center'},
+    ]},
+    graduation: {bg:'linear-gradient(135deg,#050A14,#0D2B1A)',size:'1080x1080',els:[
+      {type:'rect',x:0,y:0,w:1080,h:8,color:'#F5A623'},
+      {type:'circle',x:540,y:280,r:160,color:'rgba(245,166,35,0.1)'},
+      {type:'text',text:'🎓',x:490,y:200,color:'#F5A623',size:110,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'CONGRATULATIONS',x:540,y:400,color:'#F5A623',size:44,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'AMARA OKONKWO',x:540,y:490,color:'#ffffff',size:66,font:'Syne',weight:900,align:'center'},
+      {type:'rect',x:240,y:520,w:600,h:4,color:'rgba(245,166,35,0.5)'},
+      {type:'text',text:'Bachelor of Science in Computer Engineering',x:540,y:590,color:'#74C69D',size:28,font:'Syne',weight:600,align:'center'},
+      {type:'text',text:'University of Nairobi · Class of 2025',x:540,y:640,color:'rgba(255,255,255,0.7)',size:26,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Your future is bright! 🌟',x:540,y:720,color:'rgba(245,166,35,0.8)',size:28,font:'Syne',weight:400,align:'center'},
+    ]},
+    church: {bg:'linear-gradient(135deg,#030818,#0A1628)',size:'1080x1920',els:[
+      {type:'rect',x:0,y:0,w:1080,h:10,color:'#F5A623'},
+      {type:'rect',x:0,y:1910,w:1080,h:10,color:'#F5A623'},
+      {type:'circle',x:540,y:400,r:220,color:'rgba(245,166,35,0.06)'},
+      {type:'text',text:'✝',x:490,y:280,color:'rgba(245,166,35,0.4)',size:180,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'HOLY GHOST',x:540,y:600,color:'#F5A623',size:72,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'CRUSADE 2025',x:540,y:690,color:'#ffffff',size:66,font:'Syne',weight:900,align:'center'},
+      {type:'rect',x:200,y:720,w:680,h:4,color:'rgba(245,166,35,0.4)'},
+      {type:'text',text:'Theme: "Walking in Divine Power"',x:540,y:800,color:'#74C69D',size:36,font:'Syne',weight:600,align:'center'},
+      {type:'text',text:'Speaker: Pastor John Mwangi',x:540,y:870,color:'rgba(255,255,255,0.8)',size:32,font:'Syne',weight:600,align:'center'},
+      {type:'text',text:'Date: 20th - 25th March 2025',x:540,y:940,color:'rgba(255,255,255,0.7)',size:30,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Venue: Uhuru Park Grounds, Nairobi',x:540,y:1000,color:'rgba(255,255,255,0.7)',size:28,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Time: 6:00 PM Daily',x:540,y:1060,color:'#F5A623',size:32,font:'Syne',weight:700,align:'center'},
+      {type:'text',text:'ALL ARE WELCOME!',x:540,y:1160,color:'#ffffff',size:44,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'Hosted by: Victory Worship Centre',x:540,y:1700,color:'rgba(255,255,255,0.5)',size:26,font:'Syne',weight:400,align:'center'},
+    ]},
+    business_open: {bg:'linear-gradient(135deg,#0A0F1E,#1A2A0A)',size:'1080x1080',els:[
+      {type:'rect',x:0,y:0,w:1080,h:10,color:'#F5A623'},
+      {type:'rect',x:0,y:1070,w:1080,h:10,color:'#F5A623'},
+      {type:'text',text:'🎉',x:490,y:120,color:'#F5A623',size:100,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'GRAND OPENING',x:540,y:280,color:'#F5A623',size:62,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'MAMA AFRICA BOUTIQUE',x:540,y:370,color:'#ffffff',size:48,font:'Syne',weight:900,align:'center'},
+      {type:'rect',x:200,y:400,w:680,h:4,color:'rgba(245,166,35,0.5)'},
+      {type:'text',text:'Join us for our opening day!',x:540,y:470,color:'rgba(255,255,255,0.8)',size:32,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Saturday, 1st March 2025',x:540,y:550,color:'#74C69D',size:36,font:'Syne',weight:700,align:'center'},
+      {type:'text',text:'10:00 AM - 6:00 PM',x:540,y:610,color:'rgba(255,255,255,0.7)',size:30,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Tom Mboya Street, Nairobi CBD',x:540,y:670,color:'rgba(255,255,255,0.6)',size:26,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'🎁 FREE GIFTS · DISCOUNTS · FOOD',x:540,y:760,color:'#F5A623',size:30,font:'Syne',weight:700,align:'center'},
+      {type:'text',text:'Call: +254 700 000 000',x:540,y:870,color:'rgba(255,255,255,0.6)',size:26,font:'Syne',weight:400,align:'center'},
+    ]},
+    whatsapp: {bg:'linear-gradient(135deg,#075E54,#128C7E)',size:'1080x1920',els:[
+      {type:'circle',x:540,y:400,r:200,color:'rgba(255,255,255,0.05)'},
+      {type:'text',text:'💬',x:490,y:280,color:'rgba(255,255,255,0.8)',size:130,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'GOOD MORNING!',x:540,y:560,color:'#ffffff',size:72,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'Start your day with purpose',x:540,y:650,color:'rgba(255,255,255,0.85)',size:36,font:'Syne',weight:400,align:'center'},
+      {type:'rect',x:300,y:690,w:480,h:4,color:'rgba(255,255,255,0.3)'},
+      {type:'text',text:'"Success is not final, failure is not',x:540,y:780,color:'rgba(255,255,255,0.9)',size:28,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'fatal: it is the courage to continue',x:540,y:820,color:'rgba(255,255,255,0.9)',size:28,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'that counts."',x:540,y:860,color:'rgba(255,255,255,0.9)',size:28,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'— Winston Churchill',x:540,y:930,color:'rgba(255,255,255,0.6)',size:24,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Have a blessed day! 🙏',x:540,y:1050,color:'#25D366',size:38,font:'Syne',weight:700,align:'center'},
+    ]},
+    youtube: {bg:'#0F0F0F',size:'1280x720',els:[
+      {type:'rect',x:0,y:0,w:1280,h:720,color:'linear-gradient(135deg,#0F0F0F,#1A1A2E)'},
+      {type:'rect',x:0,y:0,w:8,h:720,color:'#FF0000'},
+      {type:'circle',x:960,y:360,r:280,color:'rgba(255,0,0,0.06)'},
+      {type:'text',text:'WATCH THIS',x:80,y:200,color:'#FF0000',size:56,font:'Syne',weight:900},
+      {type:'text',text:'VIDEO TITLE GOES',x:80,y:290,color:'#ffffff',size:82,font:'Syne',weight:900},
+      {type:'text',text:'HERE IN BOLD',x:80,y:380,color:'#ffffff',size:82,font:'Syne',weight:900},
+      {type:'rect',x:80,y:410,w:300,h:6,color:'#FF0000'},
+      {type:'text',text:'Your Channel Name',x:80,y:480,color:'rgba(255,255,255,0.6)',size:32,font:'Syne',weight:400},
+      {type:'text',text:'▶',x:900,y:420,color:'rgba(255,255,255,0.15)',size:200,font:'Syne',weight:900,align:'center'},
+    ]},
+    school: {bg:'#ffffff',size:'1240x1754',els:[
+      {type:'rect',x:0,y:0,w:1240,h:12,color:'#2D6A4F'},
+      {type:'rect',x:0,y:1742,w:1240,h:12,color:'#2D6A4F'},
+      {type:'rect',x:0,y:0,w:12,h:1754,color:'#2D6A4F'},
+      {type:'rect',x:1228,y:0,w:12,h:1754,color:'#2D6A4F'},
+      {type:'text',text:'🏫',x:570,y:100,color:'#2D6A4F',size:80,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'GREENHILL ACADEMY',x:620,y:220,color:'#2D6A4F',size:52,font:'Syne',weight:900,align:'center'},
+      {type:'rect',x:200,y:250,w:840,h:4,color:'#F5A623'},
+      {type:'text',text:'SCHOOL FEE NOTICE',x:620,y:340,color:'#050A14',size:58,font:'Syne',weight:800,align:'center'},
+      {type:'text',text:'Term 1 · 2025',x:620,y:420,color:'#2D6A4F',size:38,font:'Syne',weight:600,align:'center'},
+      {type:'rect',x:100,y:460,w:1040,h:2,color:'rgba(0,0,0,0.1)'},
+      {type:'text',text:'Dear Parent/Guardian,',x:120,y:540,color:'#050A14',size:32,font:'Syne',weight:600},
+      {type:'text',text:'Kindly note that school fees for Term 1',x:120,y:600,color:'#333333',size:28,font:'Syne',weight:400},
+      {type:'text',text:'2025 are now due. Please ensure payment',x:120,y:645,color:'#333333',size:28,font:'Syne',weight:400},
+      {type:'text',text:'is made before 15th February 2025.',x:120,y:690,color:'#333333',size:28,font:'Syne',weight:400},
+      {type:'text',text:'Fee Structure:',x:120,y:780,color:'#050A14',size:32,font:'Syne',weight:700},
+      {type:'text',text:'Tuition Fee: KES 25,000',x:120,y:840,color:'#333333',size:28,font:'Syne',weight:400},
+      {type:'text',text:'Activity Fee: KES 5,000',x:120,y:890,color:'#333333',size:28,font:'Syne',weight:400},
+      {type:'text',text:'Lunch Fee: KES 8,000',x:120,y:940,color:'#333333',size:28,font:'Syne',weight:400},
+      {type:'text',text:'Total: KES 38,000',x:120,y:1010,color:'#2D6A4F',size:36,font:'Syne',weight:800},
+      {type:'text',text:'For enquiries: 0700 000 000',x:620,y:1600,color:'#2D6A4F',size:28,font:'Syne',weight:600,align:'center'},
+      {type:'text',text:'Principal: Dr. Jane Mwangi',x:620,y:1650,color:'#050A14',size:26,font:'Syne',weight:600,align:'center'},
+    ]},
+    birthday: {bg:'linear-gradient(135deg,#1A0030,#3D0080)',size:'1080x1080',els:[
+      {type:'circle',x:540,y:300,r:200,color:'rgba(245,166,35,0.1)'},
+      {type:'text',text:'🎂',x:490,y:160,color:'#F5A623',size:130,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'HAPPY BIRTHDAY',x:540,y:420,color:'#F5A623',size:58,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'AMARA! 🎉',x:540,y:510,color:'#ffffff',size:72,font:'Syne',weight:900,align:'center'},
+      {type:'rect',x:240,y:545,w:600,h:4,color:'rgba(245,166,35,0.5)'},
+      {type:'text',text:'Wishing you all the joy and',x:540,y:620,color:'rgba(255,255,255,0.85)',size:32,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'blessings this special day brings!',x:540,y:665,color:'rgba(255,255,255,0.85)',size:32,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'With love 💕',x:540,y:760,color:'#F5A623',size:36,font:'Syne',weight:600,align:'center'},
+    ]},
   };
   const t = templates[type];
   if (!t) return;
