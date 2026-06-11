@@ -1035,7 +1035,13 @@ window.updateDurationWarning = function() {
 // GENERATE SCRIPT
 window._handleGenerateScript = window.handleGenerateScript = async function() {
   const mode = document.getElementById('mode-own')?.classList.contains('active') ? 'own' : 'ai';
-  const topic = mode === 'own' 
+  
+  // If own script mode - use structureOwnScript instead
+  if (mode === 'own') {
+    await structureOwnScript();
+    return;
+  }
+  
     ? (document.getElementById('own-script')?.value.trim() || document.getElementById('video-topic')?.value.trim())
     : document.getElementById('video-topic')?.value.trim();
   if (!topic) { 
