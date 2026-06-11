@@ -4698,16 +4698,11 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   if (window.sceneAssets && window.sceneAssets.length > 0) return null;
   if(window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
   try {
-    const prompt = `Professional illustration for: ${scene.title || scene.voiceover?.slice(0,80)}. Clean, modern, African context, vibrant colors, no text.`;
-    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt})
-    });
-    if(!res.ok) return null;
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+    const query = encodeURIComponent((scene.slideTitle || scene.voiceover || 'africa business').slice(0, 50));
+    const url = `https://source.unsplash.com/854x480/?${query},africa`;
     return new Promise(resolve => {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.onload = () => { window._sceneImages[sceneIndex] = img; resolve(img); };
       img.onerror = () => resolve(null);
       img.src = url;
