@@ -416,10 +416,10 @@ document.addEventListener('click', function(e) {
 });
 
 // Global proxies - onclick handlers need global scope
-function generateAIDesign(){ if(window._generateAIDesign) window._generateAIDesign(); else if(window['generateAIDesign']) window['generateAIDesign'](); }
-function loadTemplate(a,b){ if(window._loadTemplate) window._loadTemplate(a,b); else if(window['loadTemplate']) window['loadTemplate'](a,b); }
-function resizeDesignCanvas(a,b){ if(window._resizeDesignCanvas) window._resizeDesignCanvas(a,b); else if(window['resizeDesignCanvas']) window['resizeDesignCanvas'](a,b); }
-function setDesignBg(a,b){ if(window._setDesignBg) window._setDesignBg(a,b); else if(window['setDesignBg']) window['setDesignBg'](a,b); }
+function generateAIDesign(){ if(window._generateAIDesign) window._generateAIDesign();  }
+function loadTemplate(a,b){ if(window._loadTemplate) window._loadTemplate(a,b);  }
+function resizeDesignCanvas(a,b){ if(window._resizeDesignCanvas) window._resizeDesignCanvas(a,b);  }
+function setDesignBg(a,b){ if(window._setDesignBg) window._setDesignBg(a,b);  }
 function addText(){
   if(window._addText) { window._addText(); return; }
   // Fallback: prompt for text
@@ -433,24 +433,24 @@ function addText(){
   ctx.textAlign = 'center';
   ctx.fillText(t, canvas.width/2, canvas.height/2);
 }
-function addShape(a,b){ if(window._addShape) window._addShape(a,b); else if(window['addShape']) window['addShape'](a,b); }
-function addImageElement(a,b){ if(window._addImageElement) window._addImageElement(a,b); else if(window['addImageElement']) window['addImageElement'](a,b); }
-function updateElement(a,b){ if(window._updateElement) window._updateElement(a,b); else if(window['updateElement']) window['updateElement'](a,b); }
-function deleteElement(){ if(window._deleteElement) window._deleteElement(); else if(window['deleteElement']) window['deleteElement'](); }
-function undoDesign(){ if(window._undoDesign) window._undoDesign(); else if(window['undoDesign']) window['undoDesign'](); }
-function clearCanvas(){ if(window._clearCanvas) window._clearCanvas(); else if(window['clearCanvas']) window['clearCanvas'](); }
-function downloadDesign(a,b){ if(window._downloadDesign) window._downloadDesign(a,b); else if(window['downloadDesign']) window['downloadDesign'](a,b); }
-function downloadDesignSVG(){ if(window._downloadDesignSVG) window._downloadDesignSVG(); else if(window['downloadDesignSVG']) window['downloadDesignSVG'](); }
-function handleSaveToStudio(){ if(window._handleSaveToStudio) window._handleSaveToStudio(); else if(window['handleSaveToStudio']) window['handleSaveToStudio'](); }
-function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
-function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
-function applyCrop(){ if(window._applyCrop) window._applyCrop(); else if(window['applyCrop']) window['applyCrop'](); }
-function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); else if(window['cancelCrop']) window['cancelCrop'](); }
-function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
-function hideLogin(){ if(window._hideLogin) window._hideLogin(); else if(window['hideLogin']) window['hideLogin'](); }
-function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); else if(window['showAuthTab']) window['showAuthTab'](a,b); }
-function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
-function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
+function addShape(a,b){ if(window._addShape) window._addShape(a,b);  }
+function addImageElement(a,b){ if(window._addImageElement) window._addImageElement(a,b);  }
+function updateElement(a,b){ if(window._updateElement) window._updateElement(a,b);  }
+function deleteElement(){ if(window._deleteElement) window._deleteElement();  }
+function undoDesign(){ if(window._undoDesign) window._undoDesign();  }
+function clearCanvas(){ if(window._clearCanvas) window._clearCanvas();  }
+function downloadDesign(a,b){ if(window._downloadDesign) window._downloadDesign(a,b);  }
+function downloadDesignSVG(){ if(window._downloadDesignSVG) window._downloadDesignSVG();  }
+function handleSaveToStudio(){ if(window._handleSaveToStudio) window._handleSaveToStudio();  }
+function toggleCrop(){ if(window._toggleCrop) window._toggleCrop();  }
+function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b);  }
+function applyCrop(){ if(window._applyCrop) window._applyCrop();  }
+function cancelCrop(){ if(window._cancelCrop) window._cancelCrop();  }
+function showLogin(){ if(window._showLogin) window._showLogin();  }
+function hideLogin(){ if(window._hideLogin) window._hideLogin();  }
+function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b);  }
+function doSignIn(){ if(window._doSignIn) window._doSignIn();  }
+function doSignUp(){ if(window._doSignUp) window._doSignUp();  }
 </script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
