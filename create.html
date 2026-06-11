@@ -68,7 +68,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-green{background:#2D8A5E;color:#fff;}
 .btn-green:hover{background:#40916C;transform:translateY(-2px);}
 .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
-.btn-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;}
+.btn-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;} .creator-left{height:100%;display:flex;flex-direction:column;overflow-y:auto;} .creator-right{height:100%;overflow-y:auto;position:sticky;top:0;padding-right:4px;}
 
 /* SCRIPT SCENES */
 .script-scene{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem;position:relative;}
@@ -156,6 +156,34 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
+
+.creator-left {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.creator-right {
+  height: calc(100vh - 220px);
+  overflow-y: auto;
+  position: sticky;
+  top: 80px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+.creator-right::-webkit-scrollbar {
+  width: 4px;
+}
+.creator-right::-webkit-scrollbar-thumb {
+  background: rgba(245,166,35,0.3);
+  border-radius: 4px;
+}
+#btn-generate {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  margin-top: auto;
+}
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
@@ -278,10 +306,10 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </div>
 
         <div>
-        <div style="display:grid;grid-template-columns:1fr 220px;gap:1.25rem;align-items:start;">
+        <div style="display:grid;grid-template-columns:1fr 280px;gap:1.25rem;align-items:start;">
 
           <!-- LEFT: MAIN INPUT -->
-          <div>
+          <div class="creator-left">
             <!-- AI FIELDS -->
             <div id="ai-fields">
               <div class="form-group" style="margin-bottom:1rem;">
@@ -373,7 +401,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </div>
 
           <!-- RIGHT: SETTINGS SIDEBAR -->
-          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div class="creator-right" style="display:flex;flex-direction:column;gap:0.75rem;position:sticky;top:80px;max-height:calc(100vh - 120px);overflow-y:auto;padding-right:6px;">
             <div style="font-size:0.6rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.25rem;">VIDEO SETTINGS</div>
 
             <div class="form-group">
@@ -553,7 +581,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
           </div>
         </div>
 
-        <div class="btn-row">
+        <div class="btn-row" style="position:sticky;bottom:0;background:#111;padding:1rem 0;margin-top:auto;">
           <button class="btn btn-gold" id="btn-generate" onclick="handleGenerateScript()">
             ✨ Generate Script
           </button>
@@ -3934,7 +3962,7 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   if(window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
   try {
     const prompt = `Professional illustration for: ${scene.title || scene.voiceover?.slice(0,80)}. Clean, modern, African context, vibrant colors, no text.`;
-    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
+    const res = await fetch('http://localhost:5051/generate-image', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({prompt})
     });

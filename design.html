@@ -797,7 +797,7 @@ window.generateAIDesign = async function() {
     // Try image generation first
     const ctrl = new AbortController();
     const timeout = setTimeout(()=>ctrl.abort(),60000);
-    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image',{
+    const res = await fetch('http://localhost:5051/generate-image',{
       method:'POST', headers:{'Content-Type':'application/json'},
       signal:ctrl.signal,
       body:JSON.stringify({prompt:`Professional ${type} design, ${prompt}. High quality, clean, modern.`})
@@ -1180,7 +1180,7 @@ window._generateAIImage = window.generateAIImage = async function() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
 
-    const response = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
+    const response = await fetch('http://localhost:5051/generate-image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
