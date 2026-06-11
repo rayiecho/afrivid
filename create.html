@@ -3260,7 +3260,7 @@ window._downloadVideo = function() {
 
 // -- TAB SWITCHING --
 // -- VIDEO LIBRARY --
-let videoLibrary = JSON.parse(localStorage.getItem('afrivid-library') || '[]');
+let videoLibrary = []; try { videoLibrary = JSON.parse(localStorage.getItem('afrivid-library') || '[]'); } catch(e) {}
 
 function saveToLibrary(blob, title, duration) {
   const reader = new FileReader();
@@ -4761,8 +4761,7 @@ window.renderScript = function renderScript() {
 
 function saveGenerationProgress() {
   if (!scriptData) return;
-  try {
-    localStorage.setItem('afrivid_last_script', JSON.stringify({
+  try { localStorage.setItem('afrivid_last_script', JSON.stringify({
       title: scriptData.title,
       duration: scriptData.duration,
       sceneCount: scriptData.scenes.length,
@@ -4773,7 +4772,7 @@ function saveGenerationProgress() {
 
 function checkResumePrompt() {
   try {
-    const saved = localStorage.getItem('afrivid_last_script');
+  let saved = null; try { saved = localStorage.getItem('afrivid_last_script'); } catch(e) {}
     if (!saved) return;
     const data = JSON.parse(saved);
     const age = Date.now() - data.savedAt;
