@@ -123,9 +123,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* HERO */
 .hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem;}
 .hero-bg{position:absolute;inset:0;z-index:0;}
-.hero-bg-left{position:absolute;top:0;left:0;width:50%;height:100%;background:url('images/background1.jpg') center/cover no-repeat;opacity:0.18;}
-.hero-bg-right{position:absolute;top:0;right:0;width:50%;height:100%;background:url('images/background2.jpg') center/cover no-repeat;opacity:0.18;}
-.hero-bg-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,8,8,0.82) 0%,rgba(8,8,8,0.65) 50%,rgba(8,8,8,0.82) 100%);}
+.hero-bg-left{position:absolute;top:0;left:0;width:50%;height:100%;background:url('images/background1.jpg') center top/cover no-repeat;opacity:0.35;}
+.hero-bg-right{position:absolute;top:0;right:0;width:50%;height:100%;background:url('images/background2.jpg') center top/cover no-repeat;opacity:0.35;}
+.hero-bg-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,8,8,0.78) 0%,rgba(8,8,8,0.55) 50%,rgba(8,8,8,0.78) 100%);}
 .hero-bg-line{position:absolute;top:0;left:50%;width:1px;height:100%;background:linear-gradient(180deg,transparent,rgba(245,166,35,0.12),transparent);}
 .hero-content{position:relative;z-index:1;max-width:750px;margin:0 auto;}
 .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);border-radius:50px;padding:0.4rem 1rem;margin-bottom:2rem;}
@@ -350,6 +350,30 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .page-title{font-size:1.3rem !important;}
   #video-canvas{max-height:220px !important;}
 }
+
+
+/* Background image sections */
+.bg-section-1{
+  position:relative;
+  background:url('images/background1.jpg') center/cover no-repeat fixed;
+}
+.bg-section-1::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(8,8,8,0.80);
+  z-index:0;
+}
+.bg-section-1 > *{position:relative;z-index:1;}
+
+.bg-section-2{
+  position:relative;
+  background:url('images/background2.jpg') center/cover no-repeat fixed;
+}
+.bg-section-2::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(8,8,8,0.80);
+  z-index:0;
+}
+.bg-section-2 > *{position:relative;z-index:1;}
 
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
