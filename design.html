@@ -244,8 +244,11 @@ body{padding-top:70px;}
       </div>
 
       <!-- TEMPLATES -->
-      <div class="card">
-        <div class="control-label">TEMPLATES</div>
+      <div class="card" style="padding:0;">
+        <button onclick="const g=document.getElementById('template-grid-wrap');const a=document.getElementById('tmpl-arrow');g.style.display=g.style.display==='none'?'block':'none';a.textContent=g.style.display==='none'?'▸':'▾';" style="width:100%;background:none;border:none;color:#F5A623;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:800;letter-spacing:2px;padding:0.75rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          TEMPLATES <span id="tmpl-arrow">▸</span>
+        </button>
+        <div id="template-grid-wrap" style="display:none;padding:0 0.75rem 0.75rem;">
         <div class="template-grid">
           <button class="template-btn" onclick="loadTemplate('logo')">🔵 Logo</button>
           <button class="template-btn" onclick="loadTemplate('poster')">📋 Poster</button>
@@ -261,6 +264,7 @@ body{padding-top:70px;}
           <button class="template-btn" onclick="loadTemplate('youtube')">🎯 YouTube</button>
           <button class="template-btn" onclick="loadTemplate('school')">🏫 School Notice</button>
           <button class="template-btn" onclick="loadTemplate('birthday')">🎂 Birthday</button>
+        </div>
         </div>
       </div>
 
