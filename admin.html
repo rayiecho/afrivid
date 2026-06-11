@@ -713,7 +713,7 @@ window.adminFirebaseSignIn = async function adminFirebaseSignIn() {
     if (auth.currentUser) return;
     // Silent sign in using stored credentials
     const adminEmail = 'afrividstudio@gmail.com';
-    const adminPwd = 'Regan6440.';
+    const adminPwd = 'Regan6440';
     console.log('[Admin] Signing in as', adminEmail);
     const cred = await signInWithEmailAndPassword(auth, adminEmail, adminPwd);
     console.log('[Admin] Signed in! UID:', cred.user.uid);
