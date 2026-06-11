@@ -1540,11 +1540,39 @@ function enhancePhoto(type) {
     ctx.putImageData(new ImageData(result, W, H), 0, 0);
     if(window.addLog) addLog('success', '[ok] Sharpening applied!');
   } else if (type === 'denoise') {
+    // Proper noise reduction using median-like box filter
     ctx.drawImage(photoImage, 0, 0, W, H);
-    ctx.filter = 'blur(0.5px)';
-    ctx.drawImage(canvas, 0, 0);
-    ctx.filter = 'none';
-    if(window.addLog) addLog('success', '[ok] Denoise applied!');
+    const imageData = ctx.getImageData(0, 0, W, H);
+    const data = imageData.data;
+    const result = new Uint8ClampedArray(data.length);
+    const radius = 1; // 3x3 box filter
+    for (let y = radius; y < H - radius; y++) {
+      for (let x = radius; x < W - radius; x++) {
+        let r=0, g=0, b=0, count=0;
+        for (let ky = -radius; ky <= radius; ky++) {
+          for (let kx = -radius; kx <= radius; kx++) {
+            const idx = ((y+ky)*W + (x+kx))*4;
+            r += data[idx];
+            g += data[idx+1];
+            b += data[idx+2];
+            count++;
+          }
+        }
+        const idx = (y*W+x)*4;
+        result[idx]   = r/count;
+        result[idx+1] = g/count;
+        result[idx+2] = b/count;
+        result[idx+3] = data[idx+3];
+      }
+    }
+    // Copy edges as-is
+    for (let i = 0; i < data.length; i+=4) {
+      if (result[i] === 0 && result[i+1] === 0 && result[i+2] === 0) {
+        result[i]=data[i]; result[i+1]=data[i+1]; result[i+2]=data[i+2]; result[i+3]=data[i+3];
+      }
+    }
+    ctx.putImageData(new ImageData(result, W, H), 0, 0);
+    if(window.addLog) addLog('success', '[ok] Noise reduction applied!');
   }
 }
 
