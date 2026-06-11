@@ -202,6 +202,20 @@ body{padding-top:70px;}
         <button class="photo-quick-btn" onclick="addPhotoFrame('gold')" style="color:#F5A623;border-color:rgba(245,166,35,0.2);">🖼 Gold Frame</button>
         <button class="photo-quick-btn" onclick="addPhotoFrame('kente')" style="color:#74C69D;border-color:rgba(116,198,157,0.2);">🌿 Kente Frame</button>
         <button class="photo-quick-btn" onclick="addPhotoFrame('certificate')" style="color:#fff;border-color:rgba(255,255,255,0.2);">📜 Cert Frame</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('ke')" style="color:#006600;border-color:rgba(0,102,0,0.3);">🇰🇪 Kenya</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('ng')" style="color:#008751;border-color:rgba(0,135,81,0.3);">🇳🇬 Nigeria</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('rw')" style="color:#20603D;border-color:rgba(32,96,61,0.3);">🇷🇼 Rwanda</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('gh')" style="color:#FCD116;border-color:rgba(252,209,22,0.3);">🇬🇭 Ghana</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('ug')" style="color:#FCDC04;border-color:rgba(252,220,4,0.3);">🇺🇬 Uganda</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('tz')" style="color:#1EB53A;border-color:rgba(30,181,58,0.3);">🇹🇿 Tanzania</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('za')" style="color:#007A4D;border-color:rgba(0,122,77,0.3);">🇿🇦 S.Africa</button>
+        <button class="photo-quick-btn" onclick="addFlagOverlay('et')" style="color:#078930;border-color:rgba(7,137,48,0.3);">🇪🇹 Ethiopia</button>
+        <button class="photo-quick-btn" onclick="enhancePhoto('professional')" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">✨ Professional</button>
+        <button class="photo-quick-btn" onclick="enhancePhoto('skin')" style="color:#8B5E3C;border-color:rgba(139,94,60,0.3);">🌿 Skin Tone</button>
+        <button class="photo-quick-btn" onclick="enhancePhoto('sharpen')" style="color:#4CC9F0;border-color:rgba(76,201,240,0.3);">🔍 Sharpen</button>
+        <button class="photo-quick-btn" onclick="enhancePhoto('denoise')" style="color:#74C69D;border-color:rgba(116,198,157,0.3);">🔇 Denoise</button>
+        <button class="photo-quick-btn" onclick="addWatermark()" style="color:#fff;border-color:rgba(255,255,255,0.2);">💧 Watermark</button>
+        <button class="photo-quick-btn" onclick="openCollage()" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">🖼 Collage</button>
         <div id="bg-remove-status" style="font-size:0.62rem;color:#F5A623;font-family:'Space Mono',monospace;margin-top:0.3rem;"></div>
         <span id="photo-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;word-break:break-all;margin-top:0.3rem;"></span>
       </div>
@@ -1280,5 +1294,59 @@ window._removeBackground = async function() {
 }
 
 </script>
+
+<!-- Collage Modal -->
+<div id="collage-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.9);overflow-y:auto;padding:2rem;">
+  <div style="max-width:600px;margin:0 auto;background:#111;border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.08);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <h3 style="color:#F5A623;font-size:1.1rem;font-weight:800;">🖼 Collage Maker</h3>
+      <button onclick="document.getElementById('collage-modal').style.display='none'" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+      <button onclick="startCollage('side-by-side')" style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:1rem;border-radius:8px;cursor:pointer;font-weight:700;">
+        ◫ Side by Side<br><span style="font-size:0.7rem;color:rgba(255,255,255,0.5);">2 photos horizontal</span>
+      </button>
+      <button onclick="startCollage('top-bottom')" style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:1rem;border-radius:8px;cursor:pointer;font-weight:700;">
+        ⬒ Top & Bottom<br><span style="font-size:0.7rem;color:rgba(255,255,255,0.5);">2 photos vertical</span>
+      </button>
+      <button onclick="startCollage('before-after')" style="background:#1a1a1a;border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:1rem;border-radius:8px;cursor:pointer;font-weight:700;">
+        ⇄ Before & After<br><span style="font-size:0.7rem;color:rgba(255,255,255,0.5);">comparison layout</span>
+      </button>
+      <button onclick="startCollage('grid-4')" style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:1rem;border-radius:8px;cursor:pointer;font-weight:700;">
+        ⊞ Grid of 4<br><span style="font-size:0.7rem;color:rgba(255,255,255,0.5);">4 photos grid</span>
+      </button>
+    </div>
+    <div id="collage-upload-area" style="display:none;">
+      <p id="collage-upload-label" style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-bottom:0.75rem;"></p>
+      <div id="collage-slots" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+      <button onclick="buildCollage()" id="build-collage-btn" style="display:none;width:100%;margin-top:1rem;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:800;cursor:pointer;">✦ Build Collage</button>
+    </div>
+  </div>
+</div>
+
+<!-- Watermark Modal -->
+<div id="watermark-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;">
+  <div style="background:#111;border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.08);width:90%;max-width:400px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h3 style="color:#F5A623;font-weight:800;">💧 Add Watermark</h3>
+      <button onclick="document.getElementById('watermark-modal').style.display='none'" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <input id="watermark-text" type="text" placeholder="e.g. @AfriVidStudio or afrivid.studio" style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem 0.75rem;border-radius:8px;font-size:0.85rem;margin-bottom:0.75rem;">
+    <select id="watermark-position" style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;margin-bottom:0.75rem;">
+      <option value="bottom-right">Bottom Right</option>
+      <option value="bottom-left">Bottom Left</option>
+      <option value="bottom-center">Bottom Center</option>
+      <option value="top-right">Top Right</option>
+      <option value="center">Center (diagonal)</option>
+    </select>
+    <select id="watermark-opacity" style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;margin-bottom:1rem;">
+      <option value="0.3">Light (30%)</option>
+      <option value="0.6" selected>Medium (60%)</option>
+      <option value="0.9">Strong (90%)</option>
+    </select>
+    <button onclick="applyWatermark()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:800;cursor:pointer;">Apply Watermark</button>
+  </div>
+</div>
+
 </body>
 </html>
