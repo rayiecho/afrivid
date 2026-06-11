@@ -179,6 +179,107 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
+
+/* ── COMPREHENSIVE MOBILE FIX ── */
+@media(max-width:768px){
+  /* Typography */
+  body{font-size:14px;}
+  
+  /* Navbar */
+  .navbar{padding:0.6rem 1rem;}
+  .navbar-badge{display:none;}
+  .topbar{padding:0.6rem 1rem;flex-wrap:wrap;gap:0.5rem;}
+  .topbar-title{font-size:0.85rem;}
+  
+  /* Layouts - stack everything */
+  .design-layout,
+  .editor-layout,
+  .photo-studio,
+  .photo-left,
+  .studio-layout{
+    grid-template-columns:1fr !important;
+    gap:0.75rem;
+  }
+  
+  /* Sidebar goes below canvas on mobile */
+  .sidebar-panel,
+  .studio-left,
+  .photo-left{
+    order:2;
+  }
+  
+  /* Canvas first on mobile */
+  .canvas-panel,
+  .photo-center,
+  .studio-center{
+    order:1;
+  }
+  
+  /* Cards */
+  .card{padding:1rem;}
+  
+  /* Buttons */
+  .btn{padding:0.6rem 1rem;font-size:0.8rem;}
+  .btn-row{flex-direction:column;gap:0.5rem;}
+  .btn-row .btn{width:100%;}
+  
+  /* Quick buttons wrap */
+  .photo-quick-btn{
+    padding:0.4rem 0.5rem;
+    font-size:0.68rem;
+  }
+  
+  /* Template grid */
+  .template-grid{grid-template-columns:1fr 1fr;}
+  
+  /* Content grid */
+  .content-grid{grid-template-columns:1fr 1fr !important;}
+  
+  /* Forms */
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:span 1;}
+  
+  /* Video canvas */
+  #video-canvas{max-height:280px !important;}
+  
+  /* Design canvas */
+  #design-canvas{max-height:350px !important;}
+  
+  /* Hide non-essential on mobile */
+  .topbar-divider{display:none;}
+  
+  /* Main padding */
+  .main{padding:1rem 0.75rem 5rem !important;}
+  
+  /* Modals full screen */
+  .modal-box,
+  .login-box{
+    width:95% !important;
+    max-width:100% !important;
+    margin:0.5rem;
+    padding:1.25rem !important;
+  }
+
+  /* Quick tools grid */
+  .quick-tools{grid-template-columns:repeat(2,1fr) !important;}
+  
+  /* Page header */
+  .page-title{font-size:1.6rem !important;}
+  .page-sub{font-size:0.8rem !important;}
+
+  /* Tool tabs wrap */
+  .photo-tool-tabs{flex-wrap:wrap;}
+  .photo-tool-tab{font-size:0.68rem;padding:0.35rem 0.6rem;}
+}
+
+@media(max-width:480px){
+  .content-grid{grid-template-columns:1fr !important;}
+  .quick-tools{grid-template-columns:repeat(2,1fr) !important;}
+  .template-grid{grid-template-columns:1fr 1fr;}
+  .page-title{font-size:1.3rem !important;}
+  #video-canvas{max-height:220px !important;}
+}
+
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
