@@ -614,7 +614,6 @@ function removeClip(a,b){ if(window._removeClip) window._removeClip(a,b); else i
 function clearClips(){ if(window._clearClips) window._clearClips(); else if(window['clearClips']) window['clearClips'](); }
 function combineVideos(){ if(window._combineVideos) window._combineVideos(); else if(window['combineVideos']) window['combineVideos'](); }
 function setCaptionStyle(a,b){ if(window._setCaptionStyle) window._setCaptionStyle(a,b); else if(window['setCaptionStyle']) window['setCaptionStyle'](a,b); }
-function generateCaptions(){ if(window._generateCaptions) { window._generateCaptions(); return; } alert('Generating captions... (feature coming soon)'); }
 function addManualCaption(){ if(window._addManualCaption) window._addManualCaption(); else if(window['addManualCaption']) window['addManualCaption'](); }
 function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
 function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
@@ -840,7 +839,7 @@ startEnhancing = async function() {
     ? 'video/webm;codecs=vp9,opus' : 'video/webm';
   
   enhanceRecordedChunks = [];
-  enhanceMediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 3000000 });
+  let enhanceMediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 3000000 });
   enhanceMediaRecorder.ondataavailable = e => { if (e.data.size > 0) enhanceRecordedChunks.push(e.data); };
   enhanceMediaRecorder.onstop = finishEnhancing;
   enhanceMediaRecorder.start(100);
@@ -1902,6 +1901,58 @@ window.doSignUp = async function() {
 
 
 document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)hideLogin();});
+
+window._generateCaptions = async function() {
+  if (!window._editVideoFile && !window._editVideoBlob) {
+    alert('Please upload a video first');
+    return;
+  }
+  const btn = document.querySelector('[onclick="generateCaptions()"]');
+  const status = document.getElementById('captions-status') || document.createElement('div');
+  if (btn) { btn.textContent = '[..] Transcribing...'; btn.disabled = true; }
+  
+  try {
+    const videoSource = window._editVideoFile || window._editVideoBlob;
+    const formData = new FormData();
+    formData.append('audio', videoSource, 'video.webm');
+    
+    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
+      method: 'POST',
+      body: videoSource
+    });
+    
+    if (!res.ok) throw new Error('Transcription failed: ' + res.status);
+    
+    const data = await res.json();
+    const text = data.text || '';
+    
+    if (!text) throw new Error('No speech detected');
+    
+    // Display captions
+    const captionsOutput = document.getElementById('captions-output') || document.getElementById('captions-text');
+    if (captionsOutput) {
+      captionsOutput.value = text;
+      captionsOutput.style.display = 'block';
+    } else {
+      // Create captions display
+      const container = btn ? btn.parentElement : document.body;
+      const div = document.createElement('div');
+      div.id = 'captions-output-display';
+      div.style.cssText = 'background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:1rem;margin-top:0.75rem;color:#fff;font-size:0.82rem;line-height:1.6;max-height:200px;overflow-y:auto;';
+      div.textContent = text;
+      if (btn) btn.parentElement.appendChild(div);
+    }
+    
+    if (btn) { btn.textContent = '✅ Captions Ready'; btn.disabled = false; }
+    console.log('[Captions] Transcription done:', text);
+    
+  } catch(e) {
+    console.error('[Captions] Error:', e);
+    if (btn) { btn.textContent = 'Generate Auto-Captions'; btn.disabled = false; }
+    alert('Caption generation failed: ' + e.message);
+  }
+}
+
 </script>
 </body>
 </html>
