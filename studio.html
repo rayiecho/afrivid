@@ -265,7 +265,7 @@ body{padding-top:70px;}
   <!-- SAMPLE VIDEOS -->
   <div class="studio-section" id="sample-videos-section">
     <div class="section-header">
-      <div class="section-label">SAMPLE VIDEOS</div>
+      <div class="section-label">VIDEO TEMPLATES</div>
       <div class="section-count">6 items</div>
     </div>
     <div class="content-grid">
@@ -278,7 +278,7 @@ body{padding-top:70px;}
           <div class="card-title">What is Leadership?</div>
           <div class="card-meta">60s · Slides style · English</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();showLogin()">Use Template</button>
+            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
             <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
           </div>
         </div>
@@ -293,7 +293,7 @@ body{padding-top:70px;}
           <div class="card-title">Climate Change in Africa</div>
           <div class="card-meta">90s · Cinematic style · English</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();showLogin()">Use Template</button>
+            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
             <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
           </div>
         </div>
@@ -308,7 +308,7 @@ body{padding-top:70px;}
           <div class="card-title">Financial Literacy 101</div>
           <div class="card-meta">120s · Whiteboard style · English</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();showLogin()">Use Template</button>
+            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
             <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
           </div>
         </div>
@@ -323,7 +323,7 @@ body{padding-top:70px;}
           <div class="card-title">Health Tips for Africans</div>
           <div class="card-meta">90s · Photo background · Swahili</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();showLogin()">Use Template</button>
+            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
             <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
           </div>
         </div>
@@ -338,7 +338,7 @@ body{padding-top:70px;}
           <div class="card-title">How to Start a Business</div>
           <div class="card-meta">120s · Slides style · French</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();showLogin()">Use Template</button>
+            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
             <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
           </div>
         </div>
@@ -353,8 +353,138 @@ body{padding-top:70px;}
           <div class="card-title">Digital Skills for Youth</div>
           <div class="card-meta">90s · Cinematic style · English</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();showLogin()">Use Template</button>
+            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
             <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#1A0A00,#3D1A00);">
+          <div class="thumb-icon">💒</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">African Wedding Invitation</div>
+          <div class="card-meta">60s · Cameroon Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('African Wedding Invitation Video')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#050A14,#0D2B1A);">
+          <div class="thumb-icon">🎓</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Graduation Announcement</div>
+          <div class="card-meta">60s · Unite Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('University Graduation Announcement and Achievement')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#030818,#0A1628);">
+          <div class="thumb-icon">⛪</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Church Event Promotion</div>
+          <div class="card-meta">90s · Advert Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('Church Crusade and Revival Event Promotion')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#0A0F1E,#1A2A0A);">
+          <div class="thumb-icon">🏪</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Business Grand Opening</div>
+          <div class="card-meta">60s · Advert Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('Business Grand Opening Promotion and Announcement')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#050A14,#1A0A2A);">
+          <div class="thumb-icon">📱</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Product Launch Video</div>
+          <div class="card-meta">90s · Cameroon Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('Product Launch and Marketing Video for African Market')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#0D2B1A,#0A0F1E);">
+          <div class="thumb-icon">🌍</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">NGO Impact Report</div>
+          <div class="card-meta">120s · Unite Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('NGO Community Impact Report and Annual Results Africa')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#1A0A00,#2A1A00);">
+          <div class="thumb-icon">📚</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">School Fee Notice</div>
+          <div class="card-meta">60s · Cameroon Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('School Fee Notice and Academic Term Information')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#0A1628,#050A14);">
+          <div class="thumb-icon">💰</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Investment & Savings Tips</div>
+          <div class="card-meta">90s · Unite Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('Investment and Savings Tips for Young Africans')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#1A0030,#3D0080);">
+          <div class="thumb-icon">🎂</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Birthday Celebration Video</div>
+          <div class="card-meta">60s · Advert Slide · English</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('Birthday Celebration and Wishes Video')">Use Template</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-thumb" style="background:linear-gradient(135deg,#003080,#001A40);">
+          <div class="thumb-icon">🏥</div>
+          <div class="card-type-badge badge-sample">TEMPLATE</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Health Awareness Campaign</div>
+          <div class="card-meta">90s · Cameroon Slide · Swahili</div>
+          <div class="card-actions">
+            <button class="card-btn primary" onclick="useTemplate('Health Awareness and Disease Prevention Campaign Africa')">Use Template</button>
           </div>
         </div>
       </div>

@@ -3557,6 +3557,17 @@ function updatePreview() {
 
 // Live preview as video plays
 document.addEventListener('DOMContentLoaded', () => {
+
+  // Auto-fill topic from URL parameter (from Studio templates)
+  const urlParams = new URLSearchParams(window.location.search);
+  const topicParam = urlParams.get('topic');
+  if (topicParam) {
+    const topicInput = document.getElementById('video-topic');
+    if (topicInput) {
+      topicInput.value = decodeURIComponent(topicParam);
+      topicInput.focus();
+    }
+  }
   setTimeout(() => {
     console.log('AfriVid functions registered:', {
       saveToStudio: !!window._handleSaveToStudio,
@@ -4628,13 +4639,29 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
   if (!videoBlob) { alert('No video to save yet. Generate a video first.'); return; }
   try {
     const title = (scriptData && scriptData.title) || 'AfriVid Video';
-    const duration = (scriptData && scriptData.duration) || 0;
+    // Upload video to R2 first
+    let videoUrl = '';
+    try {
+      const formData = new FormData();
+      formData.append('file', videoBlob, `${title.replace(/[^a-z0-9]/gi,'_')}_${Date.now()}.webm`);
+      const uploadRes = await fetch('https://afrivid-tts.mathsai666.workers.dev/upload', {
+        method: 'POST',
+        body: formData
+      });
+      if (uploadRes.ok) {
+        const uploadData = await uploadRes.json();
+        videoUrl = uploadData.url || '';
+      }
+    } catch(uploadErr) {
+      console.log('R2 upload failed, saving metadata only:', uploadErr);
+    }
     await addDoc(collection(db, 'studio_videos'), {
       userId: currentUser.uid,
       userEmail: currentUser.email,
       title: title,
       duration: duration,
       size: (videoBlob.size / 1024 / 1024).toFixed(1) + 'MB',
+      videoUrl: videoUrl,
       createdAt: serverTimestamp()
     });
     await updateDoc(doc(db, 'studio_users', currentUser.uid), {
