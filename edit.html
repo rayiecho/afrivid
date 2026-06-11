@@ -502,16 +502,27 @@ body{padding-top:70px;}
 
         <!-- CROP PANEL -->
         <div id="crop-controls" style="display:none;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
-          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">⬚ CROP VIDEO</div>
+          
+          <!-- Quick crop presets - one click! -->
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);margin-bottom:0.4rem;">Quick Crop:</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.75rem;">
+            <button onclick="quickCrop('16:9')" style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem;border-radius:8px;font-size:0.72rem;font-weight:700;cursor:pointer;">📺 16:9<br><span style="font-size:0.6rem;color:rgba(255,255,255,0.4);">YouTube/TV</span></button>
+            <button onclick="quickCrop('9:16')" style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem;border-radius:8px;font-size:0.72rem;font-weight:700;cursor:pointer;">📱 9:16<br><span style="font-size:0.6rem;color:rgba(255,255,255,0.4);">TikTok/Reels</span></button>
+            <button onclick="quickCrop('1:1')" style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem;border-radius:8px;font-size:0.72rem;font-weight:700;cursor:pointer;">⬛ 1:1<br><span style="font-size:0.6rem;color:rgba(255,255,255,0.4);">Instagram</span></button>
+            <button onclick="quickCrop('4:3')" style="background:#1a1a1a;border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem;border-radius:8px;font-size:0.72rem;font-weight:700;cursor:pointer;">🖥 4:3<br><span style="font-size:0.6rem;color:rgba(255,255,255,0.4);">Classic</span></button>
+          </div>
+
+          <!-- Manual crop -->
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);margin-bottom:0.4rem;">Or drag to select area:</div>
           <div class="crop-ratio-btns">
             <button class="crop-ratio-btn active" onclick="setCropRatio('free')">Free</button>
             <button class="crop-ratio-btn" onclick="setCropRatio('16:9')">16:9</button>
             <button class="crop-ratio-btn" onclick="setCropRatio('9:16')">9:16</button>
             <button class="crop-ratio-btn" onclick="setCropRatio('1:1')">1:1</button>
-            <button class="crop-ratio-btn" onclick="setCropRatio('4:3')">4:3</button>
           </div>
-          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-            <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">✓ Apply</button>
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+            <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">✓ Apply Crop</button>
             <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">✕ Cancel</button>
           </div>
         </div>
@@ -2169,6 +2180,86 @@ async function fastExport() {
     // Fallback to old method
     startEnhancing();
   }
+}
+
+
+window.quickCrop = function(ratio) {
+  if (!currentVideoFile) { alert('Load a video first'); return; }
+  const video = document.getElementById('original-video');
+  const cropCanvas = document.getElementById('crop-canvas');
+  
+  // Make sure crop is active
+  if (!cropActive) {
+    cropActive = true;
+    cropCanvas.width = video.videoWidth || 1280;
+    cropCanvas.height = video.videoHeight || 720;
+    const ctx = cropCanvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, cropCanvas.width, cropCanvas.height);
+    video.style.display = 'none';
+    cropCanvas.style.display = 'block';
+    document.getElementById('crop-overlay').style.display = 'block';
+  }
+
+  const W = cropCanvas.width;
+  const H = cropCanvas.height;
+  const parts = ratio.split(':');
+  const targetRatio = parseInt(parts[0]) / parseInt(parts[1]);
+  const videoRatio = W / H;
+
+  let cw, ch, cx, cy;
+
+  if (targetRatio > videoRatio) {
+    cw = W;
+    ch = Math.round(W / targetRatio);
+    cx = 0;
+    cy = Math.round((H - ch) / 2);
+  } else {
+    ch = H;
+    cw = Math.round(H * targetRatio);
+    cx = Math.round((W - cw) / 2);
+    cy = 0;
+  }
+
+  cropRect = { x: cx, y: cy, w: cw, h: ch };
+  
+  // Show visual selection
+  updateCropVisual();
+  addLog('success', `[ok] ${ratio} crop ready — click Apply to confirm`);
+}
+
+function updateCropVisual() {
+  const canvas = document.getElementById('crop-canvas');
+  if (!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = rect.width / canvas.width;
+  const scaleY = rect.height / canvas.height;
+  
+  let sel = document.getElementById('crop-selection');
+  if (!sel) {
+    sel = document.createElement('div');
+    sel.id = 'crop-selection';
+    sel.style.cssText = 'position:absolute;border:2px solid #F5A623;pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);';
+    document.getElementById('crop-overlay').parentElement.appendChild(sel);
+  }
+  
+  sel.style.display = 'block';
+  sel.style.left = (cropRect.x * scaleX) + 'px';
+  sel.style.top = (cropRect.y * scaleY) + 'px';
+  sel.style.width = (cropRect.w * scaleX) + 'px';
+  sel.style.height = (cropRect.h * scaleY) + 'px';
+  
+  // Rule of thirds lines
+  sel.innerHTML = `
+    <div style="position:absolute;inset:0;pointer-events:none;">
+      <div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.3);"></div>
+      <div style="position:absolute;left:66.66%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.3);"></div>
+      <div style="position:absolute;top:33.33%;left:0;right:0;height:1px;background:rgba(255,255,255,0.3);"></div>
+      <div style="position:absolute;top:66.66%;left:0;right:0;height:1px;background:rgba(255,255,255,0.3);"></div>
+      <div style="position:absolute;top:-3px;left:-3px;width:14px;height:14px;border-top:3px solid #F5A623;border-left:3px solid #F5A623;"></div>
+      <div style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-top:3px solid #F5A623;border-right:3px solid #F5A623;"></div>
+      <div style="position:absolute;bottom:-3px;left:-3px;width:14px;height:14px;border-bottom:3px solid #F5A623;border-left:3px solid #F5A623;"></div>
+      <div style="position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;border-bottom:3px solid #F5A623;border-right:3px solid #F5A623;"></div>
+    </div>`;
 }
 
 </script>
