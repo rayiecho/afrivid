@@ -633,6 +633,22 @@ body{padding-top:70px;}
     </div>
 
 <script>
+
+// ── PROXIES FOR ES MODULE FUNCTIONS ──
+function fastExport() {
+  if (window._fastExport) { window._fastExport(); return; }
+  setTimeout(function() {
+    if (window._fastExport) window._fastExport();
+    else alert('FFmpeg still loading, please wait a moment...');
+  }, 1000);
+}
+function generateCaptions() {
+  if (window._generateCaptions) { window._generateCaptions(); return; }
+  setTimeout(function() {
+    if (window._generateCaptions) window._generateCaptions();
+    else alert('Please upload a video first');
+  }, 500);
+}
 function updatePreview() {
   var video = document.getElementById('original-video');
   if (!video) return;
@@ -2108,7 +2124,7 @@ async function loadFFmpeg() {
   return ff;
 }
 
-window.fastExport = async function fastExport() {
+window._fastExport = window.fastExport = async function fastExport() {
   const video = document.getElementById('original-video');
   if (!video.src && !window._editVideoFile) { alert('Upload a video first'); return; }
 
