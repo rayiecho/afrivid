@@ -2665,7 +2665,13 @@ async function loadBgImage(theme) {
   };
   const query = queries[theme] || 'africa';
   const seed2 = sceneIndex * 13 + 1;
-    const url = `https://picsum.photos/seed/${seed2}/1280/720`;
+    const themeMap = {
+      business: 'business', technology: 'technology', nature: 'nature',
+      youth: 'community', city: 'community', abstract: 'culture'
+    };
+    const imgCategory = themeMap[theme] || 'community';
+    const imgNum2 = (sceneIndex % 6) + 1;
+    const url = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/${imgCategory}/${imgCategory}_${imgNum2}.jpg`;
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -4933,14 +4939,29 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   if (window.sceneAssets && window.sceneAssets.length > 0) return null;
   if(window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
   try {
-    const query = encodeURIComponent((scene.slideTitle || scene.voiceover || 'africa business').slice(0, 50));
-    const seed = sceneIndex * 17 + (scene.sceneNumber || 1);
-    const url = `https://picsum.photos/seed/${seed}/854/480`;
+    const text = ((scene.slideTitle || '') + ' ' + (scene.voiceover || '')).toLowerCase();
+    let category = 'community';
+    if (text.match(/business|company|office|meeting|money|finance|startup/)) category = 'business';
+    else if (text.match(/school|learn|study|university|student|teacher|educat/)) category = 'education';
+    else if (text.match(/tech|computer|phone|app|software|digital|ai|code/)) category = 'technology';
+    else if (text.match(/environment|climate|water|forest|wildlife|nature/)) category = 'nature';
+    else if (text.match(/health|hospital|doctor|medicine|fitness|medical/)) category = 'health';
+    else if (text.match(/food|farm|crop|harvest|soil|rural|agricult/)) category = 'agriculture';
+    else if (text.match(/sport|football|run|athlete|game|competition/)) category = 'sports';
+    else if (text.match(/art|music|dance|tradition|heritage|fashion|culture/)) category = 'culture';
+    const imgNum = (sceneIndex % 6) + 1;
+    const url = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/${category}/${category}_${imgNum}.jpg`;
     return new Promise(resolve => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => { window._sceneImages[sceneIndex] = img; resolve(img); };
-      img.onerror = () => resolve(null);
+      img.onerror = () => {
+        const fallback = new Image();
+        fallback.crossOrigin = 'anonymous';
+        fallback.onload = () => { window._sceneImages[sceneIndex] = fallback; resolve(fallback); };
+        fallback.onerror = () => resolve(null);
+        fallback.src = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/community/community_${imgNum}.jpg`;
+      };
       img.src = url;
     });
   } catch(e) { return null; }
