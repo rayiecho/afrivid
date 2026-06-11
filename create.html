@@ -3020,6 +3020,10 @@ window._startRecording = async function startRecording() {
     addLog('success', '[ok] Background image loaded');
   }
   addLog('info', '[mic] Preparing voiceover...');
+  // Preload all scene images before recording starts
+  addLog('info', '[img] Preloading scene images...');
+  await Promise.all(scriptData.scenes.map((scene, i) => window.generateSceneImage(scene, i)));
+  addLog('success', '[ok] Scene images ready!');
   // Music will start after AudioContext is set up
   addLog('info', '[mic] Preparing all voices...');
   const audioBuffers = await Promise.all(
