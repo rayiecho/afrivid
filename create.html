@@ -420,6 +420,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
                 <option value="slides_light">☀ Light</option>
                 <option value="slides_dark">🌙 Dark</option>
                 <option value="slides_gold">✨ Gold</option>
+                <option value="cameroon_slide">🎙️ Cameroon Slide</option>
                 <option value="whiteboard">🖊 Whiteboard</option>
                 <option value="cinematic">🎬 Cinematic</option>
                 <option value="photobg">🌍 Photo BG</option>
@@ -1097,6 +1098,236 @@ function clearPresenterPhoto() {
   document.getElementById('presenter-clear-btn').style.display = 'none';
 }
 
+
+function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // Background
+  ctx.fillStyle = '#0A0F1E';
+  ctx.fillRect(0, 0, W, H);
+
+  // Left content panel (63%)
+  const panelW = W * 0.63;
+  const grad = ctx.createLinearGradient(0, 0, panelW, H);
+  grad.addColorStop(0, 'rgba(245,166,35,0.05)');
+  grad.addColorStop(1, 'rgba(45,138,94,0.03)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, panelW, H);
+
+  // Right panel (37%)
+  ctx.fillStyle = '#0D1526';
+  ctx.fillRect(panelW, 0, W - panelW, H);
+
+  // Top accent bar
+  const barGrad = ctx.createLinearGradient(0, 0, panelW, 0);
+  barGrad.addColorStop(0, '#F5A623');
+  barGrad.addColorStop(1, '#2D8A5E');
+  ctx.fillStyle = barGrad;
+  ctx.fillRect(0, 0, panelW, H * 0.007);
+
+  // RIGHT PANEL — Presenter photo (small, top right)
+  const rightX = panelW + (W - panelW) * 0.5;
+  const presenterSize = H * 0.14;
+  const presenterY = H * 0.05;
+
+  if (presenterImage) {
+    ctx.save();
+    ctx.strokeStyle = '#F5A623';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(rightX, presenterY + presenterSize/2, presenterSize/2, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.clip();
+    ctx.drawImage(presenterImage, rightX - presenterSize/2, presenterY, presenterSize, presenterSize);
+    ctx.restore();
+  }
+
+  // RIGHT PANEL — Scene illustration (auto or uploaded)
+  const imgY = presenterImage ? presenterY + presenterSize + H * 0.03 : H * 0.05;
+  const imgH = H - imgY - H * 0.08;
+  const imgX = panelW + W * 0.015;
+  const imgW = W - panelW - W * 0.03;
+  const sceneIdx = scene.sceneNumber ? scene.sceneNumber - 1 : 0;
+
+  // Check uploaded assets first
+  const hasUploadedAsset = window.sceneAssets && window.sceneAssets.length > 0;
+
+  if (hasUploadedAsset) {
+    // Use uploaded asset
+    const asset = window.sceneAssets[sceneIdx % window.sceneAssets.length];
+    if (asset && asset.img) {
+      ctx.save();
+      ctx.beginPath();
+      const r = 12;
+      ctx.moveTo(imgX + r, imgY);
+      ctx.lineTo(imgX + imgW - r, imgY);
+      ctx.quadraticCurveTo(imgX + imgW, imgY, imgX + imgW, imgY + r);
+      ctx.lineTo(imgX + imgW, imgY + imgH - r);
+      ctx.quadraticCurveTo(imgX + imgW, imgY + imgH, imgX + imgW - r, imgY + imgH);
+      ctx.lineTo(imgX + r, imgY + imgH);
+      ctx.quadraticCurveTo(imgX, imgY + imgH, imgX, imgY + imgH - r);
+      ctx.lineTo(imgX, imgY + r);
+      ctx.quadraticCurveTo(imgX, imgY, imgX + r, imgY);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(asset.img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+    }
+  } else if (window._sceneImages && window._sceneImages[sceneIdx]) {
+    // Use auto generated image
+    const img = window._sceneImages[sceneIdx];
+    ctx.save();
+    ctx.beginPath();
+    const r = 12;
+    ctx.moveTo(imgX + r, imgY);
+    ctx.lineTo(imgX + imgW - r, imgY);
+    ctx.quadraticCurveTo(imgX + imgW, imgY, imgX + imgW, imgY + r);
+    ctx.lineTo(imgX + imgW, imgY + imgH - r);
+    ctx.quadraticCurveTo(imgX + imgW, imgY + imgH, imgX + imgW - r, imgY + imgH);
+    ctx.lineTo(imgX + r, imgY + imgH);
+    ctx.quadraticCurveTo(imgX, imgY + imgH, imgX, imgY + imgH - r);
+    ctx.lineTo(imgX, imgY + r);
+    ctx.quadraticCurveTo(imgX, imgY, imgX + r, imgY);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(img, imgX, imgY, imgW, imgH);
+    ctx.restore();
+  } else {
+    // Placeholder while image loads
+    ctx.fillStyle = 'rgba(245,166,35,0.08)';
+    ctx.beginPath();
+    const r = 12;
+    ctx.moveTo(imgX + r, imgY);
+    ctx.lineTo(imgX + imgW - r, imgY);
+    ctx.quadraticCurveTo(imgX + imgW, imgY, imgX + imgW, imgY + r);
+    ctx.lineTo(imgX + imgW, imgY + imgH - r);
+    ctx.quadraticCurveTo(imgX + imgW, imgY + imgH, imgX + imgW - r, imgY + imgH);
+    ctx.lineTo(imgX + r, imgY + imgH);
+    ctx.quadraticCurveTo(imgX, imgY + imgH, imgX, imgY + imgH - r);
+    ctx.lineTo(imgX, imgY + r);
+    ctx.quadraticCurveTo(imgX, imgY, imgX + r, imgY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = 'rgba(245,166,35,0.3)';
+    ctx.font = `${H*0.08}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.fillText('🎬', imgX + imgW/2, imgY + imgH/2 + H*0.03);
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font = `${H*0.022}px Arial`;
+    ctx.fillText('Generating scene...', imgX + imgW/2, imgY + imgH/2 + H*0.12);
+  }
+
+  // LEFT PANEL — Scene number
+  ctx.fillStyle = 'rgba(245,166,35,0.15)';
+  ctx.beginPath();
+  ctx.arc(W*0.055, H*0.055, H*0.035, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#F5A623';
+  ctx.font = `800 ${H*0.035}px Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(String(scene.sceneNumber||1).padStart(2,'0'), W*0.055, H*0.068);
+
+  // LEFT PANEL — Title
+  const titleX = W * 0.06;
+  const titleSize = H * 0.068;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = `800 ${titleSize}px Arial, sans-serif`;
+  ctx.textAlign = 'left';
+  const maxTitleW = panelW * 0.88;
+  const titleWords = (scene.slideTitle || '').split(' ');
+  let titleLine = '';
+  let titleY = H * 0.16;
+  const titleLines = [];
+  titleWords.forEach((word, i) => {
+    const test = titleLine + word + ' ';
+    if (ctx.measureText(test).width > maxTitleW && titleLine) {
+      titleLines.push(titleLine.trim());
+      titleLine = word + ' ';
+    } else { titleLine = test; }
+    if (i === titleWords.length - 1) titleLines.push(titleLine.trim());
+  });
+  titleLines.slice(0,2).forEach((line, i) => ctx.fillText(line, titleX, titleY + i * titleSize * 1.15));
+  const afterTitle = titleY + Math.min(titleLines.length, 2) * titleSize * 1.15;
+
+  // Accent line under title
+  const lineGrad = ctx.createLinearGradient(titleX, 0, titleX + W*0.2, 0);
+  lineGrad.addColorStop(0, '#F5A623');
+  lineGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = lineGrad;
+  ctx.fillRect(titleX, afterTitle + H*0.015, W*0.2, 3);
+
+  // Subtitle
+  if (scene.slideSubtitle) {
+    ctx.fillStyle = '#F5A623';
+    ctx.font = `600 ${H*0.032}px Arial, sans-serif`;
+    ctx.fillText(scene.slideSubtitle, titleX, afterTitle + H*0.06);
+  }
+
+  // Bullet points
+  if (scene.voiceover) {
+    const sentences = scene.voiceover.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 8).slice(0, 4);
+    const totalWords = scene.voiceover.split(' ').length;
+    const wordsPerSentence = Math.max(1, totalWords / sentences.length);
+    const currentSentence = currentWord >= 0 ? Math.min(Math.floor(currentWord / wordsPerSentence), sentences.length - 1) : sentences.length - 1;
+    const bulletStartY = afterTitle + H * 0.1;
+    const lineSpacing = H * 0.11;
+    const bSize = H * 0.025;
+
+    sentences.forEach((sentence, idx) => {
+      if (currentWord >= 0 && idx > currentSentence) return;
+      const y = bulletStartY + idx * lineSpacing;
+      const alpha = idx === currentSentence ? 1 : 0.5;
+      ctx.globalAlpha = alpha;
+
+      // Bullet dot
+      ctx.fillStyle = '#F5A623';
+      ctx.beginPath();
+      ctx.arc(titleX + bSize*0.5, y - bSize*0.3, bSize*0.35, 0, Math.PI*2);
+      ctx.fill();
+
+      // Bullet text
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = `${idx === currentSentence ? '600' : '400'} ${bSize*1.1}px Arial, sans-serif`;
+      ctx.textAlign = 'left';
+      const maxBW = panelW * 0.82;
+      let bLine = '';
+      const bWords = sentence.split(' ');
+      let bY = y;
+      bWords.forEach((w, wi) => {
+        const t = bLine + w + ' ';
+        if (ctx.measureText(t).width > maxBW && bLine) {
+          ctx.fillText(bLine.trim(), titleX + bSize*1.2, bY);
+          bLine = w + ' ';
+          bY += bSize * 1.4;
+        } else { bLine = t; }
+        if (wi === bWords.length - 1) ctx.fillText(bLine.trim(), titleX + bSize*1.2, bY);
+      });
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  // Bottom bar
+  const bottomGrad = ctx.createLinearGradient(0, H*0.94, W, H*0.94);
+  bottomGrad.addColorStop(0, 'rgba(245,166,35,0.15)');
+  bottomGrad.addColorStop(0.62, 'rgba(245,166,35,0.1)');
+  bottomGrad.addColorStop(1, 'rgba(45,138,94,0.1)');
+  ctx.fillStyle = bottomGrad;
+  ctx.fillRect(0, H*0.94, W, H*0.06);
+
+  // AfriVid logo bottom left
+  ctx.fillStyle = '#F5A623';
+  ctx.font = `700 ${H*0.022}px Arial, sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.fillText('AfriVid Studio', W*0.03, H*0.975);
+
+  // Progress bar bottom
+  ctx.fillStyle = 'rgba(255,255,255,0.1)';
+  ctx.fillRect(W*0.25, H*0.965, W*0.5, 3);
+  ctx.fillStyle = '#F5A623';
+  ctx.fillRect(W*0.25, H*0.965, W*0.5*progress, 3);
+}
+
 function drawPresenterPhoto(ctx, W, H) {
   if (!presenterImage) return;
   const position = 'br';
@@ -1538,6 +1769,7 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
     applyTransition(canvas);
     return;
   }
+  if (style === 'cameroon_slide') { drawCameroonSlide(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'whiteboard') { drawWhiteboardScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'cinematic') { drawCinematicScene(canvas, scene, progress, currentWord); applyTransition(canvas); return; }
   if (style === 'photobg') {
@@ -3967,6 +4199,8 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
 window._sceneImages = {}; // cache generated images per scene
 
 window.generateSceneImage = async function(scene, sceneIndex) {
+  // Skip auto generation if user uploaded assets
+  if (window.sceneAssets && window.sceneAssets.length > 0) return null;
   if(window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
   try {
     const prompt = `Professional illustration for: ${scene.title || scene.voiceover?.slice(0,80)}. Clean, modern, African context, vibrant colors, no text.`;
