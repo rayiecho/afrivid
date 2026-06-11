@@ -1955,10 +1955,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateEditCropVisual() {
-  const _canvas = document.getElementById('crop-canvas'); if (!_canvas || _canvas.style.display === 'none') return;
   const canvas = document.getElementById('crop-canvas');
+  if (!canvas || canvas.style.display === 'none') return;
+  const previewArea = document.getElementById('preview-area');
+  if (!previewArea) return;
   const canvasRect = canvas.getBoundingClientRect();
-  const areaRect = document.getElementById('preview-area').getBoundingClientRect();
+  const areaRect = previewArea.getBoundingClientRect();
   const scaleX = canvasRect.width / canvas.width;
   const scaleY = canvasRect.height / canvas.height;
   const offsetX = canvasRect.left - areaRect.left;
