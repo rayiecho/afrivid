@@ -650,6 +650,9 @@ body::after{
               <button class="btn btn-outline" style="font-size:0.72rem;padding:0.4rem;" onclick="generateHighlightReel(60)">60s</button>
               <button class="btn btn-outline" style="font-size:0.72rem;padding:0.4rem;" onclick="generateHighlightReel(90)">90s</button>
             </div>
+          <div style="margin-top:0.75rem;">
+            <button class="btn btn-outline" style="width:100%;font-size:0.78rem;" onclick="removeSilences()">✂ Remove Silences</button>
+          </div>
           </div>
         </div>
 
@@ -2871,6 +2874,91 @@ Each clip should be 10-20 seconds. Total duration should be ~${targetDuration} s
   } catch(e) {
     if(log) log.innerHTML = `<span style="color:#E63329">[x] Failed: ${e.message}</span>`;
     addEnhanceLog('error', '[x] Highlight reel failed: ' + e.message);
+  }
+};
+</script>
+<script>
+// ── SILENCE DETECTION & REMOVAL ──
+window.removeSilences = async function() {
+  const video = document.getElementById('original-video');
+  if (!video.duration) { alert('Upload a video first'); return; }
+  const log = document.getElementById('ai-edit-log');
+  if(log) log.innerHTML = '<span style="color:#F5A623">[~] Detecting silences...</span>';
+  addEnhanceLog('info', '[~] Detecting silences...');
+
+  try {
+    const file = window.currentVideoFile;
+    if (!file) throw new Error('No video file');
+    const arrayBuffer = await file.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer.slice(0));
+    const channelData = audioBuffer.getChannelData(0);
+    const sampleRate = audioBuffer.sampleRate;
+    const duration = audioBuffer.duration;
+    
+    // Detect silence - scan in 0.1s chunks
+    const chunkSize = Math.floor(sampleRate * 0.1);
+    const silenceThreshold = 0.02;
+    const minSilenceDuration = 0.5; // seconds
+    
+    let speechSegments = [];
+    let inSilence = false;
+    let silenceStart = 0;
+    let lastSpeechEnd = 0;
+    
+    for (let i = 0; i < channelData.length; i += chunkSize) {
+      const chunk = channelData.slice(i, i + chunkSize);
+      const rms = Math.sqrt(chunk.reduce((s, v) => s + v*v, 0) / chunk.length);
+      const time = i / sampleRate;
+      
+      if (rms < silenceThreshold) {
+        if (!inSilence) { inSilence = true; silenceStart = time; }
+      } else {
+        if (inSilence) {
+          const silenceDur = time - silenceStart;
+          if (silenceDur > minSilenceDuration && lastSpeechEnd < silenceStart) {
+            if (silenceStart > 0) speechSegments.push({start: lastSpeechEnd, end: silenceStart});
+            lastSpeechEnd = time;
+          }
+          inSilence = false;
+        }
+      }
+    }
+    // Add final segment
+    if (lastSpeechEnd < duration - 0.5) {
+      speechSegments.push({start: lastSpeechEnd, end: duration});
+    }
+    
+    audioCtx.close();
+    
+    if (speechSegments.length === 0) {
+      if(log) log.innerHTML = '<span style="color:#E63329">[x] No silences detected</span>';
+      return;
+    }
+    
+    // Set clips to speech segments only
+    clips = speechSegments.map(s => ({
+      start: Math.max(0, s.start - 0.1),
+      end: Math.min(duration, s.end + 0.1)
+    }));
+    
+    renderClips();
+    trimStart = clips[0].start;
+    trimEnd = clips[clips.length-1].end;
+    updateTimeline();
+    
+    const removed = duration - clips.reduce((s,c) => s+(c.end-c.start), 0);
+    if(log) log.innerHTML = `<span style="color:#74C69D">[ok] Removed ${removed.toFixed(1)}s of silence — exporting...</span>`;
+    addEnhanceLog('success', `[ok] Removed ${removed.toFixed(1)}s silence from ${clips.length} segments`);
+    
+    setTimeout(() => {
+      if(window._fastExport) window._fastExport();
+      else if(window.startEnhancing) window.startEnhancing();
+    }, 1000);
+    
+  } catch(e) {
+    if(log) log.innerHTML = `<span style="color:#E63329">[x] Failed: ${e.message}</span>`;
+    addEnhanceLog('error', '[x] Silence removal failed: ' + e.message);
   }
 };
 </script>
