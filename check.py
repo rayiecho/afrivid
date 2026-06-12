@@ -21,9 +21,11 @@ for fname in files:
     # Check module script
     m = re.search(r'<script type="module">(.*?)</script>', content, re.DOTALL)
     if m:
-        r = subprocess.run(['node','--input-type=module'], input=m.group(1), capture_output=True, text=True)
+        # Strip imports for node check
+        code = '\n'.join('// '+l if l.strip().startswith('import ') else l for l in m.group(1).split('\n'))
+        r = subprocess.run(['node','--check','--input-type=commonjs'], input=code, capture_output=True, text=True)
         if 'SyntaxError' in r.stderr:
-            print(f"❌ {fname} Module: {r.stderr.splitlines()[0]}")
+            print(f"❌ {fname} Module: {r.stderr.splitlines()[1] if len(r.stderr.splitlines())>1 else r.stderr}")
             errors += 1
 
 if errors == 0:
