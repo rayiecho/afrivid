@@ -2139,32 +2139,6 @@ window._generateCaptions = async function() {
     alert('Please upload a video first');
     return;
   }
-  // Try Web Speech API (free, browser-based)
-  const video = document.getElementById('original-video');
-  if (('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) && video && video.duration) {
-    const btn2 = document.querySelector('[onclick="generateCaptions()"]');
-    if(btn2){btn2.textContent='[..] Listening...';btn2.disabled=true;}
-    if(window.addEnhanceLog) addEnhanceLog('info', '[~] Listening to video speech...');
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const rec = new SR();
-    rec.continuous = true; rec.interimResults = false; rec.lang = 'en-US';
-    let transcript = '';
-    rec.onresult = (e) => { for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) transcript += e.results[i][0].transcript+' '; };
-    rec.onend = () => {
-      if(btn2){btn2.textContent='Generate Auto-Captions';btn2.disabled=false;}
-      video.pause(); video.currentTime=0;
-      if(transcript.trim()) {
-        let out = document.getElementById('captions-output-display');
-        if(!out){out=document.createElement('div');out.id='captions-output-display';out.style.cssText='background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:1rem;margin-top:0.75rem;color:#fff;font-size:0.82rem;line-height:1.6;';if(btn2)btn2.parentElement.appendChild(out);}
-        out.textContent=transcript.trim();
-        if(window.addEnhanceLog) addEnhanceLog('success','[ok] Captions ready!');
-      } else { if(window.addEnhanceLog) addEnhanceLog('error','[x] No speech detected'); }
-    };
-    video.currentTime=0; video.play(); rec.start();
-    video.onended=()=>rec.stop();
-    setTimeout(()=>rec.stop(),(video.duration+3)*1000);
-    return;
-  }
   const btn = document.querySelector('[onclick="generateCaptions()"]');
   const status = document.getElementById('captions-status') || document.createElement('div');
   if (btn) { btn.textContent = '[..] Transcribing...'; btn.disabled = true; }
@@ -2173,29 +2147,11 @@ window._generateCaptions = async function() {
     const videoSource = window.currentVideoFile || window._editVideoFile || window._editVideoBlob;
     if (!videoSource) throw new Error('No video file found');
     
-    // Extract audio from video using Web Audio API
-    let audioBlob = videoSource;
-    try {
-      const arrayBuffer = await videoSource.arrayBuffer();
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-      // Convert to WAV blob
-      const wavBuffer = audioBufferToWav(audioBuffer);
-      audioBlob = new Blob([wavBuffer], {type: 'audio/wav'});
-      audioCtx.close();
-    } catch(audioErr) {
-      console.log('[Captions] Audio extraction failed, sending raw:', audioErr.message);
-      audioBlob = videoSource;
-    }
-    
-    const formData = new FormData();
-    // Send raw audio bytes
-    
     const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
       method: 'POST',
-      body: audioBlob,
+      headers: {'Content-Type': videoSource.type || 'audio/webm'},
+      body: videoSource
     });
-    
     if (!res.ok) throw new Error('Transcription failed: ' + res.status);
     
     const data = await res.json();
