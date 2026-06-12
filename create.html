@@ -5382,7 +5382,7 @@ window.generateSceneImageFallback = function(text, sceneIndex) {
   for (const [cat, regex] of Object.entries(categories)) {
     if (regex.test(text)) { category = cat; break; }
   }
-  const imgNum = (sceneIndex % 6) + 1;
+  const imgNum = (sceneIndex % 15) + 1;
   const url = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/${category}/${category}_${imgNum}.jpg`;
   return new Promise(resolve => {
     const img = new Image();
