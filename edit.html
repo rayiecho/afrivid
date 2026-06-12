@@ -1563,7 +1563,7 @@ window._applyAIEdit = async function applyAIEdit() {
   const video = document.getElementById('original-video');
   if (!video.duration) { alert('Upload a video first.'); return; }
 
-  addEnhanceLog('info', 'AfriVid is interpreting your instructions...');
+  addEnhanceLog('info', '[~] AI Edit running...'); console.log('[AI Edit] Starting...');
 
   const prompt = `You are a video editor assistant. The video is ${formatTime(video.duration)} long (${Math.round(video.duration)} seconds total).
 
