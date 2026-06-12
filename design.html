@@ -302,6 +302,60 @@ body::after{
   pointer-events:none;
 }
 
+
+/* ── INLINE TEXT EDITOR ── */
+#canvas-text-editor{
+  display:none;
+  position:absolute;
+  z-index:100;
+  background:transparent;
+  border:2px solid #F5A623;
+  border-radius:4px;
+  color:#fff;
+  font-family:'Syne',sans-serif;
+  outline:none;
+  resize:none;
+  overflow:hidden;
+  min-width:100px;
+  min-height:40px;
+  padding:4px 8px;
+  box-sizing:border-box;
+  line-height:1.3;
+  caret-color:#F5A623;
+}
+
+/* Text toolbar */
+#text-toolbar{
+  display:none;
+  position:absolute;
+  z-index:200;
+  background:#1a1a1a;
+  border:1px solid rgba(245,166,35,0.3);
+  border-radius:10px;
+  padding:0.4rem 0.6rem;
+  gap:0.4rem;
+  align-items:center;
+  flex-wrap:wrap;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+.tt-btn{
+  background:none;
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;
+  padding:0.25rem 0.5rem;
+  border-radius:6px;
+  font-size:0.75rem;
+  cursor:pointer;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  transition:all 0.2s;
+}
+.tt-btn:hover{ background:rgba(245,166,35,0.15); color:#F5A623; border-color:rgba(245,166,35,0.3); }
+.tt-btn.active{ background:rgba(245,166,35,0.2); color:#F5A623; }
+.tt-sep{ width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 0.2rem; }
+#tt-size{ width:52px; background:#111; border:1px solid rgba(255,255,255,0.1); color:#fff; padding:0.25rem; border-radius:6px; font-size:0.75rem; text-align:center; }
+#tt-color{ width:28px; height:28px; border-radius:6px; border:none; cursor:pointer; padding:0; }
+
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
@@ -459,7 +513,31 @@ body::after{
     <div class="canvas-panel">
       <div class="card" style="padding:1rem;">
         <div class="canvas-wrap" id="canvas-wrap">
-          <canvas id="design-canvas"></canvas>
+          
+<!-- Inline Text Editor -->
+<textarea id="canvas-text-editor" rows="1"></textarea>
+
+<!-- Text Toolbar -->
+<div id="text-toolbar">
+  <select id="tt-size" onchange="updateTextProp('size', parseInt(this.value))">
+    <option>16</option><option>20</option><option>24</option>
+    <option selected>32</option><option>40</option><option>48</option>
+    <option>56</option><option>64</option><option>80</option><option>96</option>
+  </select>
+  <div class="tt-sep"></div>
+  <button class="tt-btn" id="tt-bold" onclick="toggleTextProp('weight','800','400')"><b>B</b></button>
+  <button class="tt-btn" id="tt-italic" onclick="toggleTextProp('style','italic','normal')"><i>I</i></button>
+  <div class="tt-sep"></div>
+  <button class="tt-btn" onclick="updateTextProp('align','left')">⬅</button>
+  <button class="tt-btn" onclick="updateTextProp('align','center')">≡</button>
+  <button class="tt-btn" onclick="updateTextProp('align','right')">➡</button>
+  <div class="tt-sep"></div>
+  <input type="color" id="tt-color" value="#ffffff" onchange="updateTextProp('color', this.value)">
+  <div class="tt-sep"></div>
+  <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;">🗑</button>
+</div>
+
+<canvas id="design-canvas"></canvas>
           <div class="crop-overlay" id="crop-overlay"></div>
           <div class="crop-selection" id="crop-selection" style="display:none;"></div>
         </div>
@@ -1764,6 +1842,162 @@ window._cancelCrop = window.cancelCrop = function() {
 
 // Initialize
 initCanvas();
+
+// ── INLINE TEXT EDITOR SYSTEM ──
+let editingEl = null;
+
+window._addText = function(presetText) {
+  const text = presetText || 'Click to edit';
+  const W = document.getElementById('design-canvas').width;
+  const H = document.getElementById('design-canvas').height;
+  elements.push({
+    type: 'text',
+    text: text,
+    x: W/2,
+    y: H/2,
+    size: 40,
+    color: '#ffffff',
+    weight: 700,
+    align: 'center',
+    font: 'Syne',
+    maxWidth: W - 40
+  });
+  selectedEl = elements.length - 1;
+  saveHistory();
+  renderCanvas();
+  // Open inline editor immediately
+  openInlineEditor(selectedEl);
+};
+
+function openInlineEditor(idx) {
+  if (idx === null || !elements[idx] || elements[idx].type !== 'text') return;
+  const el = elements[idx];
+  const canvas = document.getElementById('design-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = rect.width / canvas.width;
+  const scaleY = rect.height / canvas.height;
+  const editor = document.getElementById('canvas-text-editor');
+  const toolbar = document.getElementById('text-toolbar');
+
+  editingEl = idx;
+
+  // Position editor over canvas element
+  const editorX = rect.left + el.x * scaleX - 10;
+  const editorY = rect.top + el.y * scaleY - el.size * scaleY;
+  const editorW = Math.max(200, (el.maxWidth || 400) * scaleX);
+
+  editor.style.display = 'block';
+  editor.style.left = editorX + 'px';
+  editor.style.top = editorY + 'px';
+  editor.style.width = editorW + 'px';
+  editor.style.fontSize = (el.size * scaleY) + 'px';
+  editor.style.fontWeight = el.weight || 700;
+  editor.style.textAlign = el.align || 'left';
+  editor.style.color = el.color || '#fff';
+  editor.value = el.text;
+  editor.style.position = 'fixed';
+
+  // Show toolbar above editor
+  toolbar.style.display = 'flex';
+  toolbar.style.position = 'fixed';
+  toolbar.style.left = editorX + 'px';
+  toolbar.style.top = (editorY - 50) + 'px';
+
+  // Sync toolbar values
+  document.getElementById('tt-size').value = el.size || 32;
+  document.getElementById('tt-color').value = el.color || '#ffffff';
+  document.getElementById('tt-bold').classList.toggle('active', el.weight >= 700);
+
+  editor.focus();
+  editor.select();
+
+  // Update canvas as user types
+  editor.oninput = function() {
+    if (editingEl !== null) {
+      elements[editingEl].text = editor.value;
+      renderCanvas();
+    }
+    // Auto-resize textarea
+    editor.style.height = 'auto';
+    editor.style.height = editor.scrollHeight + 'px';
+  };
+
+  // Close on Escape
+  editor.onkeydown = function(e) {
+    if (e.key === 'Escape') closeInlineEditor();
+  };
+}
+
+function closeInlineEditor() {
+  const editor = document.getElementById('canvas-text-editor');
+  const toolbar = document.getElementById('text-toolbar');
+  if (editingEl !== null && editor.value.trim()) {
+    elements[editingEl].text = editor.value;
+    saveHistory();
+    renderCanvas();
+  }
+  editor.style.display = 'none';
+  toolbar.style.display = 'none';
+  editingEl = null;
+}
+
+function updateTextProp(prop, value) {
+  if (selectedEl !== null && elements[selectedEl]?.type === 'text') {
+    elements[selectedEl][prop] = value;
+    renderCanvas();
+    if (editingEl !== null) openInlineEditor(editingEl);
+  }
+}
+
+function toggleTextProp(prop, onVal, offVal) {
+  if (selectedEl !== null && elements[selectedEl]?.type === 'text') {
+    const current = elements[selectedEl][prop];
+    elements[selectedEl][prop] = current == onVal ? offVal : onVal;
+    renderCanvas();
+  }
+}
+
+// Click canvas to open editor on text elements
+// Override dblclick to use inline editor
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('design-canvas');
+  if (!canvas) return;
+
+  // Close editor when clicking outside
+  document.addEventListener('mousedown', (e) => {
+    const editor = document.getElementById('canvas-text-editor');
+    const toolbar = document.getElementById('text-toolbar');
+    if (editor && editor.style.display === 'block') {
+      if (!editor.contains(e.target) && !toolbar.contains(e.target) && e.target !== canvas) {
+        closeInlineEditor();
+      }
+    }
+  });
+});
+
+// Override dblclick to open inline editor
+window._onDblClick = function(e) {
+  const canvas = document.getElementById('design-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+  for (let i = elements.length-1; i >= 0; i--) {
+    const el = elements[i];
+    if (el.type === 'text') {
+      const tw = canvas.getContext('2d').measureText(el.text).width;
+      if (x >= el.x-10 && x <= el.x+tw+10 && y >= el.y-el.size && y <= el.y+10) {
+        selectedEl = i;
+        openInlineEditor(i);
+        return;
+      }
+    }
+  }
+  // Click on empty area - add new text
+  // Don't add text on every click, only on dblclick on empty
+};
+
 </script>
 </body>
 </html>
