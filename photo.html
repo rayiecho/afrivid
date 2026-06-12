@@ -2241,6 +2241,25 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
+
+// ── AUTH WALL ──
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    if (!window.currentUser) {
+      // Show login if not signed in
+      const overlay = document.getElementById('login-modal') || document.getElementById('auth-modal');
+      if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.classList.add('active');
+      } else if (window.showLogin) {
+        showLogin('Sign in to use AfriVid Studio');
+      }
+    }
+  }, 2000);
+});
+
+<script>
+</script>
 </body>
 </html>
 <script>
