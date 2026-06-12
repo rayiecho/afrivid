@@ -388,6 +388,88 @@ body::after{
   pointer-events:none;
 }
 
+
+/* ── CREATE.HTML MOBILE FIX ── */
+@media(max-width:768px){
+  /* Hide duplicate navbar on mobile - keep only topbar */
+  .navbar{ display:none !important; }
+  body{ padding-top:0 !important; }
+  
+  /* Topbar mobile */
+  .topbar{
+    padding:0.6rem 1rem;
+    flex-wrap:wrap;
+    gap:0.4rem;
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+  .topbar-title{ font-size:0.85rem; }
+  .topbar-divider{ display:none; }
+  
+  /* Step pills - scrollable */
+  .steps-bar{
+    overflow-x:auto;
+    flex-wrap:nowrap !important;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:4px;
+  }
+  .step-pill{
+    white-space:nowrap;
+    flex-shrink:0;
+    font-size:0.72rem;
+    padding:0.4rem 0.75rem;
+  }
+  
+  /* Form grid - single column */
+  .form-grid{
+    grid-template-columns:1fr !important;
+    gap:0.75rem;
+  }
+  .form-group.full{ grid-column:span 1 !important; }
+  
+  /* Panel inner - remove split layout */
+  .panel-inner,
+  .panel-split,
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="display:grid"]{
+    grid-template-columns:1fr !important;
+  }
+  
+  /* Cards */
+  .card{ padding:1rem !important; }
+  
+  /* Mode buttons */
+  .mode-btn{
+    padding:0.5rem 0.75rem;
+    font-size:0.78rem;
+  }
+  
+  /* Main */
+  .main{ padding:0.75rem 0.75rem 5rem !important; }
+  
+  /* Canvas */
+  #video-canvas{
+    max-width:100% !important;
+    max-height:250px !important;
+  }
+  
+  /* Bottom buttons */
+  .btn-row{
+    flex-direction:column;
+    gap:0.5rem;
+  }
+  .btn-row .btn{ width:100% !important; }
+  
+  /* Sign in button */
+  .btn-signin{ padding:0.4rem 0.85rem; font-size:0.78rem; }
+}
+
+@media(max-width:480px){
+  .step-pill span{ display:none; }
+  .topbar-title{ font-size:0.78rem; }
+}
+
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
