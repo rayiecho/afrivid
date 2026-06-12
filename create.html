@@ -3181,7 +3181,7 @@ function drawPhotoBgScene(canvas, scene, progress, currentWord = -1, bgImg = nul
 // -- WHATSAPP SHARE --
 window._shareWhatsApp = function shareWhatsApp() {
   if (!scriptData) return;
-  const text = `[vid] *${scriptData.title}*\n\nGenerated with AfriVid Studio\n\n[world] rayiecho.github.io/afrivid\n\n#AfriVid #AfricaCreates #BuiltInAfrica`;
+  const text = `[vid] *${scriptData.title}*\n\nGenerated with AfriVid Studio\n\n[world] afrivid.studio\n\n#AfriVid #AfricaCreates #BuiltInAfrica`;
   const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 }
