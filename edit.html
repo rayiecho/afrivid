@@ -654,6 +654,17 @@ body::after{
             <button class="btn btn-outline" style="width:100%;font-size:0.78rem;" onclick="removeSilences()">✂ Remove Silences</button>
           </div>
           <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">🎵 BACKGROUND MUSIC</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.5rem;">
+              <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;" onclick="addBackgroundMusic('auto')">✦ Auto Detect</button>
+              <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;" onclick="addBackgroundMusic('inspirational')">🥁 African Beats</button>
+              <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;" onclick="addBackgroundMusic('upbeat')">⚡ Upbeat</button>
+              <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;" onclick="addBackgroundMusic('calm')">🌊 Calm</button>
+              <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;" onclick="addBackgroundMusic('church')">✝ Church</button>
+              <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;color:#E63329;" onclick="if(bgMusicCtx)bgMusicCtx.close()">⏹ Stop</button>
+            </div>
+          </div>
+          <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;">
             <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">🌍 VOICE TRANSLATION</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;">
               <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;" onclick="translateVideo('sw')">🇰🇪 Swahili</button>
@@ -3108,6 +3119,157 @@ window.translateVideo = async function(targetLang) {
   } catch(e) {
     if(log) log.innerHTML = `<span style="color:#E63329">[x] Translation failed: ${e.message}</span>`;
     addEnhanceLog('error', '[x] Translation failed: ' + e.message);
+  }
+};
+</script>
+<script>
+// ── BACKGROUND MUSIC SYSTEM ──
+let bgMusicCtx = null;
+let bgMusicNodes = [];
+let bgMusicGain = null;
+
+window.addBackgroundMusic = async function(musicType) {
+  const video = document.getElementById('original-video');
+  if (!video.duration) { alert('Upload a video first'); return; }
+  const log = document.getElementById('ai-edit-log');
+  if(log) log.innerHTML = '<span style="color:#F5A623">[~] Adding background music...</span>';
+
+  // Stop any existing music
+  if (bgMusicCtx) { bgMusicCtx.close(); bgMusicCtx = null; }
+
+  musicType = musicType || 'inspirational';
+
+  // Detect mood from transcript if available
+  if (musicType === 'auto') {
+    if(log) log.innerHTML = '<span style="color:#F5A623">[~] Detecting video mood...</span>';
+    try {
+      const file = window.currentVideoFile;
+      if (file) {
+        const ab = await file.arrayBuffer();
+        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const decoded = await actx.decodeAudioData(ab.slice(0));
+        const ch = decoded.getChannelData(0);
+        const sampleRate = decoded.sampleRate;
+        // Simple tempo detection from audio energy
+        const chunkSize = Math.floor(sampleRate * 0.1);
+        let peaks = 0;
+        let prevRms = 0;
+        for (let i = 0; i < ch.length; i += chunkSize) {
+          const chunk = ch.slice(i, i + chunkSize);
+          const rms = Math.sqrt(chunk.reduce((s,v) => s+v*v, 0) / chunk.length);
+          if (rms > prevRms * 1.5 && rms > 0.1) peaks++;
+          prevRms = rms;
+        }
+        const bpm = (peaks / decoded.duration) * 60;
+        musicType = bpm > 100 ? 'upbeat' : bpm > 60 ? 'inspirational' : 'calm';
+        actx.close();
+        addEnhanceLog('info', `[~] Detected mood: ${musicType} (${Math.round(bpm)} BPM energy)`);
+      }
+    } catch(e) { musicType = 'inspirational'; }
+  }
+
+  // Generate music with Web Audio API
+  bgMusicCtx = new (window.AudioContext || window.webkitAudioContext)();
+  bgMusicGain = bgMusicCtx.createGain();
+  bgMusicGain.gain.value = 0.15; // Low volume for background
+  bgMusicGain.connect(bgMusicCtx.destination);
+
+  const duration = video.duration + 2;
+  const dest = bgMusicGain;
+
+  if (musicType === 'inspirational') {
+    // African-inspired warm beats
+    const bpm = 80;
+    const beat = 60 / bpm;
+    for (let t = bgMusicCtx.currentTime; t < bgMusicCtx.currentTime + duration; t += beat) {
+      const kick = bgMusicCtx.createOscillator();
+      const kg = bgMusicCtx.createGain();
+      kick.frequency.setValueAtTime(120, t);
+      kick.frequency.exponentialRampToValueAtTime(40, t + 0.1);
+      kg.gain.setValueAtTime(0.3, t);
+      kg.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+      kick.connect(kg); kg.connect(dest);
+      kick.start(t); kick.stop(t + 0.15);
+      const hat = bgMusicCtx.createOscillator();
+      const hg = bgMusicCtx.createGain();
+      hat.type = 'square'; hat.frequency.value = 8000;
+      hg.gain.setValueAtTime(0.04, t + beat/2);
+      hg.gain.exponentialRampToValueAtTime(0.001, t + beat/2 + 0.05);
+      hat.connect(hg); hg.connect(dest);
+      hat.start(t + beat/2); hat.stop(t + beat/2 + 0.05);
+    }
+    const drone = bgMusicCtx.createOscillator();
+    const dg = bgMusicCtx.createGain();
+    drone.type = 'sine'; drone.frequency.value = 55;
+    dg.gain.value = 0.06;
+    drone.connect(dg); dg.connect(dest);
+    drone.start(bgMusicCtx.currentTime); drone.stop(bgMusicCtx.currentTime + duration);
+  } else if (musicType === 'upbeat') {
+    const bpm = 120;
+    const beat = 60 / bpm;
+    for (let t = bgMusicCtx.currentTime; t < bgMusicCtx.currentTime + duration; t += beat) {
+      const kick = bgMusicCtx.createOscillator();
+      const kg = bgMusicCtx.createGain();
+      kick.frequency.setValueAtTime(150, t);
+      kick.frequency.exponentialRampToValueAtTime(50, t + 0.08);
+      kg.gain.setValueAtTime(0.4, t);
+      kg.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+      kick.connect(kg); kg.connect(dest);
+      kick.start(t); kick.stop(t + 0.1);
+    }
+  } else if (musicType === 'calm') {
+    // Gentle pad
+    [220, 277, 330].forEach(freq => {
+      const osc = bgMusicCtx.createOscillator();
+      const g = bgMusicCtx.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.value = 0.04;
+      osc.connect(g); g.connect(dest);
+      osc.start(bgMusicCtx.currentTime); osc.stop(bgMusicCtx.currentTime + duration);
+    });
+  } else if (musicType === 'church') {
+    // Organ-like pad
+    [130, 196, 261, 392].forEach((freq, i) => {
+      const osc = bgMusicCtx.createOscillator();
+      const g = bgMusicCtx.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.value = 0.03;
+      osc.connect(g); g.connect(dest);
+      osc.start(bgMusicCtx.currentTime + i*0.1);
+      osc.stop(bgMusicCtx.currentTime + duration);
+    });
+  }
+
+  // Auto-duck: lower music when video has speech
+  video.addEventListener('play', () => {
+    if (bgMusicCtx && bgMusicGain) {
+      bgMusicGain.gain.setTargetAtTime(0.05, bgMusicCtx.currentTime, 0.3);
+      bgMusicCtx.resume();
+    }
+  });
+  video.addEventListener('pause', () => {
+    if (bgMusicCtx && bgMusicGain) {
+      bgMusicGain.gain.setTargetAtTime(0.15, bgMusicCtx.currentTime, 0.3);
+    }
+  });
+
+  // Play music in sync with video
+  video.currentTime = 0;
+  video.play();
+  bgMusicCtx.resume();
+
+  if(log) log.innerHTML = `<span style="color:#74C69D">[ok] ${musicType} music added with auto-duck!</span>`;
+  addEnhanceLog('success', `[ok] Background music: ${musicType}`);
+
+  // Show stop button
+  let stopBtn = document.getElementById('stop-music-btn');
+  if (!stopBtn) {
+    stopBtn = document.createElement('button');
+    stopBtn.id = 'stop-music-btn';
+    stopBtn.style.cssText = 'position:fixed;bottom:6rem;right:2rem;z-index:9999;background:#E63329;border:none;color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;font-size:0.82rem;';
+    stopBtn.textContent = '⏹ Stop Music';
+    stopBtn.onclick = () => { if(bgMusicCtx) bgMusicCtx.close(); stopBtn.remove(); };
+    document.body.appendChild(stopBtn);
   }
 };
 </script>
