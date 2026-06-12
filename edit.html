@@ -2150,7 +2150,7 @@ window._generateCaptions = async function() {
     
     const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
       method: 'POST',
-      body: videoSource
+      body: formData
     });
     
     if (!res.ok) throw new Error('Transcription failed: ' + res.status);
