@@ -822,9 +822,19 @@ function onMouseMove(e) {
   renderCanvas();
 }
 
+let _lastTap = 0;
 function onTouchStart(e) {
   if (e.touches.length!==1) return;
   onMouseDown({clientX:e.touches[0].clientX,clientY:e.touches[0].clientY});
+  // Detect double tap for text editing
+  const now = Date.now();
+  if (now - _lastTap < 300) {
+    // Double tap detected
+    if (selectedEl!==null && elements[selectedEl].type==='text') {
+      if (window.openInlineEditor) openInlineEditor(selectedEl);
+    }
+  }
+  _lastTap = now;
 }
 
 function onTouchMove(e) {
@@ -834,9 +844,8 @@ function onTouchMove(e) {
 }
 
 function onDblClick(e) {
-  if (selectedEl!==null&&elements[selectedEl].type==='text') {
-    const t = prompt('Edit text:', elements[selectedEl].text);
-    if (t!==null) { elements[selectedEl].text=t; saveHistory(); renderCanvas(); }
+  if (selectedEl!==null && elements[selectedEl].type==='text') {
+    if (window.openInlineEditor) openInlineEditor(selectedEl);
   }
 }
 
@@ -860,6 +869,8 @@ window._addText = window.addText = function() {
   elements.push({type:'text',text:'Your Text Here',x:W/2-80,y:H/2,color:'#ffffff',size:48,font:'Syne',weight:700,align:'left'});
   selectedEl=elements.length-1;
   saveHistory(); renderCanvas(); updateElementControls();
+  // Open inline editor immediately
+  setTimeout(() => { if(window.openInlineEditor) openInlineEditor(selectedEl); }, 100);
 }
 
 window._addShape = window.addShape = function(type) {
