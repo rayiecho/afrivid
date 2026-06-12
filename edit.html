@@ -642,6 +642,7 @@ body::after{
           <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">AI EDIT INSTRUCTIONS</div>
           <textarea id="ai-edit-instructions" class="form-textarea" style="min-height:80px;margin-bottom:0.75rem;" placeholder="e.g. Remove first 30 seconds, keep the best parts..."></textarea>
           <button class="btn btn-gold" style="width:100%;" onclick="applyAIEdit()">✦ Apply AI Edit</button>
+          <div id="ai-edit-log" style="font-size:0.72rem;font-family:Space Mono,monospace;color:#74C69D;margin-top:0.5rem;min-height:20px;"></div>
         </div>
 
         <!-- EXPORT PANEL -->
@@ -1617,6 +1618,11 @@ function shareEnhancedWhatsApp() {
 }
 
 function addEnhanceLog(type, msg) {
+  const aiLog = document.getElementById('ai-edit-log');
+  if (aiLog) {
+    const color = type==='success'?'#74C69D':type==='error'?'#E63329':'#F5A623';
+    aiLog.innerHTML = `<span style="color:${color}">${msg}</span>`;
+  }
   const log = document.getElementById('enhance-log');
   const line = document.createElement('span');
   line.className = `log-line ${type}`;
