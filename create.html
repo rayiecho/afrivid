@@ -5403,6 +5403,8 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   if (window.sceneAssets && window.sceneAssets.length > 0) return null;
   if (window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
   const text = ((scene.slideTitle || '') + ' ' + (scene.voiceover || '')).toLowerCase();
+  // Pre-load R2 image immediately as placeholder while AI generates
+  window.generateSceneImageFallback(text, sceneIndex);
   // Try Cloudflare AI image generation first
   try {
     const text2 = ((scene.slideTitle||'') + ' ' + (scene.voiceover||'')).toLowerCase();
