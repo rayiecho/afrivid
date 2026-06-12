@@ -2209,6 +2209,7 @@ window._generateCaptions = async function() {
     }
     
     if (btn) { btn.textContent = '✅ Captions Ready'; btn.disabled = false; }
+    startCaptionOverlay(text);
     console.log('[Captions] Transcription done:', text);
     
   } catch(e) {
