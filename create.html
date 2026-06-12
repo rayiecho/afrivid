@@ -519,7 +519,7 @@ function generateScript(){ if(window._generateScript) window._generateScript(); 
 function handleGenerateScript(){ if(window._handleGenerateScript) window._handleGenerateScript(); }
 function startRecording(){ if(window._startRecording) window._startRecording(); }
 function stopRecording(){ if(window._stopRecording) window._stopRecording(); }
-function makeAnother(){ if(window._makeAnother) window._makeAnother(); }
+function makeAnother(){ if(window._makeAnother) { window._makeAnother(); return; } setTimeout(()=>{ if(window._makeAnother) window._makeAnother(); else window.location.reload(); },1000); }
 function handleSaveToStudio(){ 
   if(window._handleSaveToStudio) { window._handleSaveToStudio(); return; }
   // Fallback: not logged in
@@ -527,7 +527,7 @@ function handleSaveToStudio(){
 }
 function downloadVideo(){ if(window._downloadVideo) window._downloadVideo(); }
 function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
-function shareWhatsApp(){ if(window._shareWhatsApp) window._shareWhatsApp(); }
+function shareWhatsApp(){ if(window._shareWhatsApp) { window._shareWhatsApp(); return; } setTimeout(()=>{ if(window._shareWhatsApp) window._shareWhatsApp(); },1000); }
 function uploadToYouTube(){
   if(!window._videoBlob) { alert('Please generate a video first, then click Upload to YouTube.'); return; }
   
