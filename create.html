@@ -5399,7 +5399,7 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   const text = ((scene.slideTitle || '') + ' ' + (scene.voiceover || '')).toLowerCase();
   // Try Cloudflare AI image generation first
   try {
-    const prompt = `Professional photo: ${scene.slideTitle || 'Africa'}. African context, realistic, high quality.`;
+    const prompt = `Professional photo about: ${scene.slideTitle || 'Africa'}. African context, realistic, high quality. No human faces, no people portraits. Focus on objects, landscapes, concepts, symbols and environments.`;
     const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
