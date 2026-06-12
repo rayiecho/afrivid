@@ -1354,6 +1354,23 @@ async function finishEnhancing() {
   enhancedBlob = new Blob(enhanceRecordedChunks, { type: 'video/webm' });
   const sizeMB = (enhancedBlob.size / 1024 / 1024).toFixed(1);
   addEnhanceLog('success', `[ok] Enhanced video ready! Size: ${sizeMB}MB`);
+  // Show success banner
+  let banner = document.getElementById('edit-success-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'edit-success-banner';
+    banner.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:9999;background:#0D1F35;border:1px solid rgba(116,198,157,0.4);border-radius:14px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:Syne,sans-serif;min-width:320px;';
+    banner.innerHTML = `
+      <div style="flex:1;">
+        <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">✅ Video Ready! ${sizeMB}MB</div>
+        <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:0.2rem;">Your AI edited video is ready</div>
+      </div>
+      <button onclick="downloadEnhanced()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;white-space:nowrap;">⬇ Download</button>
+      <button onclick="shareEnhancedWhatsApp()" style="background:#25D366;border:none;color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">💬</button>
+      <button onclick="document.getElementById('edit-success-banner').remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;padding:0 0.25rem;">✕</button>
+    `;
+    document.body.appendChild(banner);
+  }
   // Auto-save to library
   saveEnhancedToLibrary(enhancedBlob, 'Enhanced - ' + new Date().toLocaleDateString());
 
