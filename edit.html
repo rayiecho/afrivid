@@ -2256,8 +2256,14 @@ let ffmpegInstance = null;
 async function loadFFmpeg() {
   if (ffmpegInstance) return ffmpegInstance;
   addEnhanceLog('info', '[~] Loading FFmpeg engine (first time only ~30MB)...');
-  const { FFmpeg } = FFmpegWasm;
-  const { fetchFile, toBlobURL } = FFmpegUtil;
+  // Try different global names for FFmpeg UMD bundle
+  const FFmpegLib = window.FFmpegWASM || window.FFmpegWasm || window.FFmpeg_wasm || {};
+  const FFmpegUtilLib = window.FFmpegUtil || window.FFmpeg_util || {};
+  const FFmpegClass = FFmpegLib.FFmpeg || window.FFmpeg;
+  const toBlobURL = FFmpegUtilLib.toBlobURL || window.toBlobURL;
+  const fetchFile = FFmpegUtilLib.fetchFile || window.fetchFile;
+  if (!FFmpegClass || !toBlobURL) throw new Error('FFmpegWasm is not defined');
+  const { FFmpeg } = { FFmpeg: FFmpegClass };
   const ff = new FFmpeg();
   ff.on('log', ({ message }) => console.log('[FFmpeg]', message));
   ff.on('progress', ({ progress }) => {
