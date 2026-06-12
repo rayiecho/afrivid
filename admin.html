@@ -883,6 +883,7 @@ function renderUsersTable(users) {
       </td>
       <td>
         <button class="btn btn-outline btn-sm" onclick="viewUser('${u.id}')">View</button>
+        <button class="btn btn-outline btn-sm" style="margin-left:0.4rem;color:#4CC9F0;border-color:rgba(76,201,240,0.3);" onclick="setUserLimit('${u.id}','${u.email}')">⚙ Limit</button>
         <button class="btn ${u.plan==='pro'?'btn-outline':'btn-green'} btn-sm" style="margin-left:0.4rem;" onclick="togglePlan('${u.id}','${u.email}','${u.plan||'beta'}')">${u.plan==='pro'?'→ Beta':'→ Pro'}</button>
         <button class="btn btn-red btn-sm" style="margin-left:0.4rem;" onclick="banUser('${u.id}','${u.email}')">${u.banned?'Unban':'Ban'}</button>
       </td>

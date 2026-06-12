@@ -1056,7 +1056,90 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const ADMIN_EMAILS = ['afrividstudio@gmail.com', 'r.ayiecho@alustudent.com'];
-const BETA_LIMIT = 10;
+const BETA_LIMIT = 3;
+const BETA_MAX_DURATION = 60; // seconds
+
+// ── VIDEO LIMIT ENFORCEMENT ──
+window.checkVideoLimit = async function() {
+  if (!currentUser) {
+    showLogin('Sign in to create videos');
+    return false;
+  }
+
+  const used = userProfile?.videosGenerated || 0;
+  const limit = userProfile?.betaLimit || BETA_LIMIT;
+  const plan = userProfile?.plan || 'beta';
+  const isPro = plan === 'pro';
+
+  // Check video count limit
+  if (!isPro && used >= limit) {
+    const customLimit = userProfile?.betaLimit;
+    showUpgradeModal('videos');
+    return false;
+  }
+
+  // Check duration limit for free users
+  if (!isPro) {
+    const durEl = document.getElementById('video-duration') || document.getElementById('video-duration-own');
+    const duration = parseInt(durEl ? durEl.value : 60);
+    const maxDur = userProfile?.maxDuration || BETA_MAX_DURATION;
+    if (duration > maxDur) {
+      showUpgradeModal('duration', duration, maxDur);
+      return false;
+    }
+  }
+
+  return true;
+};
+
+function showUpgradeModal(reason, requested, maxAllowed) {
+  const existing = document.getElementById('upgrade-modal');
+  if (existing) existing.remove();
+
+  const used = userProfile?.videosGenerated || 0;
+  const limit = userProfile?.betaLimit || BETA_LIMIT;
+
+  let msg = '';
+  if (reason === 'videos') {
+    msg = `You've used all <strong>${limit} free videos</strong> in your beta account.`;
+  } else {
+    msg = `Free accounts are limited to <strong>${maxAllowed} seconds</strong> per video. You selected ${requested} seconds.`;
+  }
+
+  const modal = document.createElement('div');
+  modal.id = 'upgrade-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:1.5rem;';
+  modal.innerHTML = `
+    <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.3);border-radius:20px;padding:2rem;max-width:420px;width:100%;text-align:center;position:relative;">
+      <button onclick="document.getElementById('upgrade-modal').remove()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.2rem;cursor:pointer;">✕</button>
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🚀</div>
+      <div style="font-size:0.72rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;">UPGRADE REQUIRED</div>
+      <h2 style="font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:0.75rem;">You've hit your free limit</h2>
+      <p style="font-size:0.88rem;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;line-height:1.7;">${msg}<br><br>AfriVid Studio is <strong style="color:#F5A623;">Africa's First AI Video Creation Platform</strong>. Upgrade to Pro for unlimited videos, longer durations and priority support.</p>
+      
+      <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:left;">
+        <div style="font-size:0.72rem;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">PRO PLAN — $5/month</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:2;">
+          ✓ Unlimited videos<br>
+          ✓ Videos up to 10 minutes<br>
+          ✓ Priority voice & AI<br>
+          ✓ No watermark<br>
+          ✓ Priority support
+        </div>
+      </div>
+
+      <a href="mailto:afrividstudio@gmail.com?subject=AfriVid Pro Upgrade Request&body=Hi AfriVid Team,%0A%0AI would like to upgrade to Pro.%0A%0AName: %0AEmail: ${currentUser?.email || ''}%0A%0AThank you!" 
+        style="display:block;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.95rem;text-decoration:none;margin-bottom:0.75rem;font-family:'Syne',sans-serif;">
+        📧 Contact Us to Upgrade
+      </a>
+      <button onclick="document.getElementById('upgrade-modal').remove()" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:0.65rem;border-radius:10px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.82rem;">
+        Maybe Later
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
 
 let currentUser = null;
 let userProfile = null;
@@ -1077,6 +1160,17 @@ onAuthStateChanged(auth, async (user) => {
     const used = userProfile.videosGenerated || 0;
     const limit = userProfile.betaLimit || BETA_LIMIT;
     const remaining = Math.max(0, limit - used);
+    const isPro = userProfile.plan === 'pro';
+    const maxDur = userProfile.maxDuration || BETA_MAX_DURATION;
+    // Disable duration options beyond limit for free users
+    if (!isPro) {
+      document.querySelectorAll('#video-duration option, #video-duration-own option').forEach(opt => {
+        if (parseInt(opt.value) > maxDur) {
+          opt.disabled = true;
+          opt.textContent = opt.textContent + ' 🔒 Pro';
+        }
+      });
+    }
     const badge = document.getElementById('user-badge');
     badge.style.display = 'block';
     badge.textContent = `${remaining} videos left`;
