@@ -314,6 +314,112 @@ body::after{
   pointer-events:none;
 }
 
+
+/* ── CAPCUT-STYLE MOBILE LAYOUT FOR VIDEO EDITOR ── */
+@media(max-width:768px){
+
+  /* Hide desktop sidebar */
+  .studio-left{ display:none !important; }
+  
+  /* Full screen layout */
+  .studio-layout{
+    display:flex !important;
+    flex-direction:column !important;
+    height:100vh;
+    overflow:hidden;
+    padding:0 !important;
+    gap:0 !important;
+  }
+
+  .studio-center{
+    flex:1;
+    display:flex !important;
+    flex-direction:column;
+    min-height:0;
+    overflow:hidden;
+  }
+
+  /* Video takes top portion */
+  #preview-area, .video-preview-wrap{
+    flex:1;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:0;
+    border-radius:0 !important;
+  }
+
+  #original-video{
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain;
+  }
+
+  /* Hide desktop tool tabs */
+  .tool-tabs{ display:none !important; }
+  .tool-content{ display:none !important; }
+
+  /* Timeline - compact */
+  .timeline-wrap{
+    height:50px !important;
+    min-height:50px !important;
+  }
+
+  /* Main padding */
+  .main{ padding:0 !important; }
+  body{ padding-top:0 !important; }
+  .navbar{ display:none !important; }
+  .topbar{
+    padding:0.5rem 0.75rem !important;
+    min-height:auto !important;
+  }
+
+  /* Show mobile toolbar */
+  #edit-mobile-toolbar{ display:flex !important; }
+  #edit-mobile-panel{ display:block !important; }
+  #edit-mobile-actions{ display:flex !important; }
+}
+
+/* Edit mobile toolbar */
+#edit-mobile-toolbar{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:200;
+  background:#111;
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding:0.4rem 0;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  white-space:nowrap;
+}
+
+#edit-mobile-panel{
+  display:none;
+  position:fixed;
+  bottom:58px;left:0;right:0;
+  z-index:199;
+  background:#1a1a1a;
+  border-top:1px solid rgba(255,255,255,0.1);
+  border-radius:16px 16px 0 0;
+  max-height:50vh;
+  overflow-y:auto;
+  padding:1rem;
+  transform:translateY(100%);
+  transition:transform 0.3s ease;
+}
+#edit-mobile-panel.open{ transform:translateY(0); }
+
+#edit-mobile-actions{
+  display:none;
+  position:fixed;
+  top:56px;right:0.75rem;
+  z-index:150;
+  flex-direction:column;
+  gap:0.4rem;
+}
+
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
@@ -2306,5 +2412,172 @@ function updateCropVisual() {
 }
 
 </script>
+
+<!-- CapCut-style Mobile Toolbar for Video Editor -->
+<div id="edit-mobile-toolbar">
+  <button class="mob-tool-btn active" onclick="editMobTool('enhance')">
+    <span class="mob-icon">✨</span>Enhance
+  </button>
+  <button class="mob-tool-btn" onclick="editMobTool('adjust')">
+    <span class="mob-icon">🎨</span>Adjust
+  </button>
+  <button class="mob-tool-btn" onclick="editMobTool('audio')">
+    <span class="mob-icon">🔊</span>Audio
+  </button>
+  <button class="mob-tool-btn" onclick="editMobTool('trim')">
+    <span class="mob-icon">✂</span>Trim
+  </button>
+  <button class="mob-tool-btn" onclick="editMobTool('crop')">
+    <span class="mob-icon">⬚</span>Crop
+  </button>
+  <button class="mob-tool-btn" onclick="editMobTool('captions')">
+    <span class="mob-icon">CC</span>Captions
+  </button>
+  <button class="mob-tool-btn" onclick="editMobTool('ai')">
+    <span class="mob-icon">✦</span>AI Edit
+  </button>
+  <button class="mob-tool-btn" onclick="editMobTool('export')">
+    <span class="mob-icon">⬇</span>Export
+  </button>
+</div>
+
+<!-- Mobile Sliding Panel -->
+<div id="edit-mobile-panel">
+  <div class="mob-panel-handle"></div>
+  <div class="mob-panel-title" id="edit-mob-title">ENHANCE</div>
+  <div id="edit-mob-content"></div>
+</div>
+
+<!-- Mobile Action Buttons -->
+<div id="edit-mobile-actions">
+  <button class="mob-action-btn" onclick="fastExport()">▶ Export</button>
+  <button class="mob-action-btn outline" onclick="resetEnhancer()">✕</button>
+</div>
+
+<script>
+const editMobPanels = {
+  enhance: {
+    title: 'ENHANCE',
+    html: `<div class="mob-btn-grid">
+      <button class="mob-btn" onclick="applyQualityPreset('auto')">✨ Auto</button>
+      <button class="mob-btn" onclick="applyQualityPreset('iphone')">📱 iPhone</button>
+      <button class="mob-btn" onclick="applyQualityPreset('cinema')">🎬 Cinema</button>
+      <button class="mob-btn" onclick="applyQualityPreset('dslr')">📷 DSLR</button>
+      <button class="mob-btn" onclick="applyQualityPreset('broadcast')">📺 Broadcast</button>
+      <button class="mob-btn" onclick="applyQualityPreset('reset')">↺ Reset</button>
+    </div>`
+  },
+  adjust: {
+    title: 'ADJUST',
+    html: `<div style="padding:0.5rem 0;">
+      <div style="margin-bottom:0.75rem;">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:rgba(255,255,255,0.5);margin-bottom:0.3rem;"><span>Brightness</span><span id="mob-b-val">100%</span></div>
+        <input type="range" min="50" max="150" value="100" style="width:100%" oninput="document.getElementById('adj-brightness').value=this.value;document.getElementById('mob-b-val').textContent=this.value+'%';updatePreview()">
+      </div>
+      <div style="margin-bottom:0.75rem;">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:rgba(255,255,255,0.5);margin-bottom:0.3rem;"><span>Contrast</span><span id="mob-c-val">100%</span></div>
+        <input type="range" min="50" max="150" value="100" style="width:100%" oninput="document.getElementById('adj-contrast').value=this.value;document.getElementById('mob-c-val').textContent=this.value+'%';updatePreview()">
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:rgba(255,255,255,0.5);margin-bottom:0.3rem;"><span>Saturation</span><span id="mob-s-val">100%</span></div>
+        <input type="range" min="0" max="200" value="100" style="width:100%" oninput="document.getElementById('adj-saturation').value=this.value;document.getElementById('mob-s-val').textContent=this.value+'%';updatePreview()">
+      </div>
+    </div>`
+  },
+  audio: {
+    title: 'AUDIO',
+    html: `<div style="padding:0.5rem 0;">
+      <div style="margin-bottom:0.75rem;">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:rgba(255,255,255,0.5);margin-bottom:0.3rem;"><span>Volume</span><span id="mob-vol-val">100%</span></div>
+        <input type="range" min="0" max="200" value="100" style="width:100%" oninput="document.getElementById('audio-volume').value=this.value;document.getElementById('mob-vol-val').textContent=this.value+'%'">
+      </div>
+      <div class="mob-btn-grid" style="margin-top:0.75rem;">
+        <button class="mob-btn" onclick="applyQualityPreset('crowd')" style="grid-column:span 2">🎤 Remove Crowd Noise</button>
+        <button class="mob-btn" onclick="applyQualityPreset('phone')" style="grid-column:span 2">📱 Fix Phone Audio</button>
+      </div>
+    </div>`
+  },
+  trim: {
+    title: 'TRIM',
+    html: `<div style="padding:0.5rem 0;">
+      <p style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;">Use the timeline below the video to set trim points.</p>
+      <div class="mob-btn-grid">
+        <button class="mob-btn" onclick="document.getElementById('trim-start').value=document.getElementById('original-video').currentTime.toFixed(1);updateTimeline()" style="grid-column:span 2">⬅ Set Start Here</button>
+        <button class="mob-btn" onclick="document.getElementById('trim-end').value=document.getElementById('original-video').currentTime.toFixed(1);updateTimeline()" style="grid-column:span 2">➡ Set End Here</button>
+      </div>
+    </div>`
+  },
+  crop: {
+    title: 'CROP',
+    html: `<div class="mob-btn-grid">
+      <button class="mob-btn" onclick="quickCrop('16:9');document.getElementById('edit-mobile-panel').classList.remove('open')">📺 16:9</button>
+      <button class="mob-btn" onclick="quickCrop('9:16');document.getElementById('edit-mobile-panel').classList.remove('open')">📱 9:16</button>
+      <button class="mob-btn" onclick="quickCrop('1:1');document.getElementById('edit-mobile-panel').classList.remove('open')">⬛ 1:1</button>
+      <button class="mob-btn" onclick="quickCrop('4:3');document.getElementById('edit-mobile-panel').classList.remove('open')">🖥 4:3</button>
+      <button class="mob-btn" onclick="applyCrop()" style="grid-column:span 2;background:rgba(245,166,35,0.2);color:#F5A623;">✓ Apply Crop</button>
+    </div>`
+  },
+  captions: {
+    title: 'CAPTIONS',
+    html: `<div style="padding:0.5rem 0;">
+      <button class="mob-btn" style="width:100%;margin-bottom:0.5rem;grid-column:span 4;background:rgba(245,166,35,0.15);color:#F5A623;" onclick="generateCaptions()">✦ Generate Auto-Captions</button>
+      <div style="margin-top:0.5rem;">
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);margin-bottom:0.4rem;">STYLE</div>
+        <div class="mob-btn-grid">
+          <button class="mob-btn" onclick="setCaptionStyle('classic')">Classic</button>
+          <button class="mob-btn" onclick="setCaptionStyle('bold')">Bold</button>
+          <button class="mob-btn" onclick="setCaptionStyle('minimal')">Minimal</button>
+          <button class="mob-btn" onclick="setCaptionStyle('tiktok')">TikTok</button>
+        </div>
+      </div>
+    </div>`
+  },
+  ai: {
+    title: 'AI EDIT',
+    html: `<div style="padding:0.5rem 0;">
+      <textarea id="mob-ai-instructions" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-size:0.82rem;min-height:80px;font-family:'Syne',sans-serif;margin-bottom:0.75rem;" placeholder="e.g. Remove first 30 seconds, keep the best parts..."></textarea>
+      <button style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;" onclick="document.getElementById('ai-edit-instructions').value=document.getElementById('mob-ai-instructions').value;applyAIEdit()">✦ Apply AI Edit</button>
+    </div>`
+  },
+  export: {
+    title: 'EXPORT',
+    html: `<div class="mob-btn-grid">
+      <button class="mob-btn" onclick="fastExport()" style="grid-column:span 2;background:rgba(245,166,35,0.2);color:#F5A623;">▶ Export MP4</button>
+      <button class="mob-btn" onclick="downloadEnhanced()" style="grid-column:span 2">⬇ Download WebM</button>
+      <button class="mob-btn" onclick="shareEnhancedWhatsApp()" style="grid-column:span 2;color:#25D366;">💬 Share WhatsApp</button>
+      <button class="mob-btn" onclick="handleSaveToStudio()" style="grid-column:span 2;color:#74C69D;">💾 Save to Studio</button>
+    </div>`
+  }
+};
+
+function editMobTool(tool) {
+  document.querySelectorAll('#edit-mobile-toolbar .mob-tool-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const panel = document.getElementById('edit-mobile-panel');
+  const title = document.getElementById('edit-mob-title');
+  const content = document.getElementById('edit-mob-content');
+  const data = editMobPanels[tool];
+  if (!data) return;
+  if (panel.classList.contains('open') && title.textContent === data.title) {
+    panel.classList.remove('open');
+    return;
+  }
+  title.textContent = data.title;
+  content.innerHTML = data.html;
+  panel.classList.add('open');
+}
+
+// Close panel on video tap
+document.addEventListener('DOMContentLoaded', () => {
+  const video = document.getElementById('original-video');
+  if (video) {
+    video.addEventListener('click', () => {
+      document.getElementById('edit-mobile-panel')?.classList.remove('open');
+      video.paused ? video.play() : video.pause();
+    });
+  }
+});
+</script>
+
 </body>
 </html>
