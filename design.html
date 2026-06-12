@@ -1282,6 +1282,7 @@ window._generateAIDesign = window.generateAIDesign = async function() {
 }
 
 window._downloadDesign = window.downloadDesign = function(format, scale=1) {
+  if (!currentUser) { if(window.showLogin) showLogin("Sign in to download your design"); else alert("Please sign in to download"); return; }
   const canvas=document.getElementById('design-canvas');
   selectedEl=null; renderCanvas();
   if (scale>1) {

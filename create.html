@@ -1230,6 +1230,7 @@ window.updateDurationWarning = function() {
 
 // GENERATE SCRIPT
 window._handleGenerateScript = window.handleGenerateScript = async function() {
+  if (!currentUser) { showLogin('Sign in to generate videos'); return; }
   const mode = document.getElementById('mode-own')?.classList.contains('active') ? 'own' : 'ai';
   
   // If own script mode - use structureOwnScript instead
@@ -1454,6 +1455,7 @@ function getTransitionAlpha() {
 
 // -- MP4 CONVERSION --
 window._downloadMP4 = async function downloadMP4() {
+  if (!currentUser) { showLogin("Sign in to download your video"); return; }
   if (!videoBlob) { alert('No video to convert.'); return; }
   
   // Show converting message
@@ -3647,6 +3649,7 @@ window.finishVideo = function finishVideo() {
 }
 
 window._downloadVideo = function() {
+  if (!currentUser) { showLogin("Sign in to download your video"); return; }
   if (!videoBlob) { alert('No video to download yet.'); return; }
   const url = URL.createObjectURL(videoBlob);
   const a = document.createElement('a');

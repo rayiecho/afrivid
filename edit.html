@@ -879,7 +879,7 @@ function loadVideoFile(a,b){ if(window._loadVideoFile) window._loadVideoFile(a,b
 function applyAudioPreset(){ if(window._applyAudioPreset) window._applyAudioPreset(); else if(window['applyAudioPreset']) window['applyAudioPreset'](); }
 function previewAudioFilters(){ if(window._previewAudioFilters) window._previewAudioFilters(); else if(window['previewAudioFilters']) window['previewAudioFilters'](); }
 function startEnhancing(){ if(window._startEnhancing) window._startEnhancing(); else if(window['startEnhancing']) window['startEnhancing'](); }
-function downloadEnhanced(){ if(window._downloadEnhanced) window._downloadEnhanced(); else if(window['downloadEnhanced']) window['downloadEnhanced'](); }
+function downloadEnhanced(){ if(!window.currentUser && !window._currentUser) { if(window.showLogin) showLogin("Sign in to download"); else alert("Please sign in to download"); return; } if(window._downloadEnhanced) window._downloadEnhanced(); else if(window['downloadEnhanced']) window['downloadEnhanced'](); }
 function resetEnhancer(){ if(window._resetEnhancer) window._resetEnhancer(); else if(window['resetEnhancer']) window['resetEnhancer'](); }
 function addClip(){ if(window._addClip) window._addClip(); else if(window['addClip']) window['addClip'](); }
 function removeClip(a,b){ if(window._removeClip) window._removeClip(a,b); else if(window['removeClip']) window['removeClip'](a,b); }
@@ -2264,7 +2264,8 @@ async function loadFFmpeg() {
   return ff;
 }
 
-window._fastExport = window.fastExport = async function fastExport() {
+window._fastExport = window._fastExport = window.fastExport = async function fastExport() {
+  if (!currentUser) { if(window.showLogin) showLogin("Sign in to export video"); else alert("Please sign in to export"); return; }
   const video = document.getElementById('original-video');
   if (!video.src && !window._editVideoFile) { alert('Upload a video first'); return; }
 
