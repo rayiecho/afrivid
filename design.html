@@ -2009,6 +2009,103 @@ window._onDblClick = function(e) {
   // Don't add text on every click, only on dblclick on empty
 };
 
+
+// ── DESIGN STUDIO AUTO-SAVE ──
+const DESIGN_SAVE_KEY = 'afrivid_design_work';
+
+function autoSaveDesign() {
+  try {
+    if (!elements || elements.length === 0) return;
+    const canvas = document.getElementById('design-canvas');
+    if (!canvas) return;
+    const saveData = {
+      elements: elements.map(e => ({...e, img: e.img ? e.img.src : null})),
+      bg: designBg || '#050A14',
+      width: canvas.width,
+      height: canvas.height,
+      timestamp: Date.now(),
+      preview: canvas.toDataURL('image/jpeg', 0.3)
+    };
+    localStorage.setItem(DESIGN_SAVE_KEY, JSON.stringify(saveData));
+  } catch(e) {
+    console.log('[AutoSave] Design save failed:', e.message);
+  }
+}
+
+function restoreDesignWork() {
+  try {
+    const saved = localStorage.getItem(DESIGN_SAVE_KEY);
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    if (!data.elements || data.elements.length === 0) return;
+    const age = Date.now() - (data.timestamp || 0);
+    if (age > 24 * 60 * 60 * 1000) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'design-restore-banner';
+    banner.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:999;background:#1a1a1a;border:1px solid rgba(245,166,35,0.4);border-radius:12px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem;font-family:Syne,sans-serif;font-size:0.82rem;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.4);';
+    banner.innerHTML = `
+      <span>🎨 You have unsaved design work (${data.elements.length} elements)</span>
+      <button onclick="restoreDesignCanvas()" style="background:#F5A623;border:none;color:#050A14;padding:0.35rem 0.85rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Restore</button>
+      <button onclick="localStorage.removeItem('${DESIGN_SAVE_KEY}');document.getElementById('design-restore-banner').remove();" style="background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Discard</button>
+    `;
+    document.body.appendChild(banner);
+  } catch(e) {
+    console.log('[AutoSave] Design restore failed:', e.message);
+  }
+}
+
+function restoreDesignCanvas() {
+  try {
+    const saved = localStorage.getItem(DESIGN_SAVE_KEY);
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    
+    designBg = data.bg || '#050A14';
+    const canvas = document.getElementById('design-canvas');
+    if (canvas) {
+      canvas.width = data.width || 1080;
+      canvas.height = data.height || 1080;
+    }
+    
+    // Restore elements
+    elements = [];
+    data.elements.forEach(el => {
+      if (el.type === 'image' && el.img) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => { el.img = img; renderCanvas(); };
+        img.src = el.img;
+        elements.push(el);
+      } else {
+        elements.push(el);
+      }
+    });
+    
+    renderCanvas();
+    document.getElementById('design-restore-banner')?.remove();
+    if (window.addLog) addLog('success', '[ok] Design work restored!');
+  } catch(e) {
+    console.log('[AutoSave] Design canvas restore failed:', e.message);
+  }
+}
+
+// Auto-save every 15 seconds
+setInterval(autoSaveDesign, 15000);
+
+// Save on every element change
+const _origSaveHistory = window.saveHistory;
+window.saveHistory = function() {
+  if (_origSaveHistory) _origSaveHistory();
+  setTimeout(autoSaveDesign, 300);
+};
+
+window.addEventListener('beforeunload', autoSaveDesign);
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(restoreDesignWork, 800);
+});
+
 </script>
 </body>
 </html>
