@@ -851,7 +851,7 @@ function requestUpgrade(){ if(window._requestUpgrade) window._requestUpgrade(); 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, updateProfile, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, orderBy, getDocs, serverTimestamp, onSnapshot, deleteDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, orderBy, getDocs, addDoc, serverTimestamp, onSnapshot, deleteDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
@@ -1502,3 +1502,75 @@ function showToast(msg, type) {
 
 </body>
 </html>
+<script>
+// ── FEEDBACK SYSTEM ──
+window.submitFeedback = async function() {
+  const type = document.getElementById('feedback-type')?.value || 'general';
+  const msg = document.getElementById('feedback-msg')?.value?.trim() || '';
+  const rating = document.getElementById('feedback-rating')?.value || '5';
+  if (!msg) { alert('Please write your feedback'); return; }
+  const btn = document.getElementById('feedback-submit-btn');
+  if(btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
+  try {
+    const user = auth.currentUser;
+    await addDoc(collection(db, 'feedback'), {
+      type, message: msg, rating: parseInt(rating),
+      userId: user?.uid || 'anonymous',
+      userEmail: user?.email || 'anonymous',
+      userName: user?.displayName || 'Anonymous',
+      page: 'studio',
+      createdAt: serverTimestamp(),
+      status: 'unread'
+    });
+    document.getElementById('feedback-msg').value = '';
+    if(btn) { btn.textContent = '✅ Sent! Thank you'; btn.disabled = false; }
+    setTimeout(() => { if(btn) btn.textContent = 'Submit Feedback'; }, 3000);
+  } catch(e) {
+    if(btn) { btn.textContent = 'Submit Feedback'; btn.disabled = false; }
+    alert('Failed to send feedback: ' + e.message);
+  }
+};
+
+// Floating feedback button
+document.addEventListener('DOMContentLoaded', () => {
+  const fab = document.createElement('button');
+  fab.id = 'feedback-fab';
+  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;width:48px;height:48px;border-radius:50%;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;justify-content:center;';
+  fab.innerHTML = '💬';
+  fab.title = 'Send Feedback';
+  fab.onclick = () => {
+    const modal = document.getElementById('feedback-modal');
+    if(modal) modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+  };
+  document.body.appendChild(fab);
+});
+</script>
+
+<!-- FEEDBACK MODAL -->
+<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0D1117;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:1.5rem;width:90%;max-width:420px;font-family:Syne,sans-serif;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="color:#F5A623;font-weight:900;font-size:1rem;">💬 Send Feedback</div>
+      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <select id="feedback-type" style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:Syne,sans-serif;margin-bottom:0.75rem;">
+      <option value="bug">🐛 Bug Report</option>
+      <option value="feature">✨ Feature Request</option>
+      <option value="general">💬 General Feedback</option>
+      <option value="praise">🔥 Praise</option>
+      <option value="complaint">😤 Complaint</option>
+    </select>
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;align-items:center;">
+      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rating:</span>
+      <select id="feedback-rating" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:Syne,sans-serif;">
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+      </select>
+    </div>
+    <textarea id="feedback-msg" style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:100px;resize:vertical;box-sizing:border-box;margin-bottom:0.75rem;" placeholder="Tell us what you think, what's broken, or what you'd love to see..."></textarea>
+    <button id="feedback-submit-btn" onclick="submitFeedback()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Submit Feedback</button>
+  </div>
+</div>

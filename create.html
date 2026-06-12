@@ -5612,5 +5612,37 @@ function wrapTextSplit(ctx, text, x, y, maxWidth, fontSize) {
 
 </script>
 
+
+<script>
+// Floating feedback button
+(function(){
+  const fab = document.createElement('button');
+  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;width:48px;height:48px;border-radius:50%;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;justify-content:center;';
+  fab.innerHTML = '💬';
+  fab.title = 'Send Feedback';
+  fab.onclick = () => {
+    const msg = prompt('Share your feedback, bug report or feature request:');
+    if (!msg) return;
+    const type = confirm('Is this a bug report?\nOK = Bug, Cancel = General Feedback') ? 'bug' : 'general';
+    if(window.db && window.currentUser) {
+      import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js').then(({collection,addDoc,serverTimestamp}) => {
+        addDoc(collection(window.db,'feedback'),{
+          type, message: msg,
+          userId: window.currentUser?.uid || 'anonymous',
+          userEmail: window.currentUser?.email || 'anonymous',
+          page: window.location.pathname,
+          rating: 3,
+          createdAt: serverTimestamp(),
+          status: 'unread'
+        }).then(() => alert('✅ Feedback sent! Thank you.'));
+      });
+    } else {
+      alert('✅ Thanks for your feedback!');
+    }
+  };
+  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(fab));
+})();
+</script>
+
 </body>
 </html>
