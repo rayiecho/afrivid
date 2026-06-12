@@ -1468,7 +1468,7 @@ function downloadEnhanced() {
 async function uploadEnhancedToYouTube() {
   if (!enhancedBlob) { alert('No enhanced video yet.'); return; }
   videoBlob = enhancedBlob;
-  scriptData = { title: 'YAN Enhanced Video', hashtags: ['#YAN', '#YoungAfricansNetwork'] };
+  scriptData = { title: 'AfriVid Enhanced Video', hashtags: ['#AfriVid', '#AfricaCreates'] };
   await uploadToYouTube();
 }
 
@@ -1891,7 +1891,7 @@ async function uploadToYouTube() {
     
     const metadata = {
       snippet: {
-        title: scriptData.title || 'YAN Video',
+        title: scriptData.title || 'AfriVid Video',
         description: `Generated with AfriVid Studio
 
 AfriVid
