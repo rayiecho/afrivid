@@ -790,7 +790,9 @@ function applyQualityPreset(preset) {
   updatePreview();
 }
 function applyAIEdit() {
+  console.log('[applyAIEdit] called, _applyAIEdit:', !!window._applyAIEdit);
   if(window._applyAIEdit) { window._applyAIEdit(); return; }
+  setTimeout(()=>{ if(window._applyAIEdit) window._applyAIEdit(); else alert('AI Edit loading, please try again'); },1000);
   var instructions = document.getElementById('ai-edit-instructions');
   var text = instructions ? instructions.value.trim() : '';
   if(!text) { alert('Please describe what you want to change.'); return; }
