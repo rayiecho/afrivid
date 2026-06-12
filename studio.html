@@ -851,7 +851,7 @@ function requestUpgrade(){ if(window._requestUpgrade) window._requestUpgrade(); 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, updateProfile, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, collection, query, where, orderBy, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, collection, query, where, orderBy, getDocs, serverTimestamp, onSnapshot, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
@@ -888,15 +888,22 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('page-sub').textContent = `Welcome back, ${name}. Your creations and sample content below.`;
     // Load user files
     await loadUserFiles(user.uid);
-    // Load user video count
+    // Real-time listener for user data
     const ref = doc(db, 'studio_users', user.uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const data = snap.data();
-      const used = data.videosGenerated || 0;
-      const limit = data.betaLimit || 3;
-      document.getElementById('user-plan').textContent = `${Math.max(0,limit-used)} of ${limit} videos left`;
-    }
+    onSnapshot(ref, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        const used = data.videosGenerated || 0;
+        const limit = data.betaLimit || 3;
+        const plan = data.plan || 'beta';
+        const isPro = plan === 'pro';
+        document.getElementById('user-plan').textContent = isPro ? 'Pro — Unlimited' : `${Math.max(0,limit-used)} of ${limit} videos left`;
+        // Update profile if open
+        if(document.getElementById('profile-overlay')?.classList.contains('active')) {
+          if(window._openProfile) window._openProfile();
+        }
+      }
+    });
   } else {
     document.getElementById('user-info').style.display = 'none';
     document.getElementById('btn-signin').style.display = 'block';
