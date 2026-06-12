@@ -1077,7 +1077,7 @@ const db = getFirestore(app);
 
 const ADMIN_EMAILS = ['afrividstudio@gmail.com', 'r.ayiecho@alustudent.com'];
 const BETA_LIMIT = 3;
-const BETA_MAX_DURATION = 60; // seconds
+const BETA_MAX_DURATION = 120; // seconds (2 minutes free)
 
 // ── VIDEO LIMIT ENFORCEMENT ──
 window.checkVideoLimit = async function() {
@@ -1123,7 +1123,7 @@ function showUpgradeModal(reason, requested, maxAllowed) {
   if (reason === 'videos') {
     msg = `You've used all <strong>${limit} free videos</strong> in your beta account.`;
   } else {
-    msg = `Free accounts are limited to <strong>${maxAllowed} seconds</strong> per video. You selected ${requested} seconds.`;
+    msg = `Free accounts are limited to <strong>${Math.round(maxAllowed/60)} minutes</strong> per video. You selected ${Math.round(requested/60)} minutes.`;
   }
 
   const modal = document.createElement('div');
@@ -1141,7 +1141,7 @@ function showUpgradeModal(reason, requested, maxAllowed) {
         <div style="font-size:0.72rem;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">PRO PLAN — $5/month</div>
         <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:2;">
           ✓ Unlimited videos<br>
-          ✓ Videos up to 10 minutes<br>
+          ✓ Videos up to 20 minutes<br>
           ✓ Priority voice & AI<br>
           ✓ No watermark<br>
           ✓ Priority support
@@ -1187,7 +1187,7 @@ onAuthStateChanged(auth, async (user) => {
       document.querySelectorAll('#video-duration option, #video-duration-own option').forEach(opt => {
         if (parseInt(opt.value) > maxDur) {
           opt.disabled = true;
-          opt.textContent = opt.textContent + ' 🔒 Pro';
+          opt.textContent = opt.textContent.replace(' 🔒 Pro','') + ' 🔒 Pro';
         }
       });
     }
