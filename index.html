@@ -606,11 +606,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 function playDemoVideo() {
   const placeholder = document.getElementById('video-placeholder');
   const iframe = document.getElementById('demo-video-iframe');
-  // Replace with your YouTube video ID when ready
-  // iframe.src = 'https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1';
-  // iframe.style.display = 'block';
-  // placeholder.style.display = 'none';
-  alert('Demo video coming soon! Sign up to try AfriVid Studio now.');
+  const placeholder = document.getElementById('video-placeholder');
+  const iframe = document.getElementById('demo-video-iframe');
+  iframe.src = 'https://www.youtube.com/embed/iVxngR1N4UU?autoplay=1&rel=0';
+  iframe.style.display = 'block';
+  placeholder.style.display = 'none';
 }
 </script>
 
@@ -620,7 +620,7 @@ function playDemoVideo() {
     <div class="footer-icon">A</div>
     <span class="footer-text">© 2026 AfriVid Studio · Africa's First Smart Video Suite</span>
   </div>
-  <a href="mailto:youngafricansn@gmail.com" class="footer-link">Contact</a>
+  <a href="mailto:afrividstudio@gmail.com" class="footer-link">Contact</a>
 </footer>
 
 <!-- LOGIN MODAL -->
