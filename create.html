@@ -5405,7 +5405,21 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   const text = ((scene.slideTitle || '') + ' ' + (scene.voiceover || '')).toLowerCase();
   // Try Cloudflare AI image generation first
   try {
-    const prompt = `Professional photo about: ${scene.slideTitle || 'Africa'}. African context, realistic, high quality. No human faces, no people portraits. Focus on objects, landscapes, concepts, symbols and environments.`;
+    const text2 = ((scene.slideTitle||'') + ' ' + (scene.voiceover||'')).toLowerCase();
+    let aiCategory = 'technology';
+    if(text2.match(/learn|school|book|stud|educat|math|sequen|geometr/)) aiCategory='education';
+    else if(text2.match(/business|company|office|money|finance|market|entrepreneur/)) aiCategory='business';
+    else if(text2.match(/health|doctor|medicine|hospital|nurse/)) aiCategory='health';
+    else if(text2.match(/farm|crop|food|harvest|agricult/)) aiCategory='agriculture';
+    else if(text2.match(/sport|football|run|athlete|game/)) aiCategory='sports';
+    else if(text2.match(/church|prayer|worship|gospel|faith|pastor/)) aiCategory='church';
+    else if(text2.match(/nature|wildlife|forest|mountain|river|animal/)) aiCategory='nature';
+    else if(text2.match(/motivat|inspir|success|dream|goal|achieve/)) aiCategory='motivation';
+    else if(text2.match(/travel|city|tour|landmark|destination/)) aiCategory='travel';
+    else if(text2.match(/science|lab|research|experiment|microscop/)) aiCategory='science';
+    else if(text2.match(/coin|cash|bank|saving|invest|finance|budget/)) aiCategory='finance';
+    const imgNum2 = (sceneIndex % 15) + 1;
+    const prompt = `Professional ${aiCategory} photo: ${scene.slideTitle||'Africa'}. Realistic, high quality, no human faces, no people.`;
     const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
