@@ -5361,34 +5361,65 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
 // ── SPLIT FLOW THEME ──
 window._sceneImages = {}; // cache generated images per scene
 
+window.generateSceneImageFallback = function(text, sceneIndex) {
+  const categories = {
+    business: /business|company|office|meeting|money|finance|startup|entrepreneur|market|trade|invest|profit|revenue|salary|job|work|employ|career|econom/,
+    education: /school|learn|study|university|student|teacher|educat|math|science|history|class|lesson|book|read|write|exam|grade|degree|geometr|algebra|calcul|sequen|theorem|formula/,
+    technology: /tech|computer|phone|app|software|digital|ai|code|internet|data|program|develop|innovation|robot|machine|electric|network/,
+    nature: /environment|climate|water|forest|wildlife|nature|tree|plant|animal|earth|green|mountain|river|ocean|air|weather/,
+    health: /health|hospital|doctor|medicine|fitness|medical|nurse|patient|disease|treatment|wellness|mental|physical|exercise|diet/,
+    agriculture: /food|farm|crop|harvest|soil|rural|agricult|plant|grow|seed|garden|cattle|livestock/,
+    sports: /sport|football|run|athlete|game|competition|team|player|win|champion|basketball|soccer|race/,
+    culture: /art|music|dance|tradition|heritage|fashion|culture|festival|ceremony|wedding|church|religion/
+  };
+  let category = 'community';
+  for (const [cat, regex] of Object.entries(categories)) {
+    if (regex.test(text)) { category = cat; break; }
+  }
+  const imgNum = (sceneIndex % 6) + 1;
+  const url = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/${category}/${category}_${imgNum}.jpg`;
+  return new Promise(resolve => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => { window._sceneImages[sceneIndex] = img; resolve(img); };
+    img.onerror = () => {
+      const fb = new Image();
+      fb.crossOrigin = 'anonymous';
+      fb.onload = () => { window._sceneImages[sceneIndex] = fb; resolve(fb); };
+      fb.onerror = () => resolve(null);
+      fb.src = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/education/education_1.jpg`;
+    };
+    img.src = url;
+  });
+};
+
 window.generateSceneImage = async function(scene, sceneIndex) {
-  // Skip auto generation if user uploaded assets
   if (window.sceneAssets && window.sceneAssets.length > 0) return null;
-  if(window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
+  if (window._sceneImages[sceneIndex]) return window._sceneImages[sceneIndex];
+  const text = ((scene.slideTitle || '') + ' ' + (scene.voiceover || '')).toLowerCase();
+  // Try Cloudflare AI image generation first
   try {
-    const text = ((scene.slideTitle || '') + ' ' + (scene.voiceover || '')).toLowerCase();
-    let category = 'community';
-    if (text.match(/business|company|office|meeting|money|finance|startup/)) category = 'business';
-    else if (text.match(/school|learn|study|university|student|teacher|educat/)) category = 'education';
-    else if (text.match(/tech|computer|phone|app|software|digital|ai|code/)) category = 'technology';
-    else if (text.match(/environment|climate|water|forest|wildlife|nature/)) category = 'nature';
-    else if (text.match(/health|hospital|doctor|medicine|fitness|medical/)) category = 'health';
-    else if (text.match(/food|farm|crop|harvest|soil|rural|agricult/)) category = 'agriculture';
-    else if (text.match(/sport|football|run|athlete|game|competition/)) category = 'sports';
-    else if (text.match(/art|music|dance|tradition|heritage|fashion|culture/)) category = 'culture';
-    const imgNum = (sceneIndex % 6) + 1;
-    const url = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/${category}/${category}_${imgNum}.jpg`;
-    return new Promise(resolve => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => { window._sceneImages[sceneIndex] = img; resolve(img); };
-      img.onerror = () => {
-        const fallback = new Image();
-        fallback.crossOrigin = 'anonymous';
-        fallback.onload = () => { window._sceneImages[sceneIndex] = fallback; resolve(fallback); };
-        fallback.onerror = () => resolve(null);
-        fallback.src = `https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/community/community_${imgNum}.jpg`;
-      };
+    const prompt = `Professional photo: ${scene.slideTitle || 'Africa'}. African context, realistic, high quality.`;
+    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({prompt: prompt})
+    });
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => { window._sceneImages[sceneIndex] = img; resolve(img); };
+        img.onerror = () => resolve(window.generateSceneImageFallback(text, sceneIndex));
+        img.src = url;
+      });
+    }
+  } catch(e) {
+    console.log('[SceneImg] AI failed, using R2:', e.message);
+  }
+  return window.generateSceneImageFallback(text, sceneIndex);
+};
       img.src = url;
     });
   } catch(e) { return null; }
