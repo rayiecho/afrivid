@@ -2266,3 +2266,53 @@ setInterval(autoSavePhoto, 30000);
 window.addEventListener('beforeunload', autoSavePhoto);
 document.addEventListener('DOMContentLoaded', () => setTimeout(restorePhotoWork, 800));
 </script>
+<script>
+function drawCropOverlay(canvas, rect) {
+  let sel = document.getElementById('pro-crop-overlay');
+  if (!sel) {
+    sel = document.createElement('canvas');
+    sel.id = 'pro-crop-overlay';
+    sel.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:20;';
+    canvas.parentElement.style.position = 'relative';
+    canvas.parentElement.appendChild(sel);
+  }
+  sel.width = canvas.offsetWidth;
+  sel.height = canvas.offsetHeight;
+  const ctx = sel.getContext('2d');
+  const scaleX = canvas.offsetWidth / canvas.width;
+  const scaleY = canvas.offsetHeight / canvas.height;
+  const x = rect.x * scaleX, y = rect.y * scaleY;
+  const w = rect.w * scaleX, h = rect.h * scaleY;
+  ctx.clearRect(0, 0, sel.width, sel.height);
+  if (w < 10 || h < 10) return;
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  ctx.fillRect(0, 0, sel.width, sel.height);
+  ctx.clearRect(x, y, w, h);
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(x, y, w, h);
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  ctx.beginPath();
+  ctx.moveTo(x+w/3,y); ctx.lineTo(x+w/3,y+h);
+  ctx.moveTo(x+w*2/3,y); ctx.lineTo(x+w*2/3,y+h);
+  ctx.moveTo(x,y+h/3); ctx.lineTo(x+w,y+h/3);
+  ctx.moveTo(x,y+h*2/3); ctx.lineTo(x+w,y+h*2/3);
+  ctx.stroke(); ctx.setLineDash([]);
+  const hs = 14;
+  ctx.fillStyle = '#fff';
+  [[x,y],[x+w-hs,y],[x,y+h-hs],[x+w-hs,y+h-hs]].forEach(([hx,hy]) => ctx.fillRect(hx,hy,hs,hs));
+  ctx.fillRect(x+w/2-hs/2,y,hs,6); ctx.fillRect(x+w/2-hs/2,y+h-6,hs,6);
+  ctx.fillRect(x,y+h/2-hs/2,6,hs); ctx.fillRect(x+w-6,y+h/2-hs/2,6,hs);
+  let bar = document.getElementById('crop-action-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'crop-action-bar';
+    bar.style.cssText = 'position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:0.5rem;background:rgba(0,0,0,0.85);padding:0.4rem 0.75rem;border-radius:10px;';
+    bar.innerHTML = '<button onclick="applyCrop()" style="background:#F5A623;border:none;color:#050A14;padding:0.4rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;font-size:0.85rem;">✓ Apply</button><button onclick="cancelCrop()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.85rem;">✕ Cancel</button>';
+    canvas.parentElement.appendChild(bar);
+  }
+  bar.style.display = 'flex';
+}
+function removeCropOverlay() {
+  document.getElementById('pro-crop-overlay')?.remove();
+  document.getElementById('crop-action-bar')?.remove();
+}
+</script>
