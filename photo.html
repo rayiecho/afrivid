@@ -899,11 +899,16 @@ window.loadPhoto = function(event) {
 }
 
 function getFilter() {
-  const b = document.getElementById('brightness').value;
-  const c = document.getElementById('contrast').value;
-  const s = document.getElementById('saturation').value;
-  const sh = parseFloat(document.getElementById('sharpness').value);
-  const w = parseInt(document.getElementById('warmth').value);
+  const bEl = document.getElementById('brightness');
+  const cEl = document.getElementById('contrast');
+  const sEl = document.getElementById('saturation');
+  const shEl = document.getElementById('sharpness');
+  const wEl = document.getElementById('warmth');
+  const b = bEl ? bEl.value : 100;
+  const c = cEl ? cEl.value : 100;
+  const s = sEl ? sEl.value : 100;
+  const sh = shEl ? parseFloat(shEl.value) : 0;
+  const w = wEl ? parseInt(wEl.value) : 0;
   let f = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
   if (sh > 0) f += ` contrast(${100+sh*6}%)`;
   if (w > 0) f += ` sepia(${w*0.4}%) saturate(${100+w*0.3}%)`;
@@ -1505,7 +1510,7 @@ textPos: "none", "bottom", "top", "br"`;
   }
 }
 
-function resetPhotoEditor() {
+window.resetPhotoEditor = function resetPhotoEditor() {
   photoImage = null;
   document.getElementById('photo-editor').style.display = 'none';
   document.getElementById('photo-upload-card').style.display = 'block';
