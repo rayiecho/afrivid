@@ -464,6 +464,7 @@ function loadVideo(file) {
 }
 
 function formatTime(s) {
+  if (!s || isNaN(s) || !isFinite(s)) return '0:00';
   const m = Math.floor(s/60);
   return m + ':' + String(Math.floor(s%60)).padStart(2,'0');
 }
@@ -581,9 +582,19 @@ async function claudeAsk(prompt, maxTokens) {
 async function exportClips(clips, filename) {
   addLog('all', `[~] Exporting ${clips.length} clip(s)...`);
   const video = document.getElementById('ai-video');
+  
+  // Wait for video to be ready
+  if (video.readyState < 2) {
+    await new Promise(r => video.addEventListener('loadeddata', r, {once:true}));
+  }
+  if (!video.videoWidth || !video.duration) {
+    addLog('all', '[x] Video not ready - please wait for it to load fully');
+    return;
+  }
+  
   const canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth || 1280;
-  canvas.height = video.videoHeight || 720;
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
   const ctx = canvas.getContext('2d');
   const stream = canvas.captureStream(30);
   
