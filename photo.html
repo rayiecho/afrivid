@@ -1949,15 +1949,19 @@ window.addPhotoFrame = function(frameType) {
 // ── IMPROVED REMOVE BACKGROUND ──
 // Works on all image types using threshold-based removal
 window._removeBackground = async function() {
-  if (!photoImage) { alert('Upload a photo first'); return; }
+  const img = photoImage || window.photoImage || window._photoImage;
+  if (!img) { alert('Upload a photo first'); return; }
   const btn = document.querySelector('[onclick="removeBackground()"]');
   if(btn){btn.textContent='[..] Removing BG...';btn.disabled=true;}
   addLog('info', '[~] Removing background using flood fill...');
   try {
     const canvas = document.getElementById('photo-canvas');
+    if (!canvas) { alert('Canvas not found'); return; }
     const ctx = canvas.getContext('2d');
+    if (!ctx) { alert('Canvas context not found'); return; }
     const W = canvas.width, H = canvas.height;
-    ctx.drawImage(photoImage, 0, 0, W, H);
+    if (!W || !H) { alert('Canvas has no dimensions'); return; }
+    ctx.drawImage(img, 0, 0, W, H);
     const imageData = ctx.getImageData(0, 0, W, H);
     const data = imageData.data;
     const visited = new Uint8Array(W * H);
