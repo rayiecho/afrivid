@@ -2145,8 +2145,25 @@ window._generateCaptions = async function() {
   
   try {
     const videoSource = window.currentVideoFile || window._editVideoFile || window._editVideoBlob;
+    if (!videoSource) throw new Error('No video file found');
+    
+    // Extract audio from video using Web Audio API
+    let audioBlob = videoSource;
+    try {
+      const arrayBuffer = await videoSource.arrayBuffer();
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      // Convert to WAV blob
+      const wavBuffer = audioBufferToWav(audioBuffer);
+      audioBlob = new Blob([wavBuffer], {type: 'audio/wav'});
+      audioCtx.close();
+    } catch(audioErr) {
+      console.log('[Captions] Audio extraction failed, sending raw:', audioErr.message);
+      audioBlob = videoSource;
+    }
+    
     const formData = new FormData();
-    formData.append('audio', videoSource, 'video.webm');
+    formData.append('audio', audioBlob, 'audio.wav');
     
     const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
       method: 'POST',
