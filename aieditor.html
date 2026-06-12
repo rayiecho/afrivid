@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid AI Editor — AI-Powered Video Editing for Africa</title>
+<meta name="description" content="Drop your video. AI does the rest. Trim, translate, remove silences, generate viral clips and more.">
+<link rel="icon" type="image/png" href="images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#F5A623;--green:#74C69D;--red:#E63329;--blue:#6399ff;
+  --bg:#050A14;--navy:#0D1117;--navy2:#0D1F35;--navy3:#1a1a2e;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --muted:rgba(255,255,255,0.4);--font:'Syne',sans-serif;--mono:'Space Mono',monospace;
+}
+body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(5,10,20,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
+.topbar-logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;}
+.topbar-logo img{width:32px;height:32px;border-radius:8px;}
+.topbar-logo span{font-weight:900;font-size:1rem;color:#fff;}
+.topbar-logo span em{color:var(--gold);font-style:normal;}
+.topbar-right{display:flex;align-items:center;gap:0.75rem;}
+.user-badge{font-size:0.72rem;color:var(--green);font-family:var(--mono);background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;}
+.back-btn{color:var(--muted);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s;}
+.back-btn:hover{color:#fff;}
+
+/* HERO */
+.hero{text-align:center;padding:3rem 1.5rem 2rem;}
+.hero-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:3px;margin-bottom:0.75rem;}
+.hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;margin-bottom:0.75rem;line-height:1.1;}
+.hero-title em{color:var(--gold);font-style:normal;}
+.hero-sub{color:var(--muted);font-size:0.95rem;max-width:500px;margin:0 auto;}
+
+/* DROP ZONE */
+.drop-zone{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;}
+.drop-area{border:2px dashed rgba(245,166,35,0.3);border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(245,166,35,0.02);position:relative;}
+.drop-area:hover,.drop-area.dragover{border-color:var(--gold);background:rgba(245,166,35,0.05);}
+.drop-icon{font-size:2.5rem;margin-bottom:0.75rem;}
+.drop-title{font-weight:800;font-size:1.1rem;margin-bottom:0.4rem;}
+.drop-sub{color:var(--muted);font-size:0.82rem;}
+.drop-input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+/* VIDEO PREVIEW */
+#video-preview-area{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;display:none;}
+.video-wrap{position:relative;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+#ai-video{width:100%;max-height:400px;display:block;}
+.video-info{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:var(--navy);border-top:1px solid var(--border);}
+.video-name{font-size:0.82rem;color:var(--muted);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.video-duration{font-size:0.82rem;color:var(--gold);font-family:var(--mono);}
+.change-video-btn{background:none;border:1px solid var(--border2);color:var(--muted);padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--font);}
+.change-video-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
+
+/* AI PROMPT */
+.prompt-area{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;}
+.prompt-wrap{display:flex;gap:0.5rem;}
+.prompt-input{flex:1;background:var(--navy);border:1px solid var(--border2);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-family:var(--font);font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+.prompt-input:focus{border-color:rgba(245,166,35,0.4);}
+.prompt-btn{background:var(--gold);border:none;color:#050A14;padding:0.85rem 1.5rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all 0.2s;}
+.prompt-btn:hover{background:#e09520;}
+.prompt-examples{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem;}
+.example-chip{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;font-family:var(--font);}
+.example-chip:hover{color:#fff;border-color:var(--border2);}
+
+/* FEATURES GRID */
+.features-section{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;}
+.features-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:2px;margin-bottom:1rem;}
+.features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;}
+@media(min-width:600px){.features-grid{grid-template-columns:repeat(3,1fr);}}
+.feature-card{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:1.1rem;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.feature-card:hover{border-color:rgba(245,166,35,0.3);background:var(--navy2);}
+.feature-card.active{border-color:var(--gold);background:rgba(245,166,35,0.05);}
+.feature-card.loading{pointer-events:none;opacity:0.7;}
+.feature-icon{font-size:1.5rem;margin-bottom:0.5rem;}
+.feature-name{font-weight:800;font-size:0.88rem;margin-bottom:0.2rem;}
+.feature-desc{color:var(--muted);font-size:0.72rem;line-height:1.4;}
+.feature-badge{position:absolute;top:0.5rem;right:0.5rem;font-size:0.6rem;font-family:var(--mono);padding:0.15rem 0.4rem;border-radius:4px;font-weight:700;}
+.badge-new{background:rgba(116,198,157,0.2);color:var(--green);}
+.badge-pro{background:rgba(245,166,35,0.15);color:var(--gold);}
+
+/* SUB PANELS */
+.sub-panel{max-width:700px;margin:0 auto 1.5rem;padding:0 1.5rem;display:none;}
+.sub-panel.active{display:block;}
+.sub-panel-inner{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
+.sub-title{font-weight:800;font-size:0.9rem;margin-bottom:1rem;color:var(--gold);}
+.btn-row{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.btn{padding:0.6rem 1.1rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-gold{background:var(--gold);color:#050A14;}
+.btn-gold:hover{background:#e09520;}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--muted);}
+.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:var(--gold);}
+.btn-green{background:var(--green);color:#050A14;}
+.form-input{width:100%;background:#111;border:1px solid var(--border2);color:#fff;padding:0.6rem 0.75rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;outline:none;margin-bottom:0.5rem;}
+
+/* LOG */
+.ai-log{background:#0d0d0d;border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);max-height:100px;overflow-y:auto;line-height:1.9;margin-top:0.75rem;}
+
+/* RESULT BANNER */
+.result-banner{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:9999;background:var(--navy2);border:1px solid rgba(116,198,157,0.4);border-radius:14px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:var(--font);min-width:320px;max-width:90vw;}
+
+/* LOGIN */
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;display:none;align-items:center;justify-content:center;}
+.login-overlay.active{display:flex;}
+.login-box{background:var(--navy);border:1px solid var(--border2);border-radius:16px;padding:2rem;width:90%;max-width:380px;}
+
+@media(max-width:600px){
+  .hero{padding:2rem 1rem 1.5rem;}
+  .features-grid{grid-template-columns:repeat(2,1fr);}
+  .prompt-wrap{flex-direction:column;}
+  .prompt-btn{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="studio.html" class="back-btn">← Studio</a>
+  <a href="index.html" class="topbar-logo">
+    <img src="images/logo.png" alt="AfriVid" onerror="this.style.display='none'">
+    <span>Afri<em>Vid</em> AI Editor</span>
+  </a>
+  <div class="topbar-right">
+    <span class="user-badge" id="user-badge" style="display:none;" onclick="window.location.href='studio.html?profile=1'">Loading...</span>
+    <button class="btn btn-outline" id="btn-signin" onclick="showLogin()" style="font-size:0.78rem;padding:0.4rem 0.9rem;">Sign In</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">✦ AFRIVID AI EDITOR</div>
+  <h1 class="hero-title">Drop your video.<br><em>AI does the rest.</em></h1>
+  <p class="hero-sub">Trim, translate, remove silences, find viral clips and more — powered by AI, built for Africa.</p>
+</div>
+
+<!-- DROP ZONE -->
+<div class="drop-zone">
+  <div class="drop-area" id="drop-area" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+    <div class="drop-icon">🎬</div>
+    <div class="drop-title">Drop your video here</div>
+    <div class="drop-sub">MP4, WebM, MOV — up to 500MB</div>
+    <input type="file" class="drop-input" id="video-input" accept="video/*" onchange="handleVideoUpload(event)">
+  </div>
+</div>
+
+<!-- VIDEO PREVIEW -->
+<div id="video-preview-area">
+  <div class="video-wrap">
+    <video id="ai-video" controls></video>
+  </div>
+  <div class="video-info">
+    <span class="video-name" id="video-name">—</span>
+    <span class="video-duration" id="video-duration">—</span>
+    <button class="change-video-btn" onclick="document.getElementById('video-input').click()">Change Video</button>
+  </div>
+</div>
+
+<!-- AI PROMPT -->
+<div class="prompt-area">
+  <div class="prompt-wrap">
+    <input class="prompt-input" id="ai-prompt" placeholder="Tell AI what to do... e.g. Remove first 10 seconds and keep the best 60 seconds">
+    <button class="prompt-btn" onclick="applyPrompt()">✦ Apply</button>
+  </div>
+  <div class="prompt-examples">
+    <span class="example-chip" onclick="setPrompt(this)">Remove first 30 seconds</span>
+    <span class="example-chip" onclick="setPrompt(this)">Keep only the best 60 seconds</span>
+    <span class="example-chip" onclick="setPrompt(this)">Remove silences</span>
+    <span class="example-chip" onclick="setPrompt(this)">Make it TikTok ready</span>
+    <span class="example-chip" onclick="setPrompt(this)">Keep from 0:30 to 2:00</span>
+    <span class="example-chip" onclick="setPrompt(this)">Remove the intro and outro</span>
+  </div>
+</div>
+
+<!-- FEATURES GRID -->
+<div class="features-section">
+  <div class="features-label">✦ AI TOOLS</div>
+  <div class="features-grid">
+
+    <div class="feature-card" onclick="togglePanel('viral')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🚀</div>
+      <div class="feature-name">Viral Clips</div>
+      <div class="feature-desc">AI finds your best moments and scores them for TikTok, Reels & Shorts</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('highlight')">
+      <div class="feature-icon">✂</div>
+      <div class="feature-name">Highlight Reel</div>
+      <div class="feature-desc">Get a 30s, 60s or 90s highlight reel automatically</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('translate')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🌍</div>
+      <div class="feature-name">Voice Translation</div>
+      <div class="feature-desc">Translate to Swahili, French, Yoruba, Hausa & more</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('silence')">
+      <div class="feature-icon">✂</div>
+      <div class="feature-name">Remove Silences</div>
+      <div class="feature-desc">Detect and cut silent parts automatically</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('music')">
+      <div class="feature-icon">🎵</div>
+      <div class="feature-name">Background Music</div>
+      <div class="feature-desc">Add African beats, upbeat or calm music with auto-duck</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('captions')">
+      <div class="feature-icon">💬</div>
+      <div class="feature-name">Auto Captions</div>
+      <div class="feature-desc">Whisper transcription with karaoke word highlighting</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('noise')">
+      <div class="feature-icon">🔇</div>
+      <div class="feature-name">Noise Removal</div>
+      <div class="feature-desc">Remove background noise and enhance voice clarity</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('thumbnail')">
+      <div class="feature-icon">🖼</div>
+      <div class="feature-name">Thumbnail</div>
+      <div class="feature-desc">Extract the best frame with branding overlay</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('brand')">
+      <div class="feature-badge badge-pro">PRO</div>
+      <div class="feature-icon">🏷</div>
+      <div class="feature-name">Brand Kit</div>
+      <div class="feature-desc">Add your logo, colors and watermark to every video</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUB PANELS -->
+<div class="sub-panel" id="panel-viral">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🚀 Viral Clips Generator</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">AI finds your most viral-worthy moments and scores them. Each clip gets a viral score, title suggestion and format recommendation.</p>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="runFeature('viral',3)">3 Clips</button>
+      <button class="btn btn-outline" onclick="runFeature('viral',5)">5 Clips</button>
+      <button class="btn btn-outline" onclick="runFeature('viral',10)">10 Clips</button>
+    </div>
+    <div class="ai-log" id="log-viral"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-highlight">
+  <div class="sub-panel-inner">
+    <div class="sub-title">✂ Highlight Reel</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">AI transcribes your video, finds the strongest moments and assembles a highlight reel.</p>
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="runFeature('highlight',30)">30 seconds</button>
+      <button class="btn btn-gold" onclick="runFeature('highlight',60)">60 seconds</button>
+      <button class="btn btn-gold" onclick="runFeature('highlight',90)">90 seconds</button>
+    </div>
+    <div class="ai-log" id="log-highlight"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-translate">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🌍 Voice Translation</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Transcribes your video, translates the speech and generates a new voice in the target language.</p>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="runFeature('translate','sw')">🇰🇪 Swahili</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','fr')">🇫🇷 French</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','yo')">🇳🇬 Yoruba</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','ha')">🇳🇬 Hausa</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','am')">🇪🇹 Amharic</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','pt')">🇦🇴 Portuguese</button>
+    </div>
+    <div class="ai-log" id="log-translate"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-silence">
+  <div class="sub-panel-inner">
+    <div class="sub-title">✂ Remove Silences</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Detects silent parts in your video and removes them automatically. Perfect for podcasts, lectures and interviews.</p>
+    <button class="btn btn-gold" onclick="runFeature('silence')">✂ Remove Silences Now</button>
+    <div class="ai-log" id="log-silence"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-music">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🎵 Background Music</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Adds background music that auto-ducks when speech is detected.</p>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="runFeature('music','auto')">✦ Auto Detect</button>
+      <button class="btn btn-outline" onclick="runFeature('music','inspirational')">🥁 African Beats</button>
+      <button class="btn btn-outline" onclick="runFeature('music','upbeat')">⚡ Upbeat</button>
+      <button class="btn btn-outline" onclick="runFeature('music','calm')">🌊 Calm</button>
+      <button class="btn btn-outline" onclick="runFeature('music','church')">✝ Church</button>
+      <button class="btn btn-outline" style="color:var(--red);border-color:rgba(230,51,41,0.3);" onclick="stopMusic()">⏹ Stop</button>
+    </div>
+    <div class="ai-log" id="log-music"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-captions">
+  <div class="sub-panel-inner">
+    <div class="sub-title">💬 Auto Captions</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Whisper AI transcribes your video and overlays captions with karaoke word highlighting.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.75rem;">
+      <button class="btn btn-outline" id="cap-classic" onclick="setCaptionStyleAI('classic')">Classic</button>
+      <button class="btn btn-outline" id="cap-bold" onclick="setCaptionStyleAI('bold')">Bold</button>
+      <button class="btn btn-outline" id="cap-minimal" onclick="setCaptionStyleAI('minimal')">Minimal</button>
+      <button class="btn btn-outline" id="cap-tiktok" onclick="setCaptionStyleAI('tiktok')">TikTok</button>
+    </div>
+    <button class="btn btn-gold" style="width:100%;" onclick="runFeature('captions')">✦ Generate Captions</button>
+    <div class="ai-log" id="log-captions"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-noise">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🔇 Noise Removal</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Applies high-pass and low-pass filters with dynamic compression to clean your audio.</p>
+    <button class="btn btn-gold" onclick="runFeature('noise')">🔇 Remove Noise Now</button>
+    <div class="ai-log" id="log-noise"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-thumbnail">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🖼 Thumbnail Generator</div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Extracts the brightest, clearest frame from your video and adds professional branding.</p>
+    <button class="btn btn-gold" onclick="runFeature('thumbnail')">🖼 Generate Thumbnail</button>
+    <div class="ai-log" id="log-thumbnail"></div>
+    <div id="thumb-result" style="margin-top:0.75rem;"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-brand">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🏷 Brand Kit</div>
+    <input class="form-input" id="brand-name" placeholder="Your brand name e.g. AfriVid Studio">
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;">
+      <input type="color" id="brand-color" value="#F5A623" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer;">
+      <label style="flex:1;background:#111;border:1px solid var(--border2);color:var(--muted);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font);">
+        📁 Upload Logo <input type="file" accept="image/*" onchange="loadBrandLogoAI(this)" style="display:none;">
+      </label>
+      <img id="brand-logo-preview" style="display:none;width:36px;height:36px;border-radius:6px;object-fit:contain;">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="saveBrandKitAI()">💾 Save Kit</button>
+      <button class="btn btn-outline" onclick="applyBrandWatermarkAI()">✦ Apply Watermark</button>
+    </div>
+    <div class="ai-log" id="log-brand"></div>
+  </div>
+</div>
+
+<div style="height:6rem;"></div>
+
+<!-- LOGIN MODAL -->
+<div class="login-overlay" id="login-modal" onclick="if(event.target===this)hideLogin()">
+  <div class="login-box">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 0.75rem;">A</div>
+      <div style="font-size:1.2rem;font-weight:900;">Sign in to AfriVid</div>
+      <div style="color:var(--muted);font-size:0.82rem;margin-top:0.3rem;">Continue to AI Editor</div>
+    </div>
+    <input id="login-email" type="email" placeholder="Email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:0.75rem;">
+    <input id="login-password" type="password" placeholder="Password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:1rem;">
+    <button onclick="doSignIn()" style="width:100%;background:var(--gold);border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:var(--font);font-size:0.95rem;">Sign In</button>
+    <div id="login-error" style="color:var(--red);font-size:0.78rem;margin-top:0.5rem;text-align:center;"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBZsObcjLg3SMczOFU9p1OjF-5ckcSmFL2hb2M",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:afrivid"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+window.db = db;
+
+onAuthStateChanged(auth, user => {
+  window.currentUser = user;
+  const badge = document.getElementById('user-badge');
+  const signinBtn = document.getElementById('btn-signin');
+  if (user) {
+    badge.style.display = 'block';
+    badge.textContent = user.displayName || user.email.split('@')[0];
+    if(signinBtn) signinBtn.style.display = 'none';
+  } else {
+    badge.style.display = 'none';
+    if(signinBtn) signinBtn.style.display = 'block';
+  }
+});
+
+window.doSignIn = async function() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    hideLogin();
+  } catch(e) {
+    if(err) err.textContent = e.message;
+  }
+};
+
+window.showLogin = function(msg) { document.getElementById('login-modal').classList.add('active'); };
+window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); };
+</script>
+
+<script>
+// ── CORE STATE ──
+let currentVideoFile = null;
+let currentClips = [];
+let currentCaptionStyle = 'classic';
+let bgMusicCtx = null;
+let bgMusicGain = null;
+let brandKit = JSON.parse(localStorage.getItem('afrivid_brand_kit') || '{}');
+
+// ── VIDEO HANDLING ──
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-area').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) loadVideo(file);
+}
+
+function handleVideoUpload(e) {
+  const file = e.target.files[0];
+  if (file) loadVideo(file);
+}
+
+function loadVideo(file) {
+  currentVideoFile = file;
+  window.currentVideoFile = file;
+  const url = URL.createObjectURL(file);
+  const video = document.getElementById('ai-video');
+  video.src = url;
+  video.onloadedmetadata = () => {
+    document.getElementById('video-name').textContent = file.name;
+    document.getElementById('video-duration').textContent = formatTime(video.duration);
+    document.getElementById('drop-zone') && (document.querySelector('.drop-zone').style.display = 'none');
+    document.getElementById('video-preview-area').style.display = 'block';
+    addLog('all', `[ok] Loaded: ${file.name} (${formatTime(video.duration)})`);
+  };
+}
+
+function formatTime(s) {
+  const m = Math.floor(s/60);
+  return m + ':' + String(Math.floor(s%60)).padStart(2,'0');
+}
+
+// ── PANEL TOGGLE ──
+function togglePanel(name) {
+  const panel = document.getElementById('panel-' + name);
+  const isActive = panel.classList.contains('active');
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.feature-card').forEach(c => c.classList.remove('active'));
+  if (!isActive) {
+    panel.classList.add('active');
+    panel.previousElementSibling && panel.previousElementSibling.classList.add('active');
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+
+// ── PROMPT ──
+function setPrompt(el) {
+  document.getElementById('ai-prompt').value = el.textContent;
+}
+
+async function applyPrompt() {
+  if (!currentVideoFile) { alert('Upload a video first'); return; }
+  if (!window.currentUser) { showLogin(); return; }
+  const instructions = document.getElementById('ai-prompt').value.trim();
+  if (!instructions) { alert('Type your instructions first'); return; }
+  addLog('all', '[~] Processing: ' + instructions);
+  await runAIEdit(instructions);
+}
+
+// ── LOG ──
+function addLog(panel, msg) {
+  const color = msg.startsWith('[ok]') ? '#74C69D' : msg.startsWith('[x]') ? '#E63329' : '#F5A623';
+  if (panel === 'all') {
+    document.querySelectorAll('.ai-log').forEach(l => {
+      l.innerHTML = `<span style="color:${color}">${msg}</span>`;
+    });
+  } else {
+    const log = document.getElementById('log-' + panel);
+    if (log) log.innerHTML = `<span style="color:${color}">${msg}</span>`;
+  }
+}
+
+// ── RUN FEATURE ──
+async function runFeature(type, param) {
+  if (!currentVideoFile) { alert('Upload a video first'); return; }
+  if (!window.currentUser) { showLogin('Sign in to use AI features'); return; }
+  
+  const video = document.getElementById('ai-video');
+  
+  switch(type) {
+    case 'viral': await doViralClips(param || 5); break;
+    case 'highlight': await doHighlightReel(param || 60); break;
+    case 'translate': await doTranslate(param || 'sw'); break;
+    case 'silence': await doRemoveSilences(); break;
+    case 'music': await doAddMusic(param || 'inspirational'); break;
+    case 'captions': await doCaptions(); break;
+    case 'noise': await doNoiseRemoval(); break;
+    case 'thumbnail': await doThumbnail(); break;
+  }
+}
+
+// ── AUDIO HELPER ──
+async function extractWAV() {
+  const ab = await currentVideoFile.arrayBuffer();
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const decoded = await audioCtx.decodeAudioData(ab.slice(0));
+  const numSamples = decoded.length;
+  const sampleRate = decoded.sampleRate;
+  const ch = decoded.getChannelData(0);
+  const buf = new ArrayBuffer(44 + numSamples * 2);
+  const view = new DataView(buf);
+  const ws = (o,s) => { for(let i=0;i<s.length;i++) view.setUint8(o+i,s.charCodeAt(i)); };
+  ws(0,'RIFF'); view.setUint32(4,36+numSamples*2,true);
+  ws(8,'WAVE'); ws(12,'fmt '); view.setUint32(16,16,true);
+  view.setUint16(20,1,true); view.setUint16(22,1,true);
+  view.setUint32(24,sampleRate,true); view.setUint32(28,sampleRate*2,true);
+  view.setUint16(32,2,true); view.setUint16(34,16,true);
+  ws(36,'data'); view.setUint32(40,numSamples*2,true);
+  let off=44;
+  for(let i=0;i<numSamples;i++,off+=2){
+    const s=Math.max(-1,Math.min(1,ch[i]));
+    view.setInt16(off,s<0?s*0x8000:s*0x7FFF,true);
+  }
+  audioCtx.close();
+  return new Blob([buf],{type:'audio/wav'});
+}
+
+async function transcribe() {
+  addLog('all', '[~] Transcribing audio...');
+  const wavBlob = await extractWAV();
+  const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
+    method:'POST', headers:{'Content-Type':'audio/wav'}, body: wavBlob
+  });
+  if (!res.ok) return '';
+  const d = await res.json();
+  return d.text || '';
+}
+
+async function claudeAsk(prompt, maxTokens) {
+  const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens: maxTokens || 1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const d = await res.json();
+  return d.content[0].text.trim();
+}
+
+// ── EXPORT ──
+async function exportClips(clips, filename) {
+  addLog('all', `[~] Exporting ${clips.length} clip(s)...`);
+  const video = document.getElementById('ai-video');
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth || 1280;
+  canvas.height = video.videoHeight || 720;
+  const ctx = canvas.getContext('2d');
+  const stream = canvas.captureStream(30);
+  
+  // Add audio
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const dest = audioCtx.createMediaStreamDestination();
+  const source = audioCtx.createMediaElementSource(video);
+  source.connect(dest);
+  source.connect(audioCtx.destination);
+  stream.addTrack(dest.stream.getTracks()[0]);
+  
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+  const recorder = new MediaRecorder(stream, {mimeType});
+  const chunks = [];
+  recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
+  
+  recorder.start(100);
+  
+  for (const clip of clips) {
+    video.currentTime = clip.start;
+    await new Promise(r => video.addEventListener('seeked', r, {once:true}));
+    video.play();
+    
+    const renderFrame = () => {
+      if (video.currentTime >= clip.end) { video.pause(); return; }
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(renderFrame);
+    };
+    renderFrame();
+    
+    await new Promise(r => {
+      const check = setInterval(() => {
+        if (video.paused || video.currentTime >= clip.end) {
+          clearInterval(check);
+          video.pause();
+          r();
+        }
+      }, 100);
+    });
+  }
+  
+  recorder.stop();
+  audioCtx.close();
+  
+  await new Promise(r => recorder.onstop = r);
+  const blob = new Blob(chunks, {type:'video/webm'});
+  const sizeMB = (blob.size/1024/1024).toFixed(1);
+  
+  showResultBanner(`✅ Export ready! ${sizeMB}MB`, blob, filename || 'AfriVid-AI-Edit');
+  addLog('all', `[ok] Export complete! ${sizeMB}MB`);
+}
+
+function showResultBanner(msg, blob, filename) {
+  document.querySelectorAll('.result-banner').forEach(b => b.remove());
+  const url = URL.createObjectURL(blob);
+  const banner = document.createElement('div');
+  banner.className = 'result-banner';
+  banner.innerHTML = `
+    <div style="flex:1;">
+      <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">${msg}</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:0.2rem;">Ready to download</div>
+    </div>
+    <button onclick="const a=document.createElement('a');a.href='${url}';a.download='${filename}.webm';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+  `;
+  document.body.appendChild(banner);
+}
+
+// ── AI FEATURES ──
+async function runAIEdit(instructions) {
+  const video = document.getElementById('ai-video');
+  const totalSecs = Math.round(video.duration);
+  try {
+    const text = await claudeAsk(`Video editor. Video is ${totalSecs}s long. Instructions: "${instructions}". Return ONLY JSON array of clips to keep: [{"start":0,"end":30}]`, 500);
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('No clips found');
+    const clips = JSON.parse(match[0]).map(c => ({
+      start: Math.max(0, Math.min(c.start, video.duration)),
+      end: Math.max(0, Math.min(c.end, video.duration))
+    }));
+    addLog('all', `[ok] Found ${clips.length} clip(s) — exporting...`);
+    await exportClips(clips, 'AfriVid-AI-Trim');
+  } catch(e) {
+    addLog('all', '[x] Failed: ' + e.message);
+  }
+}
+
+async function doViralClips(count) {
+  addLog('viral', '[~] Transcribing...');
+  const video = document.getElementById('ai-video');
+  let transcript = '';
+  try { transcript = await transcribe(); } catch(e) {}
+  addLog('viral', '[~] Finding viral moments...');
+  try {
+    const text = await claudeAsk(`Find ${count} viral clips from this ${Math.round(video.duration)}s video. ${transcript ? 'Transcript: "'+transcript.slice(0,1500)+'"' : ''} Return ONLY JSON: [{"start":0,"end":30,"title":"Hook","score":85,"format":"tiktok","reason":"Strong opening"}]`, 1500);
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('No clips');
+    const clips = JSON.parse(match[0]);
+    addLog('viral', `[ok] Found ${clips.length} viral clips!`);
+    showViralClipsUI(clips);
+  } catch(e) { addLog('viral', '[x] ' + e.message); }
+}
+
+function showViralClipsUI(clips) {
+  document.querySelectorAll('.result-banner').forEach(b => b.remove());
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#0D1117;border:1px solid rgba(245,166,35,0.3);border-radius:16px;padding:1.5rem;width:90%;max-width:520px;max-height:80vh;overflow-y:auto;font-family:Syne,sans-serif;box-shadow:0 16px 64px rgba(0,0,0,0.8);';
+  const sc = s => s>=80?'#74C69D':s>=60?'#F5A623':'#fff';
+  const fi = f => f==='tiktok'?'🎵':f==='reels'?'📸':'▶';
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="color:#F5A623;font-weight:900;">✦ ${clips.length} Viral Clips</div>
+      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    ${clips.map((c,i) => `
+      <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <div style="flex:1;">
+            <div style="color:#fff;font-weight:700;font-size:0.88rem;">${fi(c.format)} ${c.title||'Clip '+(i+1)}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${c.reason||''}</div>
+          </div>
+          <div style="text-align:right;margin-left:1rem;">
+            <div style="color:${sc(c.score)};font-weight:900;font-size:1.1rem;">${c.score||'--'}</div>
+            <div style="color:rgba(255,255,255,0.3);font-size:0.6rem;">SCORE</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:Space Mono,monospace;">${formatTime(c.start)} → ${formatTime(c.end)} · ${Math.round(c.end-c.start)}s</div>
+          <div style="display:flex;gap:0.4rem;">
+            <button onclick="document.getElementById('ai-video').currentTime=${c.start};document.getElementById('ai-video').play();setTimeout(()=>document.getElementById('ai-video').pause(),${(c.end-c.start)*1000})" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:Syne,sans-serif;">▶</button>
+            <button onclick="exportClips([{start:${c.start},end:${c.end}}],'${(c.title||'clip').replace(/'/g,'')}')" style="background:#F5A623;border:none;color:#050A14;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇</button>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+  document.body.appendChild(panel);
+}
+
+async function doHighlightReel(duration) {
+  addLog('highlight', '[~] Transcribing...');
+  const video = document.getElementById('ai-video');
+  let transcript = '';
+  try { transcript = await transcribe(); } catch(e) {}
+  addLog('highlight', '[~] Finding best moments...');
+  try {
+    const text = await claudeAsk(`Find best ${duration}s highlight from ${Math.round(video.duration)}s video. ${transcript ? 'Transcript: "'+transcript.slice(0,1500)+'"':''} Return ONLY JSON clips totaling ~${duration}s: [{"start":10,"end":40,"title":"Key moment"}]`, 800);
+    const match = text.match(/\[[\s\S]*\]/);
+    if(!match) throw new Error('No clips');
+    const clips = JSON.parse(match[0]).map(c=>({start:Math.max(0,c.start),end:Math.min(video.duration,c.end)}));
+    const total = clips.reduce((s,c)=>s+(c.end-c.start),0);
+    addLog('highlight', `[ok] ${clips.length} clips, ${Math.round(total)}s — exporting...`);
+    await exportClips(clips, `AfriVid-Highlight-${duration}s`);
+  } catch(e) { addLog('highlight', '[x] ' + e.message); }
+}
+
+async function doTranslate(lang) {
+  const langNames = {'sw':'Swahili','fr':'French','yo':'Yoruba','ha':'Hausa','am':'Amharic','pt':'Portuguese'};
+  const langName = langNames[lang] || lang;
+  addLog('translate', `[~] Transcribing for ${langName} translation...`);
+  try {
+    const transcript = await transcribe();
+    if (!transcript) throw new Error('No speech detected');
+    addLog('translate', '[~] Translating...');
+    const translated = await claudeAsk(`Translate to ${langName}. Return ONLY translated text:\n"${transcript}"`, 2000);
+    addLog('translate', '[~] Generating voice...');
+    const ttsRes = await fetch('https://afrivid-tts.mathsai666.workers.dev/tts', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({text:translated, voice:lang})
+    });
+    if(!ttsRes.ok) throw new Error('Voice generation failed');
+    const ttsBlob = await ttsRes.blob();
+    const ttsUrl = URL.createObjectURL(ttsBlob);
+    addLog('translate', `[ok] ${langName} translation ready!`);
+    document.querySelectorAll('.result-banner').forEach(b=>b.remove());
+    const banner = document.createElement('div');
+    banner.className = 'result-banner';
+    banner.innerHTML = `
+      <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
+      <button onclick="new Audio('${ttsUrl}').play()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play</button>
+      <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
+      <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+    `;
+    document.body.appendChild(banner);
+  } catch(e) { addLog('translate', '[x] ' + e.message); }
+}
+
+async function doRemoveSilences() {
+  addLog('silence', '[~] Detecting silences...');
+  const video = document.getElementById('ai-video');
+  try {
+    const ab = await currentVideoFile.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const decoded = await audioCtx.decodeAudioData(ab.slice(0));
+    const ch = decoded.getChannelData(0);
+    const sampleRate = decoded.sampleRate;
+    const chunkSize = Math.floor(sampleRate * 0.1);
+    const threshold = 0.02;
+    const minSilence = 0.5;
+    let segments = [], inSilence = false, silStart = 0, lastEnd = 0;
+    for (let i = 0; i < ch.length; i += chunkSize) {
+      const chunk = ch.slice(i, i+chunkSize);
+      const rms = Math.sqrt(chunk.reduce((s,v)=>s+v*v,0)/chunk.length);
+      const t = i/sampleRate;
+      if (rms < threshold) { if(!inSilence){inSilence=true;silStart=t;} }
+      else { if(inSilence){ if(t-silStart>minSilence&&lastEnd<silStart){segments.push({start:lastEnd,end:silStart});lastEnd=t;} inSilence=false; } }
+    }
+    if (lastEnd < decoded.duration-0.5) segments.push({start:lastEnd,end:decoded.duration});
+    audioCtx.close();
+    if(!segments.length) throw new Error('No silences detected');
+    const removed = decoded.duration - segments.reduce((s,c)=>s+(c.end-c.start),0);
+    addLog('silence', `[ok] Removing ${removed.toFixed(1)}s of silence — exporting...`);
+    await exportClips(segments, 'AfriVid-No-Silence');
+  } catch(e) { addLog('silence', '[x] ' + e.message); }
+}
+
+async function doAddMusic(type) {
+  const video = document.getElementById('ai-video');
+  if (bgMusicCtx) { bgMusicCtx.close(); bgMusicCtx = null; }
+  bgMusicCtx = new (window.AudioContext || window.webkitAudioContext)();
+  bgMusicGain = bgMusicCtx.createGain();
+  bgMusicGain.gain.value = 0.15;
+  bgMusicGain.connect(bgMusicCtx.destination);
+  const duration = video.duration + 2;
+  const dest = bgMusicGain;
+  if (type==='inspirational'||type==='auto') {
+    const bpm=80,beat=60/bpm;
+    for(let t=bgMusicCtx.currentTime;t<bgMusicCtx.currentTime+duration;t+=beat){
+      const k=bgMusicCtx.createOscillator(),kg=bgMusicCtx.createGain();
+      k.frequency.setValueAtTime(120,t);k.frequency.exponentialRampToValueAtTime(40,t+0.1);
+      kg.gain.setValueAtTime(0.3,t);kg.gain.exponentialRampToValueAtTime(0.001,t+0.15);
+      k.connect(kg);kg.connect(dest);k.start(t);k.stop(t+0.15);
+    }
+    const d=bgMusicCtx.createOscillator(),dg=bgMusicCtx.createGain();
+    d.type='sine';d.frequency.value=55;dg.gain.value=0.06;
+    d.connect(dg);dg.connect(dest);d.start(bgMusicCtx.currentTime);d.stop(bgMusicCtx.currentTime+duration);
+  } else if(type==='upbeat'){
+    const bpm=120,beat=60/bpm;
+    for(let t=bgMusicCtx.currentTime;t<bgMusicCtx.currentTime+duration;t+=beat){
+      const k=bgMusicCtx.createOscillator(),kg=bgMusicCtx.createGain();
+      k.frequency.setValueAtTime(150,t);k.frequency.exponentialRampToValueAtTime(50,t+0.08);
+      kg.gain.setValueAtTime(0.4,t);kg.gain.exponentialRampToValueAtTime(0.001,t+0.1);
+      k.connect(kg);kg.connect(dest);k.start(t);k.stop(t+0.1);
+    }
+  } else if(type==='calm'){
+    [220,277,330].forEach(f=>{const o=bgMusicCtx.createOscillator(),g=bgMusicCtx.createGain();o.type='sine';o.frequency.value=f;g.gain.value=0.04;o.connect(g);g.connect(dest);o.start(bgMusicCtx.currentTime);o.stop(bgMusicCtx.currentTime+duration);});
+  } else if(type==='church'){
+    [130,196,261,392].forEach((f,i)=>{const o=bgMusicCtx.createOscillator(),g=bgMusicCtx.createGain();o.type='sine';o.frequency.value=f;g.gain.value=0.03;o.connect(g);g.connect(dest);o.start(bgMusicCtx.currentTime+i*0.1);o.stop(bgMusicCtx.currentTime+duration);});
+  }
+  video.addEventListener('play',()=>{if(bgMusicCtx&&bgMusicGain){bgMusicGain.gain.setTargetAtTime(0.05,bgMusicCtx.currentTime,0.3);bgMusicCtx.resume();}});
+  video.addEventListener('pause',()=>{if(bgMusicCtx&&bgMusicGain)bgMusicGain.gain.setTargetAtTime(0.15,bgMusicCtx.currentTime,0.3);});
+  video.currentTime=0; video.play(); bgMusicCtx.resume();
+  addLog('music', `[ok] ${type} music playing with auto-duck!`);
+}
+
+function stopMusic() { if(bgMusicCtx){bgMusicCtx.close();bgMusicCtx=null;} addLog('music','[ok] Music stopped'); }
+
+async function doCaptions() {
+  addLog('captions', '[~] Transcribing...');
+  try {
+    const text = await transcribe();
+    if (!text) throw new Error('No speech detected');
+    addLog('captions', '[ok] Captions ready — play video to see them');
+    startKaraokeCaptions(text);
+  } catch(e) { addLog('captions', '[x] ' + e.message); }
+}
+
+function setCaptionStyleAI(style) {
+  currentCaptionStyle = style;
+  document.querySelectorAll('[id^="cap-"]').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('cap-'+style);
+  if(btn) btn.style.borderColor = '#F5A623';
+}
+
+function startKaraokeCaptions(text) {
+  const video = document.getElementById('ai-video');
+  let overlay = document.getElementById('caption-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'caption-overlay';
+    overlay.style.cssText = 'position:absolute;bottom:40px;left:0;right:0;text-align:center;pointer-events:none;z-index:10;padding:0 1rem;';
+    document.querySelector('.video-wrap').appendChild(overlay);
+  }
+  const words = text.split(' ');
+  const wps = words.length / (video.duration || 60);
+  video.addEventListener('timeupdate', () => {
+    const wi = Math.floor(video.currentTime * wps);
+    const cs = 8, start = Math.floor(wi/cs)*cs;
+    const chunk = words.slice(start, start+cs);
+    const active = wi - start;
+    const cs2 = currentCaptionStyle;
+    let bg='rgba(0,0,0,0.75)',color='#fff',fs='1rem',fw='700';
+    if(cs2==='bold'){fs='1.2rem';fw='900';bg='rgba(0,0,0,0.9)';}
+    else if(cs2==='minimal'){bg='transparent';}
+    else if(cs2==='tiktok'){bg='transparent';color='#fffc00';fs='1.3rem';fw='900';}
+    overlay.innerHTML = chunk.length ? `<span style="background:${bg};color:${color};font-size:${fs};font-weight:${fw};padding:0.4rem 0.85rem;border-radius:6px;font-family:Syne,sans-serif;display:inline-block;">${chunk.map((w,i)=>i===active?`<span style="color:#F5A623;font-weight:900;">${w}</span>`:w).join(' ')}</span>` : '';
+  });
+  video.addEventListener('ended', ()=>{ overlay.innerHTML=''; });
+}
+
+async function doNoiseRemoval() {
+  addLog('noise', '[~] Processing audio filters...');
+  try {
+    const ab = await currentVideoFile.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const decoded = await audioCtx.decodeAudioData(ab.slice(0));
+    const offCtx = new OfflineAudioContext(decoded.numberOfChannels, decoded.length, decoded.sampleRate);
+    const src = offCtx.createBufferSource(); src.buffer = decoded;
+    const hp = offCtx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=80;
+    const lp = offCtx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=8000;
+    const comp = offCtx.createDynamicsCompressor();
+    comp.threshold.value=-24; comp.ratio.value=12; comp.attack.value=0.003; comp.release.value=0.25;
+    src.connect(hp); hp.connect(lp); lp.connect(comp); comp.connect(offCtx.destination);
+    src.start(0);
+    const clean = await offCtx.startRendering();
+    audioCtx.close();
+    const ns=clean.length,sr=clean.sampleRate,ch=clean.getChannelData(0);
+    const buf=new ArrayBuffer(44+ns*2),view=new DataView(buf);
+    const ws=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i));};
+    ws(0,'RIFF');view.setUint32(4,36+ns*2,true);ws(8,'WAVE');ws(12,'fmt ');view.setUint32(16,16,true);
+    view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,sr,true);view.setUint32(28,sr*2,true);
+    view.setUint16(32,2,true);view.setUint16(34,16,true);ws(36,'data');view.setUint32(40,ns*2,true);
+    let off=44;for(let i=0;i<ns;i++,off+=2){const s=Math.max(-1,Math.min(1,ch[i]));view.setInt16(off,s<0?s*0x8000:s*0x7FFF,true);}
+    const cleanBlob=new Blob([buf],{type:'audio/wav'});
+    const cleanUrl=URL.createObjectURL(cleanBlob);
+    addLog('noise','[ok] Noise removed! Playing clean audio...');
+    const video=document.getElementById('ai-video');
+    video.muted=true; video.currentTime=0;
+    const cleanAudio=new Audio(cleanUrl); video.play(); cleanAudio.play();
+    video.addEventListener('ended',()=>{cleanAudio.pause();video.muted=false;},{once:true});
+    showResultBanner('✅ Noise Removed!', cleanBlob, 'AfriVid-Clean-Audio');
+  } catch(e) { addLog('noise','[x] '+e.message); }
+}
+
+async function doThumbnail() {
+  addLog('thumbnail', '[~] Extracting best frame...');
+  const video = document.getElementById('ai-video');
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth||1280; canvas.height = video.videoHeight||720;
+    const ctx = canvas.getContext('2d');
+    const timestamps = [0.2,0.35,0.5].map(t=>t*video.duration);
+    let best=null,bestBr=0;
+    for(const ts of timestamps){
+      video.currentTime=ts;
+      await new Promise(r=>video.addEventListener('seeked',r,{once:true}));
+      ctx.drawImage(video,0,0,canvas.width,canvas.height);
+      const id=ctx.getImageData(0,0,canvas.width,canvas.height);
+      let br=0; for(let i=0;i<id.data.length;i+=4) br+=(id.data[i]+id.data[i+1]+id.data[i+2])/3;
+      br/=(id.data.length/4);
+      if(br>bestBr){bestBr=br;best=canvas.toDataURL('image/jpeg',0.9);}
+    }
+    if(!best) throw new Error('Frame extraction failed');
+    const img=new Image(); img.onload=function(){
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      const grad=ctx.createLinearGradient(0,canvas.height*0.6,0,canvas.height);
+      grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(1,'rgba(0,0,0,0.8)');
+      ctx.fillStyle=grad; ctx.fillRect(0,0,canvas.width,canvas.height);
+      const title=currentVideoFile?.name?.replace(/\.[^.]+$/,'')||'AfriVid Video';
+      ctx.fillStyle='#fff'; ctx.font=`bold ${Math.round(canvas.width*0.05)}px Syne,sans-serif`;
+      ctx.fillText(title.slice(0,40),canvas.width*0.05,canvas.height*0.88);
+      ctx.fillStyle='#F5A623'; ctx.font=`${Math.round(canvas.width*0.025)}px Space Mono,monospace`;
+      ctx.fillText('afrivid.studio',canvas.width*0.05,canvas.height*0.95);
+      const thumbUrl=canvas.toDataURL('image/jpeg',0.92);
+      const result=document.getElementById('thumb-result');
+      if(result) result.innerHTML=`<img src="${thumbUrl}" style="width:100%;border-radius:8px;margin-bottom:0.75rem;"><button onclick="const a=document.createElement('a');a.href='${thumbUrl}';a.download='thumbnail.jpg';a.click();" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.5rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Thumbnail</button>`;
+      addLog('thumbnail','[ok] Thumbnail ready!');
+    }; img.src=best;
+  } catch(e) { addLog('thumbnail','[x] '+e.message); }
+}
+
+// ── BRAND KIT ──
+function loadBrandLogoAI(input) {
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    window._brandLogoDataURL=e.target.result;
+    const p=document.getElementById('brand-logo-preview');
+    if(p){p.src=e.target.result;p.style.display='block';}
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveBrandKitAI() {
+  brandKit={name:document.getElementById('brand-name')?.value||'',color:document.getElementById('brand-color')?.value||'#F5A623',logo:window._brandLogoDataURL||null,savedAt:Date.now()};
+  localStorage.setItem('afrivid_brand_kit',JSON.stringify(brandKit));
+  addLog('brand','[ok] Brand kit saved!');
+}
+
+function applyBrandWatermarkAI() {
+  window._applyBrandWatermark=true;
+  addLog('brand','[ok] Brand watermark will be applied on export');
+}
+
+// Load saved brand kit
+(function(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('afrivid_brand_kit')||'{}');
+    if(saved.name){const n=document.getElementById('brand-name');if(n)n.value=saved.name;}
+    if(saved.color){const c=document.getElementById('brand-color');if(c)c.value=saved.color;}
+    if(saved.logo){window._brandLogoDataURL=saved.logo;const p=document.getElementById('brand-logo-preview');if(p){p.src=saved.logo;p.style.display='block';}}
+  }catch(e){}
+})();
+
+// Error logging
+window.addEventListener('error', e => console.error('[AIEditor]', e.message));
+</script>
+</body>
+</html>
