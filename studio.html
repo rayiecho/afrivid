@@ -1392,5 +1392,102 @@ window._requestUpgrade = function() {
   </div>
 </div>
 
+
+<script>
+// ── STUDIO FUNCTIONS ──
+
+// Use template - open create.html with topic
+function useTemplate(topic) {
+  if (!topic || topic.trim() === '') return;
+  window.location.href = 'create.html?topic=' + encodeURIComponent(topic.trim());
+}
+window.useTemplate = useTemplate;
+
+// Play video - show modal
+window.playStudioVideo = function(id, title, videoUrl, dataURL) {
+  const src = videoUrl || dataURL || '';
+  if (!src) {
+    // No file stored - offer to recreate
+    if (confirm('"' + title + '" video file is not stored.\n\nWould you like to recreate this video?')) {
+      useTemplate(title);
+    }
+    return;
+  }
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = `
+    <div style="max-width:860px;width:100%;background:#0D1117;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <span style="color:#fff;font-weight:700;font-family:Syne,sans-serif;">${title}</span>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+      </div>
+      <video src="${src}" controls autoplay style="width:100%;max-height:70vh;background:#000;display:block;"></video>
+      <div style="padding:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
+        <button onclick="downloadStudioItem('${src}','${title}','video')" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
+        <button onclick="useTemplate('${title}')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">🔄 Recreate</button>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Close</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+// Open photo in editor
+window.openPhotoInEditor = function(id, dataURL) {
+  if (dataURL) {
+    try {
+      localStorage.setItem('afrivid_photo_work', JSON.stringify({
+        dataURL: dataURL,
+        timestamp: Date.now(),
+        fromStudio: true
+      }));
+    } catch(e) {}
+  }
+  window.location.href = 'photo.html';
+}
+
+// Open design in editor  
+window.openDesignInEditor = function(id, dataURL) {
+  if (dataURL) {
+    try {
+      localStorage.setItem('afrivid_design_from_studio', JSON.stringify({
+        dataURL: dataURL,
+        timestamp: Date.now()
+      }));
+    } catch(e) {}
+  }
+  window.location.href = 'design.html';
+}
+
+// Download any item
+window.downloadStudioItem = function(src, title, type) {
+  if (!src) { alert('File not available for download'); return; }
+  const a = document.createElement('a');
+  a.href = src;
+  const ext = type === 'video' ? 'mp4' : type === 'photo' ? 'jpg' : 'png';
+  a.download = (title || 'afrivid') + '.' + ext;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// Delete item from studio
+window.deleteStudioItem = function(collection, id) {
+  if (!confirm('Delete this item from Studio?')) return;
+  if (window.db && window.deleteDoc && window.doc) {
+    deleteDoc(doc(db, collection, id))
+      .then(() => { showToast('✅ Deleted'); loadMyFiles(); })
+      .catch(e => showToast('[!] Delete failed: ' + e.message, 'error'));
+  }
+}
+
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:' + (type==='error'?'#E63329':'#74C69D') + ';color:#050A14;padding:0.65rem 1.25rem;border-radius:10px;font-weight:800;font-size:0.82rem;z-index:9999;font-family:Syne,sans-serif;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+</script>
+
 </body>
 </html>
