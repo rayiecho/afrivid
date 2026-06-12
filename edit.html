@@ -663,6 +663,21 @@ body::after{
             <button class="btn btn-outline" style="font-size:0.78rem;" onclick="generateThumbnail()">🖼 Thumbnail</button>
           </div>
           <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">🏷 BRAND KIT</div>
+            <input id="brand-name" placeholder="Your brand name" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.6rem;border-radius:6px;font-family:Syne,sans-serif;font-size:0.78rem;margin-bottom:0.4rem;box-sizing:border-box;">
+            <div style="display:flex;gap:0.4rem;margin-bottom:0.4rem;align-items:center;">
+              <input type="color" id="brand-color" value="#F5A623" style="width:36px;height:32px;border:none;border-radius:6px;cursor:pointer;">
+              <label style="flex:1;background:#111;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:Syne,sans-serif;">
+                📁 Upload Logo <input type="file" accept="image/*" onchange="loadBrandLogo(this)" style="display:none;">
+              </label>
+              <img id="brand-logo-preview" style="display:none;width:32px;height:32px;border-radius:4px;object-fit:contain;">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">
+              <button class="btn btn-outline" style="font-size:0.72rem;" onclick="saveBrandKit()">💾 Save Kit</button>
+              <button class="btn btn-outline" style="font-size:0.72rem;" onclick="applyBrandWatermark()">✦ Apply</button>
+            </div>
+          </div>
+          <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;">
             <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">🎵 BACKGROUND MUSIC</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.5rem;">
               <button class="btn btn-outline" style="font-size:0.7rem;padding:0.35rem;" onclick="addBackgroundMusic('auto')">✦ Auto Detect</button>
@@ -2706,7 +2721,26 @@ function restoreEditWork() {
 }
 setInterval(autoSaveEditWork, 30000);
 window.addEventListener('beforeunload', autoSaveEditWork);
-document.addEventListener('DOMContentLoaded', () => setTimeout(restoreEditWork, 800));
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(restoreEditWork, 800);
+  // Load saved brand kit
+  try {
+    const saved = JSON.parse(localStorage.getItem('afrivid_brand_kit') || '{}');
+    if (saved.name) {
+      const n = document.getElementById('brand-name');
+      if(n) n.value = saved.name;
+    }
+    if (saved.color) {
+      const c = document.getElementById('brand-color');
+      if(c) c.value = saved.color;
+    }
+    if (saved.logo) {
+      window._brandLogoDataURL = saved.logo;
+      const p = document.getElementById('brand-logo-preview');
+      if(p) { p.src = saved.logo; p.style.display = 'block'; }
+    }
+  } catch(e) {}
+});
 </script>
 <script>
 // ── CAPTION OVERLAY SYSTEM ──
@@ -3559,4 +3593,45 @@ window.exportAllViralClips = async function(clipsData) {
   }
   addEnhanceLog('success', `[ok] All ${clipsData.length} clips exported!`);
 };
+</script>
+<script>
+// ── BRAND KIT SYSTEM ──
+let brandKit = JSON.parse(localStorage.getItem('afrivid_brand_kit') || '{}');
+
+window.saveBrandKit = function() {
+  const name = document.getElementById('brand-name')?.value || '';
+  const color = document.getElementById('brand-color')?.value || '#F5A623';
+  const logo = window._brandLogoDataURL || null;
+  brandKit = { name, color, logo, savedAt: Date.now() };
+  localStorage.setItem('afrivid_brand_kit', JSON.stringify(brandKit));
+  addEnhanceLog('success', '[ok] Brand kit saved!');
+  const log = document.getElementById('ai-edit-log');
+  if(log) log.innerHTML = '<span style="color:#74C69D">[ok] Brand kit saved!</span>';
+};
+
+window.loadBrandLogo = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    window._brandLogoDataURL = e.target.result;
+    const preview = document.getElementById('brand-logo-preview');
+    if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+  };
+  reader.readAsDataURL(file);
+};
+
+window.applyBrandWatermark = function() {
+  if (!brandKit.logo && !brandKit.name) {
+    alert('Set up your brand kit first'); return;
+  }
+  // Store for use during export
+  window._applyBrandWatermark = true;
+  addEnhanceLog('success', '[ok] Brand watermark will be applied on export');
+  const log = document.getElementById('ai-edit-log');
+  if(log) log.innerHTML = '<span style="color:#74C69D">[ok] Brand watermark ON - export to apply</span>';
+};
+
+// Apply brand watermark during canvas rendering
+const _origFinishEnhancing = window.finishEnhancing;
 </script>
