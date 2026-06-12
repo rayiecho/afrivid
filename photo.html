@@ -685,7 +685,7 @@ body::after{
         <div class="photo-panel" id="photo-tab-ai">
           <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;">Describe what you want to change</p>
           <textarea id="photo-ai-instructions" class="form-textarea" style="min-height:80px;font-size:0.82rem;" placeholder="e.g. Make it look like iPhone photo, brighten it up, add warm filter..."></textarea>
-          <button onclick="applyPhotoAIEdit()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">✦ Apply Smart Edit</button>
+          <button onclick="applyAIEdit()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">✦ Apply Smart Edit</button>
         </div>
 
         <!-- CROP PANEL -->
@@ -1469,7 +1469,7 @@ function applyPhotoPreset(preset) {
   addPhotoLog('success', `[ok] ${preset} preset applied`);
 }
 
-async function applyPhotoAIEdit() {
+async function applyAIEdit() {
   const instructions = document.getElementById('photo-ai-instructions').value.trim();
   if (!instructions) { alert('Type your instructions first'); return; }
   addPhotoLog('info', 'Processing instructions...');
