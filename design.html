@@ -633,8 +633,7 @@ function resizeDesignCanvas(a,b){ if(window._resizeDesignCanvas) window._resizeD
 function setDesignBg(a,b){ if(window._setDesignBg) window._setDesignBg(a,b);  }
 function addText(){
   if(window._addText) { window._addText(); return; }
-  // Fallback: prompt for text
-  var t = prompt('Enter text:');
+  var t = 'New Text';
   if(!t) return;
   var canvas = document.getElementById('design-canvas');
   if(!canvas) return;
