@@ -1168,6 +1168,7 @@ window.toggleCrop = function() {
 }
 
 window.setCropRatio = function(ratio) {
+  setTimeout(()=>{ const c=document.getElementById("photo-canvas"); if(c) drawCropOverlay(c,cropRect); },100);
   cropRatio = ratio;
   document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
@@ -1322,6 +1323,7 @@ window.applyCrop = function() {
 }
 
 window.cancelCrop = function() {
+  removeCropOverlay();
   cropActive = false;
   isCropping = false;
   cropStart = null;

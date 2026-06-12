@@ -2008,6 +2008,7 @@ window.toggleCrop = function() {
   const controls = document.getElementById('crop-controls');
   const video = document.getElementById('original-video');
   const cropCanvas = document.getElementById('crop-canvas');
+  if (!cropCanvas) { addLog('error','[x] Crop canvas not found'); return; }
   if (cropActive) {
     // Snapshot current video frame to canvas
     cropCanvas.width = video.videoWidth || 1280;
@@ -2067,6 +2068,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateEditCropVisual() {
+  const _cv = document.getElementById("crop-canvas"); if(!_cv || _cv.style.display==="none") return;
+  drawCropOverlay(_cv, cropRect); return;
   const canvas = document.getElementById('crop-canvas');
   if (!canvas || canvas.style.display === 'none') return;
   const previewArea = document.getElementById('preview-area');
@@ -2098,6 +2101,7 @@ window.applyCrop = function() {
 }
 
 window.cancelCrop = function() {
+  removeCropOverlay();
   cropActive = false; isCropping = false; cropStart = null;
   document.getElementById('crop-overlay').style.display = 'none';
   document.getElementById('crop-controls').style.display = 'none';
