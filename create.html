@@ -4911,7 +4911,7 @@ async function structureOwnScript() {
   const speed = speedEl ? speedEl.value : '0.95';
 
   // Sync speed to main voice speed
-  document.getElementById('voice-speed').value = speed;
+  const vsEl = document.getElementById('voice-speed'); if(vsEl) vsEl.value = speed;
 
   document.getElementById('loading-script').style.display = 'block';
   document.querySelector('#panel-1 .card').style.display = 'none';
