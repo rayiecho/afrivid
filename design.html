@@ -536,6 +536,7 @@ body::after{
   <div class="tt-sep"></div>
   <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;">🗑</button>
 </div>
+-->
 
 <canvas id="design-canvas"></canvas>
           <div class="crop-overlay" id="crop-overlay"></div>
@@ -2103,5 +2104,26 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 </script>
+<!-- Inline Text Editor - at body level -->
+<textarea id="canvas-text-editor" rows="1"></textarea>
+<!-- Text Toolbar - at body level -->
+<div id="text-toolbar">
+  <select id="tt-size" onchange="updateTextProp('size', parseInt(this.value))">
+    <option>16</option><option>20</option><option>24</option>
+    <option selected>32</option><option>40</option><option>48</option>
+    <option>56</option><option>64</option><option>80</option><option>96</option>
+  </select>
+  <div class="tt-sep"></div>
+  <button class="tt-btn" id="tt-bold" onclick="toggleTextProp('weight','800','400')"><b>B</b></button>
+  <button class="tt-btn" id="tt-italic" onclick="toggleTextProp('style','italic','normal')"><i>I</i></button>
+  <div class="tt-sep"></div>
+  <button class="tt-btn" onclick="updateTextProp('align','left')">⬅</button>
+  <button class="tt-btn" onclick="updateTextProp('align','center')">≡</button>
+  <button class="tt-btn" onclick="updateTextProp('align','right')">➡</button>
+  <div class="tt-sep"></div>
+  <input type="color" id="tt-color" value="#ffffff" onchange="updateTextProp('color', this.value)">
+  <div class="tt-sep"></div>
+  <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;">🗑</button>
+</div>
 </body>
 </html>
