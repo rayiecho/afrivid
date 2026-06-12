@@ -411,7 +411,7 @@ window._setMode = function checkKaribuStyle() {
   const kg = document.getElementById("karibu-gender-group");
   if (kg) kg.style.display = style === "advert_slide" ? "block" : "none";
 }
-function setMode(m) { const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
+window._setMode = function setMode(m) { const ai=document.getElementById('ai-fields'); const own=document.getElementById('own-fields'); const mai=document.getElementById('mode-ai'); const mow=document.getElementById('mode-own'); if(!ai||!own) return; ai.style.display=m==='ai'?'block':'none'; own.style.display=m==='own'?'block':'none'; if(mai) mai.classList.toggle('active',m==='ai'); if(mow) mow.classList.toggle('active',m==='own'); }
 function goToStep(n){ if(window._goToStep) window._goToStep(n); }
 function generateScript(){ if(window._generateScript) window._generateScript(); }
 function handleGenerateScript(){ if(window._handleGenerateScript) window._handleGenerateScript(); }
@@ -1042,7 +1042,9 @@ window._handleGenerateScript = window.handleGenerateScript = async function() {
     return;
   }
   
-  const btn = event.target;
+  const topic = document.getElementById('video-topic')?.value?.trim() || '';
+  if (!topic) { alert('Please enter a video topic first.'); return; }
+  const btn = event && event.target ? event.target : document.getElementById('btn-generate');
   btn.textContent = 'Generating...';
   btn.disabled = true;
   try {
