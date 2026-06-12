@@ -885,8 +885,16 @@ window._addText = window.addText = function(presetText) {
   updateElementControls();
   // Open inline editor immediately
   setTimeout(() => {
-    if(window.openInlineEditor) openInlineEditor(selectedEl);
-  }, 150);
+    try {
+      if(window.openInlineEditor) {
+        openInlineEditor(selectedEl);
+      } else {
+        // Fallback - use prompt
+        const t = prompt('Enter text:', elements[selectedEl].text);
+        if (t !== null) { elements[selectedEl].text = t; renderCanvas(); }
+      }
+    } catch(e) { console.error('Editor error:', e); }
+  }, 200);
 }
 
 window._addShape = window.addShape = function(type) {
@@ -2049,7 +2057,7 @@ function restoreDesignWork() {
   }
 }
 
-function restoreDesignCanvas() {
+window.restoreDesignCanvas = function restoreDesignCanvas() {
   try {
     const saved = localStorage.getItem(DESIGN_SAVE_KEY);
     if (!saved) return;
