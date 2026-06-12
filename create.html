@@ -5234,6 +5234,11 @@ window._makeAnother = makeAnother = function() {
   const _pf=document.getElementById('progress-fill'); if(_pf) _pf.style.width='0%';
   window._sceneImages={};
   window.sceneAssets=[];
+  // Reset download section
+  document.getElementById('download-section')?.style && (document.getElementById('download-section').style.display='none');
+  document.getElementById('video-success')?.style && (document.getElementById('video-success').style.display='none');
+  (function(){var vc=document.getElementById('video-canvas');if(vc){var c=vc.getContext('2d');if(c)c.clearRect(0,0,vc.width,vc.height);}})();
+  (function(){var co=document.getElementById('canvas-overlay');if(co)co.style.display='flex';})();
   console.log("[makeAnother] going to step 1");
   goToStep(1);
 }

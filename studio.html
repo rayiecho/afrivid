@@ -838,7 +838,11 @@ function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFro
 function openProfile(){
   var overlay = document.getElementById('profile-overlay');
   if(overlay) overlay.classList.add('active');
-  if(window._openProfile) window._openProfile();
+  if(window._openProfile) { window._openProfile(); return; }
+  // Retry after module loads
+  setTimeout(function(){
+    if(window._openProfile) window._openProfile();
+  }, 500);
 }
 function closeProfile(){ if(window._closeProfile) window._closeProfile(); }
 function saveProfileName(){ if(window._saveProfileName) window._saveProfileName(); }
