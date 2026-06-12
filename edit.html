@@ -2135,7 +2135,7 @@ window.doSignUp = async function() {
 document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)hideLogin();});
 
 window._generateCaptions = async function() {
-  if (!window._editVideoFile && !window._editVideoBlob) {
+  if (!window.currentVideoFile && !window._editVideoFile && !window._editVideoBlob) {
     alert('Please upload a video first');
     return;
   }
