@@ -611,6 +611,57 @@ body::after{
         </div>
 
 
+
+        <!-- CAPTIONS PANEL -->
+        <div class="tool-panel" id="tab-captions">
+          <div class="slider-row" style="flex-direction:column;align-items:flex-start;gap:0.5rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;">STYLE</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;width:100%;">
+              <button class="caption-style-btn active" onclick="setCaptionStyle('classic')">Classic</button>
+              <button class="caption-style-btn" onclick="setCaptionStyle('bold')">Bold</button>
+              <button class="caption-style-btn" onclick="setCaptionStyle('minimal')">Minimal</button>
+              <button class="caption-style-btn" onclick="setCaptionStyle('tiktok')">TikTok</button>
+            </div>
+          </div>
+          <select id="caption-position" class="form-select" style="margin:0.75rem 0;">
+            <option value="bottom">Bottom</option>
+            <option value="top">Top</option>
+            <option value="middle">Middle</option>
+          </select>
+          <button class="btn btn-gold" style="width:100%;margin-bottom:0.5rem;" onclick="generateCaptions()">✦ Generate Auto-Captions</button>
+          <button class="btn btn-outline" style="width:100%;" onclick="addManualCaption()">+ Add Manually</button>
+          <div id="caption-list" style="display:none;margin-top:1rem;">
+            <div style="font-size:0.7rem;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">CAPTIONS</div>
+            <div id="caption-items"></div>
+          </div>
+          <div id="caption-status" style="font-size:0.72rem;font-family:'Space Mono',monospace;color:#74C69D;margin-top:0.5rem;"></div>
+        </div>
+
+        <!-- AI EDIT PANEL -->
+        <div class="tool-panel" id="tab-ai">
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">AI EDIT INSTRUCTIONS</div>
+          <textarea id="ai-edit-instructions" class="form-textarea" style="min-height:80px;margin-bottom:0.75rem;" placeholder="e.g. Remove first 30 seconds, keep the best parts..."></textarea>
+          <button class="btn btn-gold" style="width:100%;" onclick="applyAIEdit()">✦ Apply AI Edit</button>
+        </div>
+
+        <!-- EXPORT PANEL -->
+        <div class="tool-panel" id="tab-export">
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;">EXPORT OPTIONS</div>
+          <button class="btn btn-gold" style="width:100%;margin-bottom:0.5rem;" onclick="fastExport()">▶ Export MP4</button>
+          <button class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="downloadEnhanced()">⬇ Download WebM</button>
+          <button class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="shareEnhancedWhatsApp()">💬 Share WhatsApp</button>
+          <button class="btn btn-outline" style="width:100%;" onclick="handleSaveToStudio()">💾 Save to Studio</button>
+          <div id="progress-wrap" style="display:none;margin-top:1rem;">
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);margin-bottom:0.4rem;">
+              <span id="progress-label">Processing...</span><span id="progress-pct">0%</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;">
+              <div id="progress-fill" style="height:100%;background:#F5A623;border-radius:4px;width:0%;transition:width 0.3s;"></div>
+            </div>
+          </div>
+          <div class="status-log" id="enhance-log" style="max-height:100px;overflow-y:auto;font-size:0.7rem;margin-top:0.5rem;"></div>
+        </div>
+
   <!-- COMBINE MODE -->
   <div id="mode-combine" style="display:none;">
     <div class="card">
