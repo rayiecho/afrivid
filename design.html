@@ -865,12 +865,30 @@ function saveHistory() {
   if (history.length>20) history.shift();
 }
 
-window._addText = window.addText = function() {
-  elements.push({type:'text',text:'Your Text Here',x:W/2-80,y:H/2,color:'#ffffff',size:48,font:'Syne',weight:700,align:'left'});
-  selectedEl=elements.length-1;
-  saveHistory(); renderCanvas(); updateElementControls();
+window._addText = window.addText = function(presetText) {
+  const canvas = document.getElementById('design-canvas');
+  const CW = canvas ? canvas.width : 1080;
+  const CH = canvas ? canvas.height : 1080;
+  elements.push({
+    type:'text',
+    text: presetText || 'Your Text Here',
+    x: CW/2,
+    y: CH/2,
+    color:'#ffffff',
+    size:48,
+    font:'Syne',
+    weight:700,
+    align:'center',
+    maxWidth: CW - 40
+  });
+  selectedEl = elements.length - 1;
+  saveHistory();
+  renderCanvas();
+  updateElementControls();
   // Open inline editor immediately
-  setTimeout(() => { if(window.openInlineEditor) openInlineEditor(selectedEl); }, 100);
+  setTimeout(() => {
+    if(window.openInlineEditor) openInlineEditor(selectedEl);
+  }, 150);
 }
 
 window._addShape = window.addShape = function(type) {
@@ -1857,28 +1875,6 @@ initCanvas();
 // ── INLINE TEXT EDITOR SYSTEM ──
 let editingEl = null;
 
-window._addText = function(presetText) {
-  const text = presetText || 'Click to edit';
-  const W = document.getElementById('design-canvas').width;
-  const H = document.getElementById('design-canvas').height;
-  elements.push({
-    type: 'text',
-    text: text,
-    x: W/2,
-    y: H/2,
-    size: 40,
-    color: '#ffffff',
-    weight: 700,
-    align: 'center',
-    font: 'Syne',
-    maxWidth: W - 40
-  });
-  selectedEl = elements.length - 1;
-  saveHistory();
-  renderCanvas();
-  // Open inline editor immediately
-  openInlineEditor(selectedEl);
-};
 
 function openInlineEditor(idx) {
   if (idx === null || !elements[idx] || elements[idx].type !== 'text') return;

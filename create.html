@@ -5364,13 +5364,19 @@ window._sceneImages = {}; // cache generated images per scene
 window.generateSceneImageFallback = function(text, sceneIndex) {
   const categories = {
     business: /business|company|office|meeting|money|finance|startup|entrepreneur|market|trade|invest|profit|revenue|salary|job|work|employ|career|econom/,
-    education: /school|learn|study|university|student|teacher|educat|math|science|history|class|lesson|book|read|write|exam|grade|degree|geometr|algebra|calcul|sequen|theorem|formula/,
+    education: /school|learn|study|university|student|teacher|educat|math|history|class|lesson|book|read|write|exam|grade|degree|geometr|algebra|calcul|sequen|theorem|formula/,
     technology: /tech|computer|phone|app|software|digital|ai|code|internet|data|program|develop|innovation|robot|machine|electric|network/,
     nature: /environment|climate|water|forest|wildlife|nature|tree|plant|animal|earth|green|mountain|river|ocean|air|weather/,
     health: /health|hospital|doctor|medicine|fitness|medical|nurse|patient|disease|treatment|wellness|mental|physical|exercise|diet/,
-    agriculture: /food|farm|crop|harvest|soil|rural|agricult|plant|grow|seed|garden|cattle|livestock/,
+    agriculture: /farm|crop|harvest|soil|rural|agricult|plant|grow|seed|garden|cattle|livestock|irrigation/,
     sports: /sport|football|run|athlete|game|competition|team|player|win|champion|basketball|soccer|race/,
-    culture: /art|music|dance|tradition|heritage|fashion|culture|festival|ceremony|wedding|church|religion/
+    culture: /art|music|dance|tradition|heritage|fashion|culture|festival|ceremony|wedding/,
+    finance: /coin|cash|bank|saving|invest|budget|tax|loan|credit|debit|payment|transaction|wallet|pension/,
+    church: /church|gospel|prayer|worship|sermon|pastor|bishop|crusade|revival|bible|hymn|faith|holy|spiritual/,
+    science: /laborator|microscop|experiment|research|chemist|physic|biolog|equation|formula|hypothesis|discover/,
+    food: /food|cook|recipe|meal|dish|cuisine|restaurant|eat|drink|nutrition|ingredient|kitchen/,
+    travel: /travel|tour|visit|city|landmark|destination|hotel|airport|road|trip|holiday|vacation/,
+    motivation: /motivat|inspir|success|goal|dream|achieve|ambition|courage|hope|vision|mindset|positive|leader/
   };
   let category = 'community';
   for (const [cat, regex] of Object.entries(categories)) {
