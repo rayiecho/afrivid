@@ -3426,7 +3426,13 @@ window._startRecording = async function startRecording() {
   addLog('info', '[mic] Preparing voiceover...');
   // Preload all scene images before recording starts
   addLog('info', '[img] Preloading scene images...');
-  await Promise.all(scriptData.scenes.map((scene, i) => window.generateSceneImage(scene, i)));
+  // Use timeout so AI images don't block recording start
+  await Promise.all(scriptData.scenes.map((scene, i) => 
+    Promise.race([
+      window.generateSceneImage(scene, i),
+      new Promise(resolve => setTimeout(resolve, 3000)) // 3s timeout per scene
+    ])
+  ));
   addLog('success', '[ok] Scene images ready!');
   // Music will start after AudioContext is set up
   addLog('info', '[mic] Preparing all voices...');
