@@ -2206,3 +2206,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+<script>
+// ── PHOTO AUTO-SAVE ──
+const PHOTO_SAVE_KEY = 'afrivid_photo_work';
+function autoSavePhoto() {
+  try {
+    const canvas = document.getElementById('photo-canvas');
+    if (!canvas || canvas.width === 0 || !photoImage) return;
+    localStorage.setItem(PHOTO_SAVE_KEY, JSON.stringify({
+      dataURL: canvas.toDataURL('image/jpeg', 0.7),
+      timestamp: Date.now(),
+      width: canvas.width,
+      height: canvas.height
+    }));
+  } catch(e) {}
+}
+function restorePhotoWork() {
+  try {
+    const saved = localStorage.getItem(PHOTO_SAVE_KEY);
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    if (!data.dataURL || Date.now() - data.timestamp > 86400000) return;
+    const banner = document.createElement('div');
+    banner.id = 'restore-banner';
+    banner.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:9999;background:#1a1a1a;border:1px solid rgba(245,166,35,0.4);border-radius:12px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem;font-family:Syne,sans-serif;font-size:0.82rem;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.5);white-space:nowrap;';
+    banner.innerHTML = `<span>📸 You have unsaved photo work</span>
+      <button onclick="restorePhotoCanvas()" style="background:#F5A623;border:none;color:#050A14;padding:0.35rem 0.85rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">Restore</button>
+      <button onclick="localStorage.removeItem('${PHOTO_SAVE_KEY}');this.parentElement.remove();" style="background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Discard</button>`;
+    document.body.appendChild(banner);
+  } catch(e) {}
+}
+function restorePhotoCanvas() {
+  try {
+    const data = JSON.parse(localStorage.getItem(PHOTO_SAVE_KEY));
+    if (!data?.dataURL) return;
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.getElementById('photo-canvas');
+      canvas.width = data.width || img.width;
+      canvas.height = data.height || img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      window.photoImage = img; photoImage = img;
+      const editor = document.getElementById('photo-editor');
+      const uploader = document.getElementById('photo-uploader');
+      if (editor) editor.style.display = 'block';
+      if (uploader) uploader.style.display = 'none';
+      if (window.addLog) addLog('success', '[ok] Photo restored!');
+    };
+    img.src = data.dataURL;
+    document.getElementById('restore-banner')?.remove();
+  } catch(e) {}
+}
+setInterval(autoSavePhoto, 30000);
+window.addEventListener('beforeunload', autoSavePhoto);
+document.addEventListener('DOMContentLoaded', () => setTimeout(restorePhotoWork, 800));
+</script>

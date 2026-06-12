@@ -2601,3 +2601,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+<script>
+// ── VIDEO EDITOR AUTO-SAVE ──
+const VIDEO_SAVE_KEY = 'afrivid_edit_work';
+function autoSaveEditWork() {
+  try {
+    const vf = currentVideoFile || window.currentVideoFile;
+    if (!vf) return;
+    localStorage.setItem(VIDEO_SAVE_KEY, JSON.stringify({
+      fileName: vf.name || 'video',
+      fileSize: vf.size || 0,
+      timestamp: Date.now(),
+      trimStart: window.trimStart || 0,
+      trimEnd: window.trimEnd || 0
+    }));
+  } catch(e) {}
+}
+function restoreEditWork() {
+  try {
+    const saved = localStorage.getItem(VIDEO_SAVE_KEY);
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    if (!data.fileName || Date.now() - data.timestamp > 86400000) return;
+    const banner = document.createElement('div');
+    banner.id = 'edit-restore-banner';
+    banner.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:9999;background:#1a1a1a;border:1px solid rgba(245,166,35,0.4);border-radius:12px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem;font-family:Syne,sans-serif;font-size:0.82rem;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.5);white-space:nowrap;';
+    banner.innerHTML = `<span>🎬 You were editing: <strong>${data.fileName}</strong></span>
+      <button onclick="document.getElementById('video-file-input').click();document.getElementById('edit-restore-banner').remove();" style="background:#F5A623;border:none;color:#050A14;padding:0.35rem 0.85rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">Re-upload File</button>
+      <button onclick="localStorage.removeItem('${VIDEO_SAVE_KEY}');this.parentElement.remove();" style="background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Dismiss</button>`;
+    document.body.appendChild(banner);
+  } catch(e) {}
+}
+setInterval(autoSaveEditWork, 30000);
+window.addEventListener('beforeunload', autoSaveEditWork);
+document.addEventListener('DOMContentLoaded', () => setTimeout(restoreEditWork, 800));
+</script>
