@@ -939,8 +939,9 @@ async function loadUserFiles(uid) {
           <div class="card-title">${data.title || 'Untitled Video'}</div>
           <div class="card-meta">${data.duration ? data.duration+'s · ' : ''}${date}</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="showVideoInfo('${data.title || 'Untitled Video'}','${date}','${data.duration || 0}s','${data.size || ''}','${data.videoUrl || ''}')">▶ View Info</button>
+            <button class="card-btn primary" onclick="playStudioVideo('${d.id}','${data.title || 'Untitled Video'}','${data.videoUrl || ''}','${data.dataURL || ''}')">▶ Play</button>
             <button class="card-btn" onclick="useTemplate('${data.title || ''}')">Recreate</button>
+            <button class="card-btn" onclick="downloadStudioItem('${data.videoUrl || data.dataURL || ''}','${data.title || 'video'}','video')">⬇</button>
           </div>
         </div>
       </div>`;
@@ -951,15 +952,16 @@ async function loadUserFiles(uid) {
       const data = d.data();
       const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
       return `<div class="content-card">
-        <div class="card-thumb photo">
-          <div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#74C69D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div class="card-thumb photo" style="${data.dataURL ? 'background-image:url('+data.dataURL+');background-size:cover;background-position:center;' : ''}">
+          ${!data.dataURL ? '<div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#74C69D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>' : ''}
           <div class="card-type-badge badge-photo">PHOTO</div>
         </div>
         <div class="card-body">
           <div class="card-title">${data.title || 'Edited Photo'}</div>
           <div class="card-meta">${date}</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="window.location.href='photo.html'">Edit Again</button>
+            <button class="card-btn primary" onclick="openPhotoInEditor('${d.id}','${data.dataURL || ''}')">✏ Edit</button>
+            <button class="card-btn" onclick="downloadStudioItem('${data.dataURL || ''}','${data.title || 'photo'}','photo')">⬇</button>
           </div>
         </div>
       </div>`;
@@ -978,7 +980,8 @@ async function loadUserFiles(uid) {
           <div class="card-title">${data.title || 'Design'}</div>
           <div class="card-meta">${date}</div>
           <div class="card-actions">
-            <button class="card-btn primary" onclick="window.location.href='design.html'">Edit Again</button>
+            <button class="card-btn primary" onclick="openDesignInEditor('${d.id}','${data.dataURL || ''}')">✏ Edit</button>
+            <button class="card-btn" onclick="downloadStudioItem('${data.dataURL || ''}','${data.title || 'design'}','png')">⬇</button>
           </div>
         </div>
       </div>`;
@@ -1051,7 +1054,64 @@ window.filterContent = function(type) {
   else if (type === 'mine') { videoSec.style.display='none'; designSec.style.display='none'; if(currentUser) mySec.style.display='block'; else showLogin(); }
 }
 window.previewItem = function(type, title) {
-  alert(`Preview: ${title}\n\nSign in to use this template or create your own.`);
+  if (type === 'video') useTemplate(title);
+  else if (type === 'photo') window.location.href = 'photo.html';
+  else if (type === 'design') window.location.href = 'design.html';
+}
+
+// Play video in modal
+window.playStudioVideo = function(id, title, videoUrl, dataURL) {
+  const src = videoUrl || dataURL || '';
+  if (!src) { alert('Video file not available. Try recreating it.'); return; }
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = `
+    <div style="max-width:800px;width:100%;background:#0D1117;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <span style="color:#fff;font-weight:700;font-family:Syne,sans-serif;font-size:0.9rem;">${title}</span>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+      </div>
+      <video src="${src}" controls style="width:100%;max-height:70vh;background:#000;" autoplay></video>
+      <div style="padding:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;">
+        <button onclick="downloadStudioItem('${src}','${title}','video')" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
+        <button onclick="useTemplate('${title}')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">🔄 Recreate</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+// Open design in editor
+window.openDesignInEditor = function(id, dataURL) {
+  if (dataURL) {
+    localStorage.setItem('afrivid_design_from_studio', JSON.stringify({
+      dataURL: dataURL,
+      timestamp: Date.now()
+    }));
+  }
+  window.location.href = 'design.html';
+}
+
+// Open photo in editor
+window.openPhotoInEditor = function(id, dataURL) {
+  if (dataURL) {
+    localStorage.setItem('afrivid_photo_work', JSON.stringify({
+      dataURL: dataURL,
+      timestamp: Date.now(),
+      fromStudio: true
+    }));
+  }
+  window.location.href = 'photo.html';
+}
+
+// Download any studio item
+window.downloadStudioItem = function(src, title, type) {
+  if (!src) { alert('File not available for download'); return; }
+  const a = document.createElement('a');
+  a.href = src;
+  const ext = type === 'video' ? 'mp4' : type === 'photo' ? 'jpg' : 'png';
+  a.download = (title || 'afrivid-export') + '.' + ext;
+  a.click();
 }
 
 
