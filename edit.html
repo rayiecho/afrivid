@@ -1540,6 +1540,7 @@ function addClip() {
 
 function renderClips() {
   const list = document.getElementById('clips-list');
+  if (!list) return;
   if (!clips.length) { list.innerHTML = ''; return; }
   list.innerHTML = `<div style="font-size:0.75rem;font-family:var(--font-mono);color:var(--gold);margin-bottom:0.5rem;">SELECTED CLIPS (${clips.length})</div>` +
     clips.map((c, i) => `
