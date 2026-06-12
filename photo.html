@@ -1031,7 +1031,7 @@ window.removeBackground = async function() {
     const tmp = document.createElement('canvas');
     tmp.width = W; tmp.height = H;
     const tCtx = tmp.getContext('2d');
-    tCtx.filter = getFilter();
+    tCtx.filter = (window.getFilterSafe ? getFilterSafe() : 'none');
     tCtx.drawImage(photoImage, 0, 0, W, H);
     await selfieSegmentation.send({image: tmp});
     await new Promise(r => setTimeout(r, 600));
@@ -1047,7 +1047,7 @@ window.removeBackground = async function() {
       }
     }
     ctx.save();
-    ctx.filter = getFilter();
+    ctx.filter = (window.getFilterSafe ? getFilterSafe() : 'none');
     ctx.drawImage(photoImage, 0, 0, W, H);
     ctx.filter = 'none';
     ctx.globalCompositeOperation = 'destination-in';
