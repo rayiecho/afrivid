@@ -710,6 +710,88 @@ body::after{
   }
 }
 
+
+/* ── PHOTO EDITOR DESKTOP FIX v2 ── */
+@media(min-width:769px){
+  /* Hide old tool tabs */
+  .photo-tool-tabs{ display:none !important; }
+  .photo-panel{ display:none !important; }
+  .photo-panel.active{ display:none !important; }
+  
+  /* Hide duplicate navbar/links */
+  .navbar{ display:none !important; }
+  body{ padding-top:0 !important; overflow:hidden !important; }
+  html{ overflow:hidden !important; }
+
+  /* Full height layout */
+  .main{
+    padding:0 !important;
+    height:calc(100vh - 52px);
+    display:flex !important;
+    flex-direction:column !important;
+    overflow:hidden !important;
+  }
+
+  .photo-studio{
+    flex:1 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    grid-template-columns:unset !important;
+    overflow:hidden !important;
+    min-height:0 !important;
+  }
+
+  /* Canvas centered */
+  .photo-center{
+    flex:1 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    background:#111 !important;
+    overflow:hidden !important;
+    min-height:0 !important;
+    padding:1rem !important;
+    position:relative !important;
+    z-index:1 !important;
+  }
+
+  #photo-canvas{
+    max-width:calc(100vw - 120px) !important;
+    max-height:calc(100vh - 240px) !important;
+    width:auto !important;
+    height:auto !important;
+    display:block !important;
+    margin:0 auto !important;
+    border-radius:6px !important;
+    box-shadow:0 4px 30px rgba(0,0,0,0.5) !important;
+    position:relative !important;
+    z-index:2 !important;
+  }
+
+  /* Force desktop bottom visible */
+  #desktop-bottom{
+    display:flex !important;
+    height:130px !important;
+    min-height:130px !important;
+    flex-shrink:0 !important;
+    background:#111 !important;
+    border-top:1px solid rgba(255,255,255,0.08) !important;
+    z-index:10 !important;
+    position:relative !important;
+  }
+
+  #desktop-tool-icons{
+    display:flex !important;
+    width:75px !important;
+    min-width:75px !important;
+  }
+
+  #desktop-tool-panel{
+    display:flex !important;
+  }
+}
+
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
