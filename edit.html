@@ -1436,7 +1436,7 @@ async function convertToMP4(webmBlob) {
   document.getElementById('enhance-export-btns').style.display = 'flex';
 }
 
-function downloadEnhanced() {
+window._downloadEnhanced = function downloadEnhanced() {
   if (!enhancedBlob) return;
   const url = URL.createObjectURL(enhancedBlob);
   const a = document.createElement('a');
