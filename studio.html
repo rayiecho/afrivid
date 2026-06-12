@@ -894,7 +894,7 @@ onAuthStateChanged(auth, async (user) => {
     if (snap.exists()) {
       const data = snap.data();
       const used = data.videosGenerated || 0;
-      const limit = data.betaLimit || 10;
+      const limit = data.betaLimit || 3;
       document.getElementById('user-plan').textContent = `${Math.max(0,limit-used)} of ${limit} videos left`;
     }
   } else {
@@ -1244,7 +1244,7 @@ window._openProfile = async function() {
       const data = snap.data();
       const plan = data.plan || 'beta';
       const used = data.videosGenerated || 0;
-      const limit = data.betaLimit || 10;
+      const limit = data.betaLimit || 3;
       const joined = data.createdAt?.toDate?.()?.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) || '—';
       document.getElementById('profile-videos').textContent = used;
       document.getElementById('profile-photos').textContent = data.photosEdited || 0;
@@ -1296,7 +1296,7 @@ window._saveProfileName = async function() {
 };
 
 window._requestUpgrade = function() {
-  alert('To upgrade to Pro ($3/month), contact us at afrividstudio@gmail.com!');
+  alert('To upgrade to Pro ($5/month), contact us at afrividstudio@gmail.com!');
 };
 
 </script>
@@ -1323,7 +1323,7 @@ window._requestUpgrade = function() {
         <div id="profile-beta-box" style="margin-top:0.75rem;">
           <div class="upgrade-box">
             <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:0.5rem;">Upgrade to Pro</div>
-            <div class="upgrade-price">$3<span>/month</span></div>
+            <div class="upgrade-price">$5<span>/month</span></div>
             <div style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:0.4rem;margin-bottom:0.75rem;">Unlimited videos · All tools · Priority support</div>
             <button style="width:100%;background:#74C69D;color:#000;border:none;padding:0.6rem;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;" onclick="requestUpgrade()">Upgrade to Pro →</button>
           </div>
