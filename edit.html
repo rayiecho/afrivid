@@ -490,7 +490,7 @@ body::after{
   <!-- MODE TOGGLE -->
   <div class="mode-toggle">
     <button class="mode-btn active" onclick="setMode('enhance')">✂ Enhance Video</button>
-    <button class="mode-btn" onclick="setMode('combine')">⊞ Combine Videos</button>
+
   </div>
 
   <!-- ENHANCE MODE -->
@@ -711,6 +711,15 @@ body::after{
           <button class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="downloadEnhanced()">⬇ Download WebM</button>
           <button class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="shareEnhancedWhatsApp()">💬 Share WhatsApp</button>
           <button class="btn btn-outline" style="width:100%;" onclick="handleSaveToStudio()">💾 Save to Studio</button>
+          <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">⊞ COMBINE VIDEOS</div>
+            <div class="upload-zone" onclick="document.getElementById('combine-input').click()" style="padding:0.75rem;margin-bottom:0.5rem;cursor:pointer;border:1px dashed rgba(255,255,255,0.1);border-radius:8px;text-align:center;">
+              <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">➕ Add videos to combine</div>
+            </div>
+            <input type="file" id="combine-input" accept="video/*" multiple style="display:none;" onchange="addCombineFiles(event)">
+            <div class="combine-list" id="combine-list"></div>
+            <button class="btn btn-outline" style="width:100%;margin-top:0.5rem;" onclick="handleCombine()">⊞ Combine & Export</button>
+          </div>
           <div id="progress-wrap" style="display:none;margin-top:1rem;">
             <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);margin-bottom:0.4rem;">
               <span id="progress-label">Processing...</span><span id="progress-pct">0%</span>
