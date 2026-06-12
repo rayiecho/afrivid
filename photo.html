@@ -647,6 +647,69 @@ body::after{
   #desktop-top-actions{ display:flex !important; }
 }
 
+
+/* ── CENTER PHOTO CANVAS ── */
+@media(min-width:769px){
+  /* Hide old tool tabs */
+  .photo-tool-tabs{ display:none !important; }
+  .photo-panel{ display:none !important; }
+  .photo-panel.active{ display:none !important; }
+
+  /* Full height layout - no scroll */
+  html, body{
+    height:100%;
+    overflow:hidden !important;
+  }
+
+  .main{
+    height:calc(100vh - 56px);
+    overflow:hidden !important;
+    padding:0 !important;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .photo-studio{
+    flex:1;
+    display:flex !important;
+    flex-direction:column !important;
+    overflow:hidden;
+    grid-template-columns:unset !important;
+  }
+
+  /* Canvas area - centered, fills available space */
+  .photo-center{
+    flex:1 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    background:#0a0a0a !important;
+    overflow:hidden !important;
+    padding:1rem !important;
+    min-height:0 !important;
+  }
+
+  /* Canvas itself */
+  #photo-canvas{
+    max-width:calc(100vw - 100px) !important;
+    max-height:calc(100vh - 250px) !important;
+    width:auto !important;
+    height:auto !important;
+    object-fit:contain !important;
+    display:block !important;
+    margin:0 auto !important;
+    border-radius:6px;
+    box-shadow:0 4px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Bottom bar fixed height */
+  #desktop-bottom{
+    height:140px !important;
+    min-height:140px !important;
+    flex-shrink:0 !important;
+  }
+}
+
 </style>
 <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
