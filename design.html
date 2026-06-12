@@ -1882,7 +1882,7 @@ initCanvas();
 let editingEl = null;
 
 
-function openInlineEditor(idx) {
+window.openInlineEditor = function openInlineEditor(idx) {
   if (idx === null || !elements[idx] || elements[idx].type !== 'text') return;
   const el = elements[idx];
   const canvas = document.getElementById('design-canvas');
@@ -1941,7 +1941,7 @@ function openInlineEditor(idx) {
   };
 }
 
-function closeInlineEditor() {
+window.closeInlineEditor = function closeInlineEditor() {
   const editor = document.getElementById('canvas-text-editor');
   const toolbar = document.getElementById('text-toolbar');
   if (editingEl !== null && editor.value.trim()) {
