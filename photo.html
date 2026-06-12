@@ -893,6 +893,9 @@ onAuthStateChanged(auth, (user) => {
     const badge = document.getElementById('user-badge');
     badge.style.display = 'block';
     badge.textContent = user.displayName || user.email.split('@')[0];
+    badge.style.cursor = 'pointer';
+    badge.title = 'View Profile';
+    badge.onclick = function() { window.location.href = 'studio.html?profile=1'; };
   } else {
     document.getElementById('btn-signin').style.display = 'block';
     document.getElementById('user-badge').style.display = 'none';
