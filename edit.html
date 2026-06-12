@@ -2621,3 +2621,48 @@ setInterval(autoSaveEditWork, 30000);
 window.addEventListener('beforeunload', autoSaveEditWork);
 document.addEventListener('DOMContentLoaded', () => setTimeout(restoreEditWork, 800));
 </script>
+<script>
+// ── CAPTION OVERLAY SYSTEM ──
+let captionText = '';
+let captionPosition = 'bottom';
+
+function startCaptionOverlay(text) {
+  captionText = text;
+  const video = document.getElementById('original-video');
+  if (!video || !text) return;
+  let overlay = document.getElementById('caption-overlay-div');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'caption-overlay-div';
+    overlay.style.cssText = 'position:absolute;left:0;right:0;bottom:40px;text-align:center;padding:0 1rem;pointer-events:none;z-index:10;';
+    const previewArea = video.parentElement;
+    if (previewArea) { previewArea.style.position='relative'; previewArea.appendChild(overlay); }
+  }
+  const words = text.split(' ');
+  const totalDuration = video.duration || 60;
+  const wordsPerSecond = words.length / totalDuration;
+  function updateCaption() {
+    const wordIndex = Math.floor(video.currentTime * wordsPerSecond);
+    const chunkSize = 8;
+    const start = Math.floor(wordIndex / chunkSize) * chunkSize;
+    const chunk = words.slice(start, start + chunkSize).join(' ');
+    const cs = window.captionStyle || 'classic';
+    let bg='rgba(0,0,0,0.75)', color='#fff', fs='1rem', fw='600';
+    if(cs==='bold'){fs='1.2rem';fw='800';bg='rgba(0,0,0,0.9)';}
+    else if(cs==='minimal'){bg='transparent';}
+    else if(cs==='tiktok'){bg='transparent';color='#fffc00';fs='1.3rem';fw='900';}
+    const pos = document.getElementById('caption-position')?.value || 'bottom';
+    overlay.style.bottom = pos==='top'?'auto':'40px';
+    overlay.style.top = pos==='top'?'40px':'auto';
+    overlay.innerHTML = chunk ? `<span style="background:${bg};color:${color};font-size:${fs};font-weight:${fw};padding:0.4rem 0.85rem;border-radius:6px;font-family:Syne,sans-serif;display:inline-block;">${chunk}</span>` : '';
+  }
+  video.addEventListener('timeupdate', updateCaption);
+  video.addEventListener('ended', () => { if(overlay) overlay.innerHTML=''; });
+}
+
+window.setCaptionStyle = function(style) {
+  window.captionStyle = style;
+  document.querySelectorAll('.caption-style-btn').forEach(b => b.classList.remove('active'));
+  if(event && event.target) event.target.classList.add('active');
+};
+</script>
