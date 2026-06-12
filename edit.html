@@ -1602,8 +1602,17 @@ Return ONLY the JSON array, nothing else.`;
       trimStart = clips[0].start;
       trimEnd = clips[0].end;
       updateTimeline();
+      // Preview first clip
+      video.currentTime = clips[0].start;
+      video.play();
+      setTimeout(() => video.pause(), 3000);
     }
-    addEnhanceLog('success', `[ok] Found ${clips.length} clip(s) to keep`);
+    addEnhanceLog('success', `[ok] ${clips.length} clip(s) ready — exporting...`);
+    // Auto export
+    setTimeout(() => {
+      if (window._fastExport) window._fastExport();
+      else if (window.startEnhancing) window.startEnhancing();
+    }, 1000);
   } catch(e) {
     addEnhanceLog('error', '[x] Edit failed: ' + e.message);
   }
