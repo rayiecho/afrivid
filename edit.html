@@ -2189,11 +2189,11 @@ window._generateCaptions = async function() {
     }
     
     const formData = new FormData();
-    formData.append('audio', audioBlob, 'audio.wav');
+    // Send raw audio bytes
     
     const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
       method: 'POST',
-      body: formData
+      body: audioBlob,
     });
     
     if (!res.ok) throw new Error('Transcription failed: ' + res.status);
