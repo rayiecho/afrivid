@@ -4121,10 +4121,10 @@ window._hideLogin = window.hideLogin = function() {
   document.getElementById('login-modal').classList.remove('active');
 }
 window._showAuthTab = window.showAuthTab = function(tab) {
-  document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
-  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
-  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
-  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  const fs = document.getElementById('form-signin'); if(fs) fs.style.display = tab==='signin'?'block':'none';
+  const fu = document.getElementById('form-signup'); if(fu) fu.style.display = tab==='signup'?'block':'none';
+  const ts = document.getElementById('tab-signin'); if(ts) ts.classList.toggle('active', tab==='signin');
+  const tu = document.getElementById('tab-signup'); if(tu) tu.classList.toggle('active', tab==='signup');
 }
 window._doSignIn = window.doSignIn = async function() {
   const email = document.getElementById('login-email').value;
@@ -5645,23 +5645,7 @@ function wrapTextSplit(ctx, text, x, y, maxWidth, fontSize) {
 </script>
 
 
-<script>
-// ── AUTH WALL ──
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    if (!window.currentUser) {
-      // Show login if not signed in
-      const overlay = document.getElementById('login-modal') || document.getElementById('auth-modal');
-      if (overlay) {
-        overlay.style.display = 'flex';
-        overlay.classList.add('active');
-      } else if (window.showLogin) {
-        showLogin('Sign in to use AfriVid Studio');
-      }
-    }
-  }, 2000);
-});
-</script>
+
 
 <script>
 </script>
