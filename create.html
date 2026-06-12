@@ -5426,10 +5426,6 @@ window.generateSceneImage = async function(scene, sceneIndex) {
   }
   return window.generateSceneImageFallback(text, sceneIndex);
 };
-      img.src = url;
-    });
-  } catch(e) { return null; }
-};
 
 window.drawSplitFlowScene = function(canvas, scene, progress, currentWord, sceneIndex, logoImg) {
   const ctx = canvas.getContext('2d');

@@ -10,7 +10,7 @@ for fname in files:
     except: continue
     
     # Check non-module scripts
-    scripts = re.findall(r'<script(?! type="module")[^>]*>(.*?)</script>', content, re.DOTALL)
+    scripts = re.findall(r'<script(?! type="module")(?! type="application/ld\+json")[^>]*>(.*?)</script>', content, re.DOTALL)
     for i, s in enumerate(scripts):
         if not s.strip(): continue
         r = subprocess.run(['node'], input=s, capture_output=True, text=True)
