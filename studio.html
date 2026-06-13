@@ -878,6 +878,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+  window.db = db;
+  window._addDoc = addDoc;
+  window._collection = collection;
+  window._serverTimestamp = serverTimestamp;
 
 let currentUser = null;
 
@@ -1535,13 +1539,16 @@ window.submitFeedback = async function() {
   if(btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
   try {
     const user = window.currentUser || (typeof auth !== 'undefined' ? auth.currentUser : null);
-    await addDoc(collection(db, 'feedback'), {
+    const _add = window._addDoc || addDoc;
+    const _col = window._collection || collection;
+    const _ts = window._serverTimestamp || serverTimestamp;
+    await _add(_col(window.db || db, 'feedback'), {
       type, message: msg, rating: parseInt(rating),
       userId: window.currentUser?.uid || 'anonymous',
       userEmail: window.currentUser?.email || 'anonymous',
       userName: window.currentUser?.displayName || 'Anonymous',
       page: 'studio',
-      createdAt: serverTimestamp(),
+      createdAt: _ts(),
       status: 'unread'
     });
     document.getElementById('feedback-msg').value = '';
