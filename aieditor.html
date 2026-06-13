@@ -505,13 +505,22 @@ function loadVideo(file) {
   video.src = url;
   video.load();
   video.preload = 'auto';
-  // Force duration load for MP4
-  video.addEventListener('loadeddata', () => {
+  // Force duration by seeking to end
+  video.addEventListener('loadedmetadata', () => {
     if (!video.duration || !isFinite(video.duration)) {
-      video.play().then(() => {
-        video.pause();
-        video.currentTime = 0;
-      }).catch(()=>{});
+      video.currentTime = 1e101; // Seek to end forces duration
+    }
+  }, {once:true});
+  video.addEventListener('timeupdate', () => {
+    if (video.duration && isFinite(video.duration)) {
+      document.getElementById('video-duration').textContent = formatTime(video.duration);
+      video.currentTime = 0;
+      const btn = document.getElementById('apply-btn');
+      if(btn && btn.textContent.includes('Loading')) {
+        btn.disabled=false; btn.style.opacity='1'; 
+        btn.textContent='✦ Apply'; btn.style.background='';
+        btn.style.color='';
+      }
     }
   }, {once:true});
   video.onloadedmetadata = () => {
