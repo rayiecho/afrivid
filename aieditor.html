@@ -633,74 +633,91 @@ async function claudeAsk(prompt, maxTokens) {
 async function exportClips(clips, filename) {
   addLog('all', `[~] Exporting ${clips.length} clip(s)...`);
   const video = document.getElementById('ai-video');
-  
-  // Wait for video to be ready
-  if (video.readyState < 2) {
-    await new Promise(r => video.addEventListener('loadeddata', r, {once:true}));
+
+  // Wait for video metadata
+  if (!video.duration || video.readyState < 2) {
+    addLog('all', '[~] Waiting for video to load...');
+    await new Promise(r => {
+      if (video.readyState >= 2) { r(); return; }
+      video.addEventListener('canplay', r, {once:true});
+    });
   }
-  if (!video.videoWidth || !video.duration) {
-    addLog('all', '[x] Video not ready - please wait for it to load fully');
+
+  if (!video.videoWidth || !video.duration || !isFinite(video.duration)) {
+    addLog('all', '[x] Video not ready. Please wait a moment and try again.');
     return;
   }
-  
+
   const canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  canvas.width = video.videoWidth || 1280;
+  canvas.height = video.videoHeight || 720;
   const ctx = canvas.getContext('2d');
-  const stream = canvas.captureStream(30);
-  
-  // Add audio - reuse existing source node
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const dest = audioCtx.createMediaStreamDestination();
+  const stream = canvas.captureStream(25);
+
+  // Setup audio
   try {
-    if (!window._videoAudioSource) {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const dest = audioCtx.createMediaStreamDestination();
+    if (!window._videoAudioCtx) {
+      window._videoAudioCtx = audioCtx;
       window._videoAudioSource = audioCtx.createMediaElementSource(video);
     }
     window._videoAudioSource.connect(dest);
-    window._videoAudioSource.connect(audioCtx.destination);
+    window._videoAudioSource.connect(window._videoAudioCtx.destination);
+    stream.addTrack(dest.stream.getTracks()[0]);
   } catch(e) {
-    console.log('[Export] Audio source error:', e.message);
+    console.log('[Export] Audio:', e.message);
   }
-  stream.addTrack(dest.stream.getTracks()[0]);
-  
-  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm';
-  const recorder = new MediaRecorder(stream, {mimeType});
+
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+    ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+  const recorder = new MediaRecorder(stream, {mimeType, videoBitsPerSecond: 2500000});
   const chunks = [];
   recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
-  
   recorder.start(100);
-  
+
   for (const clip of clips) {
-    video.currentTime = clip.start;
+    const clipStart = Math.max(0, clip.start);
+    const clipEnd = Math.min(video.duration, clip.end);
+    if (clipEnd <= clipStart) continue;
+
+    video.currentTime = clipStart;
     await new Promise(r => video.addEventListener('seeked', r, {once:true}));
-    video.play();
-    
-    const renderFrame = () => {
-      if (video.currentTime >= clip.end) { video.pause(); return; }
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      requestAnimationFrame(renderFrame);
-    };
-    renderFrame();
-    
-    await new Promise(r => {
-      const check = setInterval(() => {
-        if (video.paused || video.currentTime >= clip.end) {
-          clearInterval(check);
+
+    await new Promise(resolve => {
+      video.play();
+      let animId;
+      function frame() {
+        if (!video.paused && video.currentTime < clipEnd) {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          animId = requestAnimationFrame(frame);
+        } else {
           video.pause();
-          r();
+          cancelAnimationFrame(animId);
+          resolve();
         }
-      }, 100);
+      }
+      animId = requestAnimationFrame(frame);
+      // Safety timeout
+      setTimeout(() => { video.pause(); cancelAnimationFrame(animId); resolve(); }, (clipEnd - clipStart + 2) * 1000);
     });
   }
-  
-  recorder.stop();
-  audioCtx.close();
-  
-  await new Promise(r => recorder.onstop = r);
-  const blob = new Blob(chunks, {type:'video/webm'});
-  const sizeMB = (blob.size/1024/1024).toFixed(1);
-  
-  showResultBanner(`✅ Export ready! ${sizeMB}MB`, blob, filename || 'AfriVid-AI-Edit');
+
+  // Stop recorder and wait for data
+  await new Promise(r => {
+    recorder.onstop = r;
+    recorder.stop();
+  });
+
+  const blob = new Blob(chunks, {type: 'video/webm'});
+  const sizeMB = (blob.size / 1024 / 1024).toFixed(1);
+
+  if (blob.size < 1000) {
+    addLog('all', '[x] Export failed - no video data captured. Try playing the video first.');
+    return;
+  }
+
+  showResultBanner(`✅ Export ready! ${sizeMB}MB`, blob, filename || 'AfriVid-Edit');
   addLog('all', `[ok] Export complete! ${sizeMB}MB`);
 }
 
