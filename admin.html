@@ -1013,7 +1013,7 @@ window.saveSystemSettings = async function() {
 };
 
 window.sendAnnouncement = async function() {
-  const msg = document.getElementById('announcement-msg')?.value?.trim();
+  const msg = document.getElementById('announcement-text')?.value?.trim();
   const subject = document.getElementById('announcement-subject')?.value?.trim() || 'Message from AfriVid Studio';
   if(!msg) { alert('Please write a message'); return; }
   
@@ -1060,7 +1060,7 @@ window.sendAnnouncement = async function() {
     
     alert(`✅ Sent to ${sent}/${emails.length} users!`);
     if(btn) { btn.textContent = 'Send to All Users'; btn.disabled = false; }
-    document.getElementById('announcement-msg').value = '';
+    document.getElementById('announcement-text').value = '';
     
   } catch(e) {
     alert('Failed: ' + e.message);
