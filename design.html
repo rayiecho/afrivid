@@ -1918,16 +1918,23 @@ function updateDesignCropVisual() {
 
 window._applyCrop = window.applyCrop = function() {
   const canvas = document.getElementById('design-canvas');
-  const cw = Math.round(Math.abs(cropRect.w));
-  const ch = Math.round(Math.abs(cropRect.h));
-  if (cw < 10 || ch < 10) { addLog('error','[x] Select a larger area'); return; }
+  const container = canvas.parentElement;
+  const vr = canvas.getBoundingClientRect();
+  const cr = container.getBoundingClientRect();
+  const scaleX = canvas.width / vr.width;
+  const scaleY = canvas.height / vr.height;
+  const vx = Math.max(0, (cropRect.x - (vr.left - cr.left)) * scaleX);
+  const vy = Math.max(0, (cropRect.y - (vr.top - cr.top)) * scaleY);
+  const vw = Math.min(canvas.width - vx, cropRect.w * scaleX);
+  const vh = Math.min(canvas.height - vy, cropRect.h * scaleY);
+  if (vw < 10 || vh < 10) { addLog('error','[x] Selection too small'); return; }
   const ctx = canvas.getContext('2d');
-  const imageData = ctx.getImageData(cropRect.x, cropRect.y, cw, ch);
-  W = cw; H = ch;
-  canvas.width = W; canvas.height = H;
+  const imageData = ctx.getImageData(vx, vy, vw, vh);
+  canvas.width = Math.round(vw);
+  canvas.height = Math.round(vh);
   ctx.putImageData(imageData, 0, 0);
   cancelCrop();
-  addLog('success', `[ok] Cropped to ${W}x${H}px`);
+  addLog('success', `[ok] Cropped to ${Math.round(vw)}x${Math.round(vh)}px`);
 }
 
 window._cancelCrop = window.cancelCrop = function() {
