@@ -1044,8 +1044,7 @@ window.sendAnnouncement = async function() {
                   <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
                 </div>
                 <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
-                  <p style="line-height:1.7;color:rgba(255,255,255,0.8);">${msg.replace(/
-/g,'<br>')}</p>
+                  <p style="line-height:1.7;color:rgba(255,255,255,0.8);">${msg.split("\n").join("<br>")}</p>
                 </div>
                 <div style="text-align:center;margin-bottom:1rem;">
                   <a href="https://afrivid.studio" style="background:#F5A623;color:#050A14;padding:0.75rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Visit AfriVid Studio</a>
