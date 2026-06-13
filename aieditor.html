@@ -112,25 +112,25 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 
 /* FEATURES GRID */
 .features-section{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
-.features-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:2px;margin-bottom:1rem;}
-.features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;}
-@media(min-width:600px){.features-grid{grid-template-columns:repeat(3,1fr);}}
-.feature-card{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:1.1rem;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.features-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:2px;margin-bottom:0.75rem;}
+.features-grid{display:flex;gap:0.5rem;overflow-x:auto;padding-bottom:0.5rem;scrollbar-width:none;}
+.features-grid::-webkit-scrollbar{display:none;}
+.feature-card{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.85rem;cursor:pointer;transition:all 0.2s;position:relative;display:flex;align-items:center;gap:0.5rem;white-space:nowrap;flex-shrink:0;}
 .feature-card:hover{border-color:rgba(245,166,35,0.3);background:var(--navy2);}
 .feature-card.active{border-color:var(--gold);background:rgba(245,166,35,0.05);}
 .feature-card.loading{pointer-events:none;opacity:0.7;}
-.feature-icon{font-size:1.5rem;margin-bottom:0.5rem;}
-.feature-name{font-weight:800;font-size:0.88rem;margin-bottom:0.2rem;}
-.feature-desc{color:var(--muted);font-size:0.72rem;line-height:1.4;}
-.feature-badge{position:absolute;top:0.5rem;right:0.5rem;font-size:0.6rem;font-family:var(--mono);padding:0.15rem 0.4rem;border-radius:4px;font-weight:700;}
+.feature-icon{font-size:1rem;}
+.feature-name{font-weight:700;font-size:0.82rem;}
+.feature-desc{display:none;}
+.feature-badge{font-size:0.55rem;font-family:var(--mono);padding:0.1rem 0.3rem;border-radius:3px;font-weight:700;margin-left:0.25rem;}
 .badge-new{background:rgba(116,198,157,0.2);color:var(--green);}
 .badge-pro{background:rgba(245,166,35,0.15);color:var(--gold);}
 
 /* SUB PANELS */
-.sub-panel{max-width:700px;margin:0 auto 1.5rem;padding:0 1.5rem;display:none;}
+.sub-panel{max-width:700px;margin:0 auto 0.75rem;padding:0 1.5rem;display:none;}
 .sub-panel.active{display:block;}
-.sub-panel-inner{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
-.sub-title{font-weight:800;font-size:0.9rem;margin-bottom:1rem;color:var(--gold);}
+.sub-panel-inner{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+.sub-title{font-weight:800;font-size:0.85rem;margin-bottom:0.6rem;color:var(--gold);}
 .btn-row{display:flex;gap:0.5rem;flex-wrap:wrap;}
 .btn{padding:0.6rem 1.1rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
 .btn-gold{background:var(--gold);color:#050A14;}
@@ -221,7 +221,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 
 <!-- FEATURES GRID -->
 <div class="features-section">
-  <div class="features-label">✦ AI TOOLS</div>
+  <div class="features-label">⚡ QUICK TOOLS</div>
   <div class="features-grid">
 
     <div class="feature-card" onclick="togglePanel('viral')">
@@ -288,7 +288,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-viral">
   <div class="sub-panel-inner">
     <div class="sub-title">🚀 Viral Clips Generator</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">AI finds your most viral-worthy moments and scores them. Each clip gets a viral score, title suggestion and format recommendation.</p>
+    
     <div class="btn-row">
       <button class="btn btn-outline" onclick="runFeature('viral',3)">3 Clips</button>
       <button class="btn btn-outline" onclick="runFeature('viral',5)">5 Clips</button>
@@ -301,7 +301,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-highlight">
   <div class="sub-panel-inner">
     <div class="sub-title">✂ Highlight Reel</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">AI transcribes your video, finds the strongest moments and assembles a highlight reel.</p>
+    
     <div class="btn-row">
       <button class="btn btn-gold" onclick="runFeature('highlight',30)">30 seconds</button>
       <button class="btn btn-gold" onclick="runFeature('highlight',60)">60 seconds</button>
@@ -314,7 +314,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-translate">
   <div class="sub-panel-inner">
     <div class="sub-title">🌍 Voice Translation</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Transcribes your video, translates the speech and generates a new voice in the target language.</p>
+    
     <div class="btn-row">
       <button class="btn btn-outline" onclick="runFeature('translate','sw')">🇰🇪 Swahili</button>
       <button class="btn btn-outline" onclick="runFeature('translate','fr')">🇫🇷 French</button>
@@ -330,7 +330,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-silence">
   <div class="sub-panel-inner">
     <div class="sub-title">✂ Remove Silences</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Detects silent parts in your video and removes them automatically. Perfect for podcasts, lectures and interviews.</p>
+    
     <button class="btn btn-gold" onclick="runFeature('silence')">✂ Remove Silences Now</button>
     <div class="ai-log" id="log-silence"></div>
   </div>
@@ -339,7 +339,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-music">
   <div class="sub-panel-inner">
     <div class="sub-title">🎵 Background Music</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Adds background music that auto-ducks when speech is detected.</p>
+    
     <div class="btn-row">
       <button class="btn btn-outline" onclick="runFeature('music','auto')">✦ Auto Detect</button>
       <button class="btn btn-outline" onclick="runFeature('music','inspirational')">🥁 African Beats</button>
@@ -355,7 +355,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-captions">
   <div class="sub-panel-inner">
     <div class="sub-title">💬 Auto Captions</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Whisper AI transcribes your video and overlays captions with karaoke word highlighting.</p>
+    
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.75rem;">
       <button class="btn btn-outline" id="cap-classic" onclick="setCaptionStyleAI('classic')">Classic</button>
       <button class="btn btn-outline" id="cap-bold" onclick="setCaptionStyleAI('bold')">Bold</button>
@@ -370,7 +370,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-noise">
   <div class="sub-panel-inner">
     <div class="sub-title">🔇 Noise Removal</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Applies high-pass and low-pass filters with dynamic compression to clean your audio.</p>
+    
     <button class="btn btn-gold" onclick="runFeature('noise')">🔇 Remove Noise Now</button>
     <div class="ai-log" id="log-noise"></div>
   </div>
@@ -379,7 +379,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-thumbnail">
   <div class="sub-panel-inner">
     <div class="sub-title">🖼 Thumbnail Generator</div>
-    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">Extracts the brightest, clearest frame from your video and adds professional branding.</p>
+    
     <button class="btn btn-gold" onclick="runFeature('thumbnail')">🖼 Generate Thumbnail</button>
     <div class="ai-log" id="log-thumbnail"></div>
     <div id="thumb-result" style="margin-top:0.75rem;"></div>
