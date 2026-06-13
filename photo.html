@@ -1157,188 +1157,119 @@ let originalImageData = null;
 
 window.toggleCrop = function() {
   if (!photoImage) { alert('Upload a photo first'); return; }
-  cropActive = !cropActive;
-  const overlay = document.getElementById('crop-overlay');
-  const controls = document.getElementById('crop-controls');
-  const selection = document.getElementById('crop-selection');
-  if (cropActive) {
-    overlay.style.display = 'block';
-    controls.style.display = 'block';
-    selection.style.display = 'none';
-    cropRect = {x:0,y:0,w:0,h:0};
-    addLog('info', '[crop] Click and drag on the photo to select crop area');
-    // Save original
-    const canvas = document.getElementById('photo-canvas');
-    originalImageData = canvas.toDataURL();
-  } else {
-    cancelCrop();
-  }
-}
-
-window.setCropRatio = function(ratio) {
-  setTimeout(()=>{ const c=document.getElementById("photo-canvas"); if(c) drawCropOverlay(c,cropRect); },100);
-  cropRatio = ratio;
-  document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  // If we have a crop selection, adjust it to the ratio
-  if (cropRect.w > 0 && cropRect.h > 0) {
-    applyRatioToSelection();
-  }
-}
-
-function applyRatioToSelection() {
-  if (cropRatio === 'free') return;
   const canvas = document.getElementById('photo-canvas');
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const ratios = {'1:1':1,'16:9':16/9,'9:16':9/16,'4:3':4/3,'3:4':3/4,'A4':1/1.414};
-  const r = ratios[cropRatio];
-  if (!r) return;
-  // Adjust height based on width and ratio
-  cropRect.h = Math.round(cropRect.w / r);
-  // Keep within canvas
-  if (cropRect.y + cropRect.h > canvas.height) {
-    cropRect.h = canvas.height - cropRect.y;
-    cropRect.w = Math.round(cropRect.h * r);
+  const container = canvas.parentElement;
+
+  if (cropActive) { cancelCrop(); return; }
+  cropActive = true;
+
+  // Save original
+  originalImageData = canvas.toDataURL();
+
+  let cropUI = document.getElementById('capcut-crop-ui');
+  if (!cropUI) {
+    cropUI = document.createElement('div');
+    cropUI.id = 'capcut-crop-ui';
+    cropUI.style.cssText = 'position:absolute;inset:0;z-index:50;';
+    container.style.position = 'relative';
+    container.appendChild(cropUI);
   }
-  updateCropVisual();
+
+  const cr = container.getBoundingClientRect();
+  const vr = canvas.getBoundingClientRect();
+  const margin = 0.05;
+  cropRect = {
+    x: vr.left - cr.left + vr.width * margin,
+    y: vr.top - cr.top + vr.height * margin,
+    w: vr.width * (1 - margin*2),
+    h: vr.height * (1 - margin*2)
+  };
+
+  renderPhotoCropUI(cropUI, container);
+  addLog('info', '[crop] Drag handles to crop. Click Apply when done.');
 }
 
-// Mouse events on crop overlay
-document.addEventListener('DOMContentLoaded', () => {
-  const overlay = document.getElementById('crop-overlay');
-  
-  overlay.addEventListener('mousedown', (e) => {
-    if (!cropActive) return;
-    isCropping = true;
-    const canvas = document.getElementById('photo-canvas');
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    cropStart = {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
-      clientX: e.clientX,
-      clientY: e.clientY
-    };
-    cropRect = {x: cropStart.x, y: cropStart.y, w: 0, h: 0};
-    document.getElementById('crop-selection').style.display = 'block';
+function renderPhotoCropUI(cropUI, container) {
+  const {x,y,w,h} = cropRect;
+  const cx = x+w/2, cy = y+h/2;
+  cropUI.innerHTML = `
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+    <div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:transparent;border:2px solid #fff;box-sizing:border-box;">
+      <div style="position:absolute;inset:0;pointer-events:none;">
+        <div style="position:absolute;left:33%;top:0;bottom:0;border-left:1px dashed rgba(255,255,255,0.5);"></div>
+        <div style="position:absolute;left:66%;top:0;bottom:0;border-left:1px dashed rgba(255,255,255,0.5);"></div>
+        <div style="position:absolute;top:33%;left:0;right:0;border-top:1px dashed rgba(255,255,255,0.5);"></div>
+        <div style="position:absolute;top:66%;left:0;right:0;border-top:1px dashed rgba(255,255,255,0.5);"></div>
+      </div>
+      <div data-handle="move" style="position:absolute;inset:20px;cursor:move;"></div>
+    </div>
+    <div data-handle="nw" style="position:absolute;left:${x-8}px;top:${y-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:nw-resize;"></div>
+    <div data-handle="ne" style="position:absolute;left:${x+w-8}px;top:${y-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:ne-resize;"></div>
+    <div data-handle="sw" style="position:absolute;left:${x-8}px;top:${y+h-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:sw-resize;"></div>
+    <div data-handle="se" style="position:absolute;left:${x+w-8}px;top:${y+h-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:se-resize;"></div>
+    <div data-handle="n" style="position:absolute;left:${cx-20}px;top:${y-6}px;width:40px;height:12px;background:#fff;border-radius:6px;cursor:n-resize;"></div>
+    <div data-handle="s" style="position:absolute;left:${cx-20}px;top:${y+h-6}px;width:40px;height:12px;background:#fff;border-radius:6px;cursor:s-resize;"></div>
+    <div data-handle="w" style="position:absolute;left:${x-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:w-resize;"></div>
+    <div data-handle="e" style="position:absolute;left:${x+w-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:e-resize;"></div>
+    <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:0.5rem;z-index:60;">
+      <button onclick="applyCrop()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.88rem;">✓ Apply</button>
+      <button onclick="cancelCrop()" style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.5rem 1.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.88rem;">✕ Cancel</button>
+    </div>
+  `;
+
+  let dragging = false, dHandle = null, dStart = null, dOrig = null;
+  cropUI.querySelectorAll('[data-handle]').forEach(el => {
+    el.addEventListener('mousedown', (e) => { e.stopPropagation(); dragging=true; dHandle=el.dataset.handle; dStart={x:e.clientX,y:e.clientY}; dOrig={...cropRect}; e.preventDefault(); });
+    el.addEventListener('touchstart', (e) => { dragging=true; dHandle=el.dataset.handle; dStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; dOrig={...cropRect}; e.preventDefault(); }, {passive:false});
   });
 
-  overlay.addEventListener('mousemove', (e) => {
-    if (!isCropping || !cropStart) return;
-    const canvas = document.getElementById('photo-canvas');
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    let x = (e.clientX - rect.left) * scaleX;
-    let y = (e.clientY - rect.top) * scaleY;
-    // Clamp to canvas
-    x = Math.max(0, Math.min(canvas.width, x));
-    y = Math.max(0, Math.min(canvas.height, y));
-    cropRect.w = x - cropStart.x;
-    cropRect.h = y - cropStart.y;
-    // Apply ratio constraint
-    if (cropRatio !== 'free') {
-      const ratios = {'1:1':1,'16:9':16/9,'9:16':9/16,'4:3':4/3,'3:4':3/4,'A4':1/1.414};
-      const r = ratios[cropRatio];
-      if (r) cropRect.h = cropRect.w / r;
+  const onMove = (cx2, cy2) => {
+    if (!dragging || !dHandle) return;
+    const dx=cx2-dStart.x, dy=cy2-dStart.y;
+    let {x,y,w,h}=dOrig; const min=40;
+    const cr = container.getBoundingClientRect();
+    if (dHandle==='move'){x=Math.max(0,Math.min(cr.width-w,x+dx));y=Math.max(0,Math.min(cr.height-h,y+dy));}
+    else {
+      if(dHandle.includes('e')) w=Math.max(min,w+dx);
+      if(dHandle.includes('s')) h=Math.max(min,h+dy);
+      if(dHandle.includes('w')){x=Math.min(x+dx,dOrig.x+dOrig.w-min);w=Math.max(min,dOrig.w-dx);}
+      if(dHandle.includes('n')){y=Math.min(y+dy,dOrig.y+dOrig.h-min);h=Math.max(min,dOrig.h-dy);}
     }
-    updateCropVisual();
-  });
+    cropRect={x,y,w,h};
+    renderPhotoCropUI(cropUI, container);
+  };
 
-  overlay.addEventListener('mouseup', () => { isCropping = false; });
-
-  // Touch support
-  overlay.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    overlay.dispatchEvent(new MouseEvent('mousedown', {clientX: touch.clientX, clientY: touch.clientY}));
-  }, {passive:false});
-  overlay.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    overlay.dispatchEvent(new MouseEvent('mousemove', {clientX: touch.clientX, clientY: touch.clientY}));
-  }, {passive:false});
-  overlay.addEventListener('touchend', () => overlay.dispatchEvent(new MouseEvent('mouseup')));
-});
-
-function updateCropVisual() {
-  const canvas = document.getElementById('photo-canvas');
-  if (!canvas || !canvas.width) return;
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = rect.width / canvas.width;
-  const scaleY = rect.height / canvas.height;
-  const sel = document.getElementById('crop-selection');
-  const wrap = canvas.parentElement;
-  if (!wrap) return;
-  const wrapRect = wrap.getBoundingClientRect();
-  const canvasRect = canvas.getBoundingClientRect();
-  const offsetX = canvasRect.left - wrapRect.left;
-  const offsetY = canvasRect.top - wrapRect.top;
-  // Handle negative dimensions (drag in any direction)
-  const x = (cropRect.w < 0 ? cropRect.x + cropRect.w : cropRect.x) * scaleX + offsetX;
-  const y = (cropRect.h < 0 ? cropRect.y + cropRect.h : cropRect.y) * scaleY + offsetY;
-  const w = Math.abs(cropRect.w) * scaleX;
-  const h = Math.abs(cropRect.h) * scaleY;
-  sel.style.left = x + 'px';
-  sel.style.top = y + 'px';
-  sel.style.width = w + 'px';
-  sel.style.height = h + 'px';
-
-  // Draw rule of thirds grid lines
-  sel.innerHTML = `
-    <div style="position:absolute;inset:0;pointer-events:none;">
-      <!-- Rule of thirds lines -->
-      <div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.5);"></div>
-      <div style="position:absolute;left:66.66%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.5);"></div>
-      <div style="position:absolute;top:33.33%;left:0;right:0;height:1px;background:rgba(255,255,255,0.5);"></div>
-      <div style="position:absolute;top:66.66%;left:0;right:0;height:1px;background:rgba(255,255,255,0.5);"></div>
-      <!-- Corner handles -->
-      <div style="position:absolute;top:-3px;left:-3px;width:12px;height:12px;border-top:3px solid #F5A623;border-left:3px solid #F5A623;"></div>
-      <div style="position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-top:3px solid #F5A623;border-right:3px solid #F5A623;"></div>
-      <div style="position:absolute;bottom:-3px;left:-3px;width:12px;height:12px;border-bottom:3px solid #F5A623;border-left:3px solid #F5A623;"></div>
-      <div style="position:absolute;bottom:-3px;right:-3px;width:12px;height:12px;border-bottom:3px solid #F5A623;border-right:3px solid #F5A623;"></div>
-    </div>`;
+  document.addEventListener('mousemove', (e)=>{if(dragging)onMove(e.clientX,e.clientY);});
+  document.addEventListener('touchmove', (e)=>{if(dragging)onMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+  document.addEventListener('mouseup', ()=>{dragging=false;});
+  document.addEventListener('touchend', ()=>{dragging=false;});
 }
 
 window.applyCrop = function() {
-  if (!photoImage) return;
   const canvas = document.getElementById('photo-canvas');
-  const ctx = canvas.getContext('2d');
-  // Normalize negative dimensions
-  const cx = cropRect.w < 0 ? cropRect.x + cropRect.w : cropRect.x;
-  const cy = cropRect.h < 0 ? cropRect.y + cropRect.h : cropRect.y;
-  const cw = Math.abs(cropRect.w);
-  const ch = Math.abs(cropRect.h);
-  if (cw < 10 || ch < 10) { addLog('error', '[x] Select a larger area to crop'); return; }
-  // Get cropped image data
-  const imageData = ctx.getImageData(cx, cy, cw, ch);
-  // Resize canvas to crop dimensions
-  canvas.width = cw;
-  canvas.height = ch;
-  ctx.putImageData(imageData, 0, 0);
-  // Update photoImage to cropped version
-  const croppedImg = new Image();
-  croppedImg.onload = () => {
-    photoImage = croppedImg;
-    cancelCrop();
-    updatePreview();
-    addLog('success', `[ok] Cropped to ${cw}x${ch}px`);
-  };
-  croppedImg.src = canvas.toDataURL();
+  const container = canvas.parentElement;
+  const vr = canvas.getBoundingClientRect();
+  const cr = container.getBoundingClientRect();
+  const scaleX = canvas.width / vr.width;
+  const scaleY = canvas.height / vr.height;
+  const vx = Math.max(0, (cropRect.x - (vr.left - cr.left)) * scaleX);
+  const vy = Math.max(0, (cropRect.y - (vr.top - cr.top)) * scaleY);
+  const vw = Math.min(canvas.width - vx, cropRect.w * scaleX);
+  const vh = Math.min(canvas.height - vy, cropRect.h * scaleY);
+  if (vw < 10 || vh < 10) { addLog('error','[x] Selection too small'); return; }
+  const imageData = canvas.getContext('2d').getImageData(vx, vy, vw, vh);
+  canvas.width = vw; canvas.height = vh;
+  canvas.getContext('2d').putImageData(imageData, 0, 0);
+  cancelCrop();
+  addLog('success', `[ok] Cropped to ${Math.round(vw)}x${Math.round(vh)}px`);
 }
 
 window.cancelCrop = function() {
-  removeCropOverlay();
   cropActive = false;
-  isCropping = false;
-  cropStart = null;
-  document.getElementById('crop-overlay').style.display = 'none';
-  document.getElementById('crop-controls').style.display = 'none';
-  document.getElementById('crop-selection').style.display = 'none';
+  const cropUI = document.getElementById('capcut-crop-ui');
+  if (cropUI) cropUI.remove();
 }
+
 
 window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); }
 window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); }
