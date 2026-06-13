@@ -1485,7 +1485,7 @@ window._downloadMP4 = async function downloadMP4() {
     const url = URL.createObjectURL(mp4Blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.mp4`;
+    a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.webm`;
     a.click();
     URL.revokeObjectURL(url);
     
@@ -1496,7 +1496,7 @@ window._downloadMP4 = async function downloadMP4() {
     const url = URL.createObjectURL(videoBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.mp4`;
+    a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.webm`;
     a.click();
     URL.revokeObjectURL(url);
     // status update removed
