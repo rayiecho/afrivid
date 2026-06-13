@@ -1639,14 +1639,9 @@ window._removeBackground = async function() {
         // Clear canvas
         ctx.clearRect(0, 0, W, H);
 
-        // Draw checkerboard for transparency preview
-        const cs = 16;
-        for (let x=0; x<W; x+=cs) {
-          for (let y=0; y<H; y+=cs) {
-            ctx.fillStyle = ((Math.floor(x/cs)+Math.floor(y/cs))%2===0) ? '#ccc' : '#fff';
-            ctx.fillRect(x,y,cs,cs);
-          }
-        }
+        // Draw clean white background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, W, H);
 
         // Use segmentation mask to draw only person
         const offCanvas = document.createElement('canvas');
