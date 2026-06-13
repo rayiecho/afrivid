@@ -532,6 +532,8 @@ body::after{
   <input type="color" id="tt-color" value="#ffffff" onchange="updateTextProp('color', this.value)">
   <div class="tt-sep"></div>
   <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;">🗑</button>
+  <div class="tt-sep"></div>
+  <button class="tt-btn" onclick="closeInlineEditor()" style="color:#74C69D;font-weight:900;font-size:0.75rem;white-space:nowrap;padding:0 0.5rem;">→ Close Edit</button>
 </div>
 -->
 
@@ -2234,6 +2236,8 @@ document.addEventListener('DOMContentLoaded', () => {
   <input type="color" id="tt-color" value="#ffffff" onchange="updateTextProp('color', this.value)">
   <div class="tt-sep"></div>
   <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;">🗑</button>
+  <div class="tt-sep"></div>
+  <button class="tt-btn" onclick="closeInlineEditor()" style="color:#74C69D;font-weight:900;font-size:0.75rem;white-space:nowrap;padding:0 0.5rem;">→ Close Edit</button>
 </div>
 
 <script>
