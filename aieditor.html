@@ -764,9 +764,13 @@ function showResultBanner(msg, blob, filename) {
 
 // ── AI FEATURES ──
 async function runAIEdit(instructions) {
-  if (!await checkLimit('ai_editor')) return;
+  addLog('all', '[~] Checking limits...');
+  const limitOk = await checkLimit('ai_editor');
+  addLog('all', `[~] Limit check: ${limitOk}`);
+  if (!limitOk) return;
   const video = document.getElementById('ai-video');
   const totalSecs = Math.round(video.duration);
+  addLog('all', `[~] Video duration: ${totalSecs}s`);
   try {
     const text = await claudeAsk(`Video editor. Video is ${totalSecs}s long. Instructions: "${instructions}". Return ONLY JSON array of clips to keep: [{"start":0,"end":30}]`, 500);
     const match = text.match(/\[[\s\S]*\]/);
