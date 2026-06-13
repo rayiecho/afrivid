@@ -1076,6 +1076,19 @@ function showUpgradeModal(feature, max, period) {
   document.body.appendChild(modal);
 }
 
+
+function resetPassword() {
+  const email = document.getElementById('signin-email')?.value || document.getElementById('login-email')?.value || '';
+  const emailToReset = email.trim() || prompt('Enter your email address:');
+  if (!emailToReset) return;
+  import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js').then(({sendPasswordResetEmail, getAuth}) => {
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, emailToReset)
+      .then(() => alert('✅ Password reset email sent to ' + emailToReset + '. Check your inbox.'))
+      .catch(e => alert('Error: ' + e.message));
+  });
+}
+
 </script>
 </body>
 </html>
