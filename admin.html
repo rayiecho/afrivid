@@ -1341,4 +1341,21 @@ const _origGetDocs = window.getDocs;
 </script>
 
 </body>
-</html>
+</html><script>
+async function setUserLimit(userId, email) {
+  const limit = prompt('Set monthly video limit for ' + email + ':\n(Leave empty for default 3, enter 0 for unlimited)');
+  if (limit === null) return;
+  const limitNum = limit === '' ? 3 : parseInt(limit);
+  try {
+    await updateDoc(doc(db, 'studio_users', userId), {
+      customLimit: limitNum,
+      limitSetAt: new Date().toISOString(),
+      limitSetBy: 'admin'
+    });
+    alert('Limit set to ' + (limitNum === 0 ? 'Unlimited' : limitNum) + ' videos/month for ' + email);
+    loadUsers();
+  } catch(e) {
+    alert('Failed: ' + e.message);
+  }
+}
+</script>
