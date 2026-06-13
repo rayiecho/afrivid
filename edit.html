@@ -1119,7 +1119,9 @@ startEnhancing = async function() {
   document.getElementById('progress-wrap').style.display = 'block';
   
   const video = document.getElementById('original-video');
-  const canvas = document.getElementById('original-video');
+  const canvas = document.createElement('canvas');
+  document.body.appendChild(canvas);
+  canvas.style.display = 'none';
   canvas.width = video.videoWidth || 1280;
   canvas.height = video.videoHeight || 720;
   
