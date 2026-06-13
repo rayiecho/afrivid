@@ -956,11 +956,78 @@ async function doTranslate(lang) {
     banner.innerHTML = `
       <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
       <button id="play-translated-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play Synced</button>
-      <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
+      <button id="export-translated-btn" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Video</button>
+      <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio Only</button>
       <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
     document.getElementById('play-translated-btn').onclick = playSynced;
+    
+    // Export translated video - record video with translated audio
+    document.getElementById('export-translated-btn').onclick = async function() {
+      const btn = this;
+      btn.textContent = '[..] Exporting...';
+      btn.disabled = true;
+      try {
+        const video = document.getElementById('ai-video');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 1280;
+        canvas.height = video.videoHeight || 720;
+        const ctx = canvas.getContext('2d');
+        const stream = canvas.captureStream(25);
+        
+        // Use translated audio
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const dest = audioCtx.createMediaStreamDestination();
+        const ttsSource = audioCtx.createMediaElementSource(ttsAudio);
+        ttsSource.connect(dest);
+        ttsSource.connect(audioCtx.destination);
+        stream.addTrack(dest.stream.getTracks()[0]);
+        
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+        const recorder = new MediaRecorder(stream, {mimeType});
+        const chunks = [];
+        recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+        recorder.start(100);
+        
+        video.muted = true;
+        video.currentTime = 0;
+        ttsAudio.currentTime = 0;
+        video.play();
+        ttsAudio.play();
+        
+        // Render frames
+        const renderFrame = () => {
+          if (video.ended || video.paused) return;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          requestAnimationFrame(renderFrame);
+        };
+        requestAnimationFrame(renderFrame);
+        
+        await new Promise(r => {
+          ttsAudio.addEventListener('ended', r, {once:true});
+          video.addEventListener('ended', r, {once:true});
+          setTimeout(r, (video.duration + 2) * 1000);
+        });
+        
+        video.pause(); video.muted = false;
+        await new Promise(r => { recorder.onstop=r; recorder.stop(); });
+        audioCtx.close();
+        
+        const blob = new Blob(chunks, {type:'video/webm'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'AfriVid-' + '${langName}' + '-dubbed.webm';
+        a.click();
+        btn.textContent = '✅ Downloaded!';
+        setTimeout(()=>{ btn.textContent='⬇ Download Video'; btn.disabled=false; }, 3000);
+      } catch(e) {
+        btn.textContent = '⬇ Download Video';
+        btn.disabled = false;
+        alert('Export failed: ' + e.message);
+      }
+    };
   } catch(e) { addLog('translate', '[x] ' + e.message); }
 }
 
