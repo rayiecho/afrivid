@@ -74,14 +74,14 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .back-btn:hover{color:#fff;}
 
 /* HERO */
-.hero{text-align:center;padding:3rem 1.5rem 2rem;}
+.hero{text-align:center;padding:2rem 1.5rem 1rem;}
 .hero-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:3px;margin-bottom:0.75rem;}
 .hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;margin-bottom:0.75rem;line-height:1.1;}
 .hero-title em{color:var(--gold);font-style:normal;}
 .hero-sub{color:var(--muted);font-size:0.95rem;max-width:500px;margin:0 auto;}
 
 /* DROP ZONE */
-.drop-zone{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;}
+.drop-zone{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
 .drop-area{border:2px dashed rgba(245,166,35,0.3);border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(245,166,35,0.02);position:relative;}
 .drop-area:hover,.drop-area.dragover{border-color:var(--gold);background:rgba(245,166,35,0.05);}
 .drop-icon{font-size:2.5rem;margin-bottom:0.75rem;}
@@ -100,7 +100,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .change-video-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
 
 /* AI PROMPT */
-.prompt-area{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;}
+.prompt-area{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
 .prompt-wrap{display:flex;gap:0.5rem;}
 .prompt-input{flex:1;background:var(--navy);border:1px solid var(--border2);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-family:var(--font);font-size:0.88rem;outline:none;transition:border-color 0.2s;}
 .prompt-input:focus{border-color:rgba(245,166,35,0.4);}
@@ -111,7 +111,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .example-chip:hover{color:#fff;border-color:var(--border2);}
 
 /* FEATURES GRID */
-.features-section{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;}
+.features-section{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
 .features-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:2px;margin-bottom:1rem;}
 .features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;}
 @media(min-width:600px){.features-grid{grid-template-columns:repeat(3,1fr);}}
@@ -405,7 +405,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
   </div>
 </div>
 
-<div style="height:6rem;"></div>
+<div style="height:2rem;"></div>
 
 <!-- LOGIN MODAL -->
 <div class="login-overlay" id="login-modal" onclick="if(event.target===this)hideLogin()">
@@ -643,12 +643,18 @@ async function exportClips(clips, filename) {
   const ctx = canvas.getContext('2d');
   const stream = canvas.captureStream(30);
   
-  // Add audio
+  // Add audio - reuse existing source node
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const dest = audioCtx.createMediaStreamDestination();
-  const source = audioCtx.createMediaElementSource(video);
-  source.connect(dest);
-  source.connect(audioCtx.destination);
+  try {
+    if (!window._videoAudioSource) {
+      window._videoAudioSource = audioCtx.createMediaElementSource(video);
+    }
+    window._videoAudioSource.connect(dest);
+    window._videoAudioSource.connect(audioCtx.destination);
+  } catch(e) {
+    console.log('[Export] Audio source error:', e.message);
+  }
   stream.addTrack(dest.stream.getTracks()[0]);
   
   const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm';
@@ -986,7 +992,10 @@ async function doThumbnail() {
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth||1280; canvas.height = video.videoHeight||720;
     const ctx = canvas.getContext('2d');
-    const timestamps = [0.2,0.35,0.5].map(t=>t*video.duration);
+    if (!video.duration || !isFinite(video.duration)) {
+    await new Promise(r => video.addEventListener('loadedmetadata', r, {once:true}));
+  }
+  const timestamps = [0.2,0.35,0.5].map(t=>t*video.duration);
     let best=null,bestBr=0;
     for(const ts of timestamps){
       video.currentTime=ts;
