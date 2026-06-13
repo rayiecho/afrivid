@@ -936,15 +936,31 @@ async function doTranslate(lang) {
     const ttsUrl = URL.createObjectURL(ttsBlob);
     addLog('translate', `[ok] ${langName} translation ready!`);
     document.querySelectorAll('.result-banner').forEach(b=>b.remove());
+    
+    // Sync translated audio with video
+    const ttsAudio = new Audio(ttsUrl);
+    const video = document.getElementById('ai-video');
+    
+    function playSynced() {
+      video.muted = true;
+      video.currentTime = 0;
+      ttsAudio.currentTime = 0;
+      video.play();
+      ttsAudio.play();
+      video.addEventListener('pause', () => ttsAudio.pause(), {once:true});
+      video.addEventListener('ended', () => { ttsAudio.pause(); video.muted=false; }, {once:true});
+    }
+    
     const banner = document.createElement('div');
     banner.className = 'result-banner';
     banner.innerHTML = `
       <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
-      <button onclick="new Audio('${ttsUrl}').play()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play</button>
+      <button id="play-translated-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play Synced</button>
       <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
-      <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
+    document.getElementById('play-translated-btn').onclick = playSynced;
   } catch(e) { addLog('translate', '[x] ' + e.message); }
 }
 
