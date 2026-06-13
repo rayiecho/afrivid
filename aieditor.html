@@ -502,6 +502,12 @@ function loadVideo(file) {
   video.onloadedmetadata = () => {
     document.getElementById('video-name').textContent = file.name;
     document.getElementById('video-duration').textContent = formatTime(video.duration);
+    // Also update when duration becomes available
+    if (!video.duration || video.duration === 0) {
+      video.addEventListener('durationchange', () => {
+        document.getElementById('video-duration').textContent = formatTime(video.duration);
+      }, {once: true});
+    }
     document.getElementById('drop-zone') && (document.querySelector('.drop-zone').style.display = 'none');
     document.getElementById('video-preview-area').style.display = 'block';
     addLog('all', `[ok] Loaded: ${file.name} (${formatTime(video.duration)})`);
