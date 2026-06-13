@@ -685,10 +685,12 @@ async function exportClips(clips, filename) {
   recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
   recorder.start(100);
 
+  addLog('all', `[~] Processing ${clips.length} clips...`);
   for (const clip of clips) {
     const clipStart = Math.max(0, clip.start);
     const clipEnd = Math.min(video.duration, clip.end);
-    if (clipEnd <= clipStart) continue;
+    addLog('all', `[~] Clip: ${clipStart.toFixed(1)}s → ${clipEnd.toFixed(1)}s`);
+    if (clipEnd <= clipStart) { addLog('all', '[x] Invalid clip skipped'); continue; }
 
     video.currentTime = clipStart;
     await new Promise(r => video.addEventListener('seeked', r, {once:true}));
