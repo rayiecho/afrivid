@@ -764,8 +764,23 @@ async function exportClips(clips, filename) {
     return;
   }
 
-  showResultBanner(`✅ Export ready! ${sizeMB}MB`, blob, filename || 'AfriVid-Edit');
   addLog('all', `[ok] Export complete! ${sizeMB}MB`);
+  // Auto-trigger download
+  const _url = URL.createObjectURL(blob);
+  const _a = document.createElement('a');
+  _a.href = _url;
+  _a.download = (filename || 'AfriVid-Edit') + '.webm';
+  document.body.appendChild(_a);
+  _a.click();
+  document.body.removeChild(_a);
+  // Update apply button
+  const _btn = document.getElementById('apply-btn');
+  if(_btn) {
+    _btn.style.background='#74C69D';
+    _btn.style.color='#050A14';
+    _btn.textContent='✅ Downloaded!';
+    setTimeout(()=>{ _btn.style.background=''; _btn.style.color=''; _btn.textContent='✦ Apply'; }, 3000);
+  }
 }
 
 function showResultBanner(msg, blob, filename) {
