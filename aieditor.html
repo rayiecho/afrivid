@@ -818,13 +818,27 @@ async function runAIEdit(instructions) {
 
 async function doViralClips(count) {
   if (!await checkLimit('ai_editor')) return;
-  addLog('viral', '[~] Transcribing...');
   const video = document.getElementById('ai-video');
+  // Wait for real duration
+  let duration = video.duration;
+  if (!duration || !isFinite(duration) || duration === 0) {
+    addLog('viral', '[~] Loading video duration...');
+    await new Promise(r => {
+      const check = setInterval(() => {
+        if (video.duration && isFinite(video.duration) && video.duration > 0) {
+          clearInterval(check); r();
+        }
+      }, 500);
+      setTimeout(() => { clearInterval(check); r(); }, 10000);
+    });
+    duration = video.duration || 60;
+  }
+  addLog('viral', '[~] Transcribing...');
   let transcript = '';
   try { transcript = await transcribe(); } catch(e) {}
   addLog('viral', '[~] Finding viral moments...');
   try {
-    const text = await claudeAsk(`Find ${count} viral clips from this ${Math.round(video.duration)}s video. ${transcript ? 'Transcript: "'+transcript.slice(0,1500)+'"' : ''} Return ONLY JSON: [{"start":0,"end":30,"title":"Hook","score":85,"format":"tiktok","reason":"Strong opening"}]`, 1500);
+    const text = await claudeAsk(`Find ${count} viral clips from this ${Math.round(duration)}s video. ${transcript ? 'Transcript: "'+transcript.slice(0,1500)+'"' : ''} Return ONLY JSON: [{"start":0,"end":30,"title":"Hook","score":85,"format":"tiktok","reason":"Strong opening"}]`, 1500);
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) throw new Error('No clips');
     const clips = JSON.parse(match[0]);
