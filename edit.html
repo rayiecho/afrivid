@@ -534,13 +534,17 @@ body::after{
 
       <!-- LEFT SIDEBAR -->
       <div class="studio-left">
-        <div style="font-size:0.6rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.25rem;">QUICK TOOLS</div>
+        <div onclick="document.getElementById('quick-tools-list').style.display=document.getElementById('quick-tools-list').style.display==='none'?'block':'none';this.querySelector('.qt-arrow').textContent=document.getElementById('quick-tools-list').style.display==='none'?'▼':'▲';" style="font-size:0.6rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.25rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:0.3rem 0.25rem;border-radius:6px;user-select:none;">
+          <span>⚡ QUICK TOOLS</span><span class="qt-arrow">▼</span>
+        </div>
+        <div id="quick-tools-list" style="display:none;">
         <button class="quick-btn" onclick="applyQualityPreset('auto')">✨ Auto Enhance</button>
         <button class="quick-btn" onclick="applyQualityPreset('iphone')">📱 iPhone Look</button>
         <button class="quick-btn" onclick="applyQualityPreset('cinema')">🎬 Cinema</button>
         <button class="quick-btn" onclick="applyQualityPreset('dslr')">📷 DSLR Look</button>
         <button class="quick-btn" onclick="applyQualityPreset('broadcast')">📺 Broadcast</button>
         <button class="quick-btn" onclick="applyQualityPreset('reset')">↺ Reset</button>
+        </div>
         <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0;"></div>
         <button class="quick-btn" onclick="toggleCrop()">⬚ Crop</button>
         <button class="quick-btn" onclick="fastExport()" id="btn-export" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">▶ Export</button>
