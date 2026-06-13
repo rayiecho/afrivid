@@ -1028,11 +1028,10 @@ window.sendAnnouncement = async function() {
     let sent = 0;
     for (const email of emails) {
       try {
-        const res = await fetch('https://api.resend.com/emails', {
+        const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/send-email', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer re_VHfK2Tqc_3Xx5Cu3C9RCRD48yYapGD9H4'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             from: 'AfriVid Studio <support@afrivid.studio>',
