@@ -2126,8 +2126,8 @@ window.toggleCrop = function() {
     ctx.drawImage(video, 0, 0, cropCanvas.width, cropCanvas.height);
     video.style.display = 'none';
     cropCanvas.style.display = 'block';
-    overlay.style.display = 'block';
-    controls.style.display = 'block';
+    if(overlay) overlay.style.display = 'block';
+    if(controls) controls.style.display = 'block';
     const _cs = document.getElementById('crop-selection'); if(_cs) _cs.style.display = 'none';
     cropRect = {x:0,y:0,w:0,h:0};
     addLog('info','[crop] Drag on the video frame to select crop area');
