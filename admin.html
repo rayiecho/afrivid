@@ -1337,7 +1337,6 @@ document.getElementById('admin-pwd').addEventListener('keydown', e => {
   if(e.key==='Enter') doAdminLogin();
 });
 
-
   // ── UPGRADE REQUESTS ──
   window.loadUpgrades = async function() {
     const list = document.getElementById('upg-list');
@@ -1396,6 +1395,9 @@ document.getElementById('admin-pwd').addEventListener('keydown', e => {
       loadUpgrades();
     } catch(e) { alert('Failed: '+e.message); }
   };
+
+
+
 
   // ── FEEDBACK ──
   window.loadFeedback = async function() {
