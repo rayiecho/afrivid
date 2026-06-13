@@ -3,23 +3,29 @@
   "short_name": "AfriVid",
   "description": "Africa's First AI Video Creation Platform",
   "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#050A14",
   "theme_color": "#F5A623",
   "orientation": "portrait-primary",
-  "categories": ["productivity", "video", "creativity"],
+  "lang": "en",
+  "categories": [
+    "productivity",
+    "video",
+    "creativity"
+  ],
   "icons": [
     {
-      "src": "images/logo.png",
+      "src": "/images/logo.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "images/logo.png",
+      "src": "/images/logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -27,19 +33,34 @@
       "name": "Create Video",
       "short_name": "Create",
       "url": "/create.html",
-      "icons": [{"src": "images/logo.png", "sizes": "192x192"}]
+      "icons": [
+        {
+          "src": "/images/logo.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "AI Editor",
       "short_name": "AI Edit",
       "url": "/aieditor.html",
-      "icons": [{"src": "images/logo.png", "sizes": "192x192"}]
+      "icons": [
+        {
+          "src": "/images/logo.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "My Studio",
       "short_name": "Studio",
       "url": "/studio.html",
-      "icons": [{"src": "images/logo.png", "sizes": "192x192"}]
+      "icons": [
+        {
+          "src": "/images/logo.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
