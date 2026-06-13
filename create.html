@@ -5681,6 +5681,42 @@ function resetPassword() {
   });
 }
 
+
+window.convertAndDownloadMP4 = async function() {
+  if (!videoBlob) { alert('No video to convert'); return; }
+  const btn = document.getElementById('btn-download-mp4');
+  if(btn) { btn.disabled=true; btn.textContent='[..] Converting to MP4...'; }
+  addLog('info', '[~] Converting to real MP4 with FFmpeg...');
+  try {
+    const { FFmpeg } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js');
+    const { fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+    const ffmpeg = new FFmpeg();
+    ffmpeg.on('progress', ({progress}) => {
+      const pct = Math.round(progress*100);
+      if(btn) btn.textContent = `[..] Converting ${pct}%...`;
+      addLog('info', `[~] Converting: ${pct}%`);
+    });
+    addLog('info', '[~] Loading FFmpeg engine (~30MB first time)...');
+    await ffmpeg.load();
+    addLog('success', '[ok] FFmpeg ready! Converting...');
+    await ffmpeg.writeFile('input.webm', await fetchFile(videoBlob));
+    await ffmpeg.exec(['-i','input.webm','-c:v','libx264','-crf','23','-preset','fast','-c:a','aac','-b:a','128k','output.mp4']);
+    const data = await ffmpeg.readFile('output.mp4');
+    const mp4Blob = new Blob([data.buffer], {type:'video/mp4'});
+    const url = URL.createObjectURL(mp4Blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const title = scriptData?.title?.replace(/[^a-z0-9]/gi,'-').toLowerCase() || 'video';
+    a.download = `AfriVid-${title}.mp4`;
+    a.click();
+    addLog('success', `[ok] Real MP4 downloaded! ${(mp4Blob.size/1024/1024).toFixed(1)}MB`);
+    if(btn) { btn.disabled=false; btn.textContent='🎬 Download Real MP4'; }
+  } catch(e) {
+    addLog('error', '[x] MP4 conversion failed: ' + e.message);
+    if(btn) { btn.disabled=false; btn.textContent='🎬 Download Real MP4'; }
+  }
+};
+
 </script>
 </body>
 </html>
