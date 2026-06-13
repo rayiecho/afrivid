@@ -1632,7 +1632,7 @@ window._removeBackground = async function() {
     ctx.drawImage(photoImage, 0, 0, W, H);
 
     const selfieSegmentation = new SelfieSegmentation({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`});
-    selfieSegmentation.setOptions({modelSelection: 1, selfieMode: false});
+    selfieSegmentation.setOptions({modelSelection: 1, selfieMode: false, effect: 'background'});
 
     await new Promise((resolve, reject) => {
       selfieSegmentation.onResults(results => {
@@ -1664,9 +1664,11 @@ window._removeBackground = async function() {
         const maskData = maskCtx.getImageData(0, 0, W, H);
         const imgData = offCtx.getImageData(0, 0, W, H);
 
-        // Apply mask to alpha channel
+        // Apply mask to alpha channel with threshold
         for (let i=0; i<maskData.data.length; i+=4) {
-          imgData.data[i+3] = maskData.data[i]; // Use red channel as alpha
+          const maskVal = maskData.data[i];
+          // Sharp threshold to reduce blurry edges
+          imgData.data[i+3] = maskVal > 128 ? 255 : maskVal > 64 ? Math.round((maskVal - 64) * 4) : 0;
         }
         offCtx.putImageData(imgData, 0, 0);
 
