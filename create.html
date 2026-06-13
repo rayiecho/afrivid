@@ -5068,6 +5068,17 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
   try {
     const title = (scriptData && scriptData.title) || 'AfriVid Video';
     let videoUrl = ''; // R2 upload disabled - requires paid plan
+    // Generate thumbnail from canvas
+    let thumbDataURL = '';
+    try {
+      const vc = document.getElementById('video-canvas');
+      if (vc && vc.width > 0) {
+        const tc = document.createElement('canvas');
+        tc.width = 320; tc.height = 180;
+        tc.getContext('2d').drawImage(vc, 0, 0, 320, 180);
+        thumbDataURL = tc.toDataURL('image/jpeg', 0.7);
+      }
+    } catch(e) {}
     await addDoc(collection(db, 'studio_videos'), {
       userId: currentUser.uid,
       userEmail: currentUser.email,
@@ -5075,6 +5086,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
       duration: duration,
       size: (videoBlob.size / 1024 / 1024).toFixed(1) + 'MB',
       videoUrl: videoUrl,
+      thumbnail: thumbDataURL,
       createdAt: serverTimestamp()
     });
     await updateDoc(doc(db, 'studio_users', currentUser.uid), {
