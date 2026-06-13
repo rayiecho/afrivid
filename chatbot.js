@@ -108,6 +108,24 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
     who: ['who are you','what are you','are you ai','are you human','who made you'],
   };
 
+  // Check if user is Pro before sending to API
+  async function checkProAccess() {
+    if (!window.currentUser) return false;
+    try {
+      const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+      const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+      if (!window.db) {
+        const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+        window.db = getFirestore(app);
+      }
+      const snap = await getDoc(doc(window.db, 'studio_users', window.currentUser.uid));
+      if (!snap.exists()) return false;
+      const plan = snap.data().plan || 'beta';
+      return plan === 'pro' || plan === 'beta';
+    } catch(e) { return false; }
+  }
+
   window.sendAfriVidChat = async function() {
     const input = document.getElementById('acw-input');
     const msg = input.value.trim();
@@ -152,10 +170,30 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
       return;
     }
 
+    // Check Pro access for API calls
+    if (!window.currentUser) {
+      addMessage("Sign in to use the AfriVid AI assistant. Create a free account at afrivid.studio! 🌍", 'bot');
+      return;
+    }
+    const isPro = await checkProAccess();
+    if (!isPro) {
+      addMessage("The AI assistant is available for Pro users. Upgrade to Pro for $5/month to get unlimited AI assistance, unlimited videos and more! Visit the pricing page to upgrade. 🚀", 'bot');
+      return;
+    }
     chatHistory.push({role:'user', content: msg});
 
     // Add user message
     addMessage(msg, 'user');
+    // Check Pro access for API calls
+    if (!window.currentUser) {
+      addMessage("Sign in to use the AfriVid AI assistant. Create a free account at afrivid.studio! 🌍", 'bot');
+      return;
+    }
+    const isPro = await checkProAccess();
+    if (!isPro) {
+      addMessage("The AI assistant is available for Pro users. Upgrade to Pro for $5/month to get unlimited AI assistance, unlimited videos and more! Visit the pricing page to upgrade. 🚀", 'bot');
+      return;
+    }
     chatHistory.push({role:'user', content: msg});
 
     // Show typing
