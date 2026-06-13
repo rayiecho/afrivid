@@ -1517,6 +1517,15 @@ function showToast(msg, type) {
 </html>
 <script>
 // ── FEEDBACK SYSTEM ──
+window.setFeedbackType = function(type, btn) {
+  document.getElementById('feedback-type').value = type;
+  document.querySelectorAll('.fb-type-btn').forEach(b => { b.style.opacity='0.5'; b.style.fontWeight='700'; });
+  btn.style.opacity = '1'; btn.style.fontWeight = '900';
+};
+window.setRating = function(val) {
+  document.getElementById('feedback-rating').value = val;
+  document.querySelectorAll('#star-rating span').forEach((s,i) => { s.style.opacity = i < val ? '1' : '0.3'; });
+};
 window.submitFeedback = async function() {
   const type = document.getElementById('feedback-type')?.value || 'general';
   const msg = document.getElementById('feedback-msg')?.value?.trim() || '';
@@ -1548,8 +1557,8 @@ window.submitFeedback = async function() {
 document.addEventListener('DOMContentLoaded', () => {
   const fab = document.createElement('button');
   fab.id = 'feedback-fab';
-  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;width:48px;height:48px;border-radius:50%;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;justify-content:center;';
-  fab.innerHTML = '💬';
+  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
+  fab.innerHTML = '💬 Feedback';
   fab.title = 'Send Feedback';
   fab.onclick = () => {
     const modal = document.getElementById('feedback-modal');
@@ -1560,29 +1569,41 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- FEEDBACK MODAL -->
-<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#0D1117;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:1.5rem;width:90%;max-width:420px;font-family:Syne,sans-serif;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <div style="color:#F5A623;font-weight:900;font-size:1rem;">💬 Send Feedback</div>
-      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
+      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
     </div>
-    <select id="feedback-type" style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:Syne,sans-serif;margin-bottom:0.75rem;">
-      <option value="bug">🐛 Bug Report</option>
-      <option value="feature">✨ Feature Request</option>
-      <option value="general">💬 General Feedback</option>
-      <option value="praise">🔥 Praise</option>
-      <option value="complaint">😤 Complaint</option>
-    </select>
-    <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;align-items:center;">
-      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rating:</span>
-      <select id="feedback-rating" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:Syne,sans-serif;">
-        <option value="5">⭐⭐⭐⭐⭐</option>
-        <option value="4">⭐⭐⭐⭐</option>
-        <option value="3">⭐⭐⭐</option>
-        <option value="2">⭐⭐</option>
-        <option value="1">⭐</option>
-      </select>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
+      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🐛 Bug</button>
+      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">✨ Feature</button>
+      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🔥 Praise</button>
+      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💬 General</button>
+      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
+      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
     </div>
+    <input type="hidden" id="feedback-type" value="general">
+    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
+      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rate AfriVid:</span>
+      <div id="star-rating" style="display:flex;gap:0.25rem;">
+        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;">⭐</span>
+      </div>
+    </div>
+    <input type="hidden" id="feedback-rating" value="5">
+    <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
+    </div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
+  </div>
+</div>
     <textarea id="feedback-msg" style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:100px;resize:vertical;box-sizing:border-box;margin-bottom:0.75rem;" placeholder="Tell us what you think, what's broken, or what you'd love to see..."></textarea>
     <button id="feedback-submit-btn" onclick="submitFeedback()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Submit Feedback</button>
   </div>
