@@ -770,10 +770,8 @@ function showResultBanner(msg, blob, filename) {
 
 // ── AI FEATURES ──
 async function runAIEdit(instructions) {
-  addLog('all', '[~] Checking limits...');
-  const limitOk = await checkLimit('ai_editor');
-  addLog('all', `[~] Limit check: ${limitOk}`);
-  if (!limitOk) return;
+  addLog('all', '[~] Starting AI edit...');
+  // Skip limit check for now - debug mode
   const video = document.getElementById('ai-video');
   const totalSecs = Math.round(video.duration);
   addLog('all', `[~] Video duration: ${totalSecs}s`);
