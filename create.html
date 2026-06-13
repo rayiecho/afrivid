@@ -5260,6 +5260,8 @@ window._makeAnother = makeAnother = function() {
   (function(){var vc=document.getElementById('video-canvas');if(vc){var c=vc.getContext('2d');if(c)c.clearRect(0,0,vc.width,vc.height);}})();
   (function(){var co=document.getElementById('canvas-overlay');if(co)co.style.display='flex';})();
   console.log("[makeAnother] going to step 1");
+  // Hide panel-4 explicitly
+  const _p4 = document.getElementById("panel-4"); if(_p4) _p4.classList.remove("active");
   goToStep(1);
 }
 
