@@ -2107,185 +2107,158 @@ let cropActive = false;
 let cropRatio = '16:9';
 let cropStart = null;
 let cropRect = {x:0,y:0,w:0,h:0};
-let isCropping = false;
+
+// ── CAPCUT CROP SYSTEM ──
 
 window.toggleCrop = function() {
-  console.log("[toggleCrop] called");
   if (!currentVideoFile) { alert('Load a video first'); return; }
-  cropActive = !cropActive;
-  const overlay = document.getElementById('crop-overlay');
-  const controls = document.getElementById('crop-controls');
   const video = document.getElementById('original-video');
-  const cropCanvas = document.getElementById('crop-canvas');
-  if (!cropCanvas) { addLog('error','[x] Crop canvas not found'); return; }
-  if (cropActive) {
-    // Snapshot current video frame to canvas
-    cropCanvas.width = video.videoWidth || 1280;
-    cropCanvas.height = video.videoHeight || 720;
-    const ctx = cropCanvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, cropCanvas.width, cropCanvas.height);
-    video.style.display = 'none';
-    cropCanvas.style.display = 'block';
-    if(overlay) overlay.style.display = 'block';
-    if(controls) controls.style.display = 'block';
-    // Start with full video as default crop box
-    const _margin = Math.round(cropCanvas.width * 0.05);
-    cropRect = {x:_margin, y:_margin, w:cropCanvas.width-_margin*2, h:cropCanvas.height-_margin*2};
-    updateEditCropVisual();
-    addLog('info','[crop] Drag handles to adjust crop area');
-  } else { cancelCrop(); }
+  const container = document.getElementById('canvas-container') || video.parentElement;
+  
+  if (cropActive) { cancelCrop(); return; }
+  cropActive = true;
+  
+  // Create crop UI over video
+  let cropUI = document.getElementById('capcut-crop-ui');
+  if (!cropUI) {
+    cropUI = document.createElement('div');
+    cropUI.id = 'capcut-crop-ui';
+    cropUI.style.cssText = 'position:absolute;inset:0;z-index:50;';
+    container.style.position = 'relative';
+    container.appendChild(cropUI);
+  }
+  
+  const vr = video.getBoundingClientRect();
+  const cr = container.getBoundingClientRect();
+  
+  // Default crop box = 90% of video
+  const margin = 0.05;
+  cropRect = {
+    x: vr.left - cr.left + vr.width * margin,
+    y: vr.top - cr.top + vr.height * margin,
+    w: vr.width * (1 - margin*2),
+    h: vr.height * (1 - margin*2)
+  };
+  
+  renderCropUI(cropUI, container);
+  addLog('info', '[crop] Drag handles to crop. Click Apply when done.');
 }
 
-window.setCropRatio = function(ratio) {
-  cropRatio = ratio;
-  document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-}
+function renderCropUI(cropUI, container) {
+  const {x,y,w,h} = cropRect;
+  const cx = x+w/2, cy = y+h/2;
+  
+  cropUI.innerHTML = `
+    <!-- Dark overlay outside crop -->
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+    <!-- Clear crop window -->
+    <div id="crop-window" style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:transparent;border:2px solid #fff;box-sizing:border-box;">
+      <!-- Grid lines -->
+      <div style="position:absolute;inset:0;pointer-events:none;">
+        <div style="position:absolute;left:33%;top:0;bottom:0;border-left:1px dashed rgba(255,255,255,0.5);"></div>
+        <div style="position:absolute;left:66%;top:0;bottom:0;border-left:1px dashed rgba(255,255,255,0.5);"></div>
+        <div style="position:absolute;top:33%;left:0;right:0;border-top:1px dashed rgba(255,255,255,0.5);"></div>
+        <div style="position:absolute;top:66%;left:0;right:0;border-top:1px dashed rgba(255,255,255,0.5);"></div>
+      </div>
+      <!-- Move handle (inside) -->
+      <div data-handle="move" style="position:absolute;inset:20px;cursor:move;"></div>
+    </div>
+    <!-- Corner handles -->
+    <div data-handle="nw" style="position:absolute;left:${x-8}px;top:${y-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:nw-resize;"></div>
+    <div data-handle="ne" style="position:absolute;left:${x+w-8}px;top:${y-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:ne-resize;"></div>
+    <div data-handle="sw" style="position:absolute;left:${x-8}px;top:${y+h-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:sw-resize;"></div>
+    <div data-handle="se" style="position:absolute;left:${x+w-8}px;top:${y+h-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:se-resize;"></div>
+    <!-- Edge handles -->
+    <div data-handle="n" style="position:absolute;left:${cx-20}px;top:${y-6}px;width:40px;height:12px;background:#fff;border-radius:6px;cursor:n-resize;"></div>
+    <div data-handle="s" style="position:absolute;left:${cx-20}px;top:${y+h-6}px;width:40px;height:12px;background:#fff;border-radius:6px;cursor:s-resize;"></div>
+    <div data-handle="w" style="position:absolute;left:${x-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:w-resize;"></div>
+    <div data-handle="e" style="position:absolute;left:${x+w-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:e-resize;"></div>
+    <!-- Apply/Cancel bar -->
+    <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:0.5rem;z-index:60;">
+      <button onclick="applyCrop()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.88rem;">✓ Apply</button>
+      <button onclick="cancelCrop()" style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.5rem 1.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.88rem;">✕ Cancel</button>
+    </div>
+  `;
 
-document.addEventListener('DOMContentLoaded', () => {
-  // ── CAPCUT-STYLE CROP ──
-  let dragMode = null; // 'move' | 'nw'|'ne'|'sw'|'se'|'n'|'s'|'e'|'w'
-  let dragStart = {x:0,y:0};
-  let dragOrigRect = null;
+  // Drag logic
+  let dragging = false;
+  let dHandle = null;
+  let dStart = null;
+  let dOrigRect = null;
 
-  function getCanvasPos(e, canvas) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-      x: (clientX - rect.left) * (canvas.width / rect.width),
-      y: (clientY - rect.top) * (canvas.height / rect.height)
-    };
-  }
+  cropUI.querySelectorAll('[data-handle]').forEach(el => {
+    el.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      dragging = true;
+      dHandle = el.dataset.handle;
+      dStart = {x: e.clientX, y: e.clientY};
+      dOrigRect = {...cropRect};
+      e.preventDefault();
+    });
+    el.addEventListener('touchstart', (e) => {
+      dragging = true;
+      dHandle = el.dataset.handle;
+      dStart = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+      dOrigRect = {...cropRect};
+      e.preventDefault();
+    }, {passive:false});
+  });
 
-  function getHandle(pos, rect, thresh) {
-    const {x,y,w,h} = rect;
-    const cx = x+w/2, cy = y+h/2;
-    if (Math.abs(pos.x-x)<thresh && Math.abs(pos.y-y)<thresh) return 'nw';
-    if (Math.abs(pos.x-(x+w))<thresh && Math.abs(pos.y-y)<thresh) return 'ne';
-    if (Math.abs(pos.x-x)<thresh && Math.abs(pos.y-(y+h))<thresh) return 'sw';
-    if (Math.abs(pos.x-(x+w))<thresh && Math.abs(pos.y-(y+h))<thresh) return 'se';
-    if (Math.abs(pos.x-cx)<thresh && Math.abs(pos.y-y)<thresh) return 'n';
-    if (Math.abs(pos.x-cx)<thresh && Math.abs(pos.y-(y+h))<thresh) return 's';
-    if (Math.abs(pos.x-x)<thresh && Math.abs(pos.y-cy)<thresh) return 'w';
-    if (Math.abs(pos.x-(x+w))<thresh && Math.abs(pos.y-cy)<thresh) return 'e';
-    if (pos.x>x && pos.x<x+w && pos.y>y && pos.y<y+h) return 'move';
-    return null;
-  }
+  const onMove = (cx, cy) => {
+    if (!dragging || !dHandle) return;
+    const dx = cx - dStart.x;
+    const dy = cy - dStart.y;
+    let {x,y,w,h} = dOrigRect;
+    const cr = container.getBoundingClientRect();
+    const minSize = 40;
 
-  function onCropDown(e) {
-    if (!cropActive) return;
-    e.preventDefault();
-    const canvas = document.getElementById('crop-canvas');
-    if (!canvas || canvas.style.display==='none') return;
-    const pos = getCanvasPos(e, canvas);
-    const thresh = 20 * (canvas.width / canvas.getBoundingClientRect().width);
-    const handle = getHandle(pos, cropRect, thresh);
-    if (!handle) return;
-    dragMode = handle;
-    dragStart = pos;
-    dragOrigRect = {...cropRect};
-  }
-
-  function onCropMove(e) {
-    if (!cropActive || !dragMode) return;
-    e.preventDefault();
-    const canvas = document.getElementById('crop-canvas');
-    if (!canvas) return;
-    const pos = getCanvasPos(e, canvas);
-    const dx = pos.x - dragStart.x;
-    const dy = pos.y - dragStart.y;
-    const W = canvas.width, H = canvas.height;
-    let {x,y,w,h} = dragOrigRect;
-
-    if (dragMode === 'move') {
-      x = Math.max(0, Math.min(W-w, x+dx));
-      y = Math.max(0, Math.min(H-h, y+dy));
+    if (dHandle === 'move') {
+      x = Math.max(0, Math.min(cr.width-w, x+dx));
+      y = Math.max(0, Math.min(cr.height-h, y+dy));
     } else {
-      if (dragMode.includes('e')) { w = Math.max(20, Math.min(W-x, w+dx)); }
-      if (dragMode.includes('s')) { h = Math.max(20, Math.min(H-y, h+dy)); }
-      if (dragMode.includes('w')) { const nw=Math.max(20,w-dx); x=Math.min(x+dx,x+w-20); w=nw; }
-      if (dragMode.includes('n')) { const nh=Math.max(20,h-dy); y=Math.min(y+dy,y+h-20); h=nh; }
+      if (dHandle.includes('e')) w = Math.max(minSize, w+dx);
+      if (dHandle.includes('s')) h = Math.max(minSize, h+dy);
+      if (dHandle.includes('w')) { x = Math.min(x+dx, dOrigRect.x+dOrigRect.w-minSize); w = Math.max(minSize, dOrigRect.w-dx); }
+      if (dHandle.includes('n')) { y = Math.min(y+dy, dOrigRect.y+dOrigRect.h-minSize); h = Math.max(minSize, dOrigRect.h-dy); }
     }
-
-    // Apply aspect ratio lock
-    if (cropRatio !== 'free') {
-      const ratios = {'1:1':1,'16:9':16/9,'9:16':9/16,'4:3':4/3,'3:4':3/4};
-      const r = ratios[cropRatio];
-      if (r) h = w / r;
-    }
-
     cropRect = {x,y,w,h};
-    updateEditCropVisual();
-  }
+    renderCropUI(cropUI, container);
+  };
 
-  function onCropUp() { dragMode = null; dragOrigRect = null; }
-
-  // Attach to both overlays
-  const overlay = document.getElementById('crop-overlay');
-  if (overlay) {
-    overlay.addEventListener('mousedown', onCropDown);
-    overlay.addEventListener('mousemove', onCropMove);
-    overlay.addEventListener('mouseup', onCropUp);
-    overlay.addEventListener('touchstart', onCropDown, {passive:false});
-    overlay.addEventListener('touchmove', onCropMove, {passive:false});
-    overlay.addEventListener('touchend', onCropUp);
-  }
-  // Also attach to pro-crop-overlay when it exists
-  document.addEventListener('mousedown', (e) => {
-    if (e.target && e.target.id === 'pro-crop-overlay') onCropDown(e);
-  });
-  document.addEventListener('mousemove', (e) => {
-    if (dragMode) onCropMove(e);
-  });
-  document.addEventListener('mouseup', onCropUp);
-  document.addEventListener('touchmove', (e) => {
-    if (dragMode) onCropMove(e);
-  }, {passive:false});
-});
-
-function updateEditCropVisual() {
-  const _cv = document.getElementById("crop-canvas"); if(!_cv || _cv.style.display==="none") return;
-  drawCropOverlay(_cv, cropRect); return;
-  const canvas = document.getElementById('crop-canvas');
-  if (!canvas || canvas.style.display === 'none') return;
-  const previewArea = document.getElementById('preview-area');
-  if (!previewArea) return;
-  const canvasRect = canvas.getBoundingClientRect();
-  const areaRect = previewArea.getBoundingClientRect();
-  const scaleX = canvasRect.width / canvas.width;
-  const scaleY = canvasRect.height / canvas.height;
-  const offsetX = canvasRect.left - areaRect.left;
-  const offsetY = canvasRect.top - areaRect.top;
-  const sel = document.getElementById('crop-selection');
-  sel.style.left = (cropRect.x * scaleX + offsetX) + 'px';
-  sel.style.top = (cropRect.y * scaleY + offsetY) + 'px';
-  sel.style.width = (cropRect.w * scaleX) + 'px';
-  sel.style.height = (cropRect.h * scaleY) + 'px';
+  document.addEventListener('mousemove', (e) => { if(dragging) onMove(e.clientX, e.clientY); });
+  document.addEventListener('touchmove', (e) => { if(dragging) onMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive:false});
+  document.addEventListener('mouseup', () => { dragging=false; });
+  document.addEventListener('touchend', () => { dragging=false; });
 }
 
 window.applyCrop = function() {
-  const canvas = document.getElementById('crop-canvas');
-  const cw = Math.round(Math.abs(cropRect.w));
-  const ch = Math.round(Math.abs(cropRect.h));
-  if (cw < 10 || ch < 10) { addLog('error','[x] Select a larger area'); return; }
-  const ctx = canvas.getContext('2d');
-  const imageData = ctx.getImageData(cropRect.x, cropRect.y, cw, ch);
-  canvas.width = cw; canvas.height = ch;
-  ctx.putImageData(imageData, 0, 0);
+  const video = document.getElementById('original-video');
+  const container = document.getElementById('canvas-container') || video.parentElement;
+  const vr = video.getBoundingClientRect();
+  const cr = container.getBoundingClientRect();
+  
+  // Convert screen coords to video coords
+  const scaleX = video.videoWidth / vr.width;
+  const scaleY = video.videoHeight / vr.height;
+  const vx = (cropRect.x - (vr.left - cr.left)) * scaleX;
+  const vy = (cropRect.y - (vr.top - cr.top)) * scaleY;
+  const vw = cropRect.w * scaleX;
+  const vh = cropRect.h * scaleY;
+  
+  // Save crop for export
+  window._cropRegion = {x:Math.round(vx), y:Math.round(vy), w:Math.round(vw), h:Math.round(vh)};
+  
   cancelCrop();
-  addLog('success', `[ok] Cropped to ${cw}x${ch}px  -  export to save`);
+  addLog('success', `[ok] Crop set: ${Math.round(vw)}x${Math.round(vh)}px — will apply on export`);
 }
 
 window.cancelCrop = function() {
+  cropActive = false;
+  const cropUI = document.getElementById('capcut-crop-ui');
+  if (cropUI) cropUI.remove();
   removeCropOverlay();
-  cropActive = false; isCropping = false; cropStart = null;
-  document.getElementById('crop-overlay').style.display = 'none';
-  document.getElementById('crop-controls').style.display = 'none';
-  const _cs = document.getElementById('crop-selection'); if(_cs) _cs.style.display = 'none';
-  document.getElementById('original-video').style.display = 'block';
-  document.getElementById('crop-canvas').style.display = 'none';
 }
+
 
 window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); }
 window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); }
