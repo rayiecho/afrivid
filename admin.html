@@ -234,41 +234,8 @@ document.addEventListener('click', function(e) {
     console.log('[Admin Click]', btn.textContent.trim().slice(0,30));
   }
 
-  // ── FEEDBACK ──
-  window.loadFeedback = async function() {
-    const list = document.getElementById('fb-list');
-    const stats = document.getElementById('fb-stats');
-    if(!list) return;
-    list.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;font-family:var(--font-mono);">[..] Loading...</div>';
-    try {
-      const snap = await getDocs(query(collection(db,'feedback'),orderBy('createdAt','desc')));
-      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
-      const bugs = items.filter(i=>i.type==='bug').length;
-      const features = items.filter(i=>i.type==='feature').length;
-      const avg = items.length ? (items.reduce((s,i)=>s+(i.rating||5),0)/items.length).toFixed(1) : 0;
-      if(stats) stats.innerHTML = `
-        <div class="stat-card"><div class="stat-value">${items.length}</div><div class="stat-label">TOTAL</div></div>
-        <div class="stat-card"><div class="stat-value" style="color:#E63329">${bugs}</div><div class="stat-label">BUGS</div></div>
-        <div class="stat-card"><div class="stat-value" style="color:#6399ff">${features}</div><div class="stat-label">FEATURES</div></div>
-        <div class="stat-card"><div class="stat-value" style="color:#74C69D">${avg}⭐</div><div class="stat-label">AVG RATING</div></div>
-      `;
-      list.innerHTML = items.length ? items.map(item=>`
-        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
-            <div style="display:flex;gap:0.5rem;align-items:center;">
-              <span style="background:rgba(245,166,35,0.1);color:var(--gold);padding:0.15rem 0.5rem;border-radius:4px;font-size:0.7rem;font-family:var(--font-mono);">${(item.type||'general').toUpperCase()}</span>
-              <span style="color:var(--muted);font-size:0.75rem;">${item.userEmail||'anonymous'}</span>
-            </div>
-            <span style="color:var(--gold);font-size:0.82rem;">${'⭐'.repeat(item.rating||5)}</span>
-          </div>
-          <div style="color:var(--white);font-size:0.85rem;line-height:1.5;margin-bottom:0.4rem;">${item.message||''}</div>
-          <div style="color:var(--muted);font-size:0.68rem;font-family:var(--font-mono);">${item.page||''} · ${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</div>
-        </div>
-      `).join('') : '<div style="color:var(--muted);text-align:center;padding:2rem;">No feedback yet</div>';
-    } catch(e) {
-      if(list) list.innerHTML = `<div style="color:#E63329;font-family:var(--font-mono);">[x] ${e.message}</div>`;
-    }
-  };
+// ── FEEDBACK ──  (moved outside click handler)
+window._feedbackLoaded = false;
 });
 </script>
 
@@ -1356,6 +1323,42 @@ if(sessionStorage.getItem('afrivid_admin')==='1') {
 document.getElementById('admin-pwd').addEventListener('keydown', e => {
   if(e.key==='Enter') doAdminLogin();
 });
+
+  // ── FEEDBACK ──
+  window.loadFeedback = async function() {
+    const list = document.getElementById('fb-list');
+    const stats = document.getElementById('fb-stats');
+    if(!list) return;
+    list.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;font-family:var(--font-mono);">[..] Loading...</div>';
+    try {
+      const snap = await getDocs(query(collection(db,'feedback'),orderBy('createdAt','desc')));
+      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      const bugs = items.filter(i=>i.type==='bug').length;
+      const features = items.filter(i=>i.type==='feature').length;
+      const avg = items.length ? (items.reduce((s,i)=>s+(i.rating||5),0)/items.length).toFixed(1) : 0;
+      if(stats) stats.innerHTML = `
+        <div class="stat-card"><div class="stat-value">${items.length}</div><div class="stat-label">TOTAL</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#E63329">${bugs}</div><div class="stat-label">BUGS</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#6399ff">${features}</div><div class="stat-label">FEATURES</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#74C69D">${avg}⭐</div><div class="stat-label">AVG RATING</div></div>
+      `;
+      list.innerHTML = items.length ? items.map(item=>`
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <span style="background:rgba(245,166,35,0.1);color:var(--gold);padding:0.15rem 0.5rem;border-radius:4px;font-size:0.7rem;font-family:var(--font-mono);">${(item.type||'general').toUpperCase()}</span>
+              <span style="color:var(--muted);font-size:0.75rem;">${item.userEmail||'anonymous'}</span>
+            </div>
+            <span style="color:var(--gold);font-size:0.82rem;">${'⭐'.repeat(item.rating||5)}</span>
+          </div>
+          <div style="color:var(--white);font-size:0.85rem;line-height:1.5;margin-bottom:0.4rem;">${item.message||''}</div>
+          <div style="color:var(--muted);font-size:0.68rem;font-family:var(--font-mono);">${item.page||''} · ${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</div>
+        </div>
+      `).join('') : '<div style="color:var(--muted);text-align:center;padding:2rem;">No feedback yet</div>';
+    } catch(e) {
+      if(list) list.innerHTML = `<div style="color:#E63329;font-family:var(--font-mono);">[x] ${e.message}</div>`;
+    }
+  };
 </script>
 
 <!-- Admin Error Panel -->
