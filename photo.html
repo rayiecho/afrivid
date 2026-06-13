@@ -897,6 +897,20 @@ Object.defineProperty(window, 'photoImage', {
   configurable: true
 });
 let photoImage = null;
+
+// ── LAYER SYSTEM ──
+window._saveCanvasState = function() {
+  const canvas = document.getElementById('photo-canvas');
+  if (!canvas) return;
+  const img = new Image();
+  img.src = canvas.toDataURL();
+  img.onload = () => { 
+    photoImage = img; 
+    window.photoImage = img;
+    window._photoImage = img;
+  };
+}
+
 let selfieSegmentation = null;
 
 onAuthStateChanged(auth, (user) => {
@@ -1886,6 +1900,7 @@ function applyWatermark() {
   ctx.restore();
   document.getElementById('watermark-modal').style.display = 'none';
   if(window.addLog) addLog('success', '[ok] Watermark added!');
+  window._saveCanvasState();
 }
 
 // ── COLLAGE ──
