@@ -5232,6 +5232,12 @@ function checkResumePrompt() {
 
 window._makeAnother = makeAnother = function() {
   console.log("[makeAnother] called");
+  // Stop any ongoing recording
+  isRecording = false;
+  if (typeof animFrame !== 'undefined' && animFrame) cancelAnimationFrame(animFrame);
+  if (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state !== 'inactive') {
+    try { mediaRecorder.stop(); } catch(e) {}
+  }
   scriptData = null;
   videoBlob = null;
   recordedChunks = [];
