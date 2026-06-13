@@ -1249,7 +1249,7 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
 
 // ── PROFILE ──
 window._openProfile = async function() {
-  const user = auth.currentUser;
+  const user = window.currentUser || (typeof auth !== 'undefined' ? auth.currentUser : null);
   if(!user) return;
   document.getElementById('profile-overlay').classList.add('active');
   const name = user.displayName || user.email.split('@')[0];
@@ -1295,7 +1295,7 @@ window._closeProfile = function() {
 };
 
 window._saveProfileName = async function() {
-  const user = auth.currentUser;
+  const user = window.currentUser || (typeof auth !== 'undefined' ? auth.currentUser : null);
   if(!user) return;
   const newName = document.getElementById('profile-name-input').value.trim();
   if(!newName) return;
@@ -1534,12 +1534,12 @@ window.submitFeedback = async function() {
   const btn = document.getElementById('feedback-submit-btn');
   if(btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
   try {
-    const user = auth.currentUser;
+    const user = window.currentUser || (typeof auth !== 'undefined' ? auth.currentUser : null);
     await addDoc(collection(db, 'feedback'), {
       type, message: msg, rating: parseInt(rating),
-      userId: user?.uid || 'anonymous',
-      userEmail: user?.email || 'anonymous',
-      userName: user?.displayName || 'Anonymous',
+      userId: window.currentUser?.uid || 'anonymous',
+      userEmail: window.currentUser?.email || 'anonymous',
+      userName: window.currentUser?.displayName || 'Anonymous',
       page: 'studio',
       createdAt: serverTimestamp(),
       status: 'unread'
