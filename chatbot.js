@@ -100,11 +100,47 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
     sendAfriVidChat();
   };
 
+  // Quick local responses for lazy chat
+  const LOCAL_RESPONSES = {
+    greet: ['hello','hi','hey','hola','habari','jambo','bonjour','sawa','what up','sup'],
+    thanks: ['thanks','thank you','asante','merci','thx','ty','cheers'],
+    bye: ['bye','goodbye','later','kwaheri','au revoir','ciao'],
+    who: ['who are you','what are you','are you ai','are you human','who made you'],
+  };
+
   window.sendAfriVidChat = async function() {
     const input = document.getElementById('acw-input');
     const msg = input.value.trim();
     if (!msg) return;
     input.value = '';
+
+    addMessage(msg, 'user');
+
+    // Check for lazy/irrelevant chat first
+    const lower = msg.toLowerCase().trim();
+    
+    if (LOCAL_RESPONSES.greet.some(w => lower.includes(w) && lower.length < 20)) {
+      addMessage("Hey! I'm your AfriVid assistant. What would you like to create or edit today? 🌍", 'bot');
+      return;
+    }
+    if (LOCAL_RESPONSES.thanks.some(w => lower.includes(w))) {
+      addMessage("You're welcome! Anything else I can help you with on AfriVid?", 'bot');
+      return;
+    }
+    if (LOCAL_RESPONSES.bye.some(w => lower.includes(w))) {
+      addMessage("Goodbye! Come back anytime you need help creating content. 🔥", 'bot');
+      return;
+    }
+    if (LOCAL_RESPONSES.who.some(w => lower.includes(w))) {
+      addMessage("I'm the AfriVid AI assistant — built to help African creators get the most out of AfriVid Studio. Ask me how to create videos, edit, translate or design! 🌍", 'bot');
+      return;
+    }
+    if (lower.length < 3) {
+      addMessage("Please ask me something about AfriVid — like how to create a video or use the AI editor!", 'bot');
+      return;
+    }
+
+    chatHistory.push({role:'user', content: msg});
 
     // Add user message
     addMessage(msg, 'user');
