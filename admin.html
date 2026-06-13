@@ -270,6 +270,7 @@ document.addEventListener('click', function(e) {
       <div class="nav-section">FINANCE</div>
       <div class="nav-item" onclick="showPage('finance',this)"><span class="nav-icon">$</span> Finances</div>
       <div class="nav-item" onclick="showPage('balance',this)"><span class="nav-icon">≡</span> Balance Sheet</div>
+      <div class="nav-item" onclick="showPage('feedback',this);loadFeedback();"><span class="nav-icon">💬</span> Feedback</div>
 
       <div class="sidebar-footer">
         <div style="font-size:0.65rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.75rem;" id="admin-time"></div>
@@ -645,6 +646,18 @@ document.addEventListener('click', function(e) {
       </div>
 
       <!-- BALANCE SHEET -->
+
+      <div class="page" id="page-feedback">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Feedback</div>
+            <div class="page-subtitle">What users are saying</div>
+          </div>
+          <button onclick="loadFeedback()" class="btn btn-gold btn-sm">↺ Refresh</button>
+        </div>
+        <div id="fb-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
+        <div id="fb-list"></div>
+      </div>
       <div class="page" id="page-balance">
         <div class="flex-between mb-15">
           <div>
