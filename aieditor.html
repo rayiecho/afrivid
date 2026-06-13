@@ -207,7 +207,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="prompt-area">
   <div class="prompt-wrap">
     <input class="prompt-input" id="ai-prompt" placeholder="Tell AI what to do... e.g. Remove first 10 seconds and keep the best 60 seconds">
-    <button class="prompt-btn" onclick="applyPrompt()">✦ Apply</button>
+    <button class="prompt-btn" id="apply-btn" onclick="applyPrompt()" disabled style="opacity:0.4;cursor:not-allowed;">Upload video first</button>
   </div>
   <div class="prompt-examples">
     <span class="example-chip" onclick="setPrompt(this)">Remove first 30 seconds</span>
@@ -502,6 +502,9 @@ function loadVideo(file) {
   video.onloadedmetadata = () => {
     document.getElementById('video-name').textContent = file.name;
     document.getElementById('video-duration').textContent = formatTime(video.duration);
+    // Enable apply button
+    const btn = document.getElementById('apply-btn');
+    if(btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; btn.textContent = '✦ Apply'; }
     // Also update when duration becomes available
     if (!video.duration || video.duration === 0) {
       video.addEventListener('durationchange', () => {
@@ -543,8 +546,11 @@ async function applyPrompt() {
   if (!window.currentUser) { showLogin(); return; }
   const instructions = document.getElementById('ai-prompt').value.trim();
   if (!instructions) { alert('Type your instructions first'); return; }
+  const btn = document.getElementById('apply-btn');
+  if(btn) { btn.disabled=true; btn.textContent='[..] Applying...'; btn.style.background='rgba(245,166,35,0.3)'; }
   addLog('all', '[~] Processing: ' + instructions);
   await runAIEdit(instructions);
+  if(btn) { btn.disabled=false; btn.textContent='✦ Apply'; btn.style.background=''; }
 }
 
 // ── LOG ──
@@ -723,7 +729,17 @@ async function exportClips(clips, filename) {
 
 function showResultBanner(msg, blob, filename) {
   document.querySelectorAll('.result-banner').forEach(b => b.remove());
+  // Update apply button to download state
+  const btn = document.getElementById('apply-btn');
   const url = URL.createObjectURL(blob);
+  if(btn) {
+    btn.disabled = false;
+    btn.style.background = '#74C69D';
+    btn.style.color = '#050A14';
+    btn.textContent = '⬇ Download';
+    btn.onclick = () => { const a=document.createElement('a');a.href=url;a.download=(filename||'AfriVid')+'.webm';a.click(); btn.textContent='✦ Apply';btn.style.background='';btn.style.color='';btn.onclick=applyPrompt; };
+    return;
+  }
   const banner = document.createElement('div');
   banner.className = 'result-banner';
   banner.innerHTML = `
