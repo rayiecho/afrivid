@@ -546,8 +546,10 @@ function setPrompt(el) {
 }
 
 async function applyPrompt() {
+  console.log('[Apply] clicked - file:', !!currentVideoFile, 'user:', !!window.currentUser);
   if (!currentVideoFile) { alert('Upload a video first'); return; }
   if (!window.currentUser) { showLogin(); return; }
+  console.log('[Apply] passing checks...');
   const instructions = document.getElementById('ai-prompt').value.trim();
   if (!instructions) { alert('Type your instructions first'); return; }
   const btn = document.getElementById('apply-btn');
