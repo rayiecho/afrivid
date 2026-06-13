@@ -840,7 +840,11 @@ function onTouchStart(e) {
   if (now - _lastTap < 300) {
     // Double tap detected
     if (selectedEl!==null && elements[selectedEl].type==='text') {
-      if (window.openInlineEditor) openInlineEditor(selectedEl);
+      if (elements[selectedEl] && elements[selectedEl].type === 'text') {
+    window._showEditBtn(selectedEl);
+  } else {
+    window._hideEditBtn();
+  }
     }
   }
   _lastTap = now;
@@ -854,7 +858,11 @@ function onTouchMove(e) {
 
 function onDblClick(e) {
   if (selectedEl!==null && elements[selectedEl].type==='text') {
-    if (window.openInlineEditor) openInlineEditor(selectedEl);
+    if (elements[selectedEl] && elements[selectedEl].type === 'text') {
+    window._showEditBtn(selectedEl);
+  } else {
+    window._hideEditBtn();
+  }
   }
 }
 
@@ -1949,6 +1957,35 @@ initCanvas();
 // ── INLINE TEXT EDITOR SYSTEM ──
 let editingEl = null;
 
+
+// Show Edit button on selection
+window._showEditBtn = function(idx) {
+  let btn = document.getElementById('float-edit-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'float-edit-btn';
+    btn.style.cssText = 'position:fixed;z-index:999;background:#F5A623;border:none;color:#050A14;padding:0.4rem 1rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+    btn.textContent = '✏ Edit Text';
+    document.body.appendChild(btn);
+  }
+  const canvas = document.getElementById('design-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const el = elements[idx];
+  if (!el) return;
+  const scaleX = rect.width / canvas.width;
+  const scaleY = rect.height / canvas.height;
+  const bx = rect.left + el.x * scaleX;
+  const by = rect.top + el.y * scaleY - el.size * scaleY - 40;
+  btn.style.left = Math.max(10, bx) + 'px';
+  btn.style.top = Math.max(10, by) + 'px';
+  btn.style.display = 'block';
+  btn.onclick = () => { openInlineEditor(idx); btn.style.display='none'; };
+}
+
+window._hideEditBtn = function() {
+  const btn = document.getElementById('float-edit-btn');
+  if (btn) btn.style.display = 'none';
+}
 
 window.openInlineEditor = function openInlineEditor(idx) {
   if (idx === null || !elements[idx] || elements[idx].type !== 'text') return;
