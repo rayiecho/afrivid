@@ -50,7 +50,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AfriVid AI Editor — AI-Powered Video Editing for Africa</title>
 <meta name="description" content="Drop your video. AI does the rest. Trim, translate, remove silences, generate viral clips and more.">
-<link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#F5A623">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AfriVid">
+  <link rel="apple-touch-icon" href="/images/logo.png">
+  <link rel="icon" type="image/png" href="images/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -1435,5 +1441,12 @@ async function submitFeedback() {
 </script>
 
 <script src="chatbot.js"></script>
+<script>
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
+  });
+}
+</script>
 </body>
 </html>

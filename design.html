@@ -357,7 +357,13 @@ body::after{
 #tt-color{ width:28px; height:28px; border-radius:6px; border:none; cursor:pointer; padding:0; }
 
 </style>
-<link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#F5A623">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AfriVid">
+  <link rel="apple-touch-icon" href="/images/logo.png">
+  <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="apple-touch-icon" href="images/logo.png">
 
 <script type="application/ld+json">
@@ -2354,5 +2360,12 @@ async function submitFeedback() {
 </script>
 
 <script src="chatbot.js"></script>
+<script>
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
+  });
+}
+</script>
 </body>
 </html>
