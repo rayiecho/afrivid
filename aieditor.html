@@ -504,7 +504,16 @@ function loadVideo(file) {
   if(btn) { btn.disabled=true; btn.style.opacity='0.6'; btn.textContent='[..] Loading...'; btn.style.background='rgba(255,255,255,0.1)'; btn.style.color='#fff'; }
   video.src = url;
   video.load();
-  video.preload = 'metadata';
+  video.preload = 'auto';
+  // Force duration load for MP4
+  video.addEventListener('loadeddata', () => {
+    if (!video.duration || !isFinite(video.duration)) {
+      video.play().then(() => {
+        video.pause();
+        video.currentTime = 0;
+      }).catch(()=>{});
+    }
+  }, {once:true});
   video.onloadedmetadata = () => {
     document.getElementById('video-name').textContent = file.name;
     document.getElementById('video-duration').textContent = formatTime(video.duration);
