@@ -2942,9 +2942,9 @@ function startCaptionOverlay(text) {
     if (previewArea) { previewArea.style.position='relative'; previewArea.appendChild(overlay); }
   }
   const words = text.split(' ');
-  const totalDuration = video.duration || 60;
-  const wordsPerSecond = words.length / totalDuration;
   function updateCaption() {
+    const totalDuration = video.duration || 60;
+    const wordsPerSecond = words.length / totalDuration;
     const wordIndex = Math.floor(video.currentTime * wordsPerSecond);
     const chunkSize = 8;
     const start = Math.floor(wordIndex / chunkSize) * chunkSize;
