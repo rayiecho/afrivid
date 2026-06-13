@@ -419,9 +419,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
     <div class="navbar-badge">AfriVid Studio</div>
   </div>
-  <div class="navbar-actions">
+  <div class="navbar-actions" style="display:flex;align-items:center;gap:0.75rem;">
+    <a href="pricing.html" class="btn-signin" style="text-decoration:none;">Pricing</a>
+    <a href="contact.html" class="btn-signin" style="text-decoration:none;">Support</a>
     <button class="btn-signin" id="btn-nav-signin" onclick="showLogin()">Sign In</button>
-    <button class="btn-start" id="btn-nav-start" onclick="showLogin()">Get Started Free →</button><a href="studio.html" class="btn-start" id="btn-nav-studio" style="display:none;text-decoration:none;">Go to Studio →</a><button class="btn-signin" id="btn-nav-user" style="display:none;"></button>
+    <button class="btn-start" id="btn-nav-start" onclick="showLogin()">Get Started Free →</button>
+    <a href="studio.html" class="btn-start" id="btn-nav-studio" style="display:none;text-decoration:none;">Dashboard →</a>
+    <button class="btn-signin" id="btn-nav-user" style="display:none;" onclick="window.location.href='studio.html'"></button>
   </div>
 </nav>
 
