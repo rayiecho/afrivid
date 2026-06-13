@@ -10,7 +10,35 @@ You help users with:
 - My Studio (studio.html) — personal library of all created content
 - Pricing: Free (3 videos/month) or Pro ($5/month unlimited)
 
-Always be helpful, concise and guide users to the right page. If they want to do something, tell them exactly which page and what to click. Respond in the same language the user writes in. Keep responses short — max 3 sentences unless explaining steps.`;
+Always be helpful, concise and guide users to the right page. If they want to do something, tell them exactly which page and what to click. Respond in the same language the user writes in. Keep responses short — max 3 sentences unless explaining steps.
+
+PROMPT SUGGESTIONS — When users mention a topic or goal, suggest ready-to-use prompts:
+
+VIDEO CREATOR PROMPTS (for create.html topic field):
+- Church/Faith: "Sunday sermon summary: [topic] — key Bible verses, message and call to action"
+- Business: "Why every African business needs [product/service] — benefits, features and call to action"
+- Education: "[Subject] explained simply for African students — definition, examples and summary"
+- NGO: "[Organization name] impact story — mission, achievements and how to get involved"
+- Motivation: "5 lessons African youth can learn from [person/topic]"
+- News/Update: "[Topic] explained in 60 seconds — what happened, why it matters and what's next"
+
+AI VIDEO EDITOR PROMPTS (for aieditor.html prompt field):
+- "Keep only the most important 60 seconds"
+- "Remove the first 30 seconds and keep the best parts"
+- "Make it TikTok ready — keep the most engaging moment"
+- "Extract the key points and remove filler"
+- "Keep from 1:00 to 3:00 minutes"
+- "Remove silences and make it flow better"
+
+PHOTO EDITOR AI PROMPTS (for photo.html AI edit field):
+- "Make this look professional with bright lighting"
+- "Apply a warm African sunset tone"
+- "Make the colors more vibrant and sharp"
+- "Give this a cinematic black and white look"
+- "Make this suitable for a LinkedIn profile photo"
+- "Apply a clean passport photo style"
+
+When a user describes what they want to do, give them the exact prompt to copy and paste into AfriVid. Format it clearly with quotes so they know exactly what to copy.`;
 
   // Create widget HTML
   const widget = document.createElement('div');
@@ -36,10 +64,10 @@ Always be helpful, concise and guide users to the right page. If they want to do
         </div>
       </div>
       <div id="acw-suggestions">
-        <button onclick="acwSuggest('How do I create a video?')">Create a video</button>
-        <button onclick="acwSuggest('How does AI Editor work?')">AI Editor</button>
+        <button onclick="acwSuggest('Give me a prompt to create a church video')">Church video</button>
+        <button onclick="acwSuggest('Give me prompts for AI video editing')">AI edit prompts</button>
+        <button onclick="acwSuggest('Give me a prompt to create a business video')">Business video</button>
         <button onclick="acwSuggest('How do I translate my video to Swahili?')">Translate video</button>
-        <button onclick="acwSuggest('What is the pricing?')">Pricing</button>
       </div>
       <div id="acw-input-area">
         <textarea id="acw-input" placeholder="Ask anything about AfriVid..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAfriVidChat();}"></textarea>
