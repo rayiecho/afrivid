@@ -1013,6 +1013,65 @@ window.saveSystemSettings = async function() {
 };
 
 window.sendAnnouncement = async function() {
+  const msg = document.getElementById('announcement-msg')?.value?.trim();
+  const subject = document.getElementById('announcement-subject')?.value?.trim() || 'Message from AfriVid Studio';
+  if(!msg) { alert('Please write a message'); return; }
+  
+  const btn = document.querySelector('[onclick="sendAnnouncement()"]');
+  if(btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
+  
+  try {
+    // Get all users emails
+    const snap = await getDocs(collection(db, 'studio_users'));
+    const emails = snap.docs.map(d=>d.data().email).filter(Boolean);
+    
+    let sent = 0;
+    for (const email of emails) {
+      try {
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer re_VHfK2Tqc_3Xx5Cu3C9RCRD48yYapGD9H4'
+          },
+          body: JSON.stringify({
+            from: 'AfriVid Studio <support@afrivid.studio>',
+            to: [email],
+            subject: subject,
+            html: `
+              <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
+                <div style="text-align:center;margin-bottom:1.5rem;">
+                  <h1 style="color:#F5A623;font-size:1.5rem;">AfriVid Studio</h1>
+                  <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
+                  <p style="line-height:1.7;color:rgba(255,255,255,0.8);">${msg.replace(/
+/g,'<br>')}</p>
+                </div>
+                <div style="text-align:center;margin-bottom:1rem;">
+                  <a href="https://afrivid.studio" style="background:#F5A623;color:#050A14;padding:0.75rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Visit AfriVid Studio</a>
+                </div>
+                <p style="text-align:center;color:rgba(255,255,255,0.3);font-size:0.75rem;">AfriVid Studio · afrivid.studio · support@afrivid.studio</p>
+              </div>
+            `
+          })
+        });
+        if(res.ok) sent++;
+      } catch(e) {}
+    }
+    
+    alert(`✅ Sent to ${sent}/${emails.length} users!`);
+    if(btn) { btn.textContent = 'Send to All Users'; btn.disabled = false; }
+    document.getElementById('announcement-msg').value = '';
+    
+  } catch(e) {
+    alert('Failed: ' + e.message);
+    if(btn) { btn.textContent = 'Send to All Users'; btn.disabled = false; }
+  }
+};
+
+// OLD sendAnnouncement below - replaced
+window._oldSendAnnouncement = async function() {
   const msg = document.getElementById('announcement-text').value.trim();
   if(!msg) { showToast('Enter a message first','error'); return; }
   try {
