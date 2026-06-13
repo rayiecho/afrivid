@@ -657,6 +657,10 @@ async function exportClips(clips, filename) {
     return;
   }
 
+  // Force video interaction to unlock autoplay policy
+  try { await video.play(); video.pause(); } catch(e) {}
+  video.muted = false;
+
   const canvas = document.createElement('canvas');
   canvas.width = video.videoWidth || 1280;
   canvas.height = video.videoHeight || 720;
