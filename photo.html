@@ -1611,59 +1611,70 @@ window._removeBackground = async function() {
   if (!photoImage) { alert('Upload a photo first'); return; }
   const btn = document.querySelector('[onclick="removeBackground()"]');
   if(btn){btn.textContent='[..] Removing BG...';btn.disabled=true;}
-  addLog('info', '[~] Removing background using flood fill...');
+  addLog('info', '[~] Removing background using AI segmentation...');
   try {
     const canvas = document.getElementById('photo-canvas');
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
     ctx.drawImage(photoImage, 0, 0, W, H);
-    const imageData = ctx.getImageData(0, 0, W, H);
-    const data = imageData.data;
-    const visited = new Uint8Array(W * H);
-    const queue = [];
-    const threshold = 35;
-    for (let x = 0; x < W; x++) { queue.push([x,0]); queue.push([x,H-1]); }
-    for (let y = 0; y < H; y++) { queue.push([0,y]); queue.push([W-1,y]); }
-    let bgR=0,bgG=0,bgB=0,cnt=0;
-    for (let sy=0;sy<Math.min(10,H);sy++) for (let sx=0;sx<Math.min(10,W);sx++) {
-      const si=(sy*W+sx)*4; bgR+=data[si]; bgG+=data[si+1]; bgB+=data[si+2]; cnt++;
-    }
-    bgR=Math.round(bgR/cnt); bgG=Math.round(bgG/cnt); bgB=Math.round(bgB/cnt);
-    let qi=0;
-    while (qi<queue.length) {
-      const [x,y]=queue[qi++];
-      if (x<0||x>=W||y<0||y>=H) continue;
-      const idx=y*W+x;
-      if (visited[idx]) continue;
-      visited[idx]=1;
-      const pi=idx*4;
-      const diff=Math.sqrt(Math.pow(data[pi]-bgR,2)+Math.pow(data[pi+1]-bgG,2)+Math.pow(data[pi+2]-bgB,2));
-      if (diff<threshold*2) {
-        data[pi+3]=diff<threshold?0:Math.round((diff-threshold)/threshold*255);
-        queue.push([x+1,y],[x-1,y],[x,y+1],[x,y-1]);
-      }
-    }
-    // Show checkerboard for transparency
-    const tmpCanvas = document.createElement('canvas');
-    tmpCanvas.width = W; tmpCanvas.height = H;
-    const tmpCtx = tmpCanvas.getContext('2d');
-    const cs = 20;
-    for (let x=0; x<W; x+=cs) {
-      for (let y=0; y<H; y+=cs) {
-        tmpCtx.fillStyle = ((Math.floor(x/cs)+Math.floor(y/cs))%2===0) ? '#cccccc' : '#ffffff';
-        tmpCtx.fillRect(x,y,cs,cs);
-      }
-    }
-    ctx.clearRect(0,0,W,H);
-    ctx.drawImage(tmpCanvas,0,0);
-    ctx.putImageData(imageData,0,0);
 
-    addLog('success','[ok] Background removed!');
+    const selfieSegmentation = new SelfieSegmentation({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`});
+    selfieSegmentation.setOptions({modelSelection: 1, selfieMode: false});
+
+    await new Promise((resolve, reject) => {
+      selfieSegmentation.onResults(results => {
+        // Clear canvas
+        ctx.clearRect(0, 0, W, H);
+
+        // Draw checkerboard for transparency preview
+        const cs = 16;
+        for (let x=0; x<W; x+=cs) {
+          for (let y=0; y<H; y+=cs) {
+            ctx.fillStyle = ((Math.floor(x/cs)+Math.floor(y/cs))%2===0) ? '#ccc' : '#fff';
+            ctx.fillRect(x,y,cs,cs);
+          }
+        }
+
+        // Use segmentation mask to draw only person
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = W; offCanvas.height = H;
+        const offCtx = offCanvas.getContext('2d');
+
+        // Draw original image
+        offCtx.drawImage(photoImage, 0, 0, W, H);
+
+        // Apply mask - keep only person pixels
+        const maskCanvas = document.createElement('canvas');
+        maskCanvas.width = W; maskCanvas.height = H;
+        const maskCtx = maskCanvas.getContext('2d');
+        maskCtx.drawImage(results.segmentationMask, 0, 0, W, H);
+        const maskData = maskCtx.getImageData(0, 0, W, H);
+        const imgData = offCtx.getImageData(0, 0, W, H);
+
+        // Apply mask to alpha channel
+        for (let i=0; i<maskData.data.length; i+=4) {
+          imgData.data[i+3] = maskData.data[i]; // Use red channel as alpha
+        }
+        offCtx.putImageData(imgData, 0, 0);
+
+        // Draw person over checkerboard
+        ctx.drawImage(offCanvas, 0, 0);
+        resolve();
+      });
+
+      const tmpImg = document.createElement('img');
+      tmpImg.onload = () => selfieSegmentation.send({image: tmpImg});
+      tmpImg.onerror = reject;
+      tmpImg.src = canvas.toDataURL();
+    });
+
+    addLog('success', '[ok] Background removed!');
+    if(btn){btn.textContent='✂ Remove BG';btn.disabled=false;}
   } catch(e) {
-    addLog('error','[x] Failed: ' + e.message);
-  } finally {
+    addLog('error', '[x] Failed: ' + e.message);
     if(btn){btn.textContent='✂ Remove BG';btn.disabled=false;}
   }
+
 }
 
 </script>
