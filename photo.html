@@ -1631,11 +1631,10 @@ window._removeBackground = async function() {
     const W = canvas.width, H = canvas.height;
     ctx.drawImage(photoImage, 0, 0, W, H);
 
-    const selfieSegmentation = new SelfieSegmentation({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`});
-    selfieSegmentation.setOptions({modelSelection: 1, selfieMode: false, effect: 'background'});
+    const seg = await initSegmentation();
 
     await new Promise((resolve, reject) => {
-      selfieSegmentation.onResults(results => {
+      seg.onResults(results => {
         // Clear canvas
         ctx.clearRect(0, 0, W, H);
 
@@ -1673,7 +1672,7 @@ window._removeBackground = async function() {
       });
 
       const tmpImg = new Image();
-      tmpImg.onload = () => { selfieSegmentation.send({image: tmpImg}).catch(reject); };
+      tmpImg.onload = () => { seg.send({image: tmpImg}).catch(reject); };
       tmpImg.onerror = reject;
       tmpImg.crossOrigin = 'anonymous';
       tmpImg.src = canvas.toDataURL('image/jpeg', 0.95);
