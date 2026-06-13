@@ -2221,7 +2221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function onCropUp() { dragMode = null; dragOrigRect = null; }
 
-  // Attach to canvas overlay
+  // Attach to both overlays
   const overlay = document.getElementById('crop-overlay');
   if (overlay) {
     overlay.addEventListener('mousedown', onCropDown);
@@ -2231,6 +2231,17 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.addEventListener('touchmove', onCropMove, {passive:false});
     overlay.addEventListener('touchend', onCropUp);
   }
+  // Also attach to pro-crop-overlay when it exists
+  document.addEventListener('mousedown', (e) => {
+    if (e.target && e.target.id === 'pro-crop-overlay') onCropDown(e);
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (dragMode) onCropMove(e);
+  });
+  document.addEventListener('mouseup', onCropUp);
+  document.addEventListener('touchmove', (e) => {
+    if (dragMode) onCropMove(e);
+  }, {passive:false});
 });
 
 function updateEditCropVisual() {
@@ -2990,7 +3001,7 @@ function drawCropOverlay(canvas, rect) {
   if (!sel) {
     sel = document.createElement('canvas');
     sel.id = 'pro-crop-overlay';
-    sel.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:20;';
+    sel.style.cssText = 'position:absolute;inset:0;pointer-events:auto;z-index:20;cursor:crosshair;';
     canvas.parentElement.style.position = 'relative';
     canvas.parentElement.appendChild(sel);
   }
