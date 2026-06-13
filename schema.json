@@ -1,0 +1,44 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AfriVid Studio",
+  "description": "Africa's First AI Video Creation Platform. Create professional videos in minutes with AI.",
+  "url": "https://afrivid.studio",
+  "applicationCategory": "VideoApplication",
+  "operatingSystem": "Web Browser",
+  "offers": [
+    {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "name": "Free Plan"
+    },
+    {
+      "@type": "Offer",
+      "price": "5",
+      "priceCurrency": "USD",
+      "name": "Pro Plan",
+      "billingPeriod": "Month"
+    }
+  ],
+  "creator": {
+    "@type": "Organization",
+    "name": "AfriVid Studio",
+    "url": "https://afrivid.studio",
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=61590870207039",
+      "https://instagram.com/afrividstudio",
+      "https://www.tiktok.com/@afrividstudio",
+      "https://www.youtube.com/@AfrividStudio"
+    ]
+  },
+  "featureList": [
+    "AI Video Creator",
+    "AI Video Editor",
+    "Voice Translation to African Languages",
+    "Viral Clips Generator",
+    "Auto Captions",
+    "Background Removal",
+    "Design Studio"
+  ]
+}
