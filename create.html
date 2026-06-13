@@ -5647,36 +5647,7 @@ function wrapTextSplit(ctx, text, x, y, maxWidth, fontSize) {
 </script>
 
 
-<script>
-// Floating feedback button
-(function(){
-  const fab = document.createElement('button');
-  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;width:48px;height:48px;border-radius:50%;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;justify-content:center;';
-  fab.innerHTML = '💬';
-  fab.title = 'Send Feedback';
-  fab.onclick = () => {
-    const msg = prompt('Share your feedback, bug report or feature request:');
-    if (!msg) return;
-    const type = confirm('Is this a bug report?\nOK = Bug, Cancel = General Feedback') ? 'bug' : 'general';
-    if(window.db && window.currentUser) {
-      import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js').then(({collection,addDoc,serverTimestamp}) => {
-        addDoc(collection(window.db,'feedback'),{
-          type, message: msg,
-          userId: window.currentUser?.uid || 'anonymous',
-          userEmail: window.currentUser?.email || 'anonymous',
-          page: window.location.pathname,
-          rating: 3,
-          createdAt: serverTimestamp(),
-          status: 'unread'
-        }).then(() => alert('✅ Feedback sent! Thank you.'));
-      });
-    } else {
-      alert('✅ Thanks for your feedback!');
-    }
-  };
-  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(fab));
-})();
-</script>
+
 
 
 
@@ -5732,5 +5703,92 @@ window.convertAndDownloadMP4 = async function() {
 };
 
 </script>
+
+<!-- FEEDBACK MODAL -->
+<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
+      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
+      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🐛 Bug</button>
+      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">✨ Feature</button>
+      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🔥 Praise</button>
+      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💬 General</button>
+      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
+      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
+    </div>
+    <input type="hidden" id="feedback-type" value="general">
+    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
+      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rate AfriVid:</span>
+      <div id="star-rating" style="display:flex;gap:0.25rem;">
+        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;">⭐</span>
+      </div>
+    </div>
+    <input type="hidden" id="feedback-rating" value="5">
+    <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
+    </div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
+  </div>
+</div>
+
+<script>
+function setFeedbackType(type, btn) {
+  document.getElementById('feedback-type').value = type;
+  document.querySelectorAll('.fb-type-btn').forEach(b => { b.style.opacity='0.5'; });
+  btn.style.opacity = '1';
+}
+function setRating(val) {
+  document.getElementById('feedback-rating').value = val;
+  document.querySelectorAll('#star-rating span').forEach((s,i) => { s.style.opacity = i < val ? '1' : '0.3'; });
+}
+async function submitFeedback() {
+  const msg = document.getElementById('feedback-msg')?.value?.trim() || '';
+  const type = document.getElementById('feedback-type')?.value || 'general';
+  const rating = parseInt(document.getElementById('feedback-rating')?.value || '5');
+  if (!msg) { alert('Please write your feedback'); return; }
+  const btn = document.getElementById('feedback-submit-btn');
+  if(btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
+  try {
+    const {collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    await addDoc(collection(window.db, 'feedback'), {
+      type, message: msg, rating,
+      userId: window.currentUser?.uid || 'anonymous',
+      userEmail: window.currentUser?.email || 'anonymous',
+      page: window.location.pathname,
+      createdAt: serverTimestamp(),
+      status: 'unread'
+    });
+    document.getElementById('feedback-msg').value = '';
+    document.getElementById('feedback-modal').style.display = 'none';
+    if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
+    alert('✅ Thank you for your feedback!');
+  } catch(e) {
+    if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
+    alert('Failed: ' + e.message);
+  }
+}
+// FAB button
+(function(){
+  const fab = document.createElement('button');
+  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
+  fab.innerHTML = '💬 Feedback';
+  fab.onclick = () => {
+    const modal = document.getElementById('feedback-modal');
+    if(modal) { modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; }
+  };
+  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(fab));
+})();
+</script>
+
 </body>
 </html>
