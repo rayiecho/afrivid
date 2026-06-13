@@ -143,16 +143,20 @@ When a user describes what they want to do, give them the exact prompt to copy a
     const typingId = addTyping();
 
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
       const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
+        signal: controller.signal,
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 400,
+          max_tokens: 300,
           system: AFRIVID_CONTEXT,
-          messages: chatHistory
+          messages: chatHistory.slice(-6)
         })
       });
+      clearTimeout(timeout);
       const data = await res.json();
       const reply = data.content?.[0]?.text || 'Sorry, I could not process that. Please try again.';
       
@@ -165,7 +169,10 @@ When a user describes what they want to do, give them the exact prompt to copy a
       
     } catch(e) {
       removeTyping(typingId);
-      addMessage('Connection error. Please check your internet and try again.', 'bot');
+      const errMsg = e.name === 'AbortError' 
+        ? 'Taking too long. Try a shorter question or check your connection.'
+        : 'Connection error. Please check your internet and try again.';
+      addMessage(errMsg, 'bot');
     }
   };
 
