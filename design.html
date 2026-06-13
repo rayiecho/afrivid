@@ -1931,10 +1931,9 @@ window._applyCrop = window.applyCrop = function() {
 }
 
 window._cancelCrop = window.cancelCrop = function() {
-  cropActive = false; isCropping = false; cropStart = null;
-  document.getElementById('crop-overlay').style.display = 'none';
-  document.getElementById('crop-controls').style.display = 'none';
-  document.getElementById('crop-selection').style.display = 'none';
+  cropActive = false;
+  const cropUI = document.getElementById('capcut-crop-ui');
+  if(cropUI) cropUI.remove();
 }
 
 // Initialize
