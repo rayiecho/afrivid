@@ -819,7 +819,7 @@ function switchPhotoTab(tab, btn) {
   if(btn) btn.classList.add('active');
 }
 function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
-function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); else if(window['setCropRatio']) window['setCropRatio'](a,b); }
+function setCropRatio(a,b){ if(window._setCropRatio) window._setCropRatio(a,b); }
 function applyCrop(){ if(window._applyCrop) window._applyCrop(); else if(window['applyCrop']) window['applyCrop'](); }
 function cancelCrop(){ if(window._cancelCrop) window._cancelCrop(); else if(window['cancelCrop']) window['cancelCrop'](); }
 function showLogin(){ if(window._showLogin) window._showLogin(); else if(window['showLogin']) window['showLogin'](); }
@@ -891,7 +891,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
 window.photoImage = null;
-let photoImage = window.photoImage;
+Object.defineProperty(window, 'photoImage', {
+  get: function() { return window._photoImage || null; },
+  set: function(v) { window._photoImage = v; photoImage = v; },
+  configurable: true
+});
+let photoImage = null;
 let selfieSegmentation = null;
 
 onAuthStateChanged(auth, (user) => {
