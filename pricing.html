@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — AfriVid Studio</title>
+<meta name="description" content="AfriVid Studio pricing. Free forever plan and Pro at $5/month. Africa's most affordable AI video creation platform.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="images/logo.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.navbar-logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;}
+.navbar-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#050A14;}
+.navbar-name{font-weight:800;font-size:1rem;color:#fff;}
+.navbar-name em{color:#F5A623;font-style:normal;}
+.back-btn{color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.82rem;font-family:'Space Mono',monospace;transition:color 0.2s;}
+.back-btn:hover{color:#F5A623;}
+.container{max-width:900px;margin:0 auto;padding:7rem 1.5rem 5rem;position:relative;z-index:1;}
+.hero{text-align:center;margin-bottom:4rem;}
+.page-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:3px;margin-bottom:0.75rem;}
+.page-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:0.75rem;}
+.page-title em{color:#F5A623;font-style:normal;}
+.page-sub{color:rgba(255,255,255,0.45);font-size:0.95rem;max-width:500px;margin:0 auto;}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:4rem;}
+@media(max-width:600px){.plans{grid-template-columns:1fr;}}
+.plan{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;position:relative;}
+.plan.featured{background:rgba(245,166,35,0.04);border-color:rgba(245,166,35,0.25);}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;font-size:0.7rem;font-weight:900;padding:0.3rem 1rem;border-radius:20px;font-family:'Space Mono',monospace;white-space:nowrap;}
+.plan-name{font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.plan-price{font-size:3rem;font-weight:900;margin-bottom:0.25rem;line-height:1;}
+.plan-price span{font-size:1rem;font-weight:400;color:rgba(255,255,255,0.4);}
+.plan-desc{color:rgba(255,255,255,0.4);font-size:0.82rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+.feature-list{list-style:none;margin-bottom:2rem;}
+.feature-list li{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:0.75rem;}
+.feature-list li .check{color:#74C69D;font-size:0.9rem;flex-shrink:0;margin-top:0.1rem;}
+.feature-list li .cross{color:rgba(255,255,255,0.2);font-size:0.9rem;flex-shrink:0;margin-top:0.1rem;}
+.feature-list li.disabled{color:rgba(255,255,255,0.25);}
+.plan-btn{display:block;width:100%;padding:0.85rem;border-radius:10px;font-weight:900;font-size:0.95rem;cursor:pointer;text-align:center;text-decoration:none;font-family:'Syne',sans-serif;transition:all 0.2s;border:none;}
+.plan-btn.free{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.1);}
+.plan-btn.free:hover{background:rgba(255,255,255,0.1);}
+.plan-btn.pro{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.plan-btn.pro:hover{opacity:0.9;}
+.compare{margin-bottom:4rem;}
+.compare h2{font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:2rem;}
+.compare h2 em{color:#F5A623;font-style:normal;}
+table{width:100%;border-collapse:collapse;}
+th{padding:0.75rem 1rem;text-align:left;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,0.06);}
+td{padding:0.85rem 1rem;font-size:0.88rem;border-bottom:1px solid rgba(255,255,255,0.04);}
+td:first-child{color:rgba(255,255,255,0.7);}
+td:nth-child(2){color:rgba(255,255,255,0.35);text-align:center;}
+td:nth-child(3){color:#74C69D;text-align:center;font-weight:700;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.faq{margin-bottom:4rem;}
+.faq h2{font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:2rem;}
+.faq h2 em{color:#F5A623;font-style:normal;}
+.faq-item{border-bottom:1px solid rgba(255,255,255,0.06);padding:1.25rem 0;}
+.faq-q{font-weight:700;font-size:0.92rem;margin-bottom:0.5rem;cursor:pointer;}
+.faq-a{color:rgba(255,255,255,0.5);font-size:0.85rem;line-height:1.6;}
+.cta{text-align:center;background:rgba(245,166,35,0.04);border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:3rem 2rem;}
+.cta h2{font-size:1.8rem;font-weight:900;margin-bottom:0.75rem;}
+.cta h2 em{color:#F5A623;font-style:normal;}
+.cta p{color:rgba(255,255,255,0.45);margin-bottom:1.5rem;}
+.cta a{display:inline-block;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;padding:0.85rem 2rem;border-radius:10px;font-weight:900;text-decoration:none;font-size:0.95rem;transition:opacity 0.2s;}
+.cta a:hover{opacity:0.9;}
+footer{text-align:center;padding:2rem;color:rgba(255,255,255,0.2);font-size:0.75rem;font-family:'Space Mono',monospace;border-top:1px solid rgba(255,255,255,0.04);}
+footer a{color:rgba(255,255,255,0.3);text-decoration:none;margin:0 0.75rem;}
+footer a:hover{color:#F5A623;}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">
+    <div class="navbar-icon">A</div>
+    <span class="navbar-name">Afri<em>Vid</em></span>
+  </a>
+  <a href="index.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <div class="page-label">PRICING</div>
+    <h1 class="page-title">Simple, honest <em>pricing</em><br>built for Africa</h1>
+    <p class="page-sub">No hidden fees. No dollar card required. Cancel anytime. Start free forever.</p>
+  </div>
+
+  <div class="plans">
+    <div class="plan">
+      <div class="plan-name">FREE FOREVER</div>
+      <div class="plan-price">$0<span>/month</span></div>
+      <div class="plan-desc">Everything you need to get started. No credit card required.</div>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> 3 videos per month</li>
+        <li><span class="check">✓</span> Up to 2 minutes per video</li>
+        <li><span class="check">✓</span> AI script generation</li>
+        <li><span class="check">✓</span> 5 voice styles</li>
+        <li><span class="check">✓</span> Photo editor</li>
+        <li><span class="check">✓</span> Design studio</li>
+        <li><span class="check">✓</span> 3 AI editor sessions/month</li>
+        <li><span class="check">✓</span> 3 voice translations/month</li>
+        <li><span class="check">✓</span> 3 captions/week</li>
+        <li class="disabled"><span class="cross">✕</span> AfriVid watermark on videos</li>
+        <li class="disabled"><span class="cross">✕</span> Priority support</li>
+      </ul>
+      <a href="studio.html" class="plan-btn free">Get Started Free →</a>
+    </div>
+
+    <div class="plan featured">
+      <div class="plan-badge">⭐ MOST POPULAR</div>
+      <div class="plan-name">PRO</div>
+      <div class="plan-price">$5<span>/month</span></div>
+      <div class="plan-desc">For serious African creators, businesses and organizations.</div>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> <strong>Unlimited videos</strong></li>
+        <li><span class="check">✓</span> <strong>Up to 20 minutes per video</strong></li>
+        <li><span class="check">✓</span> AI script generation</li>
+        <li><span class="check">✓</span> All voice styles</li>
+        <li><span class="check">✓</span> Photo editor</li>
+        <li><span class="check">✓</span> Design studio</li>
+        <li><span class="check">✓</span> <strong>Unlimited AI editor sessions</strong></li>
+        <li><span class="check">✓</span> <strong>Unlimited voice translations</strong></li>
+        <li><span class="check">✓</span> <strong>Unlimited captions</strong></li>
+        <li><span class="check">✓</span> <strong>No watermark</strong></li>
+        <li><span class="check">✓</span> <strong>Priority support</strong></li>
+      </ul>
+      <a href="mailto:afrividstudio@gmail.com?subject=Upgrade to Pro" class="plan-btn pro">Upgrade to Pro →</a>
+    </div>
+  </div>
+
+  <div class="compare">
+    <h2>Compare <em>Free vs Pro</em></h2>
+    <table>
+      <tr>
+        <th>FEATURE</th>
+        <th>FREE</th>
+        <th>PRO $5/mo</th>
+      </tr>
+      <tr><td>Videos per month</td><td>3</td><td>Unlimited</td></tr>
+      <tr><td>Max video length</td><td>2 minutes</td><td>20 minutes</td></tr>
+      <tr><td>AI Video Creator</td><td>✓</td><td>✓</td></tr>
+      <tr><td>AI Video Editor</td><td>3/month</td><td>Unlimited</td></tr>
+      <tr><td>Viral Clips Generator</td><td>3/month</td><td>Unlimited</td></tr>
+      <tr><td>Voice Translation</td><td>3/month</td><td>Unlimited</td></tr>
+      <tr><td>Auto Captions</td><td>3/week</td><td>Unlimited</td></tr>
+      <tr><td>Highlight Reel</td><td>3/month</td><td>Unlimited</td></tr>
+      <tr><td>Noise Removal</td><td>3/month</td><td>Unlimited</td></tr>
+      <tr><td>Background Music</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Thumbnail Generator</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Brand Kit</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Photo Editor</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Design Studio</td><td>✓</td><td>✓</td></tr>
+      <tr><td>AfriVid Watermark</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Support</td><td>Email</td><td>Priority Email</td></tr>
+    </table>
+  </div>
+
+  <div class="faq">
+    <h2>Frequently Asked <em>Questions</em></h2>
+    <div class="faq-item">
+      <div class="faq-q">Do I need a dollar card to sign up?</div>
+      <div class="faq-a">No. The free plan requires no payment at all. For Pro, we are working on M-Pesa and MTN Mobile Money support. Currently you can pay via email arrangement.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I cancel my Pro subscription anytime?</div>
+      <div class="faq-a">Yes. Email us at afrividstudio@gmail.com and we'll cancel within 24 hours. No questions asked.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What languages does AfriVid support?</div>
+      <div class="faq-a">AfriVid creates videos in English and can translate to Swahili, French, Yoruba, Hausa, Amharic and Portuguese. More African languages coming soon.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Who owns the videos I create?</div>
+      <div class="faq-a">You do. 100%. AfriVid does not claim ownership of any content you produce on our platform.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is there a student or NGO discount?</div>
+      <div class="faq-a">Yes. Email us with proof of student status or NGO registration and we'll discuss special pricing. We believe in making AI accessible to all Africans.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What happens when I hit my free limit?</div>
+      <div class="faq-a">You'll see a friendly upgrade prompt. Your existing work is never deleted. You can upgrade to Pro or wait until next month when limits reset.</div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <h2>Ready to create? <em>Start free.</em></h2>
+    <p>Join African creators already using AfriVid Studio. No credit card needed.</p>
+    <a href="studio.html">Get Started Free →</a>
+  </div>
+</div>
+
+<footer>
+  <div style="margin-bottom:0.75rem;">
+    <a href="index.html">Home</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  © 2026 AfriVid Studio · Built in Africa 🌍
+</footer>
+</body>
+</html>

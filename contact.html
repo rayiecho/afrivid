@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact & Support — AfriVid Studio</title>
+<meta name="description" content="Get help with AfriVid Studio. Contact our support team, report bugs or request features.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="images/logo.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.navbar-logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;}
+.navbar-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#050A14;}
+.navbar-name{font-weight:800;font-size:1rem;color:#fff;}
+.navbar-name em{color:#F5A623;font-style:normal;}
+.back-btn{color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.82rem;font-family:'Space Mono',monospace;}
+.back-btn:hover{color:#F5A623;}
+.container{max-width:800px;margin:0 auto;padding:7rem 1.5rem 5rem;position:relative;z-index:1;}
+.hero{text-align:center;margin-bottom:3rem;}
+.page-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:3px;margin-bottom:0.75rem;}
+.page-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:0.75rem;}
+.page-title em{color:#F5A623;font-style:normal;}
+.page-sub{color:rgba(255,255,255,0.45);font-size:0.95rem;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:3rem;}
+@media(max-width:600px){.cards{grid-template-columns:1fr;}}
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;text-align:center;transition:all 0.2s;}
+.card:hover{border-color:rgba(245,166,35,0.2);transform:translateY(-2px);}
+.card-icon{font-size:1.75rem;margin-bottom:0.75rem;}
+.card-title{font-weight:800;font-size:0.95rem;margin-bottom:0.4rem;}
+.card-desc{color:rgba(255,255,255,0.4);font-size:0.78rem;margin-bottom:1rem;line-height:1.5;}
+.card-btn{display:inline-block;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.4rem 1rem;border-radius:8px;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.2s;}
+.card-btn:hover{background:rgba(245,166,35,0.2);}
+.form-section{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;margin-bottom:3rem;}
+.form-title{font-weight:800;font-size:1.2rem;margin-bottom:0.4rem;}
+.form-sub{color:rgba(255,255,255,0.4);font-size:0.82rem;margin-bottom:1.5rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.form-group{margin-bottom:1rem;}
+label{display:block;font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;}
+input,select,textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.75rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+input:focus,select,textarea:focus{border-color:rgba(245,166,35,0.3);}
+select option{background:#111;}
+textarea{min-height:120px;resize:vertical;}
+.submit-btn{background:linear-gradient(135deg,#F5A623,#E8931A);border:none;color:#050A14;padding:0.85rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.95rem;transition:opacity 0.2s;width:100%;}
+.submit-btn:hover{opacity:0.9;}
+.response-time{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.3);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:0.75rem;}
+.dot{width:6px;height:6px;border-radius:50%;background:#74C69D;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.faq{margin-bottom:3rem;}
+.faq h2{font-size:1.3rem;font-weight:900;margin-bottom:1.5rem;}
+.faq h2 em{color:#F5A623;font-style:normal;}
+.faq-item{border-bottom:1px solid rgba(255,255,255,0.05);padding:1rem 0;}
+.faq-q{font-weight:700;font-size:0.88rem;margin-bottom:0.4rem;}
+.faq-a{color:rgba(255,255,255,0.45);font-size:0.82rem;line-height:1.6;}
+footer{text-align:center;padding:2rem;color:rgba(255,255,255,0.2);font-size:0.75rem;font-family:'Space Mono',monospace;border-top:1px solid rgba(255,255,255,0.04);}
+footer a{color:rgba(255,255,255,0.3);text-decoration:none;margin:0 0.75rem;}
+footer a:hover{color:#F5A623;}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">
+    <div class="navbar-icon">A</div>
+    <span class="navbar-name">Afri<em>Vid</em></span>
+  </a>
+  <a href="index.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <div class="page-label">SUPPORT</div>
+    <h1 class="page-title">How can we <em>help?</em></h1>
+    <p class="page-sub">We're here for you. Usually respond within 24 hours.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🐛</div>
+      <div class="card-title">Report a Bug</div>
+      <div class="card-desc">Something not working? Tell us exactly what happened.</div>
+      <a href="mailto:afrividstudio@gmail.com?subject=Bug Report" class="card-btn">Report Bug</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <div class="card-title">Request a Feature</div>
+      <div class="card-desc">Have an idea that would make AfriVid better?</div>
+      <a href="mailto:afrividstudio@gmail.com?subject=Feature Request" class="card-btn">Request Feature</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⭐</div>
+      <div class="card-title">Upgrade to Pro</div>
+      <div class="card-desc">Unlimited videos, no watermark, priority support.</div>
+      <a href="pricing.html" class="card-btn">View Pricing</a>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-title">Send us a message</div>
+    <div class="form-sub">Fill the form below or email us directly at afrividstudio@gmail.com</div>
+    <form onsubmit="sendMessage(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label>YOUR NAME</label>
+          <input type="text" id="contact-name" placeholder="Regan Ayiecho" required>
+        </div>
+        <div class="form-group">
+          <label>EMAIL ADDRESS</label>
+          <input type="email" id="contact-email" placeholder="you@example.com" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>SUBJECT</label>
+        <select id="contact-subject">
+          <option value="bug">🐛 Bug Report</option>
+          <option value="feature">✨ Feature Request</option>
+          <option value="billing">💳 Billing / Upgrade</option>
+          <option value="general">💬 General Question</option>
+          <option value="partnership">🤝 Partnership</option>
+          <option value="media">📰 Press / Media</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>MESSAGE</label>
+        <textarea id="contact-message" placeholder="Tell us what's on your mind..." required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Send Message →</button>
+      <div class="response-time">
+        <div class="dot"></div>
+        We typically respond within 24-48 hours
+      </div>
+    </form>
+  </div>
+
+  <div class="faq">
+    <h2>Quick <em>Answers</em></h2>
+    <div class="faq-item">
+      <div class="faq-q">How do I upgrade to Pro?</div>
+      <div class="faq-a">Email us at afrividstudio@gmail.com with subject "Upgrade to Pro". We'll set you up within 24 hours. M-Pesa and card payments accepted.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">My video is stuck or not generating — what do I do?</div>
+      <div class="faq-a">Hard refresh the page (Ctrl+Shift+R), clear your browser cache and try again. If it persists, email us with the topic you tried and your browser name.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I use AfriVid for my church / school / NGO?</div>
+      <div class="faq-a">Absolutely. We have special pricing for churches, schools and NGOs. Email us with your organization name and we'll work something out.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do I delete my account?</div>
+      <div class="faq-a">Email us at afrividstudio@gmail.com with subject "Delete My Account". We'll process it within 48 hours and confirm when done.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is AfriVid available in French or Swahili?</div>
+      <div class="faq-a">The interface is currently in English but AfriVid can create and translate content to French, Swahili, Yoruba, Hausa and Amharic. Full multilingual interface coming soon.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sendMessage(e) {
+  e.preventDefault();
+  const name = document.getElementById('contact-name').value;
+  const email = document.getElementById('contact-email').value;
+  const subject = document.getElementById('contact-subject').value;
+  const message = document.getElementById('contact-message').value;
+  const mailtoLink = `mailto:afrividstudio@gmail.com?subject=${encodeURIComponent(subject + ' - ' + name)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message)}`;
+  window.location.href = mailtoLink;
+}
+</script>
+
+<footer>
+  <div style="margin-bottom:0.75rem;">
+    <a href="index.html">Home</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  © 2026 AfriVid Studio · Built in Africa 🌍
+</footer>
+</body>
+</html>
