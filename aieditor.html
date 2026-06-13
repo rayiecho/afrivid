@@ -216,7 +216,8 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <span class="example-chip" onclick="setPrompt(this)">Make it TikTok ready</span>
     <span class="example-chip" onclick="setPrompt(this)">Keep from 0:30 to 2:00</span>
     <span class="example-chip" onclick="setPrompt(this)">Remove the intro and outro</span>
-  </div>
+    <div id="main-log" style="display:none;margin-top:0.75rem;background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 1rem;font-family:'Space Mono',monospace;font-size:0.75rem;color:#F5A623;"></div>
+</div>
 </div>
 
 <!-- FEATURES GRID -->
@@ -559,6 +560,9 @@ async function applyPrompt() {
 // ── LOG ──
 function addLog(panel, msg) {
   const color = msg.startsWith('[ok]') ? '#74C69D' : msg.startsWith('[x]') ? '#E63329' : '#F5A623';
+  // Always show in main log
+  const mainLog = document.getElementById('main-log');
+  if (mainLog) { mainLog.style.display='block'; mainLog.innerHTML=`<span style="color:${color}">${msg}</span>`; }
   if (panel === 'all') {
     document.querySelectorAll('.ai-log').forEach(l => {
       l.innerHTML = `<span style="color:${color}">${msg}</span>`;
