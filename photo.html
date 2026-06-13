@@ -1672,10 +1672,11 @@ window._removeBackground = async function() {
         resolve();
       });
 
-      const tmpImg = document.createElement('img');
-      tmpImg.onload = () => selfieSegmentation.send({image: tmpImg});
+      const tmpImg = new Image();
+      tmpImg.onload = () => { selfieSegmentation.send({image: tmpImg}).catch(reject); };
       tmpImg.onerror = reject;
-      tmpImg.src = canvas.toDataURL();
+      tmpImg.crossOrigin = 'anonymous';
+      tmpImg.src = canvas.toDataURL('image/jpeg', 0.95);
     });
 
     addLog('success', '[ok] Background removed!');
