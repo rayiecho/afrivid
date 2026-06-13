@@ -1084,18 +1084,20 @@ window._doRemoveBG = window.removeBackground = async function() {
     await selfieSegmentation.send({image: tmp});
     await new Promise(r => setTimeout(r, 600));
     if (!result) throw new Error('Segmentation failed');
+    // Create masked person on offscreen canvas
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = W; offCanvas.height = H;
+    const offCtx = offCanvas.getContext('2d');
+    offCtx.drawImage(photoImage, 0, 0, W, H);
+    offCtx.globalCompositeOperation = 'destination-in';
+    offCtx.drawImage(result.segmentationMask, 0, 0, W, H);
+
+    // Draw white background then person on main canvas
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, W, H);
-    // White background
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, W, H);
-    ctx.save();
-    ctx.filter = (window.getFilterSafe ? getFilterSafe() : 'none');
-    ctx.drawImage(photoImage, 0, 0, W, H);
-    ctx.filter = 'none';
-    ctx.globalCompositeOperation = 'destination-in';
-    ctx.drawImage(result.segmentationMask, 0, 0, W, H);
-    ctx.restore();
+    ctx.drawImage(offCanvas, 0, 0);
     (document.getElementById('photo-format')||document.getElementById('export-format')||{value:'png'}).value = 'png';
     addLog('success', '[ok] Background removed! Download as PNG.');
   } catch(e) {
