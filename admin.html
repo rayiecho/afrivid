@@ -274,6 +274,7 @@ window._feedbackLoaded = false;
       <div class="nav-item" onclick="showPage('finance',this)"><span class="nav-icon">$</span> Finances</div>
       <div class="nav-item" onclick="showPage('balance',this)"><span class="nav-icon">≡</span> Balance Sheet</div>
       <div class="nav-item" onclick="showPage('feedback',this);loadFeedback();"><span class="nav-icon">💬</span> Feedback</div>
+      <div class="nav-item" onclick="showPage('upgrades',this);loadUpgrades();"><span class="nav-icon">⚡</span> Upgrades</div>
 
       <div class="sidebar-footer">
         <div style="font-size:0.65rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:0.75rem;" id="admin-time"></div>
@@ -650,6 +651,18 @@ window._feedbackLoaded = false;
 
       <!-- BALANCE SHEET -->
 
+
+      <div class="page" id="page-upgrades">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Upgrade Requests</div>
+            <div class="page-subtitle">Users waiting to go Pro</div>
+          </div>
+          <button onclick="loadUpgrades()" class="btn btn-gold btn-sm">↺ Refresh</button>
+        </div>
+        <div id="upg-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
+        <div id="upg-list"></div>
+      </div>
       <div class="page" id="page-feedback">
         <div class="page-header">
           <div>
@@ -1323,6 +1336,66 @@ if(sessionStorage.getItem('afrivid_admin')==='1') {
 document.getElementById('admin-pwd').addEventListener('keydown', e => {
   if(e.key==='Enter') doAdminLogin();
 });
+
+
+  // ── UPGRADE REQUESTS ──
+  window.loadUpgrades = async function() {
+    const list = document.getElementById('upg-list');
+    const stats = document.getElementById('upg-stats');
+    if(!list) return;
+    list.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;">[..] Loading...</div>';
+    try {
+      const snap = await getDocs(query(collection(db,'upgrade_requests'),orderBy('createdAt','desc')));
+      const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+      const pending = items.filter(i=>i.status==='pending').length;
+      const done = items.filter(i=>i.status==='completed').length;
+      if(stats) stats.innerHTML = `
+        <div class="stat-card"><div class="stat-value">${items.length}</div><div class="stat-label">TOTAL</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#F5A623">${pending}</div><div class="stat-label">PENDING</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#74C69D">${done}</div><div class="stat-label">COMPLETED</div></div>
+      `;
+      list.innerHTML = items.length ? items.map(item=>`
+        <div style="background:var(--bg2);border:1px solid ${item.status==='pending'?'rgba(245,166,35,0.2)':'rgba(116,198,157,0.2)'};border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+            <div>
+              <div style="color:#fff;font-weight:800;font-size:0.95rem;">${item.name}</div>
+              <div style="color:var(--muted);font-size:0.78rem;">${item.email}</div>
+            </div>
+            <span style="background:${item.status==='pending'?'rgba(245,166,35,0.1)':'rgba(116,198,157,0.1)'};color:${item.status==='pending'?'#F5A623':'#74C69D'};padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:700;">${(item.status||'pending').toUpperCase()}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+            <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+              <div style="color:var(--muted);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
+              <div style="color:#fff;font-size:0.8rem;">${item.country||'—'}</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+              <div style="color:var(--muted);font-size:0.65rem;margin-bottom:0.2rem;">PAYMENT</div>
+              <div style="color:#fff;font-size:0.8rem;">${item.payment||'—'}</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+              <div style="color:var(--muted);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
+              <div style="color:#fff;font-size:0.8rem;">${item.phone||'—'}</div>
+            </div>
+          </div>
+          ${item.message ? `<div style="color:var(--muted);font-size:0.8rem;margin-bottom:0.75rem;">"${item.message}"</div>` : ''}
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <a href="mailto:${item.email}?subject=AfriVid Pro Upgrade&body=Hi ${item.name},%0D%0A%0D%0AThank you for your interest in AfriVid Pro!%0D%0A%0D%0ATo complete your upgrade to Pro ($5/month), please send payment via ${item.payment||'your preferred method'}.%0D%0A%0D%0AOnce confirmed, we will activate your Pro account within 1 hour.%0D%0A%0D%0ABest regards,%0D%0AAfriVid Team" style="background:var(--gold);border:none;color:#050A14;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:800;cursor:pointer;font-family:var(--font-main);text-decoration:none;">Reply with Payment Details</a>
+            <button onclick="markUpgradeDone('${item.id}')" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:var(--font-main);">Mark Complete</button>
+            <span style="color:var(--muted);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
+          </div>
+        </div>
+      `).join('') : '<div style="color:var(--muted);text-align:center;padding:2rem;">No upgrade requests yet</div>';
+    } catch(e) {
+      if(list) list.innerHTML = `<div style="color:#E63329;">[x] ${e.message}</div>`;
+    }
+  };
+
+  window.markUpgradeDone = async function(id) {
+    try {
+      await updateDoc(doc(db,'upgrade_requests',id),{status:'completed'});
+      loadUpgrades();
+    } catch(e) { alert('Failed: '+e.message); }
+  };
 
   // ── FEEDBACK ──
   window.loadFeedback = async function() {

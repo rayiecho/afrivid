@@ -138,7 +138,7 @@ footer a:hover{color:#F5A623;}
         <li><span class="check">✓</span> <strong>No watermark</strong></li>
         <li><span class="check">✓</span> <strong>Priority support</strong></li>
       </ul>
-      <a href="mailto:afrividstudio@gmail.com?subject=Upgrade to Pro" class="plan-btn pro">Upgrade to Pro →</a>
+      <a href="#" onclick="showUpgradeForm();return false;" class="plan-btn pro">Upgrade to Pro →</a>
     </div>
   </div>
 
@@ -233,5 +233,151 @@ if('serviceWorker' in navigator) {
   });
 }
 </script>
+
+<!-- UPGRADE REQUEST MODAL -->
+<div id="upgrade-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:2rem;width:90%;max-width:460px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
+      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form below. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span> with payment details.</div>
+    </div>
+
+    <!-- Plan reminder -->
+    <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · Priority support</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
+      <div>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
+        <input id="upg-name" type="text" placeholder="Regan Ayiecho" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
+        <input id="upg-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
+        <select id="upg-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
+          <option value="">Select your country</option>
+          <option>Kenya</option>
+          <option>Rwanda</option>
+          <option>Nigeria</option>
+          <option>Uganda</option>
+          <option>Tanzania</option>
+          <option>Ghana</option>
+          <option>South Africa</option>
+          <option>Ethiopia</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
+        <select id="upg-payment" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;" onchange="togglePhone()">
+          <option value="">Select payment method</option>
+          <option value="mpesa">M-Pesa</option>
+          <option value="mtn">MTN Mobile Money</option>
+          <option value="airtel">Airtel Money</option>
+          <option value="card">Debit/Credit Card</option>
+          <option value="bank">Bank Transfer</option>
+        </select>
+      </div>
+      <div id="upg-phone-wrap">
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER (for Mobile Money)</label>
+        <input id="upg-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">MESSAGE (optional)</label>
+        <textarea id="upg-msg" placeholder="Any questions or special requests..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;outline:none;min-height:80px;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+    </div>
+
+    <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+      <span style="color:#74C69D;font-size:1rem;">⏱</span>
+      <span style="color:rgba(255,255,255,0.6);font-size:0.78rem;">We will respond to your email within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</span>
+    </div>
+
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="document.getElementById('upgrade-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="upg-submit-btn" onclick="submitUpgradeRequest()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Submit Request →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showUpgradeForm() {
+  const modal = document.getElementById('upgrade-modal');
+  if(modal) { modal.style.display='flex'; }
+  // Pre-fill email if logged in
+  if(window.currentUser) {
+    const emailEl = document.getElementById('upg-email');
+    const nameEl = document.getElementById('upg-name');
+    if(emailEl) emailEl.value = window.currentUser.email || '';
+    if(nameEl) nameEl.value = window.currentUser.displayName || '';
+  }
+}
+
+function togglePhone() {
+  const payment = document.getElementById('upg-payment').value;
+  const phoneWrap = document.getElementById('upg-phone-wrap');
+  if(phoneWrap) {
+    phoneWrap.style.display = ['mpesa','mtn','airtel'].includes(payment) ? 'block' : 'none';
+  }
+}
+
+async function submitUpgradeRequest() {
+  const name = document.getElementById('upg-name')?.value?.trim();
+  const email = document.getElementById('upg-email')?.value?.trim();
+  const country = document.getElementById('upg-country')?.value;
+  const payment = document.getElementById('upg-payment')?.value;
+  const phone = document.getElementById('upg-phone')?.value?.trim();
+  const msg = document.getElementById('upg-msg')?.value?.trim();
+
+  if(!name || !email || !country || !payment) {
+    alert('Please fill all required fields');
+    return;
+  }
+
+  const btn = document.getElementById('upg-submit-btn');
+  if(btn) { btn.textContent='[..] Submitting...'; btn.disabled=true; }
+
+  try {
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const db = getFirestore(app);
+
+    await addDoc(collection(db, 'upgrade_requests'), {
+      name, email, country, payment, phone, message: msg,
+      userId: window.currentUser?.uid || 'anonymous',
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+
+    // Show success
+    document.getElementById('upgrade-modal').innerHTML = `
+      <div style="background:#0D1117;border:1px solid rgba(116,198,157,0.3);border-radius:20px;padding:2.5rem;width:90%;max-width:400px;font-family:Syne,sans-serif;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+        <div style="color:#74C69D;font-weight:900;font-size:1.2rem;margin-bottom:0.5rem;">Request Submitted!</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">We received your upgrade request. Check your email <strong style="color:#fff;">${email}</strong> — we'll respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</div>
+        <button onclick="document.getElementById('upgrade-modal').style.display='none'" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Done</button>
+      </div>`;
+
+  } catch(e) {
+    if(btn) { btn.textContent='Submit Request →'; btn.disabled=false; }
+    alert('Failed: ' + e.message);
+  }
+}
+
+// Hide phone by default
+document.addEventListener('DOMContentLoaded', () => {
+  const pw = document.getElementById('upg-phone-wrap');
+  if(pw) pw.style.display='none';
+});
+</script>
+
 </body>
 </html>
