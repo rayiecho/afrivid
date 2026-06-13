@@ -807,7 +807,7 @@ function loadPhoto(a,b){ if(window._loadPhoto) window._loadPhoto(a,b); else if(w
 function applyPreset(a,b){ if(window._applyPreset) window._applyPreset(a,b); else if(window['applyPreset']) window['applyPreset'](a,b); }
 function updatePreview(){ if(window._updatePreview) window._updatePreview(); else if(window['updatePreview']) window['updatePreview'](); }
 function applyAIEdit(){ if(window._applyAIEdit) window._applyAIEdit(); else if(window['applyAIEdit']) window['applyAIEdit'](); }
-function removeBackground(){ if(window.removeBackground) window.removeBackground(); }
+function removeBackground(){ if(window._doRemoveBG) window._doRemoveBG(); }
 function downloadPhoto(){ if(!window.currentUser && !window._currentUser) { if(window.showLogin) showLogin("Sign in to download"); else alert("Please sign in to download"); return; } if(window._downloadPhoto) window._downloadPhoto(); else if(window['downloadPhoto']) window['downloadPhoto'](); }
 function handleSaveToStudio(){ if(window._handleSaveToStudio) window._handleSaveToStudio(); else if(window['handleSaveToStudio']) window['handleSaveToStudio'](); }
 function resetEditor(){ if(window._resetEditor) window._resetEditor(); else if(window['resetEditor']) window['resetEditor'](); }
@@ -1059,7 +1059,7 @@ brightness:0-300, contrast:0-300, saturation:0-300, sharpness:0-10, warmth:-100t
   }
 }
 
-window.removeBackground = async function() {
+window._doRemoveBG = window.removeBackground = async function() {
   if (!photoImage) { alert('Upload a photo first'); return; }
   const btn = document.querySelector('[onclick="removeBackground()"]');
   if(btn){btn.textContent='[..] Processing...';btn.disabled=true;}
