@@ -135,6 +135,18 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
       addMessage("I'm the AfriVid AI assistant — built to help African creators get the most out of AfriVid Studio. Ask me how to create videos, edit, translate or design! 🌍", 'bot');
       return;
     }
+    if (['how are you','how r you','how are u','hows it going','how do you do'].some(w => lower.includes(w))) {
+      addMessage("I'm always ready to help! What would you like to create today on AfriVid? 🔥", 'bot');
+      return;
+    }
+    if (['i am sick','i am tired','i am sad','i am happy','i am bored','i am hungry','i am fine','i am good','i am okay'].some(w => lower.includes(w))) {
+      addMessage("I hear you! When you're ready, AfriVid can help you create amazing content. What would you like to make? 🌍", 'bot');
+      return;
+    }
+    if (['what is afrivid','what is afrivid studio','tell me about afrivid'].some(w => lower.includes(w))) {
+      addMessage("AfriVid Studio is Africa's first AI video creation platform! Create videos from text, edit with AI, translate to African languages, design graphics and more — all at afrivid.studio 🌍", 'bot');
+      return;
+    }
     if (lower.length < 3) {
       addMessage("Please ask me something about AfriVid — like how to create a video or use the AI editor!", 'bot');
       return;
