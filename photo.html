@@ -891,11 +891,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
 window.photoImage = null;
-Object.defineProperty(window, 'photoImage', {
-  get: function() { return window._photoImage || null; },
-  set: function(v) { window._photoImage = v; photoImage = v; },
-  configurable: true
-});
 let photoImage = null;
 
 // ── LAYER SYSTEM ──
@@ -905,9 +900,8 @@ window._saveCanvasState = function() {
   const img = new Image();
   img.src = canvas.toDataURL();
   img.onload = () => { 
-    photoImage = img; 
+    photoImage = img;
     window.photoImage = img;
-    window._photoImage = img;
   };
 }
 
