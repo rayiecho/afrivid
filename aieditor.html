@@ -1364,25 +1364,6 @@ async function checkLimit(feature) {
   }
 }
 
-function showUpgradeModal(feature, max, period) {
-  const names = { ai_editor: 'AI Editor', translation: 'Voice Translation', captions: 'Auto Captions' };
-  const modal = document.createElement('div');
-  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;';
-  modal.innerHTML = `
-    <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.3);border-radius:16px;padding:2rem;max-width:380px;width:90%;font-family:Syne,sans-serif;text-align:center;">
-      <div style="font-size:2rem;margin-bottom:0.75rem;">⚡</div>
-      <div style="font-size:1.1rem;font-weight:900;color:#F5A623;margin-bottom:0.5rem;">Limit Reached</div>
-      <div style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">You've used your ${max} free ${names[feature]} uses this ${period}.<br>Upgrade to Pro for unlimited access.</div>
-      <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.2);border-radius:12px;padding:1.25rem;margin-bottom:1rem;">
-        <div style="color:#F5A623;font-weight:900;font-size:1.3rem;">$5<span style="font-size:0.8rem;font-weight:400;">/month</span></div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.78rem;margin-top:0.25rem;">Unlimited everything · No watermark</div>
-      </div>
-      <a href="#" onclick="showUpgradeModal('videos');return false;" style="display:block;background:#F5A623;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;text-decoration:none;margin-bottom:0.75rem;text-align:center;">Upgrade to Pro →</a>
-      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;font-family:Syne,sans-serif;font-size:0.82rem;">Maybe later</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
-}
 
 
 function resetPassword() {
