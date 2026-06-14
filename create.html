@@ -1491,7 +1491,17 @@ window._downloadMP4 = async function downloadMP4() {
     await ffmpeg.load();
     
     await ffmpeg.writeFile('input.webm', await fetchFile(videoBlob));
-    await ffmpeg.exec(['-i', 'input.webm', '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4']);
+    // High quality MP4 conversion
+    await ffmpeg.exec([
+      '-i', 'input.webm',
+      '-c:v', 'libx264',
+      '-preset', 'medium',
+      '-crf', '23',          // Quality (18=high, 23=medium, 28=low)
+      '-c:a', 'aac',
+      '-b:a', '192k',        // Audio bitrate
+      '-movflags', '+faststart',  // Web optimized
+      '-y', 'output.mp4'
+    ]);
     const data = await ffmpeg.readFile('output.mp4');
     
     const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
@@ -3484,11 +3494,22 @@ window._startRecording = async function startRecording() {
   const canvasStream = canvas.captureStream(30);
   canvasStream.addTrack(dest.stream.getAudioTracks()[0]);
 
+  // Select best available codec for highest quality
   const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
     ? 'video/webm;codecs=vp9,opus'
+    : MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')
+    ? 'video/webm;codecs=vp8,opus'
     : 'video/webm';
 
-  mediaRecorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 1500000 });
+  // Quality based on plan
+  const isPro = userProfile?.plan === 'pro';
+  const bitrate = isPro ? 8000000 : 4000000; // Pro: 8Mbps, Free: 4Mbps
+
+  mediaRecorder = new MediaRecorder(canvasStream, { 
+    mimeType, 
+    videoBitsPerSecond: bitrate,
+    audioBitsPerSecond: 192000  // 192kbps audio
+  });
   mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
   mediaRecorder.onstop = window.finishVideo || finishVideo;
   mediaRecorder.start(100);
