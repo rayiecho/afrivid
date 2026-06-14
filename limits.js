@@ -22,6 +22,7 @@ function _getWeekKey() {
 }
 
 window.checkAfriVidLimit = async function(action) {
+  console.log("[Limit] Checking:", action, "User:", window.currentUser?.email);
   if (!window.currentUser) {
     if (window.showLogin) showLogin('Sign in to continue');
     return false;
