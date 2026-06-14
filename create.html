@@ -3454,6 +3454,7 @@ async function enableVoice() {
 window._startRecording = async function startRecording() {
   if (!scriptData) { alert('No script found. Please go back and generate a script first.'); return; }
 
+  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
   goToStep(3);
 
   const canvas = document.getElementById('video-canvas');
