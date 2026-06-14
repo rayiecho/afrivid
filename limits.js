@@ -63,9 +63,10 @@ window.checkAfriVidLimit = async function(action) {
     let used = data[fieldKey] || 0;
 
     // Fallback for creator_video - check old videosGenerated for existing users
-    if (action === 'creator_video' && used === 0 && data.videosGenerated) {
+    if (action === 'creator_video' && data.videosGenerated) {
       const totalUsed = data.videosGenerated || 0;
       const oldLimit = data.betaLimit || 3;
+      // Use whichever is higher - old total or new monthly
       if (totalUsed >= oldLimit) used = customMax;
     }
 
