@@ -1290,7 +1290,7 @@ window.updateDurationWarning = function() {
 }
 
 // GENERATE SCRIPT
-window._handleGenerateScript = window.handleGenerateScript = async function() {
+window._handleGenerateScript = async function() {
   if (!currentUser) { showLogin('Sign in to generate videos'); return; }
   const mode = document.getElementById('mode-own')?.classList.contains('active') ? 'own' : 'ai';
   
