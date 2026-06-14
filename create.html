@@ -3682,18 +3682,77 @@ window.finishVideo = function finishVideo() {
   trackVideoGeneration(scriptData.title, scriptData.duration);
 }
 
-window._downloadVideo = function() {
+window._downloadVideo = async function() {
   if (!currentUser) { showLogin("Sign in to download your video"); return; }
   if (!videoBlob) { alert('No video to download yet.'); return; }
-  const url = URL.createObjectURL(videoBlob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `YAN-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.webm`;
-  a.click();
-  URL.revokeObjectURL(url);
-  addLog('success', '[dn] Video downloaded successfully!');
+
+  const isPro = userProfile?.plan === 'pro';
+
+  if (isPro) {
+    // Pro users — clean download, no watermark
+    const url = URL.createObjectURL(videoBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AfriVid-${(scriptData.title||'video').replace(/[^a-z0-9]/gi, '-').toLowerCase()}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addLog('success', '[dn] Video downloaded successfully!');
+  } else {
+    // Free users — add watermark
+    addLog('info', '[~] Adding AfriVid watermark...');
+    try {
+      const video = document.createElement('video');
+      video.src = URL.createObjectURL(videoBlob);
+      await new Promise(r => video.onloadedmetadata = r);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 854;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+
+      const stream = canvas.captureStream(30);
+      const recorder = new MediaRecorder(stream, {mimeType:'video/webm'});
+      const chunks = [];
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = () => {
+        const watermarkedBlob = new Blob(chunks, {type:'video/webm'});
+        const url = URL.createObjectURL(watermarkedBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `AfriVid-${(scriptData.title||'video').replace(/[^a-z0-9]/gi,'-').toLowerCase()}.webm`;
+        a.click();
+        URL.revokeObjectURL(url);
+        addLog('success', '[dn] Video downloaded with AfriVid watermark!');
+      };
+
+      recorder.start();
+      video.play();
+      video.ontimeupdate = () => {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Draw watermark
+        ctx.font = 'bold 18px Arial';
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+        ctx.lineWidth = 2;
+        const text = 'afrivid.studio';
+        ctx.strokeText(text, canvas.width - 160, canvas.height - 20);
+        ctx.fillText(text, canvas.width - 160, canvas.height - 20);
+      };
+      video.onended = () => recorder.stop();
+
+    } catch(e) {
+      // Fallback — download without watermark if canvas fails
+      const url = URL.createObjectURL(videoBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `AfriVid-${(scriptData.title||'video').replace(/[^a-z0-9]/gi,'-').toLowerCase()}.webm`;
+      a.click();
+      URL.revokeObjectURL(url);
+      addLog('success', '[dn] Video downloaded!');
+    }
+  }
+
   saveToLibrary(videoBlob, scriptData.title, scriptData.duration);
-  addLog('success', '[books] Saved to Video Library!');
   if (window.trackVideoGeneration) window.trackVideoGeneration(scriptData.title, scriptData.duration);
 }
 
