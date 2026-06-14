@@ -599,6 +599,17 @@ function loadVideo(file) {
     document.getElementById('drop-zone') && (document.querySelector('.drop-zone').style.display = 'none');
     document.getElementById('video-preview-area').style.display = 'block';
     addLog('all', `[ok] Loaded: ${file.name} (${formatTime(video.duration)})`);
+  // Show estimated processing time
+  setTimeout(() => {
+    const dur = video.duration || 0;
+    const estSecs = Math.round(dur * 0.3); // ~30% of video duration
+    const estMin = Math.floor(estSecs / 60);
+    const estSec = estSecs % 60;
+    const estStr = estMin > 0 ? `${estMin}m ${estSec}s` : `${estSec}s`;
+    const sizeStr = (file.size / 1024 / 1024).toFixed(1);
+    addLog('all', `[i] Estimated processing time: ~${estStr} | File size: ${sizeStr}MB`);
+    if (dur > 300) addLog('all', '[!] Large video detected. Processing may take several minutes. Keep this tab open.');
+  }, 500);
     video.addEventListener('durationchange', () => {
       if(video.duration && isFinite(video.duration)) {
         document.getElementById('video-duration').textContent = formatTime(video.duration);
@@ -640,8 +651,12 @@ async function applyPrompt() {
   if (!await checkAfriVidLimit('aieditor_session')) return;
   const instructions = document.getElementById('ai-prompt').value.trim();
   
-  // Show processing overlay
-  showProcessingOverlay('AfriVid AI is editing your video', [
+  // Show processing overlay with estimated time
+  const _vid = document.getElementById('ai-video');
+  const _dur = _vid?.duration || 0;
+  const _est = Math.round(_dur * 0.3);
+  const _estStr = _est > 60 ? `~${Math.round(_est/60)}m` : `~${_est}s`;
+  showProcessingOverlay(`AfriVid AI is editing your video (Est: ${_estStr})`, [
     {label: 'Analyzing instructions', status: 'active'},
     {label: 'Processing video', status: 'pending'},
     {label: 'Applying changes', status: 'pending'},
