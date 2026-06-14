@@ -84,6 +84,11 @@ window.checkAfriVidLimit = async function(action) {
       [fieldKey]: increment(1)
     });
 
+    // Refresh usage display if available
+    if (window.loadAIEditorUsage) loadAIEditorUsage();
+    if (window.loadEditorUsage) loadEditorUsage();
+    if (window.loadCreatorUsage) loadCreatorUsage();
+
     return true;
 
   } catch(e) {

@@ -5956,5 +5956,41 @@ async function submitGlobalUpgrade() {
   }
 }
 </script>
+
+<script>
+window.loadCreatorUsage = async function() {
+  if (!window.currentUser) return;
+  try {
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.plan === 'pro') {
+      const badge = document.getElementById('user-badge');
+      if (badge) badge.textContent = 'Pro — Unlimited ⚡';
+      return;
+    }
+    const now = new Date();
+    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
+    const used = data[`${monthKey}_creator_video`] || data.videosGenerated || 0;
+    const limit = data.custom_creator_video_limit || 3;
+    const left = Math.max(0, limit - used);
+    const badge = document.getElementById('user-badge');
+    if (badge) {
+      badge.textContent = `${left} video${left!==1?'s':''} left`;
+      badge.style.color = left === 0 ? '#E63329' : left === 1 ? '#F5A623' : '#74C69D';
+      badge.style.display = 'block';
+    }
+  } catch(e) {}
+};
+const _cUsageCheck = setInterval(() => {
+  if (window.currentUser) { clearInterval(_cUsageCheck); loadCreatorUsage(); }
+}, 500);
+setTimeout(() => clearInterval(_cUsageCheck), 10000);
+</script>
 </body>
 </html>
