@@ -855,6 +855,37 @@ window.signUp = async function() {
     });
     if(btn){ btn.textContent='Account Created!'; btn.disabled=true; }
     if(err){ err.style.display='block'; err.style.color='#74C69D'; err.textContent='Account created! Check your inbox AND spam/junk folder for the verification email, then sign in.'; }
+
+    // Send welcome email
+    try {
+      await fetch('https://afrivid-tts.mathsai666.workers.dev/send-email', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          from: 'AfriVid Studio <support@afrivid.studio>',
+          to: [email],
+          subject: 'Welcome to AfriVid Studio! 🌍',
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
+              <h1 style="color:#F5A623;">Welcome to AfriVid Studio, ${name}! 🌍</h1>
+              <p style="color:rgba(255,255,255,0.8);line-height:1.7;">You've just joined Africa's First AI Video Creation Platform. We're excited to have you!</p>
+              <div style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:1.5rem;margin:1.5rem 0;">
+                <h3 style="color:#F5A623;margin-top:0;">Your Free Plan Includes:</h3>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ 3 AI videos per month</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ 3 AI editor sessions per month</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ 3 voice translations per month</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ Photo editor — unlimited</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ Design studio — unlimited</p>
+              </div>
+              <a href="https://afrivid.studio/create.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Create Your First Video →</a>
+              <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:2rem;">Need help? Reply to this email or visit afrivid.studio</p>
+              <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;">AfriVid Studio · afrivid.studio · Built for Africa 🌍</p>
+            </div>
+          `
+        })
+      });
+    } catch(e) { console.log('Welcome email failed:', e); }
+
     setTimeout(()=>window.showAuthTab('signin'), 2500);
   } catch(e) {
     if(btn){ btn.textContent='Create Account →'; btn.disabled=false; }
