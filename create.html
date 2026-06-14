@@ -1147,6 +1147,7 @@ window.checkVideoLimit = async function() {
     return false;
   }
 
+  try { const freshSnap = await getDoc(doc(db, 'studio_users', currentUser.uid)); if (freshSnap.exists()) userProfile = freshSnap.data(); } catch(e) {}
   const used = userProfile?.videosGenerated || 0;
   const limit = userProfile?.betaLimit || BETA_LIMIT;
   const plan = userProfile?.plan || 'beta';
