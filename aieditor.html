@@ -1483,6 +1483,104 @@ async function submitFeedback() {
 
 <script src="afribrain.js"></script>
 <script src="limits.js"></script>
+
+<script>
+// AfriVid Limits UX — show countdown and usage progress
+window.showLimitsUX = async function() {
+  if (!window.currentUser) return;
+  try {
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.plan === 'pro') return;
+
+    const now = new Date();
+    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
+    
+    // Get usage
+    const videoUsed = data[`${monthKey}_creator_video`] || data.videosGenerated || 0;
+    const aiUsed = data[`${monthKey}_aieditor_session`] || 0;
+    const transUsed = data[`${monthKey}_aieditor_translate`] || 0;
+    const videoMax = data.custom_creator_video_limit || 3;
+    const aiMax = 3;
+    const transMax = 3;
+
+    // Calculate reset date
+    const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const daysLeft = Math.ceil((resetDate - now) / (1000 * 60 * 60 * 24));
+    const resetStr = resetDate.toLocaleDateString('en-US', {month:'long', day:'numeric'});
+
+    // Build UX panel
+    const panel = document.getElementById('limits-ux-panel');
+    if (!panel) return;
+
+    const barColor = (used, max) => used >= max ? '#E63329' : used >= max-1 ? '#F5A623' : '#74C69D';
+    const pct = (used, max) => Math.min(100, Math.round(used/max*100));
+
+    panel.style.display = 'block';
+    panel.innerHTML = `
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
+        </div>
+        
+        <div style="margin-bottom:0.6rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Video Creator</span>
+            <span style="font-size:0.75rem;color:${barColor(videoUsed,videoMax)};">${videoUsed}/${videoMax}</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
+            <div style="height:100%;width:${pct(videoUsed,videoMax)}%;background:${barColor(videoUsed,videoMax)};border-radius:2px;transition:width 0.3s;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.6rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">AI Editor</span>
+            <span style="font-size:0.75rem;color:${barColor(aiUsed,aiMax)};">${aiUsed}/${aiMax}</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
+            <div style="height:100%;width:${pct(aiUsed,aiMax)}%;background:${barColor(aiUsed,aiMax)};border-radius:2px;transition:width 0.3s;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Voice Translation</span>
+            <span style="font-size:0.75rem;color:${barColor(transUsed,transMax)};">${transUsed}/${transMax}</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
+            <div style="height:100%;width:${pct(transUsed,transMax)}%;background:${barColor(transUsed,transMax)};border-radius:2px;transition:width 0.3s;"></div>
+          </div>
+        </div>
+
+        ${(videoUsed >= videoMax-1 || aiUsed >= aiMax-1) ? `
+        <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.6rem 0.75rem;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.75rem;color:#F5A623;">Running low! Upgrade for unlimited access.</span>
+          <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.7rem;font-weight:900;text-decoration:none;white-space:nowrap;">Upgrade →</a>
+        </div>` : ''}
+      </div>
+    `;
+  } catch(e) {}
+};
+
+// Auto-load on pages that have the panel
+document.addEventListener('DOMContentLoaded', () => {
+  const check = setInterval(() => {
+    if (window.currentUser) {
+      clearInterval(check);
+      setTimeout(showLimitsUX, 2000);
+    }
+  }, 500);
+  setTimeout(() => clearInterval(check), 15000);
+});
+</script>
 <script src="chatbot.js"></script>
 <script>
 if('serviceWorker' in navigator) {
