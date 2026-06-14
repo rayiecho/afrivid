@@ -866,7 +866,8 @@ function fastExport() {
     else alert('FFmpeg still loading, please wait a moment...');
   }, 1000);
 }
-function generateCaptions() {
+async function generateCaptions() {
+  if (!await checkAfriVidLimit("editor_captions")) return;
   if (window._generateCaptions) { window._generateCaptions(); return; }
   setTimeout(function() {
     if (window._generateCaptions) window._generateCaptions();
@@ -970,7 +971,7 @@ function resetEnhancer(){ if(window._resetEnhancer) window._resetEnhancer(); els
 function addClip(){ if(window._addClip) window._addClip(); else if(window['addClip']) window['addClip'](); }
 function removeClip(a,b){ if(window._removeClip) window._removeClip(a,b); else if(window['removeClip']) window['removeClip'](a,b); }
 function clearClips(){ if(window._clearClips) window._clearClips(); else if(window['clearClips']) window['clearClips'](); }
-function combineVideos(){ if(window._combineVideos) window._combineVideos(); else if(window['combineVideos']) window['combineVideos'](); }
+async function combineVideos(){ if (!await checkAfriVidLimit('editor_combine')) return; if(window._combineVideos) window._combineVideos(); else if(window['combineVideos']) window['combineVideos'](); }
 function setCaptionStyle(a,b){ if(window._setCaptionStyle) window._setCaptionStyle(a,b); else if(window['setCaptionStyle']) window['setCaptionStyle'](a,b); }
 function addManualCaption(){ if(window._addManualCaption) window._addManualCaption(); else if(window['addManualCaption']) window['addManualCaption'](); }
 function toggleCrop(){ if(window._toggleCrop) window._toggleCrop(); else if(window['toggleCrop']) window['toggleCrop'](); }
