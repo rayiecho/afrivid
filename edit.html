@@ -694,9 +694,7 @@ body::after{
         <!-- AI EDIT PANEL -->
         <div class="tool-panel" id="tab-ai">
           <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">AI EDIT INSTRUCTIONS</div>
-          <textarea id="ai-edit-instructions" class="form-textarea" style="min-height:80px;margin-bottom:0.75rem;" placeholder="e.g. Remove first 30 seconds, keep the best parts..."></textarea>
-          <button class="btn btn-gold" style="width:100%;" onclick="applyAIEdit()">✦ Apply AI Edit</button>
-          <div id="ai-edit-log" style="font-size:0.72rem;font-family:Space Mono,monospace;color:#74C69D;margin-top:0.5rem;min-height:20px;"></div>
+
           <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;">
             <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">✦ HIGHLIGHT REEL</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;">
@@ -2759,7 +2757,7 @@ const editMobPanels = {
     title: 'AI EDIT',
     html: `<div style="padding:0.5rem 0;">
       <textarea id="mob-ai-instructions" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-size:0.82rem;min-height:80px;font-family:'Syne',sans-serif;margin-bottom:0.75rem;" placeholder="e.g. Remove first 30 seconds, keep the best parts..."></textarea>
-      <button style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;" onclick="document.getElementById('ai-edit-instructions').value=document.getElementById('mob-ai-instructions').value;applyAIEdit()">✦ Apply AI Edit</button>
+
     </div>`
   },
   export: {
