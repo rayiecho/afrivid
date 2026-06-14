@@ -3411,7 +3411,7 @@ async function enableVoice() {
 window._startRecording = async function startRecording() {
   if (!scriptData) { alert('No script found. Please go back and generate a script first.'); return; }
 
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
   goToStep(3);
 
   const canvas = document.getElementById('video-canvas');
@@ -4184,7 +4184,7 @@ window._doSignUp = window.doSignUp = async function() {
 // ---- RESTORED FUNCTIONS ----
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4282,7 +4282,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4380,7 +4380,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4478,7 +4478,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4576,7 +4576,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4674,7 +4674,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4772,7 +4772,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4870,7 +4870,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
@@ -4968,7 +4968,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 
 generateScript = async function() {
   // Check beta limit
-  if (window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
     await structureOwnScript();
