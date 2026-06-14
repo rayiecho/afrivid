@@ -81,3 +81,4 @@ window.checkAfriVidLimit = async function(action) {
     return true;
   }
 };
+// AfriVid Limit System v2.1
