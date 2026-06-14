@@ -379,6 +379,50 @@ body::after{
 </script>
 </head>
 <body>
+
+<!-- UPGRADE BANNER - shows for free users only -->
+<div id="upgrade-banner" style="display:none;background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05));border-bottom:1px solid rgba(245,166,35,0.2);padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <span style="color:#F5A623;font-size:0.85rem;">⚡</span>
+    <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-family:'Syne',sans-serif;">You're on the <strong style="color:#fff;">Free Plan</strong> — <span id="banner-usage">3 videos left</span> this month</span>
+  </div>
+  <a href="pricing.html" style="background:#F5A623;color:#050A14;padding:0.4rem 1.25rem;border-radius:20px;font-weight:900;text-decoration:none;font-size:0.78rem;font-family:'Syne',sans-serif;white-space:nowrap;">Upgrade to Pro $5/mo →</a>
+</div>
+<script>
+// Show banner for free users
+(function() {
+  function checkAndShowBanner() {
+    if (!window.currentUser) return;
+    setTimeout(async () => {
+      try {
+        const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+        const db = getFirestore(app);
+        const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const plan = data.plan || 'beta';
+        if (plan === 'pro') return; // Hide for Pro users
+        const used = data.videosGenerated || 0;
+        const limit = data.betaLimit || 3;
+        const remaining = Math.max(0, limit - used);
+        const banner = document.getElementById('upgrade-banner');
+        const usage = document.getElementById('banner-usage');
+        if (banner) banner.style.display = 'flex';
+        if (usage) usage.textContent = `${remaining} video${remaining!==1?'s':''} left`;
+      } catch(e) {}
+    }, 2000);
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const check = setInterval(() => {
+      if (window.currentUser) { clearInterval(check); checkAndShowBanner(); }
+    }, 500);
+    setTimeout(() => clearInterval(check), 10000);
+  });
+})();
+</script>
 <nav class="navbar">
   <a href="index.html" class="navbar-brand" style="text-decoration:none;">
     <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
