@@ -650,6 +650,10 @@ body::after{
             <button class="btn btn-outline" id="btn-preview-audio" onclick="previewAudioFilters()" style="padding:0.4rem 0.75rem;font-size:0.72rem;">Preview</button>
           </div>
           <div id="audio-preview-status" style="font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;margin-top:0.4rem;"></div>
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.75rem 0;"></div>
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">⚡ PRO AUDIO</div>
+          <button class="btn btn-gold" style="width:100%;margin-bottom:0.5rem;" onclick="doNoiseRemoval()">🔇 Remove Background Noise</button>
+          <div id="noise-removal-status" style="font-size:0.68rem;color:#74C69D;font-family:'Space Mono',monospace;margin-top:0.4rem;"></div>
         </div>
 
         <!-- TRIM -->
@@ -1020,6 +1024,7 @@ let combineFiles = [];
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
+  window.currentUser = user;
   if (user) {
     document.getElementById('btn-signin').style.display = 'none';
     const badge = document.getElementById('user-badge');
@@ -1570,6 +1575,7 @@ window._downloadEnhanced = function downloadEnhanced() {
 }
 
 async function uploadEnhancedToYouTube() {
+  if (!await checkAfriVidLimit("editor_youtube")) return;
   if (!enhancedBlob) { alert('No enhanced video yet.'); return; }
   videoBlob = enhancedBlob;
   scriptData = { title: 'AfriVid Enhanced Video', hashtags: ['#AfriVid', '#AfricaCreates'] };

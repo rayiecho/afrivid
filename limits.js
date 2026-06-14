@@ -7,6 +7,10 @@ window.AFRIVID_LIMITS = {
   aieditor_translate: { max: 3, period: 'month', field: 'aieditor_translate' },
   aieditor_captions:  { max: 3, period: 'week',  field: 'aieditor_captions' },
   editor_session:     { max: 3, period: 'month', field: 'editor_session' },
+  editor_captions:    { max: 3, period: 'week',  field: 'editor_captions' },
+  editor_combine:     { max: 3, period: 'month', field: 'editor_combine' },
+  editor_youtube:     { max: 3, period: 'month', field: 'editor_youtube' },
+  editor_noise:       { max: 3, period: 'month', field: 'editor_noise' },
 };
 
 function _getMonthKey() {
