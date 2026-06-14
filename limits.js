@@ -23,9 +23,14 @@ function _getWeekKey() {
 
 window.checkAfriVidLimit = async function(action) {
   console.log("[Limit] Checking:", action, "User:", window.currentUser?.email);
+  // Wait for auth to be ready
   if (!window.currentUser) {
-    if (window.showLogin) showLogin('Sign in to continue');
-    return false;
+    // Check if user is stored elsewhere
+    const user = window.currentUser || window._currentUser;
+    if (!user) {
+      if (window.showLogin) showLogin('Sign in to continue');
+      return false;
+    }
   }
 
   try {

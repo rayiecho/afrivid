@@ -1187,6 +1187,7 @@ let mediaRecorder = null;
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
+  window.currentUser = user;
   if (user) {
     document.getElementById('btn-signin').style.display = 'none';
     const ref = doc(db, 'studio_users', user.uid);
