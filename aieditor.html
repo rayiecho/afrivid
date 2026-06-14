@@ -860,6 +860,31 @@ async function exportClips(clips, filename) {
   }
 
   addLog('all', `[ok] Export complete! ${sizeMB}MB`);
+  hideProcessingOverlay();
+  // Send email notification
+  if (window.currentUser?.email) {
+    try {
+      const videoName = window.currentVideoFile?.name || 'your video';
+      await fetch('https://afrivid-tts.mathsai666.workers.dev/send-email', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          from: 'AfriVid Studio <support@afrivid.studio>',
+          to: [window.currentUser.email],
+          subject: 'Your AfriVid edit is ready! 🎬',
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
+              <h1 style="color:#F5A623;">Your video is ready! 🎬</h1>
+              <p style="color:rgba(255,255,255,0.8);">AfriVid AI has finished processing <strong>${videoName}</strong>.</p>
+              <p style="color:rgba(255,255,255,0.6);">Your edited video has been downloaded automatically. Check your downloads folder.</p>
+              <a href="https://afrivid.studio/aieditor.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Edit Another Video →</a>
+              <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:2rem;">AfriVid Studio · afrivid.studio</p>
+            </div>
+          `
+        })
+      });
+    } catch(e) {}
+  }
   // Auto-trigger download
   const _url = URL.createObjectURL(blob);
   const _a = document.createElement('a');
