@@ -1304,6 +1304,11 @@ Create exactly ${sceneCount} scenes. Total scene durations must equal ${duration
     // Render script
     const out = document.getElementById('script-output');
     out.innerHTML = `<div style="margin-bottom:1rem;padding:0.75rem 1rem;background:rgba(116,198,157,0.08);border:1px solid rgba(116,198,157,0.2);border-radius:10px;font-size:0.85rem;color:#74C69D;font-family:'Space Mono',monospace;">[ok] ${scriptData.scenes.length} scenes · ${duration}s · ${language}</div>`;
+  // Save to AfriBrain
+  if (window.saveToAfriBrain && scriptData) {
+    const fullText = (scriptData.scenes||[]).map(s=>(s.title||'')+' '+(s.content||'')).join(' ');
+    window.saveToAfriBrain({text:fullText, language:scriptData.language||'en', topic:scriptData.title||'', source:'create', type:'script'});
+  }
     out.innerHTML += scriptData.scenes.map(s => `
       <div class="script-scene">
         <div class="scene-num">SCENE ${s.scene}</div>

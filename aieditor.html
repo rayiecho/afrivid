@@ -719,7 +719,11 @@ async function transcribe() {
   });
   if (!res.ok) return '';
   const d = await res.json();
-  return d.text || '';
+  const transcriptText = d.text || '';
+  if (transcriptText && window.saveToAfriBrain) {
+    window.saveToAfriBrain({text: transcriptText, language: 'en', source: 'aieditor', type: 'transcript'});
+  }
+  return transcriptText;
 }
 
 async function claudeAsk(prompt, maxTokens) {
