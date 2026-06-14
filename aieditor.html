@@ -636,6 +636,7 @@ async function applyPrompt() {
   if (!currentVideoFile) { alert('Upload a video first'); return; }
   if (!window.currentUser) { showLogin(); return; }
   console.log('[Apply] passing checks...');
+  if (!await checkAfriVidLimit('aieditor_session')) return;
   const instructions = document.getElementById('ai-prompt').value.trim();
   if (!instructions) { alert('Type your instructions first'); return; }
   const btn = document.getElementById('apply-btn');
@@ -665,9 +666,12 @@ function addLog(panel, msg) {
 async function runFeature(type, param) {
   if (!currentVideoFile) { alert('Upload a video first'); return; }
   if (!window.currentUser) { showLogin('Sign in to use AI features'); return; }
-  
+  // Check limit based on feature type
+  const limitKey = ['translate'].includes(type) ? 'aieditor_translate' : ['captions'].includes(type) ? 'aieditor_captions' : 'aieditor_session';
+  if (!await checkAfriVidLimit(limitKey)) return;
+
   const video = document.getElementById('ai-video');
-  
+
   switch(type) {
     case 'viral': await doViralClips(param || 5); break;
     case 'highlight': await doHighlightReel(param || 60); break;
