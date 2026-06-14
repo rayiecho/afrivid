@@ -567,7 +567,7 @@ window._setMode = function setMode(m) { const ai=document.getElementById('ai-fie
 function goToStep(n){ if(window._goToStep) window._goToStep(n); }
 function generateScript(){ if(window._generateScript) window._generateScript(); }
 async function handleGenerateScript(){ 
-  if(window.checkVideoLimit && !(await window.checkVideoLimit())) return;
+  if(window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
   if(window._handleGenerateScript) window._handleGenerateScript(); 
 }
 function startRecording(){ if(window._startRecording) window._startRecording(); }
@@ -3724,7 +3724,7 @@ function saveToLibrary(blob, title, duration) {
         size: (blob.size / 1024 / 1024).toFixed(1) + 'MB',
         createdAt: serverTimestamp()
       }).then(() => {
-        updateDoc(doc(db, 'studio_users', currentUser.uid), { videosGenerated: increment(1) });
+        // Usage tracked by checkAfriVidLimit
         addLog('success', '[ok] Video saved to your Studio!');
       }).catch(e => addLog('error', '[x] Studio save failed: ' + e.message));
     });
@@ -5804,6 +5804,7 @@ async function submitFeedback() {
 })();
 </script>
 
+<script src="limits.js"></script>
 <script src="chatbot.js"></script>
 <script>
 if('serviceWorker' in navigator) {

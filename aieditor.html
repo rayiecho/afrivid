@@ -892,7 +892,7 @@ async function runAIEdit(instructions) {
 }
 
 async function doViralClips(count) {
-  if (!await checkLimit('ai_editor')) return;
+  if (!await checkAfriVidLimit('aieditor_session')) return;
   const video = document.getElementById('ai-video');
   // Wait for real duration
   let duration = video.duration;
@@ -959,7 +959,7 @@ function showViralClipsUI(clips) {
 }
 
 async function doHighlightReel(duration) {
-  if (!await checkLimit('ai_editor')) return;
+  if (!await checkAfriVidLimit('aieditor_session')) return;
   addLog('highlight', '[~] Transcribing...');
   const video = document.getElementById('ai-video');
   let transcript = '';
@@ -977,7 +977,7 @@ async function doHighlightReel(duration) {
 }
 
 async function doTranslate(lang) {
-  if (!await checkLimit('translation')) return;
+  if (!await checkAfriVidLimit('aieditor_translate')) return;
   const langNames = {'sw':'Swahili','fr':'French','yo':'Yoruba','ha':'Hausa','am':'Amharic','pt':'Portuguese'};
   const langName = langNames[lang] || lang;
   addLog('translate', `[~] Transcribing for ${langName} translation...`);
@@ -1162,7 +1162,7 @@ async function doAddMusic(type) {
 function stopMusic() { if(bgMusicCtx){bgMusicCtx.close();bgMusicCtx=null;} addLog('music','[ok] Music stopped'); }
 
 async function doCaptions() {
-  if (!await checkLimit('captions')) return;
+  if (!await checkAfriVidLimit('aieditor_captions')) return;
   addLog('captions', '[~] Transcribing...');
   try {
     const text = await transcribe();
@@ -1472,6 +1472,7 @@ async function submitFeedback() {
 })();
 </script>
 
+<script src="limits.js"></script>
 <script src="chatbot.js"></script>
 <script>
 if('serviceWorker' in navigator) {

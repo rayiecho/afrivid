@@ -2840,7 +2840,7 @@ async function checkLimit(feature) {
     const currentUsage = feature === 'captions' ? (weekUsage[limit.field] || 0) : (usage[limit.field] || 0);
 
     if (currentUsage >= limit.max) {
-      showUpgradeModal(feature, limit.max, limit.period);
+      showUpgradeModal('editor_session');
       return false;
     }
 
@@ -2967,6 +2967,7 @@ async function submitFeedback() {
 })();
 </script>
 
+<script src="limits.js"></script>
 <script src="chatbot.js"></script>
 <script>
 if('serviceWorker' in navigator) {
