@@ -229,6 +229,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <span>Afri<em>Vid</em> AI Editor</span>
   </a>
   <div class="topbar-right">
+    <span id="ai-usage-badge" style="display:none;font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.8rem;border-radius:20px;"></span>
     <span class="user-badge" id="user-badge" style="display:none;" onclick="window.location.href='studio.html?profile=1'">Loading...</span>
     <button class="btn btn-outline" id="btn-signin" onclick="showLogin()" style="font-size:0.78rem;padding:0.4rem 0.9rem;">Sign In</button>
   </div>
@@ -1626,6 +1627,46 @@ async function submitGlobalUpgrade() {
     alert('Failed: ' + e.message);
   }
 }
+</script>
+
+<script>
+// Show AI Editor usage in topbar
+async function loadAIEditorUsage() {
+  if (!window.currentUser) return;
+  try {
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.plan === 'pro') {
+      const badge = document.getElementById('ai-usage-badge');
+      if (badge) { badge.textContent = 'Pro — Unlimited'; badge.style.color = '#F5A623'; badge.style.display = 'inline-block'; }
+      return;
+    }
+    const now = new Date();
+    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
+    const aiUsed = data[`${monthKey}_aieditor_session`] || 0;
+    const transUsed = data[`${monthKey}_aieditor_translate`] || 0;
+    const aiLeft = Math.max(0, 3 - aiUsed);
+    const transLeft = Math.max(0, 3 - transUsed);
+    const badge = document.getElementById('ai-usage-badge');
+    if (badge) {
+      badge.style.display = 'inline-block';
+      badge.textContent = `${aiLeft} AI · ${transLeft} Trans left`;
+      badge.style.color = aiLeft === 0 ? '#E63329' : aiLeft === 1 ? '#F5A623' : 'rgba(255,255,255,0.4)';
+    }
+  } catch(e) {}
+}
+
+// Load after auth
+const _usageCheck = setInterval(() => {
+  if (window.currentUser) { clearInterval(_usageCheck); loadAIEditorUsage(); }
+}, 500);
+setTimeout(() => clearInterval(_usageCheck), 10000);
 </script>
 </body>
 </html>
