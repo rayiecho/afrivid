@@ -189,7 +189,7 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
       addMessage("Sign in to use the AfriVid AI assistant. Create a free account at afrivid.studio! 🌍", 'bot');
       return;
     }
-    const isPro = await checkProAccess();
+    isPro = await checkProAccess();
     if (!isPro) {
       addMessage("The AI assistant is available for Pro users. Upgrade to Pro for $5/month to get unlimited AI assistance, unlimited videos and more! Visit the pricing page to upgrade. 🚀", 'bot');
       return;
