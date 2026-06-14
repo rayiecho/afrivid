@@ -1171,10 +1171,24 @@ window.downloadPhoto = function() {
 window.handleSaveToStudio = async function() {
   if (!currentUser) { showLogin(); return; }
   try {
+    // Get photo data from canvas
+    const canvas = document.getElementById('photo-canvas');
+    let dataURL = '';
+    let thumbnail = '';
+    if (canvas) {
+      dataURL = canvas.toDataURL('image/jpeg', 0.85);
+      // Generate thumbnail
+      const tc = document.createElement('canvas');
+      tc.width = 320; tc.height = 320;
+      tc.getContext('2d').drawImage(canvas, 0, 0, 320, 320);
+      thumbnail = tc.toDataURL('image/jpeg', 0.6);
+    }
     await addDoc(collection(db, 'studio_photos'), {
       userId: currentUser.uid,
       userEmail: currentUser.email,
       title: 'Edited Photo',
+      dataURL: dataURL,
+      thumbnail: thumbnail,
       createdAt: serverTimestamp()
     });
     addLog('success', '[ok] Saved to Studio!');

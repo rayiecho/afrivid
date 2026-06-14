@@ -3722,15 +3722,28 @@ function saveToLibrary(blob, title, duration) {
   if (currentUser) {
     import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js').then(({ getFirestore, collection, addDoc, doc, updateDoc, increment, serverTimestamp }) => {
       const db = getFirestore();
+      // Generate thumbnail from canvas
+      let thumbnail = '';
+      try {
+        const vc = document.getElementById('video-canvas');
+        if (vc && vc.width > 0) {
+          const tc = document.createElement('canvas');
+          tc.width = 320; tc.height = 180;
+          tc.getContext('2d').drawImage(vc, 0, 0, 320, 180);
+          thumbnail = tc.toDataURL('image/jpeg', 0.7);
+        }
+      } catch(e) {}
+
       addDoc(collection(db, 'studio_videos'), {
         userId: currentUser.uid,
         userEmail: currentUser.email,
         title: title,
         duration: duration,
         size: (blob.size / 1024 / 1024).toFixed(1) + 'MB',
+        videoUrl: '',
+        thumbnail: thumbnail,
         createdAt: serverTimestamp()
       }).then(() => {
-        // Usage tracked by checkAfriVidLimit
         addLog('success', '[ok] Video saved to your Studio!');
       }).catch(e => addLog('error', '[x] Studio save failed: ' + e.message));
     });

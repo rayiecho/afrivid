@@ -1030,7 +1030,7 @@ async function loadUserFiles(uid) {
       const data = d.data();
       const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
       return `<div class="content-card">
-        <div class="card-thumb photo" style="${data.dataURL ? 'background-image:url('+data.dataURL+');background-size:cover;background-position:center;' : ''}">
+        <div class="card-thumb photo" style="${data.thumbnail||data.dataURL ? 'background-image:url('+(data.thumbnail||data.dataURL)+');background-size:cover;background-position:center;cursor:pointer;' : ''}" onclick="${data.dataURL?'viewPhoto(\''+data.id+'\')':''}">
           ${!data.dataURL ? '<div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#74C69D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>' : ''}
           <div class="card-type-badge badge-photo">PHOTO</div>
         </div>
@@ -1730,6 +1730,77 @@ async function submitGlobalUpgrade() {
     if (btn) { btn.textContent = 'Send Request →'; btn.disabled = false; }
     alert('Failed: ' + e.message);
   }
+}
+</script>
+
+<!-- VIDEO PLAYER MODAL -->
+<div id="video-player-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;" onclick="if(event.target===this)closeVideoPlayer()">
+  <div style="width:90%;max-width:800px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div id="vp-title" style="color:#fff;font-weight:800;font-size:1rem;font-family:'Syne',sans-serif;"></div>
+      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.5rem;cursor:pointer;">✕</button>
+    </div>
+    <video id="vp-video" controls style="width:100%;border-radius:12px;background:#000;max-height:70vh;"></video>
+    <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+      <a id="vp-download" download style="background:#F5A623;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download</a>
+      <button onclick="closeVideoPlayer()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function playVideo(url, title) {
+  if (!url) { alert('Video file not available. Try recreating it.'); return; }
+  const modal = document.getElementById('video-player-modal');
+  const video = document.getElementById('vp-video');
+  const titleEl = document.getElementById('vp-title');
+  const downloadEl = document.getElementById('vp-download');
+  if (modal) modal.style.display = 'flex';
+  if (video) { video.src = url; video.play(); }
+  if (titleEl) titleEl.textContent = title;
+  if (downloadEl) { downloadEl.href = url; downloadEl.download = title + '.webm'; }
+}
+function closeVideoPlayer() {
+  const modal = document.getElementById('video-player-modal');
+  const video = document.getElementById('vp-video');
+  if (video) { video.pause(); video.src = ''; }
+  if (modal) modal.style.display = 'none';
+}
+</script>
+
+<!-- PHOTO VIEWER MODAL -->
+<div id="photo-viewer-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;" onclick="if(event.target===this)closePhotoViewer()">
+  <div style="width:90%;max-width:700px;text-align:center;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="color:#fff;font-weight:800;font-family:'Syne',sans-serif;">Edited Photo</div>
+      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.5rem;cursor:pointer;">✕</button>
+    </div>
+    <img id="pv-image" style="max-width:100%;max-height:70vh;border-radius:12px;object-fit:contain;">
+    <div style="display:flex;gap:0.75rem;margin-top:1rem;justify-content:center;">
+      <a id="pv-download" download="AfriVid-Photo.jpg" style="background:#F5A623;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download</a>
+      <button onclick="closePhotoViewer()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Store photo data for viewing
+window._studioPhotos = {};
+
+function viewPhoto(id) {
+  const data = window._studioPhotos[id];
+  if (!data || !data.dataURL) { alert('Photo data not available. Try saving again.'); return; }
+  const modal = document.getElementById('photo-viewer-modal');
+  const img = document.getElementById('pv-image');
+  const dl = document.getElementById('pv-download');
+  if (modal) modal.style.display = 'flex';
+  if (img) img.src = data.dataURL;
+  if (dl) dl.href = data.dataURL;
+}
+
+function closePhotoViewer() {
+  const modal = document.getElementById('photo-viewer-modal');
+  if (modal) modal.style.display = 'none';
 }
 </script>
 </body>
