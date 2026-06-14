@@ -639,12 +639,21 @@ async function applyPrompt() {
   console.log('[Apply] passing checks...');
   if (!await checkAfriVidLimit('aieditor_session')) return;
   const instructions = document.getElementById('ai-prompt').value.trim();
+  
+  // Show processing overlay
+  showProcessingOverlay('AfriVid AI is editing your video', [
+    {label: 'Analyzing instructions', status: 'active'},
+    {label: 'Processing video', status: 'pending'},
+    {label: 'Applying changes', status: 'pending'},
+    {label: 'Preparing download', status: 'pending'},
+  ]);
   if (!instructions) { alert('Type your instructions first'); return; }
   const btn = document.getElementById('apply-btn');
   if(btn) { btn.disabled=true; btn.textContent='[..] Applying...'; btn.style.background='rgba(245,166,35,0.3)'; }
   addLog('all', '[~] Processing: ' + instructions);
   await runAIEdit(instructions);
   if(btn) { btn.disabled=false; btn.textContent='✦ Apply'; btn.style.background=''; }
+  hideProcessingOverlay();
 }
 
 // ── LOG ──
@@ -672,6 +681,23 @@ async function runFeature(type, param) {
   if (!await checkAfriVidLimit(limitKey)) return;
 
   const video = document.getElementById('ai-video');
+
+  // Show processing overlay
+  const featureLabels = {
+    viral: 'Finding viral clips',
+    highlight: 'Creating highlight reel',
+    translate: 'Translating video',
+    silence: 'Removing silences',
+    music: 'Adding background music',
+    captions: 'Generating captions',
+    noise: 'Removing background noise',
+    thumbnail: 'Generating thumbnail',
+  };
+  showProcessingOverlay(`AfriVid AI: ${featureLabels[type]||'Processing'}`, [
+    {label: 'Analyzing video', status: 'active'},
+    {label: featureLabels[type]||'Processing', status: 'pending'},
+    {label: 'Finalizing output', status: 'pending'},
+  ]);
 
   switch(type) {
     case 'viral': await doViralClips(param || 5); break;
@@ -1770,6 +1796,90 @@ const _usageCheck = setInterval(() => {
   if (window.currentUser) { clearInterval(_usageCheck); loadAIEditorUsage(); }
 }, 500);
 setTimeout(() => clearInterval(_usageCheck), 10000);
+</script>
+
+<!-- PROCESSING OVERLAY -->
+<div id="processing-overlay" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(5,10,20,0.95);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="width:90%;max-width:500px;text-align:center;">
+    <!-- Animated logo -->
+    <div style="font-size:3rem;margin-bottom:1rem;animation:pulse 1.5s ease-in-out infinite;">🎬</div>
+    <div style="color:#F5A623;font-weight:900;font-size:1.3rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;" id="proc-title">Processing your video...</div>
+    <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;font-family:'Space Mono',monospace;margin-bottom:2rem;" id="proc-stage">Initializing...</div>
+    
+    <!-- Progress bar -->
+    <div style="background:rgba(255,255,255,0.08);border-radius:10px;height:8px;margin-bottom:0.75rem;overflow:hidden;">
+      <div id="proc-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:10px;transition:width 0.5s ease;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:2rem;">
+      <span id="proc-pct" style="font-size:0.75rem;color:#F5A623;font-family:'Space Mono',monospace;">0%</span>
+      <span id="proc-time" style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;"></span>
+    </div>
+
+    <!-- Steps -->
+    <div id="proc-steps" style="text-align:left;background:rgba(255,255,255,0.03);border-radius:12px;padding:1rem;">
+    </div>
+
+    <div style="margin-top:1.5rem;color:rgba(255,255,255,0.25);font-size:0.75rem;font-family:'Space Mono',monospace;">
+      You can keep this tab open or close it — we'll notify you when done.
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+</style>
+
+<script>
+let _procStartTime = null;
+let _procSteps = [];
+
+window.showProcessingOverlay = function(title, steps) {
+  _procStartTime = Date.now();
+  _procSteps = steps || [];
+  const overlay = document.getElementById('processing-overlay');
+  if (overlay) overlay.style.display = 'flex';
+  document.getElementById('proc-title').textContent = title || 'Processing your video...';
+  updateProcSteps();
+  updateProcTime();
+};
+
+window.hideProcessingOverlay = function() {
+  const overlay = document.getElementById('processing-overlay');
+  if (overlay) overlay.style.display = 'none';
+};
+
+window.updateProcessingProgress = function(pct, stage, stepIndex) {
+  document.getElementById('proc-bar').style.width = pct + '%';
+  document.getElementById('proc-pct').textContent = pct + '%';
+  document.getElementById('proc-stage').textContent = stage || '';
+  if (stepIndex !== undefined) {
+    _procSteps = _procSteps.map((s, i) => ({
+      ...s,
+      status: i < stepIndex ? 'done' : i === stepIndex ? 'active' : 'pending'
+    }));
+    updateProcSteps();
+  }
+};
+
+function updateProcSteps() {
+  const el = document.getElementById('proc-steps');
+  if (!el || !_procSteps.length) return;
+  el.innerHTML = _procSteps.map(s => `
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <span style="font-size:1rem;">${s.status==='done'?'✅':s.status==='active'?'⏳':'○'}</span>
+      <span style="font-size:0.82rem;color:${s.status==='done'?'#74C69D':s.status==='active'?'#F5A623':'rgba(255,255,255,0.3)'};font-family:'Space Mono',monospace;">${s.label}</span>
+    </div>
+  `).join('');
+}
+
+function updateProcTime() {
+  if (!_procStartTime) return;
+  const elapsed = Math.floor((Date.now() - _procStartTime) / 1000);
+  const el = document.getElementById('proc-time');
+  if (el) el.textContent = `${elapsed}s elapsed`;
+  setTimeout(updateProcTime, 1000);
+}
 </script>
 </body>
 </html>
