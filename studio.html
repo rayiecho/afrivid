@@ -1901,6 +1901,22 @@ function closePhotoViewer() {
   if (modal) modal.style.display = 'none';
 }
 </script>
+
+<script>
+function copyShareLink(url) {
+  if (!url) { alert('No shareable link available for this video.'); return; }
+  navigator.clipboard.writeText(url).then(() => {
+    // Show toast
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#74C69D;color:#050A14;padding:0.75rem 1.5rem;border-radius:10px;font-weight:800;font-size:0.85rem;z-index:9999;font-family:Syne,sans-serif;';
+    toast.textContent = '✅ Link copied to clipboard!';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }).catch(() => {
+    prompt('Copy this link:', url);
+  });
+}
+</script>
 </body>
 </html>
 <script>
