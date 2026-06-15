@@ -2905,6 +2905,8 @@ window.buildFlyer = function() {
 
   // RIGHT COLUMN — photo
   const drawBottom = () => {
+    const dlBtn = document.getElementById('flyer-download-btn');
+    if (dlBtn) dlBtn.style.display = 'block';
     ctx.fillStyle = t.bg2; ctx.fillRect(0, H-105, W, 105);
     ctx.fillStyle = t.accent; ctx.fillRect(0, H-6, W, 6);
     ctx.fillStyle = t.accent; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
