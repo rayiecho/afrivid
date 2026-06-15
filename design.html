@@ -2614,10 +2614,29 @@ async function submitGlobalUpgrade() {
 window.downloadFlyer = function() {
   const canvas = document.getElementById('flyer-canvas');
   if (!canvas) return;
-  const a = document.createElement('a');
-  a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
-  a.href = canvas.toDataURL('image/png', 1.0);
-  a.click();
+  try {
+    // Try direct download
+    const dataURL = canvas.toDataURL('image/png', 1.0);
+    if (dataURL && dataURL !== 'data:,') {
+      const a = document.createElement('a');
+      a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
+      a.href = dataURL;
+      a.click();
+      return;
+    }
+  } catch(e) {
+    console.log('Canvas tainted, using blob method');
+  }
+  // Fallback — use blob
+  canvas.toBlob(blob => {
+    if (!blob) { alert('Download failed. Try right-clicking the flyer and saving as image.'); return; }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
+    a.href = url;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, 'image/png', 1.0);
 };
 
 // FLYER BUILDER FUNCTIONS
@@ -2769,6 +2788,7 @@ window.buildFlyer = function() {
   // Logo
   if (window._flyerData.logo) {
     const logo = new Image();
+    logo.crossOrigin = 'anonymous';
     logo.onload = () => ctx.drawImage(logo, W-88, 10, 68, 68);
     logo.src = window._flyerData.logo;
   }
@@ -2785,6 +2805,7 @@ window.buildFlyer = function() {
 
   if (window._flyerData.photo) {
     const img = new Image();
+    img.crossOrigin = 'anonymous';
     img.onload = () => {
       const pH = cW * 1.2;
       ctx.save();
