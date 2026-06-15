@@ -2740,7 +2740,7 @@ window._drawFlyerOnCanvas = function(ctx, W, H, d, cb) {
   if(d.logo){const l=new Image();l.onload=()=>{ctx.drawImage(l,W-88,10,68,68);drawPh();};l.src=d.logo;}else drawPh();
 };
 // FLYER BUILDER FUNCTIONS
-window._flyerData = { logo: null, photo: null, theme: 'dark' };
+if (!window._flyerData) window._flyerData = { logo: null, photo: null, theme: 'dark' };
 
 document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('design-type');
