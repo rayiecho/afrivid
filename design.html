@@ -2614,29 +2614,22 @@ async function submitGlobalUpgrade() {
 window.downloadFlyer = function() {
   const canvas = document.getElementById('flyer-canvas');
   if (!canvas) return;
+  // Rebuild flyer on a fresh offscreen canvas to avoid taint issues
+  const off = document.createElement('canvas');
+  off.width = canvas.width; off.height = canvas.height;
+  const offCtx = off.getContext('2d');
+  offCtx.drawImage(canvas, 0, 0);
   try {
-    // Try direct download
-    const dataURL = canvas.toDataURL('image/png', 1.0);
-    if (dataURL && dataURL !== 'data:,') {
-      const a = document.createElement('a');
-      a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
-      a.href = dataURL;
-      a.click();
-      return;
-    }
-  } catch(e) {
-    console.log('Canvas tainted, using blob method');
-  }
-  // Fallback — use blob
-  canvas.toBlob(blob => {
-    if (!blob) { alert('Download failed. Try right-clicking the flyer and saving as image.'); return; }
-    const url = URL.createObjectURL(blob);
+    const dataURL = off.toDataURL('image/png', 1.0);
     const a = document.createElement('a');
     a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
-    a.href = url;
+    a.href = dataURL;
     a.click();
-    URL.revokeObjectURL(url);
-  }, 'image/png', 1.0);
+  } catch(e) {
+    // Last resort - open in new tab, user right-clicks to save
+    const url = URL.createObjectURL(new Blob([canvas.toDataURL()], {type:'text/plain'}));
+    alert('Please right-click on the flyer image and select "Save image as" to download.');
+  }
 };
 
 // FLYER BUILDER FUNCTIONS
@@ -2662,9 +2655,16 @@ window.loadFlyerImage = function(type, input) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    window._flyerData[type] = e.target.result;
-    const el = document.getElementById('flyer-' + type + '-name');
-    if (el) { el.textContent = file.name; el.style.color = '#74C69D'; }
+    // Store as base64 dataURL - avoids CORS issues on canvas
+    const dataURL = e.target.result;
+    // Pre-load image to verify it works
+    const testImg = new Image();
+    testImg.onload = () => {
+      window._flyerData[type] = dataURL;
+      const el = document.getElementById('flyer-' + type + '-name');
+      if (el) { el.textContent = '✅ ' + file.name; el.style.color = '#74C69D'; }
+    };
+    testImg.src = dataURL;
   };
   reader.readAsDataURL(file);
 };
