@@ -2612,26 +2612,64 @@ async function submitGlobalUpgrade() {
 }
 
 window.downloadFlyer = function() {
-  const canvas = document.getElementById('flyer-canvas');
-  if (!canvas) return;
-  // Rebuild flyer on a fresh offscreen canvas to avoid taint issues
+  if (!window._lastFlyerBuild) { alert('Please build the flyer first'); return; }
   const off = document.createElement('canvas');
-  off.width = canvas.width; off.height = canvas.height;
-  const offCtx = off.getContext('2d');
-  offCtx.drawImage(canvas, 0, 0);
-  try {
-    const dataURL = off.toDataURL('image/png', 1.0);
-    const a = document.createElement('a');
-    a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
-    a.href = dataURL;
-    a.click();
-  } catch(e) {
-    // Last resort - open in new tab, user right-clicks to save
-    const url = URL.createObjectURL(new Blob([canvas.toDataURL()], {type:'text/plain'}));
-    alert('Please right-click on the flyer image and select "Save image as" to download.');
-  }
+  off.width = 800; off.height = 1000;
+  const ctx = off.getContext('2d');
+  window._drawFlyerOnCanvas(ctx, 800, 1000, window._lastFlyerBuild, () => {
+    try {
+      const dataURL = off.toDataURL('image/png', 1.0);
+      const a = document.createElement('a');
+      a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
+      a.href = dataURL; a.click();
+    } catch(e) { alert('Right-click the flyer and Save Image As'); }
+  });
+};
+window._OLD_downloadFlyer = function() {
+  // Store flyer data and rebuild on offscreen canvas
+  if (!window._lastFlyerBuild) { alert('Please build the flyer first'); return; }
+  const d = window._lastFlyerBuild;
+  const off = document.createElement('canvas');
+  off.width = 800; off.height = 1000;
+  const ctx = off.getContext('2d');
+  
+  // Redraw everything using stored base64 data
+  window._drawFlyerOnCtx(ctx, off.width, off.height, d, () => {
+    try {
+      const dataURL = off.toDataURL('image/png', 1.0);
+      const a = document.createElement('a');
+      a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
+      a.href = dataURL;
+      a.click();
+    } catch(e) {
+      alert('Download failed. Try right-clicking the flyer and Save Image As.');
+    }
+  });
 };
 
+window._drawFlyerOnCanvas = function(ctx, W, H, d, cb) {
+  const TH = { dark:{bg:"#050A14",bg2:"#0D1F35",accent:"#F5A623",accent2:"#74C69D",text:"#fff",sub:"rgba(255,255,255,0.6)"},green:{bg:"#0a2018",bg2:"#1a3a2a",accent:"#74C69D",accent2:"#F5A623",text:"#fff",sub:"rgba(255,255,255,0.6)"},blue:{bg:"#050d1a",bg2:"#0a1e35",accent:"#4488ff",accent2:"#F5A623",text:"#fff",sub:"rgba(255,255,255,0.6)"},light:{bg:"#f5f5f0",bg2:"#e8e8e0",accent:"#F5A623",accent2:"#050A14",text:"#050A14",sub:"rgba(5,10,20,0.6)"} };
+  const t = TH[d.theme||"dark"];
+  ctx.fillStyle=t.bg; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=t.accent; ctx.fillRect(0,0,W,8);
+  const g=ctx.createLinearGradient(0,0,W,220); g.addColorStop(0,t.bg2); g.addColorStop(1,t.bg); ctx.fillStyle=g; ctx.fillRect(0,8,W,210);
+  ctx.fillStyle=t.accent; ctx.font="bold 20px Arial"; ctx.textAlign="center"; ctx.fillText((d.org||"").toUpperCase(),W/2,52);
+  ctx.strokeStyle=t.accent; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(60,65); ctx.lineTo(W-60,65); ctx.stroke();
+  ctx.fillStyle=t.text; ctx.textAlign="center";
+  const ws=(d.title||"").toUpperCase().split(" ");
+  if(ws.length<=2){ctx.font="bold 52px Arial";ctx.fillText((d.title||"").toUpperCase(),W/2,132);}
+  else{ctx.font="bold 40px Arial";const m=Math.ceil(ws.length/2);ctx.fillText(ws.slice(0,m).join(" "),W/2,115);ctx.fillText(ws.slice(m).join(" "),W/2,163);}
+  if(d.tagline){ctx.fillStyle=t.accent2;ctx.font="italic 17px Arial";ctx.fillText('"'+d.tagline+'"',W/2,200);}
+  ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(40,225);ctx.lineTo(W-40,225);ctx.stroke();
+  const lX=45,rX=W/2+20,cW=W/2-60;let lY=258;
+  ctx.fillStyle=t.accent;ctx.font="bold 11px Arial";ctx.textAlign="left";ctx.fillText("EVENT DETAILS",lX,lY);lY+=22;
+  if(d.date){ctx.fillStyle=t.sub;ctx.font="11px Arial";ctx.fillText("DATE",lX,lY);lY+=15;ctx.fillStyle=t.text;ctx.font="bold 15px Arial";ctx.fillText(d.date,lX,lY);lY+=26;}
+  if(d.time){ctx.fillStyle=t.sub;ctx.font="11px Arial";ctx.fillText("TIME",lX,lY);lY+=15;ctx.fillStyle=t.text;ctx.font="bold 15px Arial";ctx.fillText(d.time,lX,lY);lY+=32;}
+  if(d.speaker||d.bio){ctx.fillStyle=t.accent;ctx.font="bold 11px Arial";ctx.fillText("ABOUT SPEAKER",lX,lY);lY+=20;if(d.speaker){ctx.fillStyle=t.text;ctx.font="bold 16px Arial";ctx.fillText(d.speaker,lX,lY);lY+=22;}if(d.bio){ctx.fillStyle=t.sub;ctx.font="12px Arial";const bw=d.bio.split(" ");let ln="";for(const w of bw){const tt=ln+w+" ";if(ctx.measureText(tt).width>cW&&ln){ctx.fillText(ln.trim(),lX,lY);ln=w+" ";lY+=17;}else ln=tt;}if(ln.trim())ctx.fillText(ln.trim(),lX,lY);}}
+  const bot=()=>{ctx.fillStyle=t.bg2;ctx.fillRect(0,H-105,W,105);ctx.fillStyle=t.accent;ctx.fillRect(0,H-6,W,6);ctx.fillStyle=t.accent;ctx.font="bold 20px Arial";ctx.textAlign="center";ctx.fillText("JOIN US"+(d.date?" — "+d.date.toUpperCase():""),W/2,H-65);ctx.fillStyle="rgba(255,255,255,0.2)";ctx.font="11px Arial";ctx.fillText("Created with AfriVid Studio · afrivid.studio",W/2,H-22);if(cb)cb();};
+  const drawPh=()=>{if(d.photo){const i=new Image();i.onload=()=>{const pH=cW*1.2;ctx.save();ctx.beginPath();ctx.roundRect(rX,242,cW,pH,12);ctx.clip();ctx.drawImage(i,rX,242,cW,pH);ctx.restore();ctx.strokeStyle=t.accent;ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(rX,242,cW,pH,12);ctx.stroke();if(d.speaker){ctx.fillStyle=t.text;ctx.font="bold 13px Arial";ctx.textAlign="center";ctx.fillText(d.speaker,rX+cW/2,242+pH+20);}bot();};i.src=d.photo;}else bot();};
+  if(d.logo){const l=new Image();l.onload=()=>{ctx.drawImage(l,W-88,10,68,68);drawPh();};l.src=d.logo;}else drawPh();
+};
 // FLYER BUILDER FUNCTIONS
 window._flyerData = { logo: null, photo: null, theme: 'dark' };
 
@@ -2688,6 +2726,9 @@ window.buildFlyer = function() {
   const bio = document.getElementById('flyer-bio')?.value?.trim();
 
   if (!org || !title) { alert('Please fill in Organization Name and Event Title'); return; }
+  window._lastFlyerBuild = { org, title, date, time, tagline, speaker, bio,
+    logo: window._flyerData.logo, photo: window._flyerData.photo,
+    theme: window._flyerData.theme || 'dark' };
 
   // Use dedicated flyer canvas to avoid conflict with main canvas
   const mainCanvas = document.getElementById('design-canvas');
