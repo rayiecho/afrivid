@@ -473,6 +473,18 @@ body::after{
           <option value="illustration">Illustration</option>
         </select>
         <textarea class="ai-input" id="design-ai-prompt" placeholder="Describe your design... e.g. modern African tech company logo in gold and black"></textarea>
+        
+        <!-- Image upload for reference -->
+        <div style="margin-bottom:0.5rem;">
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">ADD REFERENCE IMAGES (optional)</div>
+          <div id="design-ref-images" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.4rem;"></div>
+          <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Upload images to include
+            <input type="file" accept="image/*" multiple style="display:none;" onchange="addDesignRefImages(event)">
+          </label>
+        </div>
+
         <button class="btn btn-gold btn-full" id="design-generate-btn" onclick="generateAIDesign()">✦ Generate Design</button>
         <div style="margin-top:0.5rem;font-size:0.68rem;color:rgba(255,255,255,0.25);font-family:'Space Mono',monospace;text-align:center;" id="design-status"></div>
       </div>
@@ -1322,10 +1334,44 @@ Return ONLY a valid JSON object, no markdown, no explanation:
 {"background":"#hex or linear-gradient(135deg,#hex1,#hex2)","elements":[...]}`;
 }
 
+
+// Design reference images
+window._designRefImages = [];
+
+window.addDesignRefImages = function(event) {
+  const files = Array.from(event.target.files);
+  const container = document.getElementById('design-ref-images');
+  
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataURL = e.target.result;
+      window._designRefImages.push(dataURL);
+      
+      // Show thumbnail
+      const thumb = document.createElement('div');
+      thumb.style.cssText = 'position:relative;width:48px;height:48px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);';
+      thumb.innerHTML = `
+        <img src="${dataURL}" style="width:100%;height:100%;object-fit:cover;">
+        <button onclick="removeDesignRef(this,'${dataURL}')" style="position:absolute;top:0;right:0;background:rgba(230,51,41,0.8);border:none;color:#fff;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+      `;
+      container.appendChild(thumb);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+window.removeDesignRef = function(btn, url) {
+  window._designRefImages = window._designRefImages.filter(u => u !== url);
+  btn.parentElement.remove();
+};
+
 window._generateAIDesign = window.generateAIDesign = async function() {
   const prompt = document.getElementById('design-ai-prompt').value.trim();
   const type = document.getElementById('design-type').value;
   if (!prompt) { alert('Describe your design first'); return; }
+  const refImages = window._designRefImages || [];
+  const refNote = refImages.length > 0 ? ` Include elements inspired by the ${refImages.length} reference image(s) provided.` : '';
   const btn = document.getElementById('design-generate-btn');
   const status = document.getElementById('design-status');
   btn.textContent='[..] Generating...'; btn.disabled=true;
@@ -1337,7 +1383,7 @@ window._generateAIDesign = window.generateAIDesign = async function() {
     const res = await fetch('http://localhost:5051/generate-image',{
       method:'POST', headers:{'Content-Type':'application/json'},
       signal:ctrl.signal,
-      body:JSON.stringify({prompt:`Professional ${type} design, ${prompt}. High quality, clean, modern.`})
+      body:JSON.stringify({prompt:`Professional ${type} design, ${prompt}${refNote}. High quality, clean, modern.`})
     });
     clearTimeout(timeout);
     if (!res.ok) throw new Error('Image generation failed');
