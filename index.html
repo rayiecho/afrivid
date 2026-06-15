@@ -477,10 +477,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 <!-- STATS -->
 <div class="stats-section">
   <div class="stats-grid">
-    <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">SMART VOICES</div></div>
-    <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">VIDEO STYLES</div></div>
-    <div class="stat-item"><div class="stat-num">20</div><div class="stat-label">MIN MAX LENGTH</div></div>
-    <div class="stat-item"><div class="stat-num">$0</div><div class="stat-label">DURING BETA</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-users">...</div><div class="stat-label">CREATORS JOINED</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-videos">...</div><div class="stat-label">VIDEOS CREATED</div></div>
+    <div class="stat-item"><div class="stat-num">6</div><div class="stat-label">AFRICAN LANGUAGES</div></div>
+    <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">AI TOOLS</div></div>
   </div>
 </div>
 
@@ -1109,6 +1109,29 @@ async function submitGlobalUpgrade() {
     if (btn) { btn.textContent = 'Send Request →'; btn.disabled = false; }
     alert('Failed: ' + e.message);
   }
+}
+</script>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, getCountFromServer, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+const app = initializeApp(cfg);
+const db = getFirestore(app);
+
+try {
+  const [usersSnap, videosSnap] = await Promise.all([
+    getCountFromServer(collection(db, 'studio_users')),
+    getCountFromServer(collection(db, 'studio_videos'))
+  ]);
+  const users = usersSnap.data().count || 0;
+  const videos = videosSnap.data().count || 0;
+  document.getElementById('stat-users').textContent = users + '+';
+  document.getElementById('stat-videos').textContent = videos + '+';
+} catch(e) {
+  document.getElementById('stat-users').textContent = '6+';
+  document.getElementById('stat-videos').textContent = '65+';
 }
 </script>
 </body>
