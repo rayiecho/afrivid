@@ -2881,17 +2881,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('design-type');
   if (sel) sel.addEventListener('change', () => {
     const gb = document.getElementById('design-generate-btn');
-    ['flyer','pro_poster','pro_banner','pro_logo'].forEach(t => {
-      const p = document.getElementById(t.replace('pro_','')+'-builder-panel');
+    const aiPrompt = document.getElementById('design-ai-prompt');
+    const refBox = document.getElementById('design-ref-images');
+    // Hide all builder panels
+    ['flyer','poster','banner','logo'].forEach(t => {
+      const p = document.getElementById(t+'-builder-panel');
       if (p) p.style.display = 'none';
     });
     const v = sel.value;
-    const builderPanel = document.getElementById(v.replace('pro_','')+'-builder-panel');
+    const panelId = v.replace('pro_','') + '-builder-panel';
+    const builderPanel = document.getElementById(panelId);
     if (builderPanel) {
       builderPanel.style.display = 'block';
       if (gb) gb.style.display = 'none';
+      if (aiPrompt) aiPrompt.style.display = 'none';
+      if (refBox) refBox.closest('div').style.display = 'none';
+      setTimeout(() => builderPanel.scrollIntoView({behavior:'smooth', block:'start'}), 100);
     } else {
       if (gb) gb.style.display = 'block';
+      if (aiPrompt) aiPrompt.style.display = 'block';
+      if (refBox) refBox.closest('div').style.display = 'block';
     }
   });
 });
