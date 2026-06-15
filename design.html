@@ -474,9 +474,9 @@ body::after{
           <option value="icon">App Icon</option>
           <option value="illustration">Illustration</option>
           <option value="flyer">Professional Flyer</option>
-          <option value="poster">Professional Poster</option>
-          <option value="banner">Professional Banner</option>
-          <option value="logo">Professional Logo</option>
+          <option value="pro_poster">Professional Poster</option>
+          <option value="pro_banner">Professional Banner</option>
+          <option value="pro_logo">Professional Logo</option>
         </select>
         <textarea class="ai-input" id="design-ai-prompt" placeholder="Describe your design... e.g. modern African tech company logo in gold and black"></textarea>
         
@@ -2881,12 +2881,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('design-type');
   if (sel) sel.addEventListener('change', () => {
     const gb = document.getElementById('design-generate-btn');
-    ['flyer','poster','banner','logo'].forEach(t => {
-      const p = document.getElementById(t+'-builder-panel');
+    ['flyer','pro_poster','pro_banner','pro_logo'].forEach(t => {
+      const p = document.getElementById(t.replace('pro_','')+'-builder-panel');
       if (p) p.style.display = 'none';
     });
     const v = sel.value;
-    const builderPanel = document.getElementById(v+'-builder-panel');
+    const builderPanel = document.getElementById(v.replace('pro_','')+'-builder-panel');
     if (builderPanel) {
       builderPanel.style.display = 'block';
       if (gb) gb.style.display = 'none';
