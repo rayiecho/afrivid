@@ -2664,6 +2664,25 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
 </body></html>`;
 
   try {
+    // Upload images to R2 first so server can load them via HTTPS
+    async function uploadToR2(dataURL, filename) {
+      if (!dataURL) return null;
+      const blob = await (await fetch(dataURL)).blob();
+      const form = new FormData();
+      form.append('file', blob, filename);
+      const r = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload', {method:'POST', body:form});
+      const data = await r.json();
+      return data.url || null;
+    }
+
+    const [photoUrl, logoUrl] = await Promise.all([
+      d.photo ? uploadToR2(d.photo, 'flyer-photo.jpg') : Promise.resolve(null),
+      d.logo ? uploadToR2(d.logo, 'flyer-logo.png') : Promise.resolve(null)
+    ]);
+
+    if (photoUrl) html = html.replace('PHOTO_PLACEHOLDER', photoUrl);
+    if (logoUrl) html = html.replace('LOGO_PLACEHOLDER', logoUrl);
+
     const res = await fetch("https://afrivid-processor.fly.dev/render-flyer", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
