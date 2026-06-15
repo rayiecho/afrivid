@@ -2639,7 +2639,7 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
 <body>
 <div style="height:8px;background:${t.accent};"></div>
 <div style="background:linear-gradient(135deg,${t.bg2},${t.bg});padding:20px 40px 15px;text-align:center;position:relative;">
-  ${d.logo ? '<img src="'+d.logo+'" style="position:absolute;top:12px;right:20px;width:68px;height:68px;object-fit:contain;">' : ""}
+  ${d.logo ? '<img src="LOGO_PLACEHOLDER" style="position:absolute;top:12px;right:20px;width:68px;height:68px;object-fit:contain;">' : ""}
   <div style="color:${t.accent};font-size:20px;font-weight:900;letter-spacing:2px;margin-bottom:10px;">${(d.org||"").toUpperCase()}</div>
   <div style="height:2px;background:${t.accent};margin:0 40px 15px;"></div>
   <div style="color:${t.text};font-size:${(d.title||"").length>15?"40":"52"}px;font-weight:900;line-height:1.1;margin-bottom:10px;">${(d.title||"").toUpperCase()}</div>
@@ -2654,7 +2654,7 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
     ${d.speaker||d.bio ? '<div style="color:'+t.accent+';font-size:11px;font-weight:900;letter-spacing:1px;margin-bottom:10px;">ABOUT SPEAKER</div>'+(d.speaker?'<div style="color:'+t.text+';font-size:16px;font-weight:700;margin-bottom:8px;">'+d.speaker+'</div>':"")+(d.bio?'<div style="color:'+t.sub+';font-size:12px;line-height:1.6;">'+d.bio+'</div>':"") : ""}
   </div>
   <div style="width:280px;text-align:center;">
-    ${d.photo ? '<img src="'+d.photo+'" style="width:280px;height:340px;object-fit:cover;border-radius:12px;border:3px solid '+t.accent+';">'+(d.speaker?'<div style="color:'+t.text+';font-size:13px;font-weight:700;margin-top:10px;">'+d.speaker+'</div>':"") : '<div style="width:280px;height:340px;background:rgba(255,255,255,0.05);border-radius:12px;"></div>'}
+    ${d.photo ? '<img src="PHOTO_PLACEHOLDER" style="width:280px;height:340px;object-fit:cover;border-radius:12px;border:3px solid '+t.accent+';">'+(d.speaker?'<div style="color:'+t.text+';font-size:13px;font-weight:700;margin-top:10px;">'+d.speaker+'</div>':"") : '<div style="width:280px;height:340px;background:rgba(255,255,255,0.05);border-radius:12px;"></div>'}
   </div>
 </div>
 <div style="position:absolute;bottom:0;left:0;right:0;background:${t.bg2};padding:20px;text-align:center;">
