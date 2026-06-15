@@ -2742,16 +2742,10 @@ window.loadFlyerImage = function(type, input) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    // Store as base64 dataURL - avoids CORS issues on canvas
-    const dataURL = e.target.result;
-    // Pre-load image to verify it works
-    const testImg = new Image();
-    testImg.onload = () => {
-      window._flyerData[type] = dataURL;
-      const el = document.getElementById('flyer-' + type + '-name');
-      if (el) { el.textContent = '✅ ' + file.name; el.style.color = '#74C69D'; }
-    };
-    testImg.src = dataURL;
+    window._flyerData[type] = e.target.result;
+    const el = document.getElementById('flyer-' + type + '-name');
+    if (el) { el.textContent = '✅ ' + file.name; el.style.color = '#74C69D'; }
+    console.log('[Flyer] ' + type + ' loaded, size:', e.target.result.length);
   };
   reader.readAsDataURL(file);
 };
