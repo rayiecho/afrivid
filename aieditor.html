@@ -265,6 +265,25 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 </div>
 
 
+
+<!-- CROP OVERLAY TOOL -->
+<div id="crop-tool" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+      <div style="color:#F5A623;font-weight:900;font-size:0.85rem;font-family:'Syne',sans-serif;">✂ Draw Crop Area</div>
+      <div style="display:flex;gap:0.5rem;">
+        <button onclick="applyCropSelection()" style="background:#F5A623;border:none;color:#050A14;padding:0.4rem 1rem;border-radius:6px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Apply Crop</button>
+        <button onclick="cancelCrop()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Cancel</button>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Click and drag on the video to select the area to keep</div>
+    <div style="position:relative;display:inline-block;width:100%;">
+      <canvas id="crop-canvas" style="width:100%;cursor:crosshair;border-radius:8px;display:block;"></canvas>
+      <div id="crop-selection-box" style="display:none;position:absolute;border:2px solid #F5A623;background:rgba(245,166,35,0.1);pointer-events:none;"></div>
+    </div>
+    <div id="crop-coords" style="color:rgba(255,255,255,0.3);font-size:0.7rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
+  </div>
+</div>
 <!-- PHASE 2 SERVER PROCESSING BANNER -->
 <div id="phase2-banner" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
   <div style="background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.3);border-radius:12px;padding:1rem 1.25rem;">
@@ -471,7 +490,11 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
   <div class="sub-panel-inner">
     <div class="sub-title">🔇 Noise Removal</div>
     
-    <button class="btn btn-gold" onclick="runFeature('noise')">🔇 Remove Noise Now</button>
+    <button class="btn btn-gold" onclick="showCropTool()">
+            <span class="tool-icon">✂</span>
+            <span class="tool-name">Crop</span>
+          </button>
+          <button class="tool-btn" onclick="runFeature('noise')">🔇 Remove Noise Now</button>
     <div class="ai-log" id="log-noise"></div>
   </div>
 </div>
@@ -2072,6 +2095,114 @@ async function pollJobStatus() {
     console.log('Poll error:', e);
   }
 }
+
+// CROP TOOL
+window._cropData = { x:0, y:0, w:0, h:0, isDragging:false, startX:0, startY:0 };
+
+window.showCropTool = function() {
+  const video = document.getElementById('ai-video');
+  if (!video || !video.src) { alert('Upload a video first'); return; }
+  const tool = document.getElementById('crop-tool');
+  const canvas = document.getElementById('crop-canvas');
+  if (!tool || !canvas) return;
+  tool.style.display = 'block';
+  tool.scrollIntoView({behavior:'smooth'});
+  canvas.width = video.videoWidth || 854;
+  canvas.height = video.videoHeight || 480;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  canvas.onmousedown = startCropDrag;
+  canvas.onmousemove = updateCropDrag;
+  canvas.onmouseup = endCropDrag;
+  canvas.ontouchstart = function(e){ e.preventDefault(); startCropDrag(e.touches[0]); };
+  canvas.ontouchmove = function(e){ e.preventDefault(); updateCropDrag(e.touches[0]); };
+  canvas.ontouchend = function(e){ endCropDrag(e.changedTouches[0]); };
+};
+
+function getCanvasPos(e, canvas) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (e.clientX - rect.left) * (canvas.width / rect.width),
+    y: (e.clientY - rect.top) * (canvas.height / rect.height)
+  };
+}
+
+function startCropDrag(e) {
+  const canvas = document.getElementById('crop-canvas');
+  const pos = getCanvasPos(e, canvas);
+  window._cropData.isDragging = true;
+  window._cropData.startX = pos.x;
+  window._cropData.startY = pos.y;
+  window._cropData.x = pos.x;
+  window._cropData.y = pos.y;
+  window._cropData.w = 0;
+  window._cropData.h = 0;
+}
+
+function updateCropDrag(e) {
+  if (!window._cropData.isDragging) return;
+  const canvas = document.getElementById('crop-canvas');
+  const pos = getCanvasPos(e, canvas);
+  window._cropData.x = Math.min(pos.x, window._cropData.startX);
+  window._cropData.y = Math.min(pos.y, window._cropData.startY);
+  window._cropData.w = Math.abs(pos.x - window._cropData.startX);
+  window._cropData.h = Math.abs(pos.y - window._cropData.startY);
+  const box = document.getElementById('crop-selection-box');
+  const rect = canvas.getBoundingClientRect();
+  const sx = rect.width / canvas.width;
+  const sy = rect.height / canvas.height;
+  if (box) {
+    box.style.display = 'block';
+    box.style.left = (window._cropData.x * sx) + 'px';
+    box.style.top = (window._cropData.y * sy) + 'px';
+    box.style.width = (window._cropData.w * sx) + 'px';
+    box.style.height = (window._cropData.h * sy) + 'px';
+  }
+  const coords = document.getElementById('crop-coords');
+  if (coords) coords.textContent = 'x=' + Math.round(window._cropData.x) + ' y=' + Math.round(window._cropData.y) + ' w=' + Math.round(window._cropData.w) + ' h=' + Math.round(window._cropData.h);
+}
+
+function endCropDrag(e) {
+  window._cropData.isDragging = false;
+}
+
+window.applyCropSelection = async function() {
+  const d = window._cropData;
+  if (!d.w || !d.h) { alert('Draw a crop area first'); return; }
+  const user = window.currentUser;
+  if (!user) { alert('Please sign in first'); return; }
+  const file = window.currentVideoFile || window._currentVideoFile;
+  if (!file) { alert('No video file found'); return; }
+  document.getElementById('crop-tool').style.display = 'none';
+  document.getElementById('phase2-status').style.display = 'block';
+  document.getElementById('phase2-stage').textContent = 'Uploading for cropping...';
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('user_id', user.uid);
+  formData.append('user_email', user.email);
+  formData.append('actions', 'custom_crop');
+  formData.append('crop_x', Math.round(d.x));
+  formData.append('crop_y', Math.round(d.y));
+  formData.append('crop_w', Math.round(d.w));
+  formData.append('crop_h', Math.round(d.h));
+  try {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {method:'POST', body:formData});
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    window._phase2JobId = data.job_id;
+    document.getElementById('phase2-stage').textContent = 'Cropping on server...';
+    document.getElementById('phase2-bar').style.width = '10%';
+    document.getElementById('phase2-pct').textContent = '10%';
+    window._phase2PollInterval = setInterval(pollJobStatus, 5000);
+  } catch(e) {
+    document.getElementById('phase2-stage').textContent = 'Failed: ' + e.message;
+  }
+};
+
+window.cancelCrop = function() {
+  document.getElementById('crop-tool').style.display = 'none';
+  document.getElementById('crop-selection-box').style.display = 'none';
+};
 
 </script>
 </body>
