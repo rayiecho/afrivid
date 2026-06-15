@@ -2625,28 +2625,6 @@ window.downloadFlyer = function() {
     } catch(e) { alert('Right-click the flyer and Save Image As'); }
   });
 };
-window._OLD_downloadFlyer = function() {
-  // Store flyer data and rebuild on offscreen canvas
-  if (!window._lastFlyerBuild) { alert('Please build the flyer first'); return; }
-  const d = window._lastFlyerBuild;
-  const off = document.createElement('canvas');
-  off.width = 800; off.height = 1000;
-  const ctx = off.getContext('2d');
-  
-  // Redraw everything using stored base64 data
-  window._drawFlyerOnCtx(ctx, off.width, off.height, d, () => {
-    try {
-      const dataURL = off.toDataURL('image/png', 1.0);
-      const a = document.createElement('a');
-      a.download = 'AfriVid-Flyer-' + Date.now() + '.png';
-      a.href = dataURL;
-      a.click();
-    } catch(e) {
-      alert('Download failed. Try right-clicking the flyer and Save Image As.');
-    }
-  });
-};
-
 window._drawFlyerOnCanvas = function(ctx, W, H, d, cb) {
   const TH = { dark:{bg:"#050A14",bg2:"#0D1F35",accent:"#F5A623",accent2:"#74C69D",text:"#fff",sub:"rgba(255,255,255,0.6)"},green:{bg:"#0a2018",bg2:"#1a3a2a",accent:"#74C69D",accent2:"#F5A623",text:"#fff",sub:"rgba(255,255,255,0.6)"},blue:{bg:"#050d1a",bg2:"#0a1e35",accent:"#4488ff",accent2:"#F5A623",text:"#fff",sub:"rgba(255,255,255,0.6)"},light:{bg:"#f5f5f0",bg2:"#e8e8e0",accent:"#F5A623",accent2:"#050A14",text:"#050A14",sub:"rgba(5,10,20,0.6)"} };
   const t = TH[d.theme||"dark"];
