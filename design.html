@@ -2677,56 +2677,61 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
   ${d.logo ? '<div class="logo-box"><img src="LOGO_PLACEHOLDER"></div>' : '<div style="width:80px;height:80px;background:rgba(255,255,255,0.04);border-radius:8px;margin-left:20px;flex-shrink:0;"></div>'}
 </div>
 
-<!-- BODY -->
-<div class="body">
+<!-- BODY: TABLE LAYOUT for wkhtmltoimage compatibility -->
+<table style="width:100%;border-collapse:collapse;height:780px;">
+<tr>
   <!-- LEFT: SPEAKER -->
-  <div class="left-col">
-    ${d.photo ? '<div class="photo-wrap"><img src="PHOTO_PLACEHOLDER"></div>' : '<div class="photo-placeholder">No photo</div>'}
-    ${d.speaker ? '<div class="speaker-name">'+d.speaker+'</div>' : ""}
-    ${d.bio ? '<div class="speaker-title">SPEAKER</div><div class="speaker-bio">'+d.bio+'</div>' : ""}
-  </div>
+  <td style="width:300px;vertical-align:top;padding:25px 20px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);text-align:center;">
+    ${d.photo ? '<div style="width:240px;height:280px;border-radius:12px;overflow:hidden;border:3px solid '+t.accent+';margin:0 auto 14px;"><img src="PHOTO_PLACEHOLDER" style="width:100%;height:100%;object-fit:cover;"></div>' : '<div style="width:240px;height:280px;background:rgba(255,255,255,0.05);border-radius:12px;border:2px dashed rgba(255,255,255,0.1);margin:0 auto 14px;"></div>'}
+    ${d.speaker ? '<div style="color:'+t.text+';font-size:18px;font-weight:900;margin-bottom:4px;">'+d.speaker+'</div>' : ""}
+    <div style="color:${t.accent};font-size:10px;letter-spacing:2px;font-weight:700;margin-bottom:10px;">SPEAKER</div>
+    ${d.bio ? '<div style="color:'+t.sub+';font-size:11px;line-height:1.6;padding:0 5px;">'+d.bio+'</div>' : ""}
+  </td>
 
   <!-- RIGHT: DETAILS -->
-  <div class="right-col">
-    <div class="section-label">EVENT DETAILS</div>
+  <td style="vertical-align:top;padding:25px 25px;">
+    <div style="color:${t.accent};font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">EVENT DETAILS</div>
 
-    ${d.date ? '<div class="field-label">DATE</div><div class="field-val">'+d.date+'</div>' : ""}
-    ${d.time ? '<div class="field-label">TIME</div><div class="field-val">'+d.time+'</div>' : ""}
-    ${d.venue ? '<div class="field-label">VENUE / PLATFORM</div><div class="field-val">'+d.venue+'</div>' : ""}
-    ${d.contact ? '<div class="field-label">REGISTER / JOIN</div><div style="color:'+t.accent2+';font-size:13px;font-weight:700;margin-bottom:16px;">'+d.contact+'</div>' : ""}
+    ${d.date ? '<div style="color:'+t.sub+';font-size:10px;letter-spacing:1px;margin-bottom:3px;">DATE</div><div style="color:'+t.text+';font-size:15px;font-weight:700;margin-bottom:14px;">'+d.date+'</div>' : ""}
+    ${d.time ? '<div style="color:'+t.sub+';font-size:10px;letter-spacing:1px;margin-bottom:3px;">TIME</div><div style="color:'+t.text+';font-size:15px;font-weight:700;margin-bottom:14px;">'+d.time+'</div>' : ""}
+    ${d.venue ? '<div style="color:'+t.sub+';font-size:10px;letter-spacing:1px;margin-bottom:3px;">VENUE / PLATFORM</div><div style="color:'+t.text+';font-size:15px;font-weight:700;margin-bottom:14px;">'+d.venue+'</div>' : ""}
+    ${d.contact ? '<div style="color:'+t.sub+';font-size:10px;letter-spacing:1px;margin-bottom:3px;">REGISTER / JOIN</div><div style="color:'+t.accent2+';font-size:13px;font-weight:700;margin-bottom:14px;">'+d.contact+'</div>' : ""}
 
-    ${d.tagline ? '<div class="highlight-box"><div style="color:'+t.accent2+';font-size:13px;font-weight:900;margin-bottom:4px;">SESSION THEME</div><div style="color:'+t.text+';font-size:14px;line-height:1.5;">'+d.tagline+'</div></div>' : ""}
+    <div style="height:1px;background:rgba(255,255,255,0.06);margin:14px 0;"></div>
 
-    <div class="divider"></div>
+    ${d.tagline ? '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-left:3px solid '+t.accent2+';border-radius:6px;padding:10px 14px;margin-bottom:14px;"><div style="color:'+t.accent2+';font-size:10px;font-weight:900;letter-spacing:1px;margin-bottom:4px;">SESSION THEME</div><div style="color:'+t.text+';font-size:13px;line-height:1.5;font-style:italic;">'+d.tagline+'</div></div>' : ""}
 
-    <div class="section-label">ABOUT THE SESSION</div>
+    <div style="color:${t.accent};font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">ABOUT THE SESSION</div>
     <div style="color:${t.sub};font-size:12px;line-height:1.7;margin-bottom:16px;">
-      Join us for an open, safe and supportive conversation on mental health. 
-      ${d.speaker ? 'Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>,' : ""} 
+      Join us for an open, safe and supportive conversation on mental health.
+      ${d.speaker ? ' Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>,' : ""}
       this session is designed to help young Africans speak freely, heal and grow together.
     </div>
 
-    <div class="divider"></div>
-
-    <div style="display:flex;gap:10px;margin-top:8px;">
-      <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px;text-align:center;">
-        <div style="color:${t.accent};font-size:20px;margin-bottom:4px;">🌍</div>
-        <div style="color:${t.sub};font-size:10px;">OPEN TO ALL</div>
-        <div style="color:${t.text};font-size:11px;font-weight:700;">Young Africans</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px;text-align:center;">
-        <div style="color:${t.accent};font-size:20px;margin-bottom:4px;">💬</div>
-        <div style="color:${t.sub};font-size:10px;">FORMAT</div>
-        <div style="color:${t.text};font-size:11px;font-weight:700;">Open Discussion</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px;text-align:center;">
-        <div style="color:${t.accent};font-size:20px;margin-bottom:4px;">🆓</div>
-        <div style="color:${t.sub};font-size:10px;">COST</div>
-        <div style="color:${t.text};font-size:11px;font-weight:700;">Free to Join</div>
-      </div>
-    </div>
-  </div>
-</div>
+    <table style="width:100%;border-collapse:collapse;margin-top:8px;">
+    <tr>
+      <td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;">
+        <div style="color:${t.accent};font-size:18px;margin-bottom:3px;">🌍</div>
+        <div style="color:${t.sub};font-size:9px;">OPEN TO ALL</div>
+        <div style="color:${t.text};font-size:10px;font-weight:700;">Young Africans</div>
+      </td>
+      <td style="width:8px;"></td>
+      <td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;">
+        <div style="color:${t.accent};font-size:18px;margin-bottom:3px;">💬</div>
+        <div style="color:${t.sub};font-size:9px;">FORMAT</div>
+        <div style="color:${t.text};font-size:10px;font-weight:700;">Open Discussion</div>
+      </td>
+      <td style="width:8px;"></td>
+      <td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;">
+        <div style="color:${t.accent};font-size:18px;margin-bottom:3px;">🆓</div>
+        <div style="color:${t.sub};font-size:9px;">COST</div>
+        <div style="color:${t.text};font-size:10px;font-weight:700;">Free to Join</div>
+      </td>
+    </tr>
+    </table>
+  </td>
+</tr>
+</table>
 
 <!-- FOOTER -->
 <div class="footer">
