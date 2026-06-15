@@ -474,6 +474,9 @@ body::after{
           <option value="icon">App Icon</option>
           <option value="illustration">Illustration</option>
           <option value="flyer">Professional Flyer</option>
+          <option value="poster">Professional Poster</option>
+          <option value="banner">Professional Banner</option>
+          <option value="logo">Professional Logo</option>
         </select>
         <textarea class="ai-input" id="design-ai-prompt" placeholder="Describe your design... e.g. modern African tech company logo in gold and black"></textarea>
         
@@ -505,6 +508,49 @@ body::after{
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setFlyerTheme('dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setFlyerTheme('green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setFlyerTheme('blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setFlyerTheme('light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
           <button onclick="buildFlyer()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Flyer →</button>
           <button onclick="downloadFlyer()" id="flyer-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Flyer</button>
+
+        <!-- POSTER BUILDER -->
+        <div id="poster-builder-panel" style="display:none;">
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">POSTER BUILDER</div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME *</div><input id="poster-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">HEADLINE *</div><input id="poster-headline" type="text" placeholder="e.g. Leadership Summit 2026" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="poster-tagline" type="text" placeholder="e.g. Empowering the Next Generation" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.6rem;"><div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">DATE</div><input id="poster-date" type="text" placeholder="June 20, 2026" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div><div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">VENUE</div><input id="poster-venue" type="text" placeholder="Nairobi, Kenya" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">WEBSITE / CONTACT</div><input id="poster-contact" type="text" placeholder="e.g. youngafricansnetwork.org" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION LOGO</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="poster-logo-name">Upload logo</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('poster','logo',this)"></label></div>
+          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">PRODUCT / EVENT IMAGES (up to 3)</div><div id="poster-product-thumbs" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.4rem;"></div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span>Add images</span><input type="file" accept="image/*" multiple style="display:none;" onchange="loadBuilderImages('poster','products',this,3)"></label></div>
+          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setBuilderTheme('poster','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setBuilderTheme('poster','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setBuilderTheme('poster','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setBuilderTheme('poster','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
+          <button onclick="buildPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Poster →</button>
+          <button onclick="buildPoster()" id="poster-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Poster</button>
+        </div>
+
+        <!-- BANNER BUILDER -->
+        <div id="banner-builder-panel" style="display:none;">
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">BANNER BUILDER</div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME *</div><input id="banner-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">HEADLINE *</div><input id="banner-headline" type="text" placeholder="e.g. Empowering Young Africans" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="banner-tagline" type="text" placeholder="e.g. Building Africa's Future" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">CALL TO ACTION</div><input id="banner-cta" type="text" placeholder="e.g. Join Now · youngafricansnetwork.org" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION LOGO</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="banner-logo-name">Upload logo</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('banner','logo',this)"></label></div>
+          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">FEATURE IMAGE (optional)</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="banner-image-name">Upload image</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('banner','image',this)"></label></div>
+          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setBuilderTheme('banner','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setBuilderTheme('banner','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setBuilderTheme('banner','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setBuilderTheme('banner','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
+          <button onclick="buildBanner()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Banner →</button>
+          <button onclick="buildBanner()" id="banner-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Banner</button>
+        </div>
+
+        <!-- LOGO BUILDER -->
+        <div id="logo-builder-panel" style="display:none;">
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">LOGO BUILDER</div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME *</div><input id="logo-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="logo-tagline" type="text" placeholder="e.g. Building Africa's Future" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">LOGO STYLE</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;"><button onclick="setLogoStyle('text',this)" style="background:rgba(245,166,35,0.1);border:2px solid #F5A623;color:#F5A623;padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">TEXT ONLY</button><button onclick="setLogoStyle('icon',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">ICON + TEXT</button><button onclick="setLogoStyle('mono',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">MONOGRAM</button><button onclick="setLogoStyle('badge',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">BADGE</button></div></div>
+          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setBuilderTheme('logo','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setBuilderTheme('logo','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setBuilderTheme('logo','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setBuilderTheme('logo','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
+          <button onclick="buildLogo()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Logo →</button>
+          <button onclick="buildLogo()" id="logo-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Logo</button>
+        </div>
         </div>
         <button class="btn btn-gold btn-full" id="design-generate-btn" onclick="generateAIDesign()">✦ Generate Design</button>
         <div style="margin-top:0.5rem;font-size:0.68rem;color:rgba(255,255,255,0.25);font-family:'Space Mono',monospace;text-align:center;" id="design-status"></div>
@@ -2834,13 +2880,17 @@ if (!window._flyerData) window._flyerData = { logo: null, photo: null, theme: 'd
 document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('design-type');
   if (sel) sel.addEventListener('change', () => {
-    const fp = document.getElementById('flyer-builder-panel');
     const gb = document.getElementById('design-generate-btn');
-    if (sel.value === 'flyer') {
-      if (fp) fp.style.display = 'block';
+    ['flyer','poster','banner','logo'].forEach(t => {
+      const p = document.getElementById(t+'-builder-panel');
+      if (p) p.style.display = 'none';
+    });
+    const v = sel.value;
+    const builderPanel = document.getElementById(v+'-builder-panel');
+    if (builderPanel) {
+      builderPanel.style.display = 'block';
       if (gb) gb.style.display = 'none';
     } else {
-      if (fp) fp.style.display = 'none';
       if (gb) gb.style.display = 'block';
     }
   });
@@ -3041,6 +3091,230 @@ window.buildFlyer = function() {
 
 <!-- FLYER PREVIEW DIV for html2canvas download -->
 <div id="flyer-preview-div" style="display:none;position:fixed;left:-9999px;top:0;width:800px;height:1000px;"></div>
+
+
+<script>
+// ── BUILDER DATA ──
+window._builderData = {
+  poster: { logo: null, products: [], theme: 'dark' },
+  banner: { logo: null, image: null, theme: 'dark' },
+  logo: { style: 'text', theme: 'dark' }
+};
+
+window.loadBuilderImage = function(type, field, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (!window._builderData[type]) window._builderData[type] = {};
+    window._builderData[type][field] = e.target.result;
+    const el = document.getElementById(type + '-' + field + '-name');
+    if (el) { el.textContent = '✅ ' + file.name; el.style.color = '#74C69D'; }
+  };
+  reader.readAsDataURL(file);
+};
+
+window.loadBuilderImages = function(type, field, input, max) {
+  const files = Array.from(input.files).slice(0, max);
+  if (!window._builderData[type][field]) window._builderData[type][field] = [];
+  const container = document.getElementById(type + '-product-thumbs');
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      window._builderData[type][field].push(e.target.result);
+      if (container) {
+        const thumb = document.createElement('div');
+        thumb.style.cssText = 'width:48px;height:48px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);flex-shrink:0;';
+        thumb.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+        container.appendChild(thumb);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+window.setBuilderTheme = function(type, theme, btn) {
+  if (!window._builderData[type]) window._builderData[type] = {};
+  window._builderData[type].theme = theme;
+  const panel = document.getElementById(type + '-builder-panel');
+  if (panel) panel.querySelectorAll('button[onclick*="setBuilderTheme"]').forEach(b => {
+    b.style.border = '1px solid rgba(255,255,255,0.2)';
+  });
+  if (btn) btn.style.border = '2px solid #F5A623';
+};
+
+window.setLogoStyle = function(style, btn) {
+  window._builderData.logo.style = style;
+  document.querySelectorAll('[onclick*="setLogoStyle"]').forEach(b => {
+    b.style.background = 'rgba(255,255,255,0.04)';
+    b.style.border = '1px solid rgba(255,255,255,0.15)';
+    b.style.color = 'rgba(255,255,255,0.5)';
+  });
+  if (btn) {
+    btn.style.background = 'rgba(245,166,35,0.1)';
+    btn.style.border = '2px solid #F5A623';
+    btn.style.color = '#F5A623';
+  }
+};
+
+const BTHEMES = {
+  dark:  { bg:'#050A14', bg2:'#0D1F35', accent:'#F5A623', accent2:'#74C69D', text:'#ffffff', sub:'rgba(255,255,255,0.6)' },
+  green: { bg:'#0a2018', bg2:'#1a3a2a', accent:'#74C69D', accent2:'#F5A623', text:'#ffffff', sub:'rgba(255,255,255,0.6)' },
+  blue:  { bg:'#050d1a', bg2:'#0a1e35', accent:'#4488ff', accent2:'#F5A623', text:'#ffffff', sub:'rgba(255,255,255,0.6)' },
+  light: { bg:'#f5f5f0', bg2:'#e8e8e0', accent:'#F5A623', accent2:'#050A14', text:'#050A14', sub:'rgba(5,10,20,0.6)' }
+};
+
+async function uploadImgToR2(dataURL, name) {
+  if (!dataURL) return null;
+  try {
+    const blob = await (await fetch(dataURL)).blob();
+    const form = new FormData();
+    form.append('file', blob, name);
+    const r = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload', {method:'POST', body:form});
+    const data = await r.json();
+    return data.url || null;
+  } catch(e) { return null; }
+}
+
+async function renderAndDownload(html, type, width, height) {
+  const buildBtn = document.querySelector('[onclick="build' + type.charAt(0).toUpperCase() + type.slice(1) + '()"]');
+  if (buildBtn) { buildBtn.textContent = '⏳ Building...'; buildBtn.disabled = true; }
+  try {
+    const res = await fetch('https://afrivid-processor.fly.dev/render-flyer', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({html, width: width||800, height: height||1000})
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    const byteArr = new Uint8Array(atob(data.image).split('').map(c => c.charCodeAt(0)));
+    const blob = new Blob([byteArr], {type:'image/png'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'AfriVid-' + type + '-' + Date.now() + '.png';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    const dlBtn = document.getElementById(type + '-download-btn');
+    if (dlBtn) dlBtn.style.display = 'block';
+  } catch(e) {
+    alert('Build failed: ' + e.message);
+  } finally {
+    if (buildBtn) { buildBtn.textContent = 'Build ' + type.charAt(0).toUpperCase() + type.slice(1) + ' →'; buildBtn.disabled = false; }
+  }
+}
+
+// ── BUILD POSTER ──
+window.buildPoster = async function() {
+  const org = document.getElementById('poster-org')?.value?.trim();
+  const headline = document.getElementById('poster-headline')?.value?.trim();
+  if (!org || !headline) { alert('Please fill Organization Name and Headline'); return; }
+  const tagline = document.getElementById('poster-tagline')?.value?.trim();
+  const date = document.getElementById('poster-date')?.value?.trim();
+  const venue = document.getElementById('poster-venue')?.value?.trim();
+  const contact = document.getElementById('poster-contact')?.value?.trim();
+  const d = window._builderData.poster;
+  const t = BTHEMES[d.theme || 'dark'];
+
+  const logoUrl = await uploadImgToR2(d.logo, 'poster-logo.png');
+  const productUrls = await Promise.all((d.products || []).slice(0,3).map((p,i) => uploadImgToR2(p, 'poster-prod-'+i+'.jpg')));
+  const validProducts = productUrls.filter(Boolean);
+
+  const productsHtml = validProducts.length ? '<div style="text-align:center;padding:20px 20px 0;"><table style="margin:0 auto;border-collapse:collapse;"><tr>' +
+    validProducts.map(url => '<td style="padding:5px;"><img src="' + url + '" style="width:' + (validProducts.length===1?'280':validProducts.length===2?'170':'110') + 'px;height:160px;object-fit:cover;border-radius:8px;border:2px solid ' + t.accent + ';"></td>').join('<td style="width:8px;"></td>') +
+    '</tr></table></div>' : '<div style="height:30px;"></div>';
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>
+</head><body>
+<div style="height:6px;background:linear-gradient(90deg,${t.accent},${t.accent2});"></div>
+<div style="background:linear-gradient(135deg,${t.bg2},${t.bg});padding:28px 40px 22px;text-align:center;position:relative;border-bottom:2px solid ${t.accent};">
+  ${logoUrl ? '<img src="' + logoUrl + '" style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;">' : ''}
+  <div style="color:${t.accent};font-size:12px;font-weight:900;letter-spacing:3px;margin-bottom:8px;">${org.toUpperCase()}</div>
+  <div style="color:${t.text};font-size:${headline.length>20?'36':'46'}px;font-weight:900;line-height:1.1;margin-bottom:10px;">${headline.toUpperCase()}</div>
+  ${tagline ? '<div style="color:' + t.accent2 + ';font-size:15px;font-style:italic;">"' + tagline + '"</div>' : ''}
+</div>
+${productsHtml}
+<div style="padding:20px 50px;">
+  <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px;"></div>
+  ${date||venue ? '<table style="width:100%;border-collapse:collapse;margin-bottom:18px;"><tr>' +
+    (date ? '<td style="padding:12px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:10px;letter-spacing:1px;margin-bottom:4px;">DATE</div><div style="color:' + t.text + ';font-size:14px;font-weight:700;">' + date + '</div></td>' : '') +
+    (date&&venue ? '<td style="width:15px;"></td>' : '') +
+    (venue ? '<td style="padding:12px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:10px;letter-spacing:1px;margin-bottom:4px;">VENUE</div><div style="color:' + t.text + ';font-size:14px;font-weight:700;">' + venue + '</div></td>' : '') +
+    '</tr></table>' : ''}
+</div>
+<div style="position:absolute;bottom:0;left:0;right:0;background:${t.bg2};padding:18px 40px;border-top:3px solid ${t.accent};">
+  <table style="width:100%;border-collapse:collapse;"><tr>
+    <td><div style="color:${t.accent};font-size:17px;font-weight:900;">JOIN US${date?' — '+date.toUpperCase():''}</div>${venue?'<div style="color:'+t.sub+';font-size:12px;">'+venue+'</div>':''}</td>
+    <td style="text-align:right;">${contact?'<div style="color:'+t.accent2+';font-size:13px;font-weight:700;">'+contact+'</div>':''}<div style="color:rgba(255,255,255,0.2);font-size:10px;margin-top:4px;">Created with AfriVid Studio · afrivid.studio</div></td>
+  </tr></table>
+</div>
+</body></html>`;
+
+  await renderAndDownload(html, 'poster', 800, 1000);
+};
+
+// ── BUILD BANNER ──
+window.buildBanner = async function() {
+  const org = document.getElementById('banner-org')?.value?.trim();
+  const headline = document.getElementById('banner-headline')?.value?.trim();
+  if (!org || !headline) { alert('Please fill Organization Name and Headline'); return; }
+  const tagline = document.getElementById('banner-tagline')?.value?.trim();
+  const cta = document.getElementById('banner-cta')?.value?.trim();
+  const d = window._builderData.banner;
+  const t = BTHEMES[d.theme || 'dark'];
+
+  const logoUrl = await uploadImgToR2(d.logo, 'banner-logo.png');
+  const imageUrl = await uploadImgToR2(d.image, 'banner-image.jpg');
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:1200px;height:630px;background:${t.bg};font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>
+</head><body>
+<div style="height:6px;background:linear-gradient(90deg,${t.accent},${t.accent2});"></div>
+<table style="width:100%;height:618px;border-collapse:collapse;"><tr>
+  <td style="padding:40px 50px;vertical-align:middle;">
+    <table style="border-collapse:collapse;margin-bottom:16px;"><tr>
+      ${logoUrl ? '<td style="padding-right:16px;vertical-align:middle;"><img src="' + logoUrl + '" style="width:65px;height:65px;object-fit:contain;border-radius:8px;"></td>' : ''}
+      <td style="vertical-align:middle;"><div style="color:${t.accent};font-size:12px;font-weight:900;letter-spacing:3px;">${org.toUpperCase()}</div></td>
+    </tr></table>
+    <div style="height:2px;background:${t.accent};width:80px;margin-bottom:16px;"></div>
+    <div style="color:${t.text};font-size:${headline.length>25?'40':'52'}px;font-weight:900;line-height:1.1;margin-bottom:12px;">${headline}</div>
+    ${tagline ? '<div style="color:' + t.accent2 + ';font-size:17px;margin-bottom:22px;font-style:italic;">' + tagline + '</div>' : '<div style="height:22px;"></div>'}
+    ${cta ? '<div style="display:inline-block;background:' + t.accent + ';color:#050A14;padding:11px 26px;border-radius:8px;font-size:14px;font-weight:900;">' + cta + '</div>' : ''}
+    <div style="position:absolute;bottom:15px;left:50px;color:rgba(255,255,255,0.15);font-size:10px;">Created with AfriVid Studio · afrivid.studio</div>
+  </td>
+  ${imageUrl ? '<td style="width:380px;vertical-align:top;padding:0;"><img src="' + imageUrl + '" style="width:380px;height:624px;object-fit:cover;display:block;"></td>' : '<td style="width:100px;background:' + t.bg2 + ';"></td>'}
+</tr></table>
+<div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,${t.accent},${t.accent2});"></div>
+</body></html>`;
+
+  await renderAndDownload(html, 'banner', 1200, 630);
+};
+
+// ── BUILD LOGO ──
+window.buildLogo = async function() {
+  const org = document.getElementById('logo-org')?.value?.trim();
+  if (!org) { alert('Please fill Organization Name'); return; }
+  const tagline = document.getElementById('logo-tagline')?.value?.trim();
+  const d = window._builderData.logo;
+  const t = BTHEMES[d.theme || 'dark'];
+  const style = d.style || 'text';
+  const words = org.split(' ');
+  const initials = words.slice(0,3).map(w=>w[0]).join('').toUpperCase();
+
+  const styles = {
+    text: '<div style="text-align:center;padding:80px 40px;"><div style="color:' + t.accent + ';font-size:' + (org.length>15?'52':'68') + 'px;font-weight:900;letter-spacing:-1px;line-height:1;">' + org.toUpperCase() + '</div>' + (tagline ? '<div style="height:3px;background:' + t.accent + ';margin:18px auto;width:80px;"></div><div style="color:' + t.accent2 + ';font-size:16px;letter-spacing:4px;">' + tagline.toUpperCase() + '</div>' : '') + '</div>',
+    mono: '<div style="text-align:center;padding:50px 40px;"><div style="width:180px;height:180px;border-radius:50%;background:' + t.accent + ';display:inline-flex;align-items:center;justify-content:center;margin-bottom:20px;"><div style="color:#050A14;font-size:72px;font-weight:900;">' + initials + '</div></div><div style="color:' + t.text + ';font-size:28px;font-weight:900;letter-spacing:2px;">' + org.toUpperCase() + '</div>' + (tagline ? '<div style="color:' + t.accent2 + ';font-size:13px;letter-spacing:3px;margin-top:8px;">' + tagline.toUpperCase() + '</div>' : '') + '</div>',
+    badge: '<div style="text-align:center;padding:50px 40px;display:flex;align-items:center;justify-content:center;height:500px;"><div style="border:4px solid ' + t.accent + ';border-radius:16px;padding:30px 45px;"><div style="color:' + t.accent + ';font-size:10px;letter-spacing:4px;margin-bottom:8px;">' + (words[0]||'').toUpperCase() + '</div><div style="color:' + t.text + ';font-size:' + (org.length>10?'40':'54') + 'px;font-weight:900;line-height:1;">' + (words.slice(1).join(' ')||org).toUpperCase() + '</div>' + (tagline ? '<div style="height:2px;background:' + t.accent + ';margin:12px auto;width:50px;"></div><div style="color:' + t.accent2 + ';font-size:11px;letter-spacing:3px;">' + tagline.toUpperCase() + '</div>' : '') + '</div></div>',
+    icon: '<div style="text-align:center;padding:60px 40px;"><div style="width:130px;height:130px;background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 + ');border-radius:24px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;"><div style="color:#050A14;font-size:58px;font-weight:900;">' + initials[0] + '</div></div><div style="color:' + t.text + ';font-size:32px;font-weight:900;">' + org.toUpperCase() + '</div>' + (tagline ? '<div style="color:' + t.accent2 + ';font-size:12px;letter-spacing:3px;margin-top:8px;">' + tagline.toUpperCase() + '</div>' : '') + '</div>'
+  };
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:500px;height:500px;background:${t.bg};font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden;}</style>
+</head><body>${styles[style]||styles.text}</body></html>`;
+
+  await renderAndDownload(html, 'logo', 500, 500);
+};
+</script>
 
 </body>
 </html>
