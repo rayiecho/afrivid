@@ -264,6 +264,44 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
   </div>
 </div>
 
+
+<!-- PHASE 2 SERVER PROCESSING BANNER -->
+<div id="phase2-banner" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.3);border-radius:12px;padding:1rem 1.25rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+      <span style="font-size:1.25rem;">🚀</span>
+      <div>
+        <div style="color:#F5A623;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Long video detected!</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">Your video is over 5 minutes</div>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin-bottom:1rem;line-height:1.5;">
+      For best results with long videos, use <strong style="color:#74C69D;">AfriVid Server Processing</strong> — our Johannesburg server will process your video in the background and email you when done.
+    </div>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <button onclick="uploadToServer()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⚡ Process on Server</button>
+      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2 JOB STATUS -->
+<div id="phase2-status" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+      <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 Server Processing</div>
+      <div id="phase2-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
+      <div id="phase2-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+    </div>
+    <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Uploading video...</div>
+    <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;">📧 You'll receive an email when processing is complete. You can close this tab safely.</div>
+    <div id="phase2-download" style="display:none;margin-top:1rem;">
+      <a id="phase2-download-link" href="#" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</a>
+    </div>
+  </div>
+</div>
 <!-- AI PROMPT -->
 <div class="prompt-area">
   <div class="prompt-wrap">
@@ -599,6 +637,11 @@ function loadVideo(file) {
     document.getElementById('drop-zone') && (document.querySelector('.drop-zone').style.display = 'none');
     document.getElementById('video-preview-area').style.display = 'block';
     addLog('all', `[ok] Loaded: ${file.name} (${formatTime(video.duration)})`);
+  window.currentVideoFile = file;
+  // Check if Phase 2 server processing is recommended
+  video.addEventListener('loadedmetadata', () => {
+    if (video.duration > 300) checkPhase2(file, video.duration);
+  }, {once: true});
   // Show estimated processing time
   setTimeout(() => {
     const dur = video.duration || 0;
@@ -1921,5 +1964,113 @@ function updateProcTime() {
   setTimeout(updateProcTime, 1000);
 }
 </script>
+
+// ── PHASE 2 SERVER PROCESSING ──
+window._phase2JobId = null;
+window._phase2PollInterval = null;
+window._currentVideoFile = null;
+
+// Show Phase 2 banner when video is long
+const _origHandleVideoUpload = window.handleVideoUpload;
+
+function checkPhase2(file, duration) {
+  window._currentVideoFile = file;
+  if (duration > 300) { // over 5 minutes
+    const banner = document.getElementById('phase2-banner');
+    const msg = document.getElementById('phase2-duration-msg');
+    if (banner) banner.style.display = 'block';
+    if (msg) {
+      const mins = Math.floor(duration/60);
+      msg.textContent = `Your video is ${mins} minutes long — server processing recommended`;
+    }
+  }
+}
+
+// Upload video to server for processing
+window.uploadToServer = async function() {
+  const file = window._currentVideoFile || window.currentVideoFile;
+  if (!file) { alert('No video file found'); return; }
+  
+  const user = window.currentUser;
+  if (!user) { alert('Please sign in first'); return; }
+
+  const actions = [];
+  const prompt = document.getElementById('ai-prompt')?.value?.trim();
+  if (prompt) {
+    if (prompt.toLowerCase().includes('silence')) actions.push('remove_silence');
+    if (prompt.toLowerCase().includes('highlight')) actions.push('highlight_reel');
+    if (prompt.toLowerCase().includes('noise')) actions.push('noise_removal');
+    if (actions.length === 0) actions.push('remove_silence'); // default
+  } else {
+    actions.push('remove_silence');
+  }
+
+  // Show status panel
+  document.getElementById('phase2-banner').style.display = 'none';
+  document.getElementById('phase2-status').style.display = 'block';
+  document.getElementById('phase2-stage').textContent = 'Uploading video to server...';
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('user_id', user.uid);
+    formData.append('user_email', user.email);
+    formData.append('actions', actions.join(','));
+
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    window._phase2JobId = data.job_id;
+    document.getElementById('phase2-stage').textContent = 'Video uploaded! Processing in Johannesburg...';
+    document.getElementById('phase2-bar').style.width = '10%';
+    document.getElementById('phase2-pct').textContent = '10%';
+
+    // Start polling for status
+    window._phase2PollInterval = setInterval(pollJobStatus, 5000);
+
+  } catch(e) {
+    document.getElementById('phase2-stage').textContent = 'Upload failed: ' + e.message;
+  }
+};
+
+async function pollJobStatus() {
+  if (!window._phase2JobId) return;
+  try {
+    const res = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${window._phase2JobId}`);
+    const data = await res.json();
+
+    const bar = document.getElementById('phase2-bar');
+    const pct = document.getElementById('phase2-pct');
+    const stage = document.getElementById('phase2-stage');
+
+    if (bar) bar.style.width = (data.progress || 0) + '%';
+    if (pct) pct.textContent = (data.progress || 0) + '%';
+    if (stage) stage.textContent = data.stage || 'Processing...';
+
+    if (data.status === 'completed' && data.output_url) {
+      clearInterval(window._phase2PollInterval);
+      const dl = document.getElementById('phase2-download');
+      const dlLink = document.getElementById('phase2-download-link');
+      if (dl) dl.style.display = 'block';
+      if (dlLink) dlLink.href = data.output_url;
+      if (bar) bar.style.width = '100%';
+      if (pct) pct.textContent = '100%';
+      if (stage) stage.textContent = '✅ Processing complete!';
+    }
+
+    if (data.status === 'failed') {
+      clearInterval(window._phase2PollInterval);
+      if (stage) stage.textContent = '❌ Processing failed. Try browser processing instead.';
+    }
+  } catch(e) {
+    console.log('Poll error:', e);
+  }
+}
+
 </body>
 </html>
