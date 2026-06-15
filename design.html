@@ -2742,10 +2742,15 @@ window.loadFlyerImage = function(type, input) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
+    // Store globally - ensure it persists
+    if (!window._flyerData) window._flyerData = { logo: null, photo: null, theme: 'dark' };
     window._flyerData[type] = e.target.result;
-    const el = document.getElementById('flyer-' + type + '-name');
-    if (el) { el.textContent = '✅ ' + file.name; el.style.color = '#74C69D'; }
-    console.log('[Flyer] ' + type + ' loaded, size:', e.target.result.length);
+    window['_flyer_' + type] = e.target.result; // backup storage
+    document.querySelectorAll('#flyer-' + type + '-name').forEach(el => {
+      el.textContent = '✅ ' + file.name;
+      el.style.color = '#74C69D';
+    });
+    console.log('[Flyer] ' + type + ' stored! size:', e.target.result.length);
   };
   reader.readAsDataURL(file);
 };
@@ -2770,8 +2775,10 @@ window.buildFlyer = function() {
 
   if (!org || !title) { alert('Please fill in Organization Name and Event Title'); return; }
   window._lastFlyerBuild = { org, title, date, time, tagline, speaker, bio,
-    logo: window._flyerData.logo, photo: window._flyerData.photo,
-    theme: window._flyerData.theme || 'dark' };
+    logo: window._flyerData?.logo || window._flyer_logo || null,
+    photo: window._flyerData?.photo || window._flyer_photo || null,
+    theme: window._flyerData?.theme || 'dark' };
+  console.log('[Flyer] Build data - has photo:', !!window._lastFlyerBuild.photo, 'has logo:', !!window._lastFlyerBuild.logo);
 
   // Use dedicated flyer canvas to avoid conflict with main canvas
   const mainCanvas = document.getElementById('design-canvas');
