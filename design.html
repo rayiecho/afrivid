@@ -2676,10 +2676,20 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
       return data.url || null;
     }
 
-    const [photoUrl, logoUrl] = await Promise.all([
-      d.photo ? uploadToR2(d.photo, 'flyer-photo.jpg') : Promise.resolve(null),
-      d.logo ? uploadToR2(d.logo, 'flyer-logo.png') : Promise.resolve(null)
-    ]);
+    console.log('[Download] d.photo exists:', !!d.photo, 'length:', d.photo?.length);
+    let photoUrl = null, logoUrl = null;
+    try {
+      if (d.photo) {
+        photoUrl = await uploadToR2(d.photo, 'flyer-photo.jpg');
+        console.log('[Download] photoUrl:', photoUrl);
+      }
+    } catch(e) { console.log('[Download] photo upload error:', e.message); }
+    try {
+      if (d.logo) {
+        logoUrl = await uploadToR2(d.logo, 'flyer-logo.png');
+        console.log('[Download] logoUrl:', logoUrl);
+      }
+    } catch(e) { console.log('[Download] logo upload error:', e.message); }
 
     if (photoUrl) html = html.replace('PHOTO_PLACEHOLDER', photoUrl);
     if (logoUrl) html = html.replace('LOGO_PLACEHOLDER', logoUrl);
