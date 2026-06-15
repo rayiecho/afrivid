@@ -2890,14 +2890,24 @@ if (!window._flyerData) window._flyerData = { logo: null, photo: null, theme: 'd
 document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('design-type');
   if (sel) sel.addEventListener('change', () => {
-    const fp = document.getElementById('flyer-builder-panel');
+    // Hide all builder panels
+    ['flyer','poster','banner','logo'].forEach(type => {
+      const panel = document.getElementById(type + '-builder-panel');
+      if (panel) panel.style.display = 'none';
+    });
     const gb = document.getElementById('design-generate-btn');
-    if (sel.value === 'flyer') {
-      if (fp) fp.style.display = 'block';
+    const mc = document.getElementById('design-canvas');
+    const fc = document.getElementById('flyer-canvas');
+    const builders = ['flyer','poster','banner','logo'];
+    if (builders.includes(sel.value)) {
+      const panel = document.getElementById(sel.value + '-builder-panel');
+      if (panel) panel.style.display = 'block';
       if (gb) gb.style.display = 'none';
+      if (mc) mc.style.display = 'none';
+      if (fc) fc.style.display = 'none';
     } else {
-      if (fp) fp.style.display = 'none';
       if (gb) gb.style.display = 'block';
+      if (mc) mc.style.display = 'block';
     }
   });
 });
