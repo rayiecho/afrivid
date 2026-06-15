@@ -457,7 +457,7 @@ window._feedbackLoaded = false;
           <div class="system-card">
             <div class="system-info">
               <div class="system-name">TTS Worker</div>
-              <div class="system-url">afrivid-tts.mathsai666.workers.dev</div>
+              <div class="system-url">afrivid-tts.afrividstudio.workers.dev</div>
             </div>
             <div><span class="status-dot status-checking" id="dot-tts"></span><span id="status-tts" style="font-size:0.72rem;font-family:var(--font-mono);">Checking...</span></div>
           </div>
@@ -986,7 +986,7 @@ async function checkWorkers() {
       status.style.color = 'var(--red)';
     }
   };
-  check('https://afrivid-tts.mathsai666.workers.dev','dot-tts','status-tts');
+  check('https://afrivid-tts.afrividstudio.workers.dev','dot-tts','status-tts');
   check('https://yan-ai-worker.youngafricansn.workers.dev','dot-ai','status-ai');
 
   // Firebase check
@@ -1035,7 +1035,7 @@ window.sendAnnouncement = async function() {
     let sent = 0;
     for (const email of emails) {
       try {
-        const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/send-email', {
+        const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/send-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

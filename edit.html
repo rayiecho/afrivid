@@ -2398,7 +2398,7 @@ window._generateCaptions = async function() {
       addEnhanceLog('info','[~] Using raw video audio...');
     }
 
-    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/transcribe', {
       method: 'POST',
       headers: {'Content-Type': audioToSend.type || 'audio/wav'},
       body: audioToSend
@@ -3341,7 +3341,7 @@ window.generateHighlightReel = async function(targetDuration) {
     }
     const wavBlob = new Blob([buf],{type:'audio/wav'});
     audioCtx.close();
-    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/transcribe', {
       method: 'POST', headers: {'Content-Type':'audio/wav'}, body: wavBlob
     });
     if(res.ok) { const d = await res.json(); transcript = d.text || ''; }
@@ -3540,7 +3540,7 @@ window.translateVideo = async function(targetLang) {
     audioCtx.close();
     
     const wavBlob = new Blob([buf],{type:'audio/wav'});
-    const transcribeRes = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
+    const transcribeRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/transcribe', {
       method: 'POST', headers: {'Content-Type':'audio/wav'}, body: wavBlob
     });
     if (!transcribeRes.ok) throw new Error('Transcription failed');
@@ -3579,7 +3579,7 @@ window.translateVideo = async function(targetLang) {
       'pt': 'portuguese'
     };
     
-    const ttsRes = await fetch('https://afrivid-tts.mathsai666.workers.dev/tts', {
+    const ttsRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/tts', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -3917,7 +3917,7 @@ window.generateViralClips = async function(count) {
         }
         audioCtx.close();
         const wavBlob = new Blob([buf],{type:'audio/wav'});
-        const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe',{
+        const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/transcribe',{
           method:'POST', headers:{'Content-Type':'audio/wav'}, body: wavBlob
         });
         if(res.ok) { const d = await res.json(); transcript = d.text || ''; }

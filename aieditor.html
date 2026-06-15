@@ -755,7 +755,7 @@ async function extractWAV() {
 async function transcribe() {
   addLog('all', '[~] Transcribing audio...');
   const wavBlob = await extractWAV();
-  const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/transcribe', {
+  const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/transcribe', {
     method:'POST', headers:{'Content-Type':'audio/wav'}, body: wavBlob
   });
   if (!res.ok) return '';
@@ -880,7 +880,7 @@ async function exportClips(clips, filename) {
   if (window.currentUser?.email) {
     try {
       const videoName = window.currentVideoFile?.name || 'your video';
-      await fetch('https://afrivid-tts.mathsai666.workers.dev/send-email', {
+      await fetch('https://afrivid-tts.afrividstudio.workers.dev/send-email', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -1062,7 +1062,7 @@ async function doTranslate(lang) {
     addLog('translate', '[~] Translating...');
     const translated = await claudeAsk(`Translate to ${langName}. Return ONLY translated text:\n"${transcript}"`, 2000);
     addLog('translate', '[~] Generating voice...');
-    const ttsRes = await fetch('https://afrivid-tts.mathsai666.workers.dev/tts', {
+    const ttsRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/tts', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({text:translated, voice:lang})
     });

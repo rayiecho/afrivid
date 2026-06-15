@@ -3471,7 +3471,7 @@ window._startRecording = async function startRecording() {
   const audioBuffers = await Promise.all(
     scriptData.scenes.map(async (scene, i) => {
       try {
-        const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/tts', {
+        const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: scene.voiceover, voice: document.getElementById('voice-select') ? document.getElementById('voice-select').value : 'helios' })
@@ -4275,7 +4275,7 @@ window._doSignUp = window.doSignUp = async function() {
 
     // Send welcome email
     try {
-      await fetch('https://afrivid-tts.mathsai666.workers.dev/send-email', {
+      await fetch('https://afrivid-tts.afrividstudio.workers.dev/send-email', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -5605,7 +5605,7 @@ window.generateSceneImage = async function(scene, sceneIndex) {
     else if(text2.match(/coin|cash|bank|saving|invest|finance|budget/)) aiCategory='finance';
     const imgNum2 = (sceneIndex % 15) + 1;
     const prompt = `Professional ${aiCategory} photo: ${scene.slideTitle||'Africa'}. Realistic, high quality, no human faces, no people.`;
-    const res = await fetch('https://afrivid-tts.mathsai666.workers.dev/generate-image', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/generate-image', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({prompt: prompt})
