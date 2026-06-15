@@ -474,9 +474,6 @@ body::after{
           <option value="icon">App Icon</option>
           <option value="illustration">Illustration</option>
           <option value="flyer">Professional Flyer</option>
-          <option value="smart_poster">✨ NEW: Smart Poster</option>
-          <option value="smart_banner">✨ NEW: Smart Banner</option>
-          <option value="smart_logo">✨ NEW: Smart Logo</option>
         </select>
         <textarea class="ai-input" id="design-ai-prompt" placeholder="Describe your design... e.g. modern African tech company logo in gold and black"></textarea>
         
@@ -2893,41 +2890,14 @@ if (!window._flyerData) window._flyerData = { logo: null, photo: null, theme: 'd
 document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('design-type');
   if (sel) sel.addEventListener('change', () => {
-    // Hide all builder panels first
-    ['flyer','poster','banner','logo'].forEach(type => {
-      const panel = document.getElementById(type + '-builder-panel');
-      if (panel) panel.style.display = 'none';
-    });
+    const fp = document.getElementById('flyer-builder-panel');
     const gb = document.getElementById('design-generate-btn');
-    const mc = document.getElementById('design-canvas');
-    const fc = document.getElementById('flyer-canvas');
-
-    const v = sel.value;
-    if (v === 'flyer') {
-      const fp = document.getElementById('flyer-builder-panel');
+    if (sel.value === 'flyer') {
       if (fp) fp.style.display = 'block';
       if (gb) gb.style.display = 'none';
-      if (mc) mc.style.display = 'none';
-    } else if (v === 'smart_poster') {
-      const pp = document.getElementById('poster-builder-panel');
-      if (pp) pp.style.display = 'block';
-      if (gb) gb.style.display = 'none';
-      if (mc) mc.style.display = 'none';
-    } else if (v === 'smart_banner') {
-      const bp = document.getElementById('banner-builder-panel');
-      if (bp) bp.style.display = 'block';
-      if (gb) gb.style.display = 'none';
-      if (mc) mc.style.display = 'none';
-    } else if (v === 'smart_logo') {
-      const lp = document.getElementById('logo-builder-panel');
-      if (lp) lp.style.display = 'block';
-      if (gb) gb.style.display = 'none';
-      if (mc) mc.style.display = 'none';
     } else {
-      // Old system - show generate button and canvas
+      if (fp) fp.style.display = 'none';
       if (gb) gb.style.display = 'block';
-      if (mc) mc.style.display = 'block';
-      if (fc) fc.style.display = 'none';
     }
   });
 });
