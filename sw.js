@@ -1,4 +1,4 @@
-const CACHE = 'afrivid-v5';
+const CACHE = 'afrivid-v3';
 const STATIC = [
   '/index.html',
   '/create.html',
