@@ -1017,6 +1017,8 @@ async function runAIEdit(instructions) {
   const totalSecs = Math.round(video.duration);
   addLog('all', `[~] Video: ${totalSecs}s long`);
 
+  // Step 1 — parse instructions into action plan
+  updateProcessingProgress(5, 'Analyzing instructions...', 0);
   let plan;
   try {
     const raw = await claudeAsk(`You are an AI video editor. Video is ${totalSecs}s long. User said: "${instructions}". Return ONLY valid JSON: {"summary":"what you will do","actions":[]} where action types are: trim (needs start,end in seconds), speed (needs factor: 0.5=slowmo 2=fast), silence, highlight (needs duration:60), noise, caption, aspect (needs ratio: 9:16 or 16:9 or 1:1), music (needs mood: inspirational/calm/upbeat), thumbnail. Only include actions the user asked for.`, 800);
@@ -1029,60 +1031,71 @@ async function runAIEdit(instructions) {
   }
 
   addLog('all', `[~] Plan: ${plan.summary}`);
+  updateProcessingProgress(15, plan.summary, 1);
 
-  for (const action of (plan.actions || [])) {
+  // Step 2 — execute actions with progress updates
+  const total = plan.actions.length;
+  for (let i = 0; i < total; i++) {
+    const action = plan.actions[i];
+    const pct = Math.round(15 + ((i / total) * 75));
+    updateProcessingProgress(pct, `Step ${i+1}/${total}: ${action.type}...`, i + 1);
+
     switch(action.type) {
       case 'trim':
         addLog('all', `[~] Trimming ${action.start}s to ${action.end}s`);
+        updateProcessingProgress(pct, `Trimming ${action.start}s → ${action.end}s`, i+1);
         await exportClips([{ start: action.start, end: action.end }], 'AfriVid-Trim');
         break;
       case 'trim_ai':
+        updateProcessingProgress(pct, 'AI finding best clips...', i+1);
         const trimRaw = await claudeAsk(`Video is ${totalSecs}s. Instructions: "${action.instructions}". Return ONLY JSON clips: [{"start":0,"end":30}]`, 500);
         const trimMatch = trimRaw.match(/\[[\s\S]*\]/);
         if (!trimMatch) throw new Error('No clips');
         const clips = JSON.parse(trimMatch[0]).map(c => ({ start: Math.max(0,c.start), end: Math.min(video.duration,c.end) }));
+        updateProcessingProgress(pct+5, `Exporting ${clips.length} clip(s)...`, i+1);
         await exportClips(clips, 'AfriVid-AI-Edit');
         break;
       case 'speed':
-        addLog('all', `[~] Setting speed to ${action.factor}x`);
+        updateProcessingProgress(pct, `Applying ${action.factor}x speed...`, i+1);
         video.playbackRate = action.factor || 1.5;
         await exportClips([{ start: 0, end: video.duration }], `AfriVid-${action.factor}x`);
         video.playbackRate = 1;
         break;
       case 'silence':
-        addLog('all', '[~] Removing silences...');
+        updateProcessingProgress(pct, 'Detecting silent parts...', i+1);
         await doRemoveSilences();
         break;
       case 'highlight':
-        addLog('all', `[~] Creating ${action.duration||60}s highlight...`);
+        updateProcessingProgress(pct, `Building ${action.duration||60}s highlight reel...`, i+1);
         await doHighlightReel(action.duration || 60);
         break;
       case 'noise':
-        addLog('all', '[~] Removing background noise...');
+        updateProcessingProgress(pct, 'Filtering background noise...', i+1);
         await doNoiseRemoval();
         break;
       case 'caption':
-        addLog('all', '[~] Generating captions...');
+        updateProcessingProgress(pct, 'Transcribing and generating captions...', i+1);
         await doCaptions();
         break;
       case 'aspect':
-        addLog('all', `[~] Converting to ${action.ratio}...`);
+        updateProcessingProgress(pct, `Converting to ${action.ratio}...`, i+1);
         window._exportAspect = action.ratio;
         await exportClips([{ start: 0, end: video.duration }], `AfriVid-${action.ratio.replace(':','x')}`);
         window._exportAspect = null;
         break;
       case 'music':
-        addLog('all', `[~] Adding ${action.mood||'inspirational'} music...`);
+        updateProcessingProgress(pct, `Adding ${action.mood||'inspirational'} music...`, i+1);
         await doAddMusic(action.mood || 'inspirational');
         break;
       case 'thumbnail':
-        addLog('all', '[~] Generating thumbnail...');
+        updateProcessingProgress(pct, 'Extracting best frame...', i+1);
         await doThumbnail();
         break;
       default:
         addLog('all', `[!] Unknown action: ${action.type}`);
     }
   }
+  updateProcessingProgress(100, '✅ All edits complete!', total + 1);
   addLog('all', '[ok] All edits complete!');
 }
 
