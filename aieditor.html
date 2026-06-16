@@ -842,7 +842,7 @@ async function applyPrompt() {
 
   // Short video — browser processing
   const _dur = _vid?.duration || 0;
-  const _est = Math.round(_dur * 0.3);
+  const _est = (_dur > 0 && isFinite(_dur)) ? Math.max(5, Math.round(_dur * 0.15)) : 30;
   const _estStr = _est > 60 ? `~${Math.round(_est/60)}m` : `~${_est}s`;
   showProcessingOverlay(`AfriVid AI is editing your video (Est: ${_estStr})`, [
     {label: 'Analyzing instructions', status: 'active'},
@@ -860,7 +860,7 @@ async function applyPrompt() {
 // ── LOG ──
 function addLog(panel, msg) {
   const _dur = _vid?.duration || 0;
-  const _est = Math.round(_dur * 0.3);
+  const _est = (_dur > 0 && isFinite(_dur)) ? Math.max(5, Math.round(_dur * 0.15)) : 30;
   const _estStr = _est > 60 ? `~${Math.round(_est/60)}m` : `~${_est}s`;
   showProcessingOverlay(`AfriVid AI is editing your video (Est: ${_estStr})`, [
     {label: 'Analyzing instructions', status: 'active'},
