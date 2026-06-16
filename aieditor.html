@@ -308,15 +308,26 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div id="phase2-status" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
   <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-      <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 Server Processing</div>
+      <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 AfriVid Cloud Processing</div>
       <div id="phase2-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
     </div>
     <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
       <div id="phase2-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
     </div>
     <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Uploading video...</div>
-    <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;">📧 You'll receive an email when processing is complete. You can close this tab safely.</div>
+    <!-- Email notification info -->
+    <div id="phase2-email-notice" style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
+      <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being processed!</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when it's ready. You don't need to keep this tab open.</div>
+    </div>
+    <!-- Action buttons -->
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+      <a href="studio.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
+      <a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard</a>
+      <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
+    </div>
     <div id="phase2-download" style="display:none;margin-top:1rem;">
+      <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
       <a id="phase2-download-link" href="#" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</a>
     </div>
   </div>
@@ -2330,7 +2341,10 @@ window.uploadToServer = async function() {
     if (data.error) throw new Error(data.error);
 
     window._phase2JobId = data.job_id;
-    document.getElementById('phase2-stage').textContent = 'Video uploaded! Processing in Johannesburg...';
+    document.getElementById('phase2-stage').textContent = 'Video uploaded! AfriVid Cloud is processing...';
+    // Show user email in notice
+    const emailEl = document.getElementById('phase2-user-email');
+    if (emailEl && user.email) emailEl.textContent = user.email;
     document.getElementById('phase2-bar').style.width = '10%';
     document.getElementById('phase2-pct').textContent = '10%';
 
