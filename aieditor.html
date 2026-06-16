@@ -822,7 +822,7 @@ async function applyPrompt() {
         formData.append('user_email', user.email);
         formData.append('prompt', window._pendingPrompt || '');
         formData.append('actions', '');
-        const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {
+        const res = await fetch('https://afrivid-processor.fly.dev/upload-and-process', {
           method: 'POST', body: formData
         });
         const data = await res.json();
@@ -2378,7 +2378,7 @@ window.uploadToServer = async function() {
     formData.append('user_email', user.email);
     formData.append('actions', actions.join(','));
 
-    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {
+    const res = await fetch('https://afrivid-processor.fly.dev/upload-and-process', {
       method: 'POST',
       body: formData
     });
@@ -2526,7 +2526,7 @@ window.applyCropSelection = async function() {
   formData.append('crop_w', Math.round(d.w));
   formData.append('crop_h', Math.round(d.h));
   try {
-    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {method:'POST', body:formData});
+    const res = await fetch('https://afrivid-processor.fly.dev/upload-and-process', {method:'POST', body:formData});
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     window._phase2JobId = data.job_id;
