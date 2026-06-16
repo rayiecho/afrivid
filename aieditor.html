@@ -399,11 +399,74 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <div class="feature-name">Brand Kit</div>
       <div class="feature-desc">Add your logo, colors and watermark to every video</div>
     </div>
+    <div class="feature-card" onclick="togglePanel('speed')">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-name">Speed Control</div>
+      <div class="feature-desc">Slow motion, fast forward or custom speed</div>
+    </div>
+    <div class="feature-card" onclick="togglePanel('aspect')">
+      <div class="feature-icon">📐</div>
+      <div class="feature-name">Aspect Ratio</div>
+      <div class="feature-desc">Convert to TikTok 9:16, YouTube 16:9 or Square 1:1</div>
+    </div>
+    <div class="feature-card" onclick="togglePanel('bgremove')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🎭</div>
+      <div class="feature-name">BG Remover</div>
+      <div class="feature-desc">Remove or blur your video background automatically</div>
+    </div>
 
   </div>
 </div>
 
 <!-- SUB PANELS -->
+<!-- SPEED PANEL -->
+<div class="sub-panel" id="panel-speed">
+  <div class="sub-panel-inner">
+    <div class="sub-title">⚡ Speed Control</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Choose a speed or set a custom value.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <button class="btn btn-gold" onclick="runFeature('speed',0.5)">🐢 0.5x Slow Mo</button>
+      <button class="btn btn-gold" onclick="runFeature('speed',0.75)">🚶 0.75x</button>
+      <button class="btn btn-gold" onclick="runFeature('speed',1.5)">🏃 1.5x Fast</button>
+      <button class="btn btn-gold" onclick="runFeature('speed',2)">🚀 2x Super Fast</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Custom:</span>
+      <input type="number" id="speed-custom" min="0.25" max="4" step="0.25" value="1.5" style="width:70px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.3rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.82rem;">
+      <button class="btn btn-gold" onclick="runFeature('speed',parseFloat(document.getElementById('speed-custom').value)||1.5)">Apply</button>
+    </div>
+    <div class="ai-log" id="log-speed"></div>
+  </div>
+</div>
+<!-- ASPECT RATIO PANEL -->
+<div class="sub-panel" id="panel-aspect">
+  <div class="sub-panel-inner">
+    <div class="sub-title">📐 Aspect Ratio Converter</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Convert your video for different platforms.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="runFeature('aspect','9:16')">📱 9:16 TikTok / Reels</button>
+      <button class="btn btn-gold" onclick="runFeature('aspect','16:9')">🖥 16:9 YouTube</button>
+      <button class="btn btn-gold" onclick="runFeature('aspect','1:1')">⬛ 1:1 Square</button>
+    </div>
+    <div class="ai-log" id="log-aspect"></div>
+  </div>
+</div>
+<!-- BG REMOVER PANEL -->
+<div class="sub-panel" id="panel-bgremove">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🎭 Background Remover</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">AI removes your background. Works best with clear subject and good lighting.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+      <button class="btn btn-gold" onclick="runFeature('bgremove','blur')">🌫 Blur</button>
+      <button class="btn btn-gold" onclick="runFeature('bgremove','black')">⬛ Black</button>
+      <button class="btn btn-gold" onclick="runFeature('bgremove','white')">⬜ White</button>
+      <button class="btn btn-gold" onclick="runFeature('bgremove','green')">💚 Green Screen</button>
+    </div>
+    <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;">⚠ Browser processing — works on short clips. Pro users get server-quality removal.</div>
+    <div class="ai-log" id="log-bgremove"></div>
+  </div>
+</div>
 <div class="sub-panel" id="panel-viral">
   <div class="sub-panel-inner">
     <div class="sub-title">🚀 Viral Clips Generator</div>
@@ -789,6 +852,155 @@ async function runFeature(type, param) {
     case 'captions': await doCaptions(); break;
     case 'noise': await doNoiseRemoval(); break;
     case 'thumbnail': await doThumbnail(); break;
+    case 'speed': await doSpeedChange(param || 1.5); break;
+    case 'aspect': await doAspectRatio(param || '9:16'); break;
+    case 'bgremove': await doBgRemove(param || 'blur'); break;
+  }
+}
+
+async function doSpeedChange(factor) {
+  const video = document.getElementById('ai-video');
+  if (!video || !currentVideoFile) { addLog('speed','[x] Upload a video first'); return; }
+  addLog('speed', `[~] Applying ${factor}x speed...`);
+  showProcessingOverlay(`Speed: ${factor}x`, [{label:'Applying speed change',status:'active'},{label:'Exporting',status:'pending'}]);
+  updateProcessingProgress(10, `Setting speed to ${factor}x...`, 0);
+  video.playbackRate = factor;
+  updateProcessingProgress(40, 'Exporting video...', 1);
+  await exportClips([{start:0, end:video.duration}], `AfriVid-${factor}x`);
+  video.playbackRate = 1;
+  updateProcessingProgress(100, 'Done!', 2);
+  addLog('speed', `[ok] ${factor}x speed applied!`);
+  hideProcessingOverlay();
+}
+
+async function doAspectRatio(ratio) {
+  const video = document.getElementById('ai-video');
+  if (!video || !currentVideoFile) { addLog('aspect','[x] Upload a video first'); return; }
+  addLog('aspect', `[~] Converting to ${ratio}...`);
+  showProcessingOverlay(`Converting to ${ratio}`, [{label:'Setting aspect ratio',status:'active'},{label:'Exporting',status:'pending'}]);
+  updateProcessingProgress(10, `Converting to ${ratio}...`, 0);
+  window._exportAspect = ratio;
+  updateProcessingProgress(40, 'Exporting video...', 1);
+  await exportClips([{start:0, end:video.duration}], `AfriVid-${ratio.replace(':','x')}`);
+  window._exportAspect = null;
+  updateProcessingProgress(100, 'Done!', 2);
+  addLog('aspect', `[ok] Converted to ${ratio}!`);
+  hideProcessingOverlay();
+}
+
+async function doBgRemove(bgType) {
+  const video = document.getElementById('ai-video');
+  if (!video || !currentVideoFile) { addLog('bgremove','[x] Upload a video first'); return; }
+  addLog('bgremove', `[~] Loading background remover...`);
+  showProcessingOverlay('Background Remover', [
+    {label:'Loading AI model',status:'active'},
+    {label:'Processing frames',status:'pending'},
+    {label:'Exporting',status:'pending'}
+  ]);
+  updateProcessingProgress(5, 'Loading MediaPipe model...', 0);
+
+  try {
+    // Load MediaPipe selfie segmentation
+    if (!window._mpSegmentation) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    updateProcessingProgress(20, 'Model loaded! Processing video...', 1);
+    addLog('bgremove', '[~] Processing frames with AI...');
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext('2d');
+
+    // Background color/blur setup
+    const bgColors = { black:'#000000', white:'#ffffff', green:'#00ff00' };
+
+    const segmentation = new SelfieSegmentation({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`});
+    segmentation.setOptions({ modelSelection: 1 });
+
+    segmentation.onResults(results => {
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Draw background
+      if (bgType === 'blur') {
+        ctx.filter = 'blur(15px)';
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        ctx.filter = 'none';
+      } else {
+        ctx.fillStyle = bgColors[bgType] || '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      // Draw person only
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'destination-over';
+      if (bgType === 'blur') {
+        ctx.filter = 'blur(15px)';
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        ctx.filter = 'none';
+      } else {
+        ctx.fillStyle = bgColors[bgType] || '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    });
+
+    // Record output
+    const stream = canvas.captureStream(25);
+    const recorder = new MediaRecorder(stream, {mimeType:'video/webm'});
+    const chunks = [];
+    recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+    recorder.start(100);
+
+    updateProcessingProgress(30, 'Processing frames...', 1);
+    video.currentTime = 0;
+    await new Promise(r => video.addEventListener('seeked', r, {once:true}));
+    await video.play();
+
+    let lastPct = 30;
+    await new Promise(resolve => {
+      const process = async () => {
+        if (video.ended || video.paused) { resolve(); return; }
+        await segmentation.send({image: video});
+        const pct = Math.round(30 + (video.currentTime / video.duration) * 60);
+        if (pct > lastPct) {
+          updateProcessingProgress(pct, `Processing frame ${Math.round(video.currentTime)}s / ${Math.round(video.duration)}s`, 1);
+          lastPct = pct;
+        }
+        requestAnimationFrame(process);
+      };
+      requestAnimationFrame(process);
+      video.addEventListener('ended', resolve, {once:true});
+      setTimeout(resolve, (video.duration + 5) * 1000);
+    });
+
+    video.pause();
+    await new Promise(r => { recorder.onstop = r; recorder.stop(); });
+
+    updateProcessingProgress(95, 'Exporting...', 2);
+    const blob = new Blob(chunks, {type:'video/webm'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `AfriVid-BgRemoved-${bgType}.webm`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+    updateProcessingProgress(100, 'Done!', 2);
+    addLog('bgremove', '[ok] Background removed! Check your downloads.');
+    hideProcessingOverlay();
+
+  } catch(e) {
+    addLog('bgremove', '[x] Failed: ' + e.message);
+    hideProcessingOverlay();
+    console.error('[BgRemove]', e);
   }
 }
 
