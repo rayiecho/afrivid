@@ -1012,24 +1012,78 @@ function showResultBanner(msg, blob, filename) {
 
 // ── AI FEATURES ──
 async function runAIEdit(instructions) {
-  addLog('all', '[~] Starting AI edit...');
-  // Skip limit check for now - debug mode
+  addLog('all', '[~] Analyzing your instructions with AI...');
   const video = document.getElementById('ai-video');
   const totalSecs = Math.round(video.duration);
-  addLog('all', `[~] Video duration: ${totalSecs}s`);
+  addLog('all', `[~] Video: ${totalSecs}s long`);
+
+  let plan;
   try {
-    const text = await claudeAsk(`Video editor. Video is ${totalSecs}s long. Instructions: "${instructions}". Return ONLY JSON array of clips to keep: [{"start":0,"end":30}]`, 500);
-    const match = text.match(/\[[\s\S]*\]/);
-    if (!match) throw new Error('No clips found');
-    const clips = JSON.parse(match[0]).map(c => ({
-      start: Math.max(0, Math.min(c.start, video.duration)),
-      end: Math.max(0, Math.min(c.end, video.duration))
-    }));
-    addLog('all', `[ok] Found ${clips.length} clip(s) — exporting...`);
-    await exportClips(clips, 'AfriVid-AI-Trim');
+    const raw = await claudeAsk(`You are an AI video editor. Video is ${totalSecs}s long. User said: "${instructions}". Return ONLY valid JSON: {"summary":"what you will do","actions":[]} where action types are: trim (needs start,end in seconds), speed (needs factor: 0.5=slowmo 2=fast), silence, highlight (needs duration:60), noise, caption, aspect (needs ratio: 9:16 or 16:9 or 1:1), music (needs mood: inspirational/calm/upbeat), thumbnail. Only include actions the user asked for.`, 800);
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON found');
+    plan = JSON.parse(match[0]);
   } catch(e) {
-    addLog('all', '[x] Failed: ' + e.message);
+    addLog('all', '[!] Falling back to basic trim...');
+    plan = { summary: 'Basic AI edit', actions: [{ type: 'trim_ai', instructions }] };
   }
+
+  addLog('all', `[~] Plan: ${plan.summary}`);
+
+  for (const action of (plan.actions || [])) {
+    switch(action.type) {
+      case 'trim':
+        addLog('all', `[~] Trimming ${action.start}s to ${action.end}s`);
+        await exportClips([{ start: action.start, end: action.end }], 'AfriVid-Trim');
+        break;
+      case 'trim_ai':
+        const trimRaw = await claudeAsk(`Video is ${totalSecs}s. Instructions: "${action.instructions}". Return ONLY JSON clips: [{"start":0,"end":30}]`, 500);
+        const trimMatch = trimRaw.match(/\[[\s\S]*\]/);
+        if (!trimMatch) throw new Error('No clips');
+        const clips = JSON.parse(trimMatch[0]).map(c => ({ start: Math.max(0,c.start), end: Math.min(video.duration,c.end) }));
+        await exportClips(clips, 'AfriVid-AI-Edit');
+        break;
+      case 'speed':
+        addLog('all', `[~] Setting speed to ${action.factor}x`);
+        video.playbackRate = action.factor || 1.5;
+        await exportClips([{ start: 0, end: video.duration }], `AfriVid-${action.factor}x`);
+        video.playbackRate = 1;
+        break;
+      case 'silence':
+        addLog('all', '[~] Removing silences...');
+        await doRemoveSilences();
+        break;
+      case 'highlight':
+        addLog('all', `[~] Creating ${action.duration||60}s highlight...`);
+        await doHighlightReel(action.duration || 60);
+        break;
+      case 'noise':
+        addLog('all', '[~] Removing background noise...');
+        await doNoiseRemoval();
+        break;
+      case 'caption':
+        addLog('all', '[~] Generating captions...');
+        await doCaptions();
+        break;
+      case 'aspect':
+        addLog('all', `[~] Converting to ${action.ratio}...`);
+        window._exportAspect = action.ratio;
+        await exportClips([{ start: 0, end: video.duration }], `AfriVid-${action.ratio.replace(':','x')}`);
+        window._exportAspect = null;
+        break;
+      case 'music':
+        addLog('all', `[~] Adding ${action.mood||'inspirational'} music...`);
+        await doAddMusic(action.mood || 'inspirational');
+        break;
+      case 'thumbnail':
+        addLog('all', '[~] Generating thumbnail...');
+        await doThumbnail();
+        break;
+      default:
+        addLog('all', `[!] Unknown action: ${action.type}`);
+    }
+  }
+  addLog('all', '[ok] All edits complete!');
 }
 
 async function doViralClips(count) {
