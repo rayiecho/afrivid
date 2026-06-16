@@ -2000,7 +2000,7 @@ const _origHandleVideoUpload = window.handleVideoUpload;
 
 function checkPhase2(file, duration) {
   window._currentVideoFile = file;
-  if (duration > 5) { // over 5 seconds (5 minutes in production)
+  if (duration > 300) { // over 5 minutes
     const banner = document.getElementById('phase2-banner');
     const msg = document.getElementById('phase2-duration-msg');
     if (banner) banner.style.display = 'block';
