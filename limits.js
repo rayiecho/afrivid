@@ -36,6 +36,11 @@ window.checkAfriVidLimit = async function(action) {
       return false;
     }
   }
+  // Block unverified emails from using any tool
+  if (!window.currentUser.emailVerified) {
+    alert('⚠ Please verify your email first. Check your inbox for the verification link from AfriVid Studio.');
+    return false;
+  }
 
   try {
     const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
