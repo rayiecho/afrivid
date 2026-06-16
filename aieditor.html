@@ -790,9 +790,75 @@ async function applyPrompt() {
   console.log('[Apply] passing checks...');
   if (!await checkAfriVidLimit('aieditor_session')) return;
   const instructions = document.getElementById('ai-prompt').value.trim();
-  
-  // Show processing overlay with estimated time
+  if (!instructions) { alert('Type your instructions first'); return; }
+
+  // ── PHASE 2 CHECK — route long videos to server ──
   const _vid = document.getElementById('ai-video');
+  if (_vid && _vid.duration > 300) {
+    // Long video — use server processing instead of browser
+    window._currentVideoFile = currentVideoFile;
+    const banner = document.getElementById('phase2-banner');
+    const msg = document.getElementById('phase2-duration-msg');
+    const mins = Math.floor(_vid.duration / 60);
+    if (msg) msg.textContent = `Your video is ${mins} minutes — routing to AfriVid Cloud for best results`;
+    if (banner) banner.style.display = 'block';
+    // Auto-trigger server upload with the prompt
+    window._pendingPrompt = instructions;
+    const origUpload = window.uploadToServer;
+    window.uploadToServer = async function() {
+      // Pass prompt as actions via server
+      const file = window._currentVideoFile || window.currentVideoFile;
+      const user = window.currentUser;
+      if (!file || !user) { alert('No video or user found'); return; }
+      document.getElementById('phase2-banner').style.display = 'none';
+      document.getElementById('phase2-status').style.display = 'block';
+      document.getElementById('phase2-stage').textContent = 'Uploading video to AfriVid Cloud...';
+      const emailEl = document.getElementById('phase2-user-email');
+      if (emailEl && user.email) emailEl.textContent = user.email;
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('user_id', user.uid);
+        formData.append('user_email', user.email);
+        formData.append('prompt', window._pendingPrompt || '');
+        formData.append('actions', '');
+        const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {
+          method: 'POST', body: formData
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        window._phase2JobId = data.job_id;
+        document.getElementById('phase2-stage').textContent = 'Video uploaded! AfriVid Cloud is processing...';
+        document.getElementById('phase2-bar').style.width = '10%';
+        document.getElementById('phase2-pct').textContent = '10%';
+        window._phase2PollInterval = setInterval(pollJobStatus, 5000);
+      } catch(e) {
+        document.getElementById('phase2-stage').textContent = 'Upload failed: ' + e.message;
+      }
+      window.uploadToServer = origUpload;
+    };
+    return;
+  }
+
+  // Short video — browser processing
+  const _dur = _vid?.duration || 0;
+  const _est = Math.round(_dur * 0.3);
+  const _estStr = _est > 60 ? `~${Math.round(_est/60)}m` : `~${_est}s`;
+  showProcessingOverlay(`AfriVid AI is editing your video (Est: ${_estStr})`, [
+    {label: 'Analyzing instructions', status: 'active'},
+    {label: 'Processing video', status: 'pending'},
+    {label: 'Applying changes', status: 'pending'},
+    {label: 'Preparing download', status: 'pending'},
+  ]);
+  const btn = document.getElementById('apply-btn');
+  if(btn) { btn.disabled=true; btn.textContent='[..] Applying...'; btn.style.background='rgba(245,166,35,0.3)'; }
+  addLog('all', '[~] Processing: ' + instructions);
+  await runAIEdit(instructions);
+  if(btn) { btn.disabled=false; btn.textContent='✦ Apply'; btn.style.background=''; }
+  hideProcessingOverlay();
+}
+// ── LOG ──
+function addLog(panel, msg) {
   const _dur = _vid?.duration || 0;
   const _est = Math.round(_dur * 0.3);
   const _estStr = _est > 60 ? `~${Math.round(_est/60)}m` : `~${_est}s`;
