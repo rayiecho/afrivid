@@ -1271,20 +1271,21 @@ window._handleGenerateScript = async function() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
+        max_tokens: 4000,
         messages: [{
           role: 'user',
           content: `Create a ${duration}-second ${style} video script about "${topic}" in ${language}.
 ${context ? `Additional context: ${context}` : ''}
+IMPORTANT: The total video must be EXACTLY ${duration} seconds. Each scene voiceover must be long enough — at 2.5 words per second, each scene needs AT LEAST ${Math.floor((duration/sceneCount)*2.5)} words of narration text.
 Return ONLY valid JSON:
 {
   "title": "video title",
   "duration": ${duration},
   "scenes": [
-    {"scene": 1, "title": "Scene title", "text": "Narration text", "duration": 10, "visual": "Visual description"}
+    {"scene": 1, "title": "Scene title", "text": "Narration text that is long enough to fill the scene duration at 2.5 words per second", "duration": ${Math.floor(duration/sceneCount)}, "visual": "Visual description"}
   ]
 }
-Create exactly ${sceneCount} scenes. Total scene durations must equal ${duration} seconds. Return ONLY the JSON.`
+Create exactly ${sceneCount} scenes. Each scene must have AT LEAST ${Math.floor((duration/sceneCount)*2.5)} words in the text field. Total scene durations must equal ${duration} seconds. Return ONLY the JSON.`
         }]
       })
     });
@@ -5308,7 +5309,7 @@ Make exactly ${scenes} scenes. Use the provided content for voiceover text - do 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
+        max_tokens: 4000,
         messages: [{ role: 'user', content: prompt }]
       })
     });
