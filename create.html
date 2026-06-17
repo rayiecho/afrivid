@@ -573,6 +573,73 @@ async function handleGenerateScript(){
 function startRecording(){ if(window._startRecording) window._startRecording(); }
 function stopRecording(){ if(window._stopRecording) window._stopRecording(); }
 function makeAnother(){ if(window._makeAnother) { window._makeAnother(); return; } setTimeout(()=>{ if(window._makeAnother) window._makeAnother(); else window.location.reload(); },1000); }
+
+window.generateOnServer = async function() {
+  const user = window.currentUser;
+  if (!user) { alert('Please sign in first'); return; }
+  const scenes = (typeof scriptData !== "undefined" && scriptData?.scenes) || window._scenes || [];
+  if (!scenes.length) { alert('Please generate a script first'); return; }
+  const btn = document.getElementById('btn-generate-server');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Starting...'; }
+  document.getElementById('server-gen-status').style.display = 'block';
+  document.getElementById('server-gen-stage').textContent = 'Sending to AfriVid Cloud...';
+  const emailEl = document.getElementById('server-gen-email');
+  if (emailEl && user.email) emailEl.textContent = user.email;
+  try {
+    const jobId = `vid_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+    const topic = document.getElementById('video-topic')?.value || 'AfriVid Video';
+    const style = document.getElementById('video-style')?.value || 'dark';
+    const language = document.getElementById('video-language')?.value || 'en';
+    const res = await fetch('https://afrivid-processor.fly.dev/generate-video', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        job_id: jobId,
+        scenes: scenes.map(s => ({
+          title: s.title || s.heading || 'Scene',
+          voiceover: s.voiceover || s.narration || s.script || '',
+          duration: s.duration || 10
+        })),
+        user_email: user.email,
+        user_id: user.uid,
+        style: style,
+        language: language,
+        title: topic
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    window._serverGenJobId = data.job_id || jobId;
+    document.getElementById('server-gen-stage').textContent = 'Video generation in progress...';
+    document.getElementById('server-gen-bar').style.width = '10%';
+    document.getElementById('server-gen-pct').textContent = '10%';
+    window._serverGenPoll = setInterval(async () => {
+      try {
+        const r = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${window._serverGenJobId}`);
+        const d = await r.json();
+        document.getElementById('server-gen-bar').style.width = (d.progress||0) + '%';
+        document.getElementById('server-gen-pct').textContent = (d.progress||0) + '%';
+        document.getElementById('server-gen-stage').textContent = d.stage || 'Processing...';
+        if (d.status === 'completed' && d.output_url) {
+          clearInterval(window._serverGenPoll);
+          document.getElementById('server-gen-download').style.display = 'block';
+          document.getElementById('server-gen-link').href = d.output_url;
+          document.getElementById('server-gen-bar').style.width = '100%';
+          document.getElementById('server-gen-pct').textContent = '100%';
+          document.getElementById('server-gen-stage').textContent = '✅ Video ready!';
+          goToStep(4);
+        }
+        if (d.status === 'failed') {
+          clearInterval(window._serverGenPoll);
+          document.getElementById('server-gen-stage').textContent = '❌ Generation failed.';
+        }
+      } catch(e) { console.log('Poll error:', e); }
+    }, 5000);
+  } catch(e) {
+    document.getElementById('server-gen-stage').textContent = 'Failed: ' + e.message;
+    if (btn) { btn.disabled = false; btn.textContent = '⚡ Generate Video'; }
+  }
+};
 function handleSaveToStudio(){ 
   if(window._handleSaveToStudio) { window._handleSaveToStudio(); return; }
   // Fallback: not logged in
@@ -1039,11 +1106,27 @@ Or just paste your raw content and we will structure it into scenes automaticall
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-gold" id="btn-record" onclick="startRecording()">▶ Start Recording</button>
-          <button class="btn btn-gold" id="btn-record-go" onclick="startRecording()" style="display:none;">▶ Start Recording</button>
-          <button class="btn btn-red" id="btn-stop" onclick="stopRecording()" style="display:none;">⏹ Stop</button>
-          <button class="btn btn-outline" onclick="toggleCrop()">⬚ Crop Frame</button>
-      <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
+          <button class="btn btn-gold" id="btn-generate-server" onclick="generateOnServer()" style="font-size:1rem;padding:0.85rem 2rem;">⚡ Generate Video</button>
+          <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
+        </div>
+        <!-- SERVER PROCESSING STATUS -->
+        <div id="server-gen-status" style="display:none;margin-top:1rem;background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 AfriVid Cloud Generating...</div>
+            <div id="server-gen-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
+            <div id="server-gen-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+          </div>
+          <div id="server-gen-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Starting...</div>
+          <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;">
+            <div style="color:#F5A623;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being generated!</div>
+            <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="server-gen-email" style="color:#74C69D;">your email</span> when ready.</div>
+          </div>
+          <div id="server-gen-download" style="display:none;margin-top:1rem;">
+            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Video ready!</div>
+            <a id="server-gen-link" href="#" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-size:0.85rem;">⬇ Download Video</a>
+          </div>
         </div>
       </div>
     </div>
