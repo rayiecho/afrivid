@@ -2333,6 +2333,21 @@ window.uploadToServer = async function() {
   document.getElementById('phase2-banner').style.display = 'none';
   document.getElementById('phase2-status').style.display = 'block';
   document.getElementById('phase2-stage').textContent = 'Uploading video to AfriVid Cloud...';
+  // Start timer immediately
+  const _vid = document.getElementById('ai-video');
+  const _vidDur = _vid ? _vid.duration : 300;
+  const _estSecs = Math.round(_vidDur * 1.5);
+  let _remaining = _estSecs;
+  const _timerEl = document.getElementById('phase2-timer');
+  const _countdownEl = document.getElementById('phase2-countdown');
+  if (_timerEl) _timerEl.style.display = 'block';
+  window._phase2Timer = setInterval(() => {
+    _remaining = Math.max(0, _remaining - 1);
+    const mins = Math.floor(_remaining / 60);
+    const secs = _remaining % 60;
+    if (_countdownEl) _countdownEl.textContent = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+    if (_remaining === 0 && _countdownEl) _countdownEl.textContent = 'Almost done...';
+  }, 1000);
   const emailEl = document.getElementById('phase2-user-email');
   if (emailEl && user.email) emailEl.textContent = user.email;
   try {
@@ -2352,21 +2367,6 @@ window.uploadToServer = async function() {
     document.getElementById('phase2-bar').style.width = '10%';
     document.getElementById('phase2-pct').textContent = '10%';
     window._phase2PollInterval = setInterval(pollJobStatus, 5000);
-    // Start countdown timer based on video duration
-    const vid = document.getElementById('ai-video');
-    const vidDuration = vid ? vid.duration : 300;
-    const estimatedSeconds = Math.round(vidDuration * 1.5); // ~1.5x video duration
-    let remaining = estimatedSeconds;
-    const timerEl = document.getElementById('phase2-timer');
-    const countdownEl = document.getElementById('phase2-countdown');
-    if (timerEl) timerEl.style.display = 'block';
-    window._phase2Timer = setInterval(() => {
-      remaining = Math.max(0, remaining - 1);
-      const mins = Math.floor(remaining / 60);
-      const secs = remaining % 60;
-      if (countdownEl) countdownEl.textContent = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-      if (remaining === 0 && countdownEl) countdownEl.textContent = 'Almost done...';
-    }, 1000);
   } catch(e) {
     document.getElementById('phase2-stage').textContent = 'Upload failed: ' + e.message;
   }
