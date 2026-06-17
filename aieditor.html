@@ -2352,33 +2352,31 @@ window.uploadToServer = async function() {
   if (emailEl && user.email) emailEl.textContent = user.email;
   try {
     // Step 1 — get presigned URL from Worker
-    document.getElementById('phase2-stage').textContent = 'Preparing upload...';
-    const urlRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/get-presigned-url', {
+    // Upload video to R2 via worker
+    document.getElementById('phase2-stage').textContent = 'Uploading video to AfriVid Cloud...';
+    const actions = [];
+    if (prompt) {
+      if (prompt.toLowerCase().includes('silence')) actions.push('remove_silence');
+      if (prompt.toLowerCase().includes('noise')) actions.push('noise_removal');
+      if (prompt.toLowerCase().includes('caption')) actions.push('captions');
+      if (prompt.toLowerCase().includes('highlight')) actions.push('highlight_reel');
+      if (prompt.toLowerCase().includes('crop')) actions.push('custom_crop');
+      if (actions.length === 0) actions.push('remove_silence');
+    } else {
+      actions.push('remove_silence');
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('user_id', user.uid);
+    formData.append('user_email', user.email);
+    formData.append('actions', actions.join(','));
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4' })
+      body: formData
     });
-    const urlData = await urlRes.json();
-    if (urlData.error) throw new Error(urlData.error);
-    const { job_id, key, presigned_url, public_url } = urlData;
-    window._phase2JobId = job_id;
-
-    // Step 2 — upload directly to R2 using presigned PUT URL
-    document.getElementById('phase2-stage').textContent = 'Uploading to AfriVid Cloud...';
-    const uploadRes = await fetch(presigned_url, {
-      method: 'PUT',
-      headers: { 'Content-Type': file.type || 'video/mp4' },
-      body: file
-    });
-    if (!uploadRes.ok) throw new Error('Upload failed: ' + uploadRes.status);
-
-    // Step 3 — notify Worker to start processing
-    document.getElementById('phase2-stage').textContent = 'Starting processing...';
-    await fetch('https://afrivid-tts.afrividstudio.workers.dev/notify-uploaded', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ job_id, key, user_email: user.email, user_id: user.uid, actions: '', prompt })
-    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    window._phase2JobId = data.job_id;
 
     document.getElementById('phase2-stage').textContent = 'Video uploaded! AfriVid Cloud is processing...';
     document.getElementById('phase2-bar').style.width = '10%';
