@@ -2346,7 +2346,7 @@ window.uploadToServer = async function() {
   if (!file) { alert('No video file found'); return; }
   const user = window.currentUser;
   if (!user) { alert('Please sign in first'); return; }
-  const prompt = document.getElementById('ai-prompt')?.value?.trim() || '';
+  const prompt = window._pendingPrompt || document.getElementById('ai-prompt')?.value?.trim() || '';
   document.getElementById('phase2-banner').style.display = 'none';
   document.getElementById('phase2-status').style.display = 'block';
   document.getElementById('phase2-stage').textContent = 'Uploading video to AfriVid Cloud...';
