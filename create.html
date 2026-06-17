@@ -1348,7 +1348,7 @@ window._handleGenerateScript = async function() {
     const language = document.getElementById('video-language') ? document.getElementById('video-language').value : 'English';
     const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
     const context = (document.getElementById('video-content') || {value:''}).value.trim();
-    const sceneCount = Math.max(3, Math.floor(duration / 20));
+    const sceneCount = Math.max(3, Math.floor(duration / 30));
     const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
