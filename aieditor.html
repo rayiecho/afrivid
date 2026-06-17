@@ -720,20 +720,16 @@ function loadVideo(file) {
   }, {once:true});
   video.onloadedmetadata = () => {
     // Reject videos over 5 minutes
+    // Long video — show server processing banner instead of rejecting
     if (video.duration > 300) {
       const mins = Math.floor(video.duration / 60);
       const secs = Math.floor(video.duration % 60);
-      video.src = '';
-      currentVideoFile = null;
-      window.currentVideoFile = null;
-      document.getElementById('video-preview-area').style.display = 'none';
-      document.querySelector('.drop-zone').style.display = 'block';
+      window._currentVideoFile = file;
       const banner = document.getElementById('phase2-banner');
       const msg = document.getElementById('phase2-duration-msg');
-      if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — maximum is 5 minutes`;
+      if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — server processing recommended`;
       if (banner) banner.style.display = 'block';
-      addLog('all', `[x] Video rejected — ${mins}m ${secs}s exceeds the 5 minute limit`);
-      return;
+      // Still load the video for preview
     }
     document.getElementById('video-name').textContent = file.name;
     document.getElementById('video-duration').textContent = formatTime(video.duration);
