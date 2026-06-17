@@ -286,20 +286,46 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 </div>
 <!-- PHASE 2 SERVER PROCESSING BANNER -->
 <div id="phase2-banner" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
-  <div style="background:linear-gradient(135deg,rgba(230,51,41,0.1),rgba(230,51,41,0.05));border:1px solid rgba(230,51,41,0.3);border-radius:12px;padding:1rem 1.25rem;">
+  <div style="background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.3);border-radius:12px;padding:1rem 1.25rem;">
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
-      <span style="font-size:1.25rem;">⚠️</span>
+      <span style="font-size:1.25rem;">🚀</span>
       <div>
-        <div style="color:#E63329;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Video too long!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">AfriVid AI Editor supports videos up to 5 minutes</div>
+        <div style="color:#F5A623;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Long video detected!</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">Your video is over 5 minutes</div>
       </div>
     </div>
     <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin-bottom:1rem;line-height:1.5;">
-      Please trim your video to <strong style="color:#F5A623;">under 5 minutes</strong> before uploading. AfriVid is optimized for short-form content — TikTok, Reels, YouTube Shorts and more.
+      Use <strong style="color:#74C69D;">AfriVid Cloud Processing</strong> — our server will process your video and email you when done. You can close this tab safely.
     </div>
     <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-      <button onclick="document.getElementById('phase2-banner').style.display='none';document.getElementById('video-input').click()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📁 Upload Different Video</button>
-      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✕ Dismiss</button>
+      <button onclick="uploadToServer()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⚡ Process on Server</button>
+      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
+    </div>
+  </div>
+</div>
+<!-- PHASE 2 STATUS -->
+<div id="phase2-status" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+      <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 AfriVid Cloud Processing</div>
+      <div id="phase2-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
+      <div id="phase2-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+    </div>
+    <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Uploading...</div>
+    <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
+      <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being processed!</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when ready.</div>
+    </div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <a href="studio.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
+      <a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Dashboard</a>
+      <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
+    </div>
+    <div id="phase2-download" style="display:none;margin-top:1rem;">
+      <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
+      <a id="phase2-download-link" href="#" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</a>
     </div>
   </div>
 </div>
@@ -781,14 +807,16 @@ async function applyPrompt() {
   const instructions = document.getElementById('ai-prompt').value.trim();
   if (!instructions) { alert('Type your instructions first'); return; }
 
-  // ── VIDEO LENGTH CHECK — browser only, max 5 minutes ──
+  // ── VIDEO LENGTH CHECK — route long videos to server ──
   const _vid = document.getElementById('ai-video');
   if (_vid && _vid.duration > 300) {
+    window._currentVideoFile = currentVideoFile;
+    window._pendingPrompt = instructions;
     const banner = document.getElementById('phase2-banner');
     const msg = document.getElementById('phase2-duration-msg');
     const mins = Math.floor(_vid.duration / 60);
     const secs = Math.floor(_vid.duration % 60);
-    if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — maximum is 5 minutes`;
+    if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — routing to AfriVid Cloud`;
     if (banner) banner.style.display = 'block';
     return;
   }
@@ -2293,6 +2321,85 @@ function checkPhase2(file, duration) {
     }
   }
 }
+}
+
+// ── PHASE 2 SERVER PROCESSING ──
+window._phase2JobId = null;
+window._phase2PollInterval = null;
+
+function checkPhase2(file, duration) {
+  if (duration > 300) {
+    window._currentVideoFile = file;
+    const banner = document.getElementById('phase2-banner');
+    const msg = document.getElementById('phase2-duration-msg');
+    if (banner) banner.style.display = 'block';
+    if (msg) {
+      const mins = Math.floor(duration/60);
+      const secs = Math.floor(duration%60);
+      msg.textContent = `Your video is ${mins}m ${secs}s — server processing recommended`;
+    }
+  }
+}
+
+window.uploadToServer = async function() {
+  const file = window._currentVideoFile || window.currentVideoFile;
+  if (!file) { alert('No video file found'); return; }
+  const user = window.currentUser;
+  if (!user) { alert('Please sign in first'); return; }
+  const prompt = document.getElementById('ai-prompt')?.value?.trim() || '';
+  document.getElementById('phase2-banner').style.display = 'none';
+  document.getElementById('phase2-status').style.display = 'block';
+  document.getElementById('phase2-stage').textContent = 'Uploading video to AfriVid Cloud...';
+  const emailEl = document.getElementById('phase2-user-email');
+  if (emailEl && user.email) emailEl.textContent = user.email;
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('user_id', user.uid);
+    formData.append('user_email', user.email);
+    formData.append('prompt', prompt);
+    formData.append('actions', '');
+    const res = await fetch('https://afrivid-processor.fly.dev/upload-and-process', {
+      method: 'POST', body: formData
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    window._phase2JobId = data.job_id;
+    document.getElementById('phase2-stage').textContent = 'Video uploaded! AfriVid Cloud is processing...';
+    document.getElementById('phase2-bar').style.width = '10%';
+    document.getElementById('phase2-pct').textContent = '10%';
+    window._phase2PollInterval = setInterval(pollJobStatus, 5000);
+  } catch(e) {
+    document.getElementById('phase2-stage').textContent = 'Upload failed: ' + e.message;
+  }
+};
+
+async function pollJobStatus() {
+  if (!window._phase2JobId) return;
+  try {
+    const res = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${window._phase2JobId}`);
+    const data = await res.json();
+    const bar = document.getElementById('phase2-bar');
+    const pct = document.getElementById('phase2-pct');
+    const stage = document.getElementById('phase2-stage');
+    if (bar) bar.style.width = (data.progress || 0) + '%';
+    if (pct) pct.textContent = (data.progress || 0) + '%';
+    if (stage) stage.textContent = data.stage || 'Processing...';
+    if (data.status === 'completed' && data.output_url) {
+      clearInterval(window._phase2PollInterval);
+      const dl = document.getElementById('phase2-download');
+      const dlLink = document.getElementById('phase2-download-link');
+      if (dl) dl.style.display = 'block';
+      if (dlLink) dlLink.href = data.output_url;
+      if (bar) bar.style.width = '100%';
+      if (pct) pct.textContent = '100%';
+      if (stage) stage.textContent = '✅ Processing complete!';
+    }
+    if (data.status === 'failed') {
+      clearInterval(window._phase2PollInterval);
+      if (stage) stage.textContent = '❌ Processing failed.';
+    }
+  } catch(e) { console.log('Poll error:', e); }
 }
 
 // CROP TOOL
