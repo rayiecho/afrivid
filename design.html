@@ -521,6 +521,11 @@ body::after{
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">WEBSITE / CONTACT</div><input id="poster-contact" type="text" placeholder="e.g. youngafricansnetwork.org" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION LOGO</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="poster-logo-name">Upload logo</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('poster','logo',this)"></label></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">PRODUCT / EVENT IMAGES (up to 3)</div><div id="poster-product-thumbs" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.4rem;"></div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span>Add images</span><input type="file" accept="image/*" multiple style="display:none;" onchange="loadBuilderImages('poster','products',this,3)"></label></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">DESCRIPTION</div><textarea id="poster-description" placeholder="e.g. Join us for Africa's biggest tech summit. Connect with innovators, investors and creators." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;min-height:70px;resize:vertical;box-sizing:border-box;"></textarea></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">KEY HIGHLIGHTS (3 points)</div><div style="display:flex;flex-direction:column;gap:0.3rem;"><input id="poster-h1" type="text" placeholder="e.g. Free Entry" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="poster-h2" type="text" placeholder="e.g. AI Powered" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="poster-h3" type="text" placeholder="e.g. Certificate Provided" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">CALL TO ACTION</div><input id="poster-cta" type="text" placeholder="e.g. Register Now · Download Free · Buy Today" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SOCIAL HANDLES</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;"><input id="poster-instagram" type="text" placeholder="@instagram" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.72rem;outline:none;box-sizing:border-box;"><input id="poster-whatsapp" type="text" placeholder="WhatsApp no." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.72rem;outline:none;box-sizing:border-box;"></div></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SPONSOR / PARTNER LOGOS (up to 3)</div><div id="poster-sponsor-thumbs" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.4rem;"></div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span>Add sponsor logos</span><input type="file" accept="image/*" multiple style="display:none;" onchange="loadBuilderImages('poster','sponsors',this,3)"></label></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setBuilderTheme('poster','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setBuilderTheme('poster','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setBuilderTheme('poster','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setBuilderTheme('poster','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
           <button onclick="buildPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Poster →</button>
           <button onclick="buildPoster()" id="poster-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Poster</button>
@@ -3136,7 +3141,7 @@ window.buildFlyer = function() {
 <script>
 // ── BUILDER DATA ──
 window._builderData = {
-  poster: { logo: null, products: [], theme: 'dark' },
+  poster: { logo: null, products: [], sponsors: [], theme: 'dark' },
   banner: { logo: null, image: null, theme: 'dark' },
   logo: { style: 'text', theme: 'dark' }
 };
@@ -3281,40 +3286,68 @@ window.buildPoster = async function() {
   const date = document.getElementById('poster-date')?.value?.trim();
   const venue = document.getElementById('poster-venue')?.value?.trim();
   const contact = document.getElementById('poster-contact')?.value?.trim();
+  const description = document.getElementById('poster-description')?.value?.trim();
+  const h1 = document.getElementById('poster-h1')?.value?.trim();
+  const h2 = document.getElementById('poster-h2')?.value?.trim();
+  const h3 = document.getElementById('poster-h3')?.value?.trim();
+  const cta = document.getElementById('poster-cta')?.value?.trim();
+  const instagram = document.getElementById('poster-instagram')?.value?.trim();
+  const whatsapp = document.getElementById('poster-whatsapp')?.value?.trim();
   const d = window._builderData.poster;
   const t = BTHEMES[d.theme || 'dark'];
 
   const logoUrl = await uploadImgToR2(d.logo, 'poster-logo.png');
   const productUrls = await Promise.all((d.products || []).slice(0,3).map((p,i) => uploadImgToR2(p, 'poster-prod-'+i+'.jpg')));
+  const sponsorUrls = await Promise.all((d.sponsors || []).slice(0,3).map((p,i) => uploadImgToR2(p, 'poster-sponsor-'+i+'.png')));
   const validProducts = productUrls.filter(Boolean);
+  const validSponsors = sponsorUrls.filter(Boolean);
 
-  const productsHtml = validProducts.length ? '<div style="text-align:center;padding:20px 20px 0;"><table style="margin:0 auto;border-collapse:collapse;"><tr>' +
-    validProducts.map(url => '<td style="padding:5px;"><img src="' + url + '" style="width:' + (validProducts.length===1?'280':validProducts.length===2?'170':'110') + 'px;height:160px;object-fit:cover;border-radius:8px;border:2px solid ' + t.accent + ';"></td>').join('<td style="width:8px;"></td>') +
-    '</tr></table></div>' : '<div style="height:30px;"></div>';
+  // Middle section — images if available, else highlights + description
+  const highlights = [h1,h2,h3].filter(Boolean);
+  const middleHtml = validProducts.length ?
+    '<div style="text-align:center;padding:20px 20px 0;"><table style="margin:0 auto;border-collapse:collapse;"><tr>' +
+    validProducts.map(url => '<td style="padding:5px;"><img src="' + url + '" style="width:' + (validProducts.length===1?'300':validProducts.length===2?'185':'118') + 'px;height:180px;object-fit:cover;border-radius:8px;border:2px solid ' + t.accent + ';"></td>').join('<td style="width:8px;"></td>') +
+    '</tr></table></div>' :
+    '<div style="padding:20px 40px 0;">' +
+    (description ? '<div style="color:' + t.sub + ';font-size:13px;line-height:1.7;text-align:center;margin-bottom:18px;padding:0 20px;">' + description + '</div>' : '') +
+    (highlights.length ? '<table style="width:100%;border-collapse:collapse;margin-bottom:0;"><tr>' +
+    highlights.map(h => '<td style="padding:14px 10px;background:rgba(255,255,255,0.04);border:1px solid ' + t.accent + '33;border-radius:8px;text-align:center;"><div style="color:' + t.accent + ';font-size:18px;margin-bottom:6px;">✦</div><div style="color:' + t.text + ';font-size:12px;font-weight:700;">' + h + '</div></td>').join('<td style="width:10px;"></td>') +
+    '</tr></table>' : '') +
+    '</div>';
+
+  // Sponsors section
+  const sponsorsHtml = validSponsors.length ?
+    '<div style="text-align:center;padding:12px 40px;border-top:1px solid rgba(255,255,255,0.06);"><div style="color:' + t.sub + ';font-size:9px;letter-spacing:2px;margin-bottom:8px;">SUPPORTED BY</div><div style="display:flex;justify-content:center;align-items:center;gap:16px;">' +
+    validSponsors.map(url => '<img src="' + url + '" style="height:32px;object-fit:contain;opacity:0.7;">').join('') +
+    '</div></div>' : '';
 
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>
 </head><body>
 <div style="height:6px;background:linear-gradient(90deg,${t.accent},${t.accent2});"></div>
-<div style="background:linear-gradient(135deg,${t.bg2},${t.bg});padding:28px 40px 22px;text-align:center;position:relative;border-bottom:2px solid ${t.accent};">
-  ${logoUrl ? '<img src="' + logoUrl + '" style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;">' : ''}
-  <div style="color:${t.accent};font-size:12px;font-weight:900;letter-spacing:3px;margin-bottom:8px;">${org.toUpperCase()}</div>
-  <div style="color:${t.text};font-size:${headline.length>20?'36':'46'}px;font-weight:900;line-height:1.1;margin-bottom:10px;">${headline.toUpperCase()}</div>
-  ${tagline ? '<div style="color:' + t.accent2 + ';font-size:15px;font-style:italic;">"' + tagline + '"</div>' : ''}
+<div style="background:linear-gradient(135deg,${t.bg2},${t.bg});padding:28px 40px 22px;text-align:center;border-bottom:2px solid ${t.accent};">
+  ${logoUrl ? '<img src="' + logoUrl + '" style="width:68px;height:68px;object-fit:contain;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;border-radius:8px;">' : ''}
+  <div style="color:${t.accent};font-size:11px;font-weight:900;letter-spacing:3px;margin-bottom:8px;">${org.toUpperCase()}</div>
+  <div style="color:${t.text};font-size:${headline.length>25?'32':headline.length>15?'40':'50'}px;font-weight:900;line-height:1.1;margin-bottom:10px;">${headline.toUpperCase()}</div>
+  ${tagline ? '<div style="color:' + t.accent2 + ';font-size:14px;font-style:italic;margin-top:4px;">"' + tagline + '"</div>' : ''}
 </div>
-${productsHtml}
-<div style="padding:20px 50px;">
-  <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px;"></div>
-  ${date||venue ? '<table style="width:100%;border-collapse:collapse;margin-bottom:18px;"><tr>' +
-    (date ? '<td style="padding:12px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:10px;letter-spacing:1px;margin-bottom:4px;">DATE</div><div style="color:' + t.text + ';font-size:14px;font-weight:700;">' + date + '</div></td>' : '') +
-    (date&&venue ? '<td style="width:15px;"></td>' : '') +
-    (venue ? '<td style="padding:12px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:10px;letter-spacing:1px;margin-bottom:4px;">VENUE</div><div style="color:' + t.text + ';font-size:14px;font-weight:700;">' + venue + '</div></td>' : '') +
+${middleHtml}
+<div style="padding:16px 40px;">
+  ${date||venue ? '<table style="width:100%;border-collapse:collapse;margin-bottom:14px;"><tr>' +
+    (date ? '<td style="padding:10px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:9px;letter-spacing:1px;margin-bottom:3px;">DATE</div><div style="color:' + t.text + ';font-size:13px;font-weight:700;">' + date + '</div></td>' : '') +
+    (date&&venue ? '<td style="width:12px;"></td>' : '') +
+    (venue ? '<td style="padding:10px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:9px;letter-spacing:1px;margin-bottom:3px;">VENUE</div><div style="color:' + t.text + ';font-size:13px;font-weight:700;">' + venue + '</div></td>' : '') +
     '</tr></table>' : ''}
+  ${cta ? '<div style="text-align:center;margin-bottom:14px;"><div style="display:inline-block;background:' + t.accent + ';color:#050A14;padding:12px 32px;border-radius:8px;font-size:15px;font-weight:900;letter-spacing:1px;">' + cta + '</div></div>' : ''}
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;background:${t.bg2};padding:18px 40px;border-top:3px solid ${t.accent};">
+${sponsorsHtml}
+<div style="position:absolute;bottom:0;left:0;right:0;background:${t.bg2};padding:14px 40px;border-top:3px solid ${t.accent};">
   <table style="width:100%;border-collapse:collapse;"><tr>
-    <td><div style="color:${t.accent};font-size:17px;font-weight:900;">JOIN US${date?' — '+date.toUpperCase():''}</div>${venue?'<div style="color:'+t.sub+';font-size:12px;">'+venue+'</div>':''}</td>
-    <td style="text-align:right;">${contact?'<div style="color:'+t.accent2+';font-size:13px;font-weight:700;">'+contact+'</div>':''}<div style="color:rgba(255,255,255,0.2);font-size:10px;margin-top:4px;">Created with AfriVid Studio · afrivid.studio</div></td>
+    <td>
+      ${contact?'<div style="color:'+t.accent+';font-size:13px;font-weight:700;">'+contact+'</div>':''}
+      ${instagram||whatsapp ? '<div style="color:'+t.sub+';font-size:11px;margin-top:3px;">'+(instagram?instagram+' ':''+(whatsapp?'· wa: '+whatsapp:''))+'</div>' : ''}
+    </td>
+    <td style="text-align:right;"><div style="color:rgba(255,255,255,0.2);font-size:9px;">Created with AfriVid Studio · afrivid.studio</div></td>
   </tr></table>
 </div>
 </body></html>`;
