@@ -2308,20 +2308,6 @@ function updateProcTime() {
 
 <script>
 // ── PHASE 2 SERVER PROCESSING ──
-// Show banner when video is too long for browser
-function checkPhase2(file, duration) {
-  if (duration > 300) {
-    const banner = document.getElementById('phase2-banner');
-    const msg = document.getElementById('phase2-duration-msg');
-    if (banner) banner.style.display = 'block';
-    if (msg) {
-      const mins = Math.floor(duration/60);
-      const secs = Math.floor(duration%60);
-      msg.textContent = `Your video is ${mins}m ${secs}s — maximum is 5 minutes`;
-    }
-  }
-}
-}
 
 // ── PHASE 2 SERVER PROCESSING ──
 window._phase2JobId = null;
