@@ -3289,17 +3289,19 @@ window.buildPoster = async function() {
   const validProducts = productUrls.filter(Boolean);
   const validSponsors = sponsorUrls.filter(Boolean);
 
-  // Middle section — images if available, else highlights + description
+  // Middle section — always show description + highlights, then images below
   const highlights = [h1,h2,h3].filter(Boolean);
-  const middleHtml = validProducts.length ?
-    '<div style="text-align:center;padding:20px 20px 0;"><table style="margin:0 auto;border-collapse:collapse;"><tr>' +
-    validProducts.map(url => '<td style="padding:5px;"><img src="' + url + '" style="width:' + (validProducts.length===1?'300':validProducts.length===2?'185':'118') + 'px;height:180px;object-fit:cover;border-radius:8px;border:2px solid ' + t.accent + ';"></td>').join('<td style="width:8px;"></td>') +
-    '</tr></table></div>' :
-    '<div style="padding:20px 40px 0;">' +
-    (description ? '<div style="color:' + t.sub + ';font-size:13px;line-height:1.7;text-align:center;margin-bottom:18px;padding:0 20px;">' + description + '</div>' : '') +
-    (highlights.length ? '<table style="width:100%;border-collapse:collapse;margin-bottom:0;"><tr>' +
-    highlights.map(h => '<td style="padding:14px 10px;background:rgba(255,255,255,0.04);border:1px solid ' + t.accent + '33;border-radius:8px;text-align:center;"><div style="color:' + t.accent + ';font-size:18px;margin-bottom:6px;">✦</div><div style="color:' + t.text + ';font-size:12px;font-weight:700;">' + h + '</div></td>').join('<td style="width:10px;"></td>') +
+  const imagesHtml = validProducts.length ?
+    '<div style="text-align:center;padding:16px 20px 0;"><table style="margin:0 auto;border-collapse:collapse;"><tr>' +
+    validProducts.map(url => '<td style="padding:5px;"><img src="' + url + '" style="width:' + (validProducts.length===1?'300':validProducts.length===2?'185':'118') + 'px;height:150px;object-fit:cover;border-radius:8px;border:2px solid ' + t.accent + ';"></td>').join('<td style="width:8px;"></td>') +
+    '</tr></table></div>' : '';
+  const middleHtml =
+    '<div style="padding:18px 40px 0;">' +
+    (description ? '<div style="color:' + t.sub + ';font-size:13px;line-height:1.7;text-align:center;margin-bottom:14px;padding:0 10px;">' + description + '</div>' : '') +
+    (highlights.length ? '<table style="width:100%;border-collapse:collapse;"><tr>' +
+    highlights.map(h => '<td style="padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid ' + t.accent + '33;border-radius:8px;text-align:center;"><div style="color:' + t.accent + ';font-size:16px;margin-bottom:4px;">✦</div><div style="color:' + t.text + ';font-size:11px;font-weight:700;">' + h + '</div></td>').join('<td style="width:8px;"></td>') +
     '</tr></table>' : '') +
+    '</div>' + imagesHtml;
     '</div>';
 
   // Sponsors section
