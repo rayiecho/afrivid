@@ -1344,7 +1344,7 @@ window._handleGenerateScript = async function() {
   btn.textContent = 'Generating...';
   btn.disabled = true;
   try {
-    const _durEl = document.getElementById('video-duration') || document.getElementById('video-duration-own'); const duration = parseInt(_durEl ? _durEl.value : 60);
+    const _mode = document.getElementById('mode-own')?.classList.contains('active') ? 'own' : 'ai'; const _durEl = _mode === 'own' ? (document.getElementById('video-duration-own') || document.getElementById('own-duration')) : document.getElementById('video-duration'); const duration = parseInt(_durEl ? _durEl.value : 60);
     const language = document.getElementById('video-language') ? document.getElementById('video-language').value : 'English';
     const style = document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark';
     const context = (document.getElementById('video-content') || {value:''}).value.trim();
