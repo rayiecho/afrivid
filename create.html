@@ -3607,7 +3607,7 @@ window._startRecording = async function startRecording() {
     const words = (sc.voiceover || '').split(' ').length;
     return s + Math.max((words / 2.5) * 1000 + 500, (sc.duration || 10) * 1000);
   }, 0);
-  const totalDuration = Math.max(scriptData.duration * 1000 || 0, sceneDurationSum, 10000);
+  const totalDuration = (scriptData.duration * 1000) || sceneDurationSum || 60000; // respect selected duration
   addLog('info', `[~] Total duration: ${Math.round(totalDuration/1000)}s`);
   // Calculate scene durations from voiceover word count for tighter pacing
   const sceneDurations = scriptData.scenes.map(s => {
