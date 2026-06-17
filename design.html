@@ -3244,7 +3244,17 @@ async function renderAndDownload(html, type, width, height) {
       backgroundColor: null
     });
     document.body.removeChild(iframe);
-    // Download as PNG
+    // Show preview in design-canvas area
+    const mainCanvas = document.getElementById('design-canvas');
+    const flyerCv = document.getElementById('flyer-canvas');
+    if (mainCanvas) mainCanvas.style.display = 'none';
+    if (flyerCv) {
+      flyerCv.style.display = 'block';
+      flyerCv.width = canvas.width;
+      flyerCv.height = canvas.height;
+      flyerCv.getContext('2d').drawImage(canvas, 0, 0);
+    }
+    // Auto download as PNG
     canvas.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
