@@ -5346,7 +5346,7 @@ async function structureOwnScript() {
   let ownScript = '';
   ownScriptEls.forEach(el => { if(el.value.trim()) ownScript = el.value.trim(); });
   if (!ownScript) { alert('Please paste your script first.'); return; }
-  const durationEl = document.getElementById('own-duration') || document.getElementById('video-duration-own');
+  const durationEl = document.getElementById('video-duration-own') || document.getElementById('own-duration');
   const speedEl = document.getElementById('own-voice-speed');
   const duration = durationEl ? durationEl.value : '60';
   const speed = speedEl ? speedEl.value : '0.95';
