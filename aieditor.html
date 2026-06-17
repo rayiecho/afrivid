@@ -2351,46 +2351,29 @@ window.uploadToServer = async function() {
   const emailEl = document.getElementById('phase2-user-email');
   if (emailEl && user.email) emailEl.textContent = user.email;
   try {
-    // Step 1 — get R2 upload URL from Worker
+    // Step 1 — get presigned URL from Worker
     document.getElementById('phase2-stage').textContent = 'Preparing upload...';
-    const urlRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/get-upload-url', {
+    const urlRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/get-presigned-url', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4' })
     });
     const urlData = await urlRes.json();
     if (urlData.error) throw new Error(urlData.error);
-    const { job_id, key, upload_id } = urlData;
+    const { job_id, key, presigned_url, public_url } = urlData;
     window._phase2JobId = job_id;
 
-    // Step 2 — upload directly to R2 using multipart
+    // Step 2 — upload directly to R2 using presigned PUT URL
     document.getElementById('phase2-stage').textContent = 'Uploading to AfriVid Cloud...';
-    const CHUNK = 10 * 1024 * 1024; // 10MB chunks
-    const totalChunks = Math.ceil(file.size / CHUNK);
-    const parts = [];
-    for (let i = 0; i < totalChunks; i++) {
-      const chunk = file.slice(i * CHUNK, (i + 1) * CHUNK);
-      const partRes = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/upload-part`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, upload_id, part_number: i + 1, data: await chunk.arrayBuffer().then(b => btoa(String.fromCharCode(...new Uint8Array(b)))) })
-      });
-      const partData = await partRes.json();
-      parts.push({ part_number: i + 1, etag: partData.etag });
-      const pct = Math.round(((i + 1) / totalChunks) * 50);
-      document.getElementById('phase2-bar').style.width = pct + '%';
-      document.getElementById('phase2-pct').textContent = pct + '%';
-      document.getElementById('phase2-stage').textContent = `Uploading... ${pct}%`;
-    }
-
-    // Step 3 — complete multipart upload
-    await fetch('https://afrivid-tts.afrividstudio.workers.dev/complete-upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, upload_id, parts })
+    const uploadRes = await fetch(presigned_url, {
+      method: 'PUT',
+      headers: { 'Content-Type': file.type || 'video/mp4' },
+      body: file
     });
+    if (!uploadRes.ok) throw new Error('Upload failed: ' + uploadRes.status);
 
-    // Step 4 — notify Worker to start processing
+    // Step 3 — notify Worker to start processing
+    document.getElementById('phase2-stage').textContent = 'Starting processing...';
     await fetch('https://afrivid-tts.afrividstudio.workers.dev/notify-uploaded', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2398,9 +2381,9 @@ window.uploadToServer = async function() {
     });
 
     document.getElementById('phase2-stage').textContent = 'Video uploaded! AfriVid Cloud is processing...';
-    document.getElementById('phase2-bar').style.width = '55%';
-    document.getElementById('phase2-pct').textContent = '55%';
-    window._phase2PollInterval = setInterval(pollJobStatus, 5000);
+    document.getElementById('phase2-bar').style.width = '10%';
+    document.getElementById('phase2-pct').textContent = '10%';
+        window._phase2PollInterval = setInterval(pollJobStatus, 5000);
   } catch(e) {
     document.getElementById('phase2-stage').textContent = 'Upload failed: ' + e.message;
     console.error('[Phase2]', e);
