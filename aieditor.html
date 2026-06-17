@@ -2352,31 +2352,86 @@ window.uploadToServer = async function() {
   if (emailEl && user.email) emailEl.textContent = user.email;
   try {
     // Step 1 — get presigned URL from Worker
-    // Upload video to R2 via worker
-    document.getElementById('phase2-stage').textContent = 'Uploading video to AfriVid Cloud...';
+  try {
+    // Use multipart upload to bypass 6MB worker limit
+    document.getElementById('phase2-stage').textContent = 'Preparing upload...';
     const actions = [];
     if (prompt) {
       if (prompt.toLowerCase().includes('silence')) actions.push('remove_silence');
       if (prompt.toLowerCase().includes('noise')) actions.push('noise_removal');
       if (prompt.toLowerCase().includes('caption')) actions.push('captions');
       if (prompt.toLowerCase().includes('highlight')) actions.push('highlight_reel');
-      if (prompt.toLowerCase().includes('crop')) actions.push('custom_crop');
       if (actions.length === 0) actions.push('remove_silence');
-    } else {
-      actions.push('remove_silence');
-    }
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('user_id', user.uid);
-    formData.append('user_email', user.email);
-    formData.append('actions', actions.join(','));
-    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {
+    } else { actions.push('remove_silence'); }
+
+    // Step 1: Get upload URL
+    const initRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/get-upload-url', {
       method: 'POST',
-      body: formData
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({filename: file.name, contentType: file.type || 'video/mp4'})
     });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    window._phase2JobId = data.job_id;
+    const initData = await initRes.json();
+    if (initData.error) throw new Error(initData.error);
+    const { job_id, key, upload_id } = initData;
+    window._phase2JobId = job_id;
+
+    // Step 2: Upload in 5MB chunks
+    document.getElementById('phase2-stage').textContent = 'Uploading video...';
+    const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const parts = [];
+    for (let i = 0; i < totalChunks; i++) {
+      const chunk = file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+      const arrayBuffer = await chunk.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = '';
+      for (let b = 0; b < bytes.length; b++) binary += String.fromCharCode(bytes[b]);
+      const base64 = btoa(binary);
+      const partRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-part', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({key, upload_id, part_number: i + 1, data: base64})
+      });
+      const partData = await partRes.json();
+      if (partData.error) throw new Error(partData.error);
+      parts.push({part_number: i + 1, etag: partData.etag});
+      const pct = Math.round(((i + 1) / totalChunks) * 30);
+      document.getElementById('phase2-bar').style.width = pct + '%';
+      document.getElementById('phase2-pct').textContent = pct + '%';
+      document.getElementById('phase2-stage').textContent = `Uploading... ${i+1}/${totalChunks} parts`;
+    }
+
+    // Step 3: Complete upload
+    document.getElementById('phase2-stage').textContent = 'Finalizing upload...';
+    const completeRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/complete-upload', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({key, upload_id, parts})
+    });
+    const completeData = await completeRes.json();
+    if (completeData.error) throw new Error(completeData.error);
+
+    // Step 4: Notify Fly.io to process
+    document.getElementById('phase2-stage').textContent = 'Starting server processing...';
+    const inputUrl = 'https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/' + key;
+    await fetch('https://afrivid-processor.fly.dev/process', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        job_id, input_url: inputUrl,
+        actions, user_email: user.email,
+        user_id: user.uid, prompt
+      })
+    });
+
+    // Update KV with processing status
+    await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({job_id, status: 'processing', progress: 35, stage: 'Video uploaded! Processing in Johannesburg...'})
+    });
+
+
 
     document.getElementById('phase2-stage').textContent = 'Video uploaded! AfriVid Cloud is processing...';
     document.getElementById('phase2-bar').style.width = '10%';
