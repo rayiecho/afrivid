@@ -3189,24 +3189,43 @@ async function renderAndDownload(html, type, width, height) {
   const buildBtn = document.querySelector('[onclick="build' + type.charAt(0).toUpperCase() + type.slice(1) + '()"]');
   if (buildBtn) { buildBtn.textContent = '⏳ Building...'; buildBtn.disabled = true; }
   try {
-    const res = await fetch('https://afrivid-processor.fly.dev/render-flyer', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({html, width: width||800, height: height||1000})
+    // Render HTML in a hidden iframe, then capture with html2canvas
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:' + (width||800) + 'px;height:' + (height||1000) + 'px;border:none;visibility:hidden;';
+    document.body.appendChild(iframe);
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+    // Wait for images to load
+    await new Promise(r => setTimeout(r, 1500));
+    // Load html2canvas if not loaded
+    if (!window.html2canvas) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    const canvas = await html2canvas(iframe.contentDocument.body, {
+      width: width||800, height: height||1000,
+      scale: 2, useCORS: true, allowTaint: true,
+      backgroundColor: null
     });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    const byteArr = new Uint8Array(atob(data.image).split('').map(c => c.charCodeAt(0)));
-    const blob = new Blob([byteArr], {type:'image/png'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'AfriVid-' + type + '-' + Date.now() + '.png';
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a); URL.revokeObjectURL(url);
+    document.body.removeChild(iframe);
+    // Download as PNG
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'AfriVid-' + type + '-' + Date.now() + '.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+    }, 'image/png');
     const dlBtn = document.getElementById(type + '-download-btn');
     if (dlBtn) dlBtn.style.display = 'block';
   } catch(e) {
     alert('Build failed: ' + e.message);
+    console.error('[renderAndDownload]', e);
   } finally {
     if (buildBtn) { buildBtn.textContent = 'Build ' + type.charAt(0).toUpperCase() + type.slice(1) + ' →'; buildBtn.disabled = false; }
   }
