@@ -2818,31 +2818,62 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
 
     if (photoUrl) html = html.replace('PHOTO_PLACEHOLDER', photoUrl);
     if (logoUrl) html = html.replace('LOGO_PLACEHOLDER', logoUrl);
-
-    const res = await fetch("https://afrivid-processor.fly.dev/render-flyer", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({html})
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-
-    // Convert base64 to blob and download
-    const byteCharacters = atob(data.image);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    // Render using html2canvas — no server needed
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:800px;height:1000px;border:none;visibility:hidden;';
+    document.body.appendChild(iframe);
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+    await new Promise(r => setTimeout(r, 1500));
+    if (!window.html2canvas) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {type: "image/png"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "AfriVid-Flyer-" + Date.now() + ".png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const flyerCanvas = await html2canvas(iframe.contentDocument.body, {
+      width: 800, height: 1000, scale: 2,
+      useCORS: true, allowTaint: true, backgroundColor: null
+    });
+    document.body.removeChild(iframe);
+    flyerCanvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "AfriVid-Flyer-" + Date.now() + ".png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     if (btn) { btn.textContent = "⬇ Download Flyer"; btn.disabled = false; }
 
