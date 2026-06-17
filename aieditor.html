@@ -2350,7 +2350,6 @@ window.uploadToServer = async function() {
   }, 1000);
   const emailEl = document.getElementById('phase2-user-email');
   if (emailEl && user.email) emailEl.textContent = user.email;
-  try {
     // Step 1 — get presigned URL from Worker
   try {
     // Use multipart upload to bypass 6MB worker limit
