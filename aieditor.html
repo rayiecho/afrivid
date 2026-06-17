@@ -313,7 +313,8 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
       <div id="phase2-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
     </div>
-    <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Uploading...</div>
+    <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Uploading...</div>
+    <div id="phase2-timer" style="display:none;color:#F5A623;font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">⏱ Estimated time remaining: <span id="phase2-countdown">calculating...</span></div>
     <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
       <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being processed!</div>
       <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when ready.</div>
@@ -2351,6 +2352,21 @@ window.uploadToServer = async function() {
     document.getElementById('phase2-bar').style.width = '10%';
     document.getElementById('phase2-pct').textContent = '10%';
     window._phase2PollInterval = setInterval(pollJobStatus, 5000);
+    // Start countdown timer based on video duration
+    const vid = document.getElementById('ai-video');
+    const vidDuration = vid ? vid.duration : 300;
+    const estimatedSeconds = Math.round(vidDuration * 1.5); // ~1.5x video duration
+    let remaining = estimatedSeconds;
+    const timerEl = document.getElementById('phase2-timer');
+    const countdownEl = document.getElementById('phase2-countdown');
+    if (timerEl) timerEl.style.display = 'block';
+    window._phase2Timer = setInterval(() => {
+      remaining = Math.max(0, remaining - 1);
+      const mins = Math.floor(remaining / 60);
+      const secs = remaining % 60;
+      if (countdownEl) countdownEl.textContent = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+      if (remaining === 0 && countdownEl) countdownEl.textContent = 'Almost done...';
+    }, 1000);
   } catch(e) {
     document.getElementById('phase2-stage').textContent = 'Upload failed: ' + e.message;
   }
@@ -2369,6 +2385,9 @@ async function pollJobStatus() {
     if (stage) stage.textContent = data.stage || 'Processing...';
     if (data.status === 'completed' && data.output_url) {
       clearInterval(window._phase2PollInterval);
+      clearInterval(window._phase2Timer);
+      const timerEl = document.getElementById('phase2-timer');
+      if (timerEl) timerEl.style.display = 'none';
       const dl = document.getElementById('phase2-download');
       const dlLink = document.getElementById('phase2-download-link');
       if (dl) dl.style.display = 'block';
