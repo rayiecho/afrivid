@@ -503,6 +503,9 @@ body::after{
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SPEAKER BIO</div><textarea id="flyer-bio" placeholder="Mental Health Advocate & Counselor at ALU" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;min-height:60px;resize:vertical;box-sizing:border-box;"></textarea></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">VENUE / PLATFORM</div><input id="flyer-venue" type="text" placeholder="e.g. Zoom, Google Meet, Nairobi Hub" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">CONTACT / REGISTER LINK</div><input id="flyer-contact" type="text" placeholder="e.g. wa.me/254... or zoom.us/j/..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SESSION DESCRIPTION</div><textarea id="flyer-description" placeholder="e.g. Join us for an open conversation on mental health, innovation, or any topic relevant to your event." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;min-height:60px;resize:vertical;box-sizing:border-box;"></textarea></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">KEY HIGHLIGHTS (3 points)</div><div style="display:flex;flex-direction:column;gap:0.3rem;"><input id="flyer-h1" type="text" placeholder="e.g. Free to Join" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="flyer-h2" type="text" placeholder="e.g. Open to All" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="flyer-h3" type="text" placeholder="e.g. Certificate Provided" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SOCIAL HANDLES</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;"><input id="flyer-instagram" type="text" placeholder="@instagram" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.72rem;outline:none;box-sizing:border-box;"><input id="flyer-whatsapp" type="text" placeholder="WhatsApp no." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.72rem;outline:none;box-sizing:border-box;"></div></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION LOGO</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="flyer-logo-name">Upload logo</span><input type="file" accept="image/*" style="display:none;" onchange="loadFlyerImage('logo',this)"></label></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SPEAKER PHOTO</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="flyer-photo-name">Upload photo</span><input type="file" accept="image/*" style="display:none;" onchange="loadFlyerImage('photo',this)"></label></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setFlyerTheme('dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setFlyerTheme('green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setFlyerTheme('blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setFlyerTheme('light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
@@ -2752,34 +2755,10 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
 
     ${d.tagline ? '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-left:3px solid '+t.accent2+';border-radius:6px;padding:10px 14px;margin-bottom:14px;"><div style="color:'+t.accent2+';font-size:10px;font-weight:900;letter-spacing:1px;margin-bottom:4px;">SESSION THEME</div><div style="color:'+t.text+';font-size:13px;line-height:1.5;font-style:italic;">'+d.tagline+'</div></div>' : ""}
 
-    <div style="color:${t.accent};font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">ABOUT THE SESSION</div>
-    <div style="color:${t.sub};font-size:12px;line-height:1.7;margin-bottom:16px;">
-      Join us for an open, safe and supportive conversation on mental health.
-      ${d.speaker ? ' Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>,' : ""}
-      this session is designed to help young Africans speak freely, heal and grow together.
-    </div>
-
-    <table style="width:100%;border-collapse:collapse;margin-top:8px;">
-    <tr>
-      <td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;">
-        <div style="color:${t.accent};font-size:18px;margin-bottom:3px;">🌍</div>
-        <div style="color:${t.sub};font-size:9px;">OPEN TO ALL</div>
-        <div style="color:${t.text};font-size:10px;font-weight:700;">Young Africans</div>
-      </td>
-      <td style="width:8px;"></td>
-      <td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;">
-        <div style="color:${t.accent};font-size:18px;margin-bottom:3px;">💬</div>
-        <div style="color:${t.sub};font-size:9px;">FORMAT</div>
-        <div style="color:${t.text};font-size:10px;font-weight:700;">Open Discussion</div>
-      </td>
-      <td style="width:8px;"></td>
-      <td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;">
-        <div style="color:${t.accent};font-size:18px;margin-bottom:3px;">🆓</div>
-        <div style="color:${t.sub};font-size:9px;">COST</div>
-        <div style="color:${t.text};font-size:10px;font-weight:700;">Free to Join</div>
-      </td>
-    </tr>
-    </table>
+    \${(d.description||d.speaker) ? '<div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">ABOUT</div>' : ''}
+    \${d.description ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">'+d.description+(d.speaker?' Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.':'')+'</div>' : (d.speaker ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.</div>' : '')}
+    \${(d.h1||d.h2||d.h3) ? '<table style="width:100%;border-collapse:collapse;margin-top:8px;"><tr>' + [d.h1,d.h2,d.h3].filter(Boolean).map(h => '<td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;"><div style="color:'+t.accent+';font-size:16px;margin-bottom:3px;">✦</div><div style="color:'+t.text+';font-size:10px;font-weight:700;">'+h+'</div></td>').join('<td style="width:8px;"></td>') + '</tr></table>' : ''}
+    \${(d.instagram||d.whatsapp) ? '<div style="margin-top:12px;color:'+t.sub+';font-size:11px;">'+(d.instagram ? '📱 '+d.instagram : '')+(d.whatsapp ? ' · 📞 '+d.whatsapp : '')+'</div>' : ''}
   </td>
 </tr>
 </table>
@@ -2980,7 +2959,15 @@ window.buildFlyer = function() {
   const contact = document.getElementById('flyer-contact')?.value?.trim();
 
   if (!org || !title) { alert('Please fill in Organization Name and Event Title'); return; }
+  const flyerDescription = document.getElementById('flyer-description')?.value?.trim();
+  const flyerH1 = document.getElementById('flyer-h1')?.value?.trim();
+  const flyerH2 = document.getElementById('flyer-h2')?.value?.trim();
+  const flyerH3 = document.getElementById('flyer-h3')?.value?.trim();
+  const flyerInstagram = document.getElementById('flyer-instagram')?.value?.trim();
+  const flyerWhatsapp = document.getElementById('flyer-whatsapp')?.value?.trim();
   window._lastFlyerBuild = { org, title, date, time, tagline, speaker, bio, venue, contact,
+    description: flyerDescription, h1: flyerH1, h2: flyerH2, h3: flyerH3,
+    instagram: flyerInstagram, whatsapp: flyerWhatsapp,
     logo: window._flyerData?.logo || window._flyer_logo || null,
     photo: window._flyerData?.photo || window._flyer_photo || null,
     theme: window._flyerData?.theme || 'dark' };
