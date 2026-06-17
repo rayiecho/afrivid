@@ -2341,7 +2341,7 @@ window.uploadToServer = async function() {
     formData.append('user_email', user.email);
     formData.append('prompt', prompt);
     formData.append('actions', '');
-    const res = await fetch('https://afrivid-processor.fly.dev/upload-and-process', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-video', {
       method: 'POST', body: formData
     });
     const data = await res.json();
