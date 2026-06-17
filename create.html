@@ -597,7 +597,7 @@ window.generateOnServer = async function() {
         job_id: jobId,
         scenes: scenes.map(s => ({
           title: s.title || s.heading || 'Scene',
-          voiceover: s.voiceover || s.narration || s.script || '',
+          voiceover: s.voiceover || s.narration || s.text || s.script || '',
           duration: s.duration || 10
         })),
         user_email: user.email,
