@@ -2412,7 +2412,7 @@ window.uploadToServer = async function() {
 
     // Step 4: Notify Fly.io to process
     document.getElementById('phase2-stage').textContent = 'Starting server processing...';
-    const inputUrl = 'https://pub-361696c6bccd45d0bd06b8e512778d52.r2.dev/' + key;
+    const inputUrl = 'https://pub-aefea01aecc44a379842b04ac827cd6a.r2.dev/' + key;
     await fetch('https://afrivid-processor.fly.dev/process', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
