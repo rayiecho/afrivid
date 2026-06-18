@@ -2382,14 +2382,10 @@ window.uploadToServer = async function() {
     for (let i = 0; i < totalChunks; i++) {
       const chunk = file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
       const arrayBuffer = await chunk.arrayBuffer();
-      const bytes = new Uint8Array(arrayBuffer);
-      let binary = '';
-      for (let b = 0; b < bytes.length; b++) binary += String.fromCharCode(bytes[b]);
-      const base64 = btoa(binary);
-      const partRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-part', {
+      const partRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-part/' + encodeURIComponent(key) + '/' + encodeURIComponent(upload_id) + '/' + (i + 1), {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({key, upload_id, part_number: i + 1, data: base64})
+        headers: {'Content-Type': 'application/octet-stream'},
+        body: arrayBuffer
       });
       const partData = await partRes.json();
       if (partData.error) throw new Error(partData.error);
