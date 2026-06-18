@@ -2381,20 +2381,37 @@ window.uploadToServer = async function() {
 
     // Step 3: Notify Fly.io to start processing
     document.getElementById('phase2-stage').textContent = 'Starting processing...';
-    await fetch('https://afrivid-processor.fly.dev/process', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        job_id, input_url: public_url,
-        actions: [], user_email: user.email,
-        user_id: user.uid, prompt
-      })
-    });
-    await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({job_id, status: 'processing', progress: 35, stage: 'Video uploaded! Processing in Johannesburg...'})
-    });
+    try {
+      const processRes = await fetch('https://afrivid-processor.fly.dev/process', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          job_id, input_url: public_url,
+          actions: [], user_email: user.email,
+          user_id: user.uid, prompt
+        })
+      });
+      const processData = await processRes.json();
+      console.log('[Phase2] Process response:', processData);
+      await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({job_id, status: 'processing', progress: 35, stage: 'Video uploaded! Processing in Johannesburg...'})
+      });
+    } catch(processErr) {
+      console.error('[Phase2] Failed to notify server:', processErr);
+      // Retry once
+      await new Promise(r => setTimeout(r, 3000));
+      await fetch('https://afrivid-processor.fly.dev/process', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          job_id, input_url: public_url,
+          actions: [], user_email: user.email,
+          user_id: user.uid, prompt
+        })
+      });
+    }
 
 
 
