@@ -2354,35 +2354,9 @@ window.uploadToServer = async function() {
   try {
     // Get presigned URL then upload directly to R2
     document.getElementById('phase2-stage').textContent = 'Preparing upload...';
-    // Use Claude to parse the prompt properly
-    let actions = ['remove_silence']; // default
-    let trimStart = 0, trimEnd = null;
-    if (prompt) {
-      try {
-        const _vid2 = document.getElementById('ai-video');
-        const vidDuration = _vid2 ? Math.round(_vid2.duration) : 300;
-        const parseRes = await claudeAsk(
-          `You are an AI video editor. Video is ${vidDuration}s long. User said: "${prompt}".
-Return ONLY valid JSON with this structure:
-{"actions": ["action1", "action2"], "trim_start": 0, "trim_end": null}
-Available actions: remove_silence, noise_removal, captions, highlight_reel, compress, trim, color_correction, stabilize
-For trim: set trim_start (seconds from start to cut) and trim_end (seconds from start where video ends, null = keep to end).
-Example: "cut first 3 minutes and last 3 minutes" on 9min video = {"actions":["trim","compress"],"trim_start":180,"trim_end":360}
-Only include actions the user asked for. Return ONLY the JSON.`, 300
-        );
-        const parsed = JSON.parse(parseRes.match(/\{[\s\S]*\}/)[0]);
-        if (parsed.actions && parsed.actions.length > 0) actions = parsed.actions;
-        if (parsed.trim_start) trimStart = parsed.trim_start;
-        if (parsed.trim_end) trimEnd = parsed.trim_end;
-      } catch(e) {
-        console.log('[Phase2] Prompt parse failed, using keywords:', e.message);
-        if (prompt.toLowerCase().includes('silence')) actions = ['remove_silence'];
-        else if (prompt.toLowerCase().includes('noise')) actions = ['noise_removal'];
-        else if (prompt.toLowerCase().includes('caption')) actions = ['captions'];
-        else if (prompt.toLowerCase().includes('compress')) actions = ['compress'];
-        else if (prompt.toLowerCase().includes('cut') || prompt.toLowerCase().includes('trim')) actions = ['trim'];
-      }
-    }
+    // Send raw prompt to server — Claude on server handles all parsing
+    const actions = prompt ? ['prompt_driven'] : ['remove_silence'];
+    const trimStart = 0, trimEnd = null;
 
     // Step 1: Get presigned URL from Fly.io
     const signRes = await fetch('https://afrivid-processor.fly.dev/presign-upload', {
@@ -2414,10 +2388,8 @@ Only include actions the user asked for. Return ONLY the JSON.`, 300
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         job_id, input_url: public_url,
-        actions, user_email: user.email,
-        user_id: user.uid, prompt,
-        trim_start: trimStart,
-        trim_end: trimEnd
+        actions: [], user_email: user.email,
+        user_id: user.uid, prompt
       })
     });
     await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
