@@ -2352,7 +2352,7 @@ window.uploadToServer = async function() {
   if (emailEl && user.email) emailEl.textContent = user.email;
     // Step 1 — get presigned URL from Worker
   try {
-    // Use multipart upload to bypass 6MB worker limit
+    // Get presigned URL then upload directly to R2
     document.getElementById('phase2-stage').textContent = 'Preparing upload...';
     const actions = [];
     if (prompt) {
@@ -2363,63 +2363,40 @@ window.uploadToServer = async function() {
       if (actions.length === 0) actions.push('remove_silence');
     } else { actions.push('remove_silence'); }
 
-    // Step 1: Get upload URL
-    const initRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/get-upload-url', {
+    // Step 1: Get presigned URL from Fly.io
+    const signRes = await fetch('https://afrivid-processor.fly.dev/presign-upload', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({filename: file.name, contentType: file.type || 'video/mp4'})
     });
-    const initData = await initRes.json();
-    if (initData.error) throw new Error(initData.error);
-    const { job_id, key, upload_id } = initData;
+    const signData = await signRes.json();
+    if (signData.error) throw new Error(signData.error);
+    const { job_id, presigned_url, public_url } = signData;
     window._phase2JobId = job_id;
 
-    // Step 2: Upload in 5MB chunks
+    // Step 2: Upload directly to R2 using presigned URL
     document.getElementById('phase2-stage').textContent = 'Uploading video...';
-    const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-    const parts = [];
-    for (let i = 0; i < totalChunks; i++) {
-      const chunk = file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
-      const arrayBuffer = await chunk.arrayBuffer();
-      const partRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload-part/' + encodeURIComponent(key) + '/' + encodeURIComponent(upload_id) + '/' + (i + 1), {
-        method: 'POST',
-        headers: {'Content-Type': 'application/octet-stream'},
-        body: arrayBuffer
-      });
-      const partData = await partRes.json();
-      if (partData.error) throw new Error(partData.error);
-      parts.push({part_number: i + 1, etag: partData.etag});
-      const pct = Math.round(((i + 1) / totalChunks) * 30);
-      document.getElementById('phase2-bar').style.width = pct + '%';
-      document.getElementById('phase2-pct').textContent = pct + '%';
-      document.getElementById('phase2-stage').textContent = `Uploading... ${i+1}/${totalChunks} parts`;
-    }
-
-    // Step 3: Complete upload
-    document.getElementById('phase2-stage').textContent = 'Finalizing upload...';
-    const completeRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/complete-upload', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({key, upload_id, parts})
+    document.getElementById('phase2-bar').style.width = '5%';
+    const uploadRes = await fetch(presigned_url, {
+      method: 'PUT',
+      headers: {'Content-Type': file.type || 'video/mp4'},
+      body: file
     });
-    const completeData = await completeRes.json();
-    if (completeData.error) throw new Error(completeData.error);
+    if (!uploadRes.ok) throw new Error('Upload failed: ' + uploadRes.status);
+    document.getElementById('phase2-bar').style.width = '30%';
+    document.getElementById('phase2-pct').textContent = '30%';
 
-    // Step 4: Notify Fly.io to process
-    document.getElementById('phase2-stage').textContent = 'Starting server processing...';
-    const inputUrl = 'https://pub-aefea01aecc44a379842b04ac827cd6a.r2.dev/' + key;
+    // Step 3: Notify Fly.io to start processing
+    document.getElementById('phase2-stage').textContent = 'Starting processing...';
     await fetch('https://afrivid-processor.fly.dev/process', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        job_id, input_url: inputUrl,
+        job_id, input_url: public_url,
         actions, user_email: user.email,
         user_id: user.uid, prompt
       })
     });
-
-    // Update KV with processing status
     await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
