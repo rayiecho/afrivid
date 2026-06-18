@@ -2354,14 +2354,35 @@ window.uploadToServer = async function() {
   try {
     // Get presigned URL then upload directly to R2
     document.getElementById('phase2-stage').textContent = 'Preparing upload...';
-    const actions = [];
+    // Use Claude to parse the prompt properly
+    let actions = ['remove_silence']; // default
+    let trimStart = 0, trimEnd = null;
     if (prompt) {
-      if (prompt.toLowerCase().includes('silence')) actions.push('remove_silence');
-      if (prompt.toLowerCase().includes('noise')) actions.push('noise_removal');
-      if (prompt.toLowerCase().includes('caption')) actions.push('captions');
-      if (prompt.toLowerCase().includes('highlight')) actions.push('highlight_reel');
-      if (actions.length === 0) actions.push('remove_silence');
-    } else { actions.push('remove_silence'); }
+      try {
+        const _vid2 = document.getElementById('ai-video');
+        const vidDuration = _vid2 ? Math.round(_vid2.duration) : 300;
+        const parseRes = await claudeAsk(
+          `You are an AI video editor. Video is ${vidDuration}s long. User said: "${prompt}".
+Return ONLY valid JSON with this structure:
+{"actions": ["action1", "action2"], "trim_start": 0, "trim_end": null}
+Available actions: remove_silence, noise_removal, captions, highlight_reel, compress, trim, color_correction, stabilize
+For trim: set trim_start (seconds from start to cut) and trim_end (seconds from start where video ends, null = keep to end).
+Example: "cut first 3 minutes and last 3 minutes" on 9min video = {"actions":["trim","compress"],"trim_start":180,"trim_end":360}
+Only include actions the user asked for. Return ONLY the JSON.`, 300
+        );
+        const parsed = JSON.parse(parseRes.match(/\{[\s\S]*\}/)[0]);
+        if (parsed.actions && parsed.actions.length > 0) actions = parsed.actions;
+        if (parsed.trim_start) trimStart = parsed.trim_start;
+        if (parsed.trim_end) trimEnd = parsed.trim_end;
+      } catch(e) {
+        console.log('[Phase2] Prompt parse failed, using keywords:', e.message);
+        if (prompt.toLowerCase().includes('silence')) actions = ['remove_silence'];
+        else if (prompt.toLowerCase().includes('noise')) actions = ['noise_removal'];
+        else if (prompt.toLowerCase().includes('caption')) actions = ['captions'];
+        else if (prompt.toLowerCase().includes('compress')) actions = ['compress'];
+        else if (prompt.toLowerCase().includes('cut') || prompt.toLowerCase().includes('trim')) actions = ['trim'];
+      }
+    }
 
     // Step 1: Get presigned URL from Fly.io
     const signRes = await fetch('https://afrivid-processor.fly.dev/presign-upload', {
@@ -2394,7 +2415,9 @@ window.uploadToServer = async function() {
       body: JSON.stringify({
         job_id, input_url: public_url,
         actions, user_email: user.email,
-        user_id: user.uid, prompt
+        user_id: user.uid, prompt,
+        trim_start: trimStart,
+        trim_end: trimEnd
       })
     });
     await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
