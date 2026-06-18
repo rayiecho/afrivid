@@ -314,7 +314,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <div id="phase2-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
     </div>
     <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Uploading...</div>
-    <div id="phase2-timer" style="display:none;color:#F5A623;font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">⏱ Estimated time remaining: <span id="phase2-countdown">calculating...</span></div>
+    <div id="phase2-timer" style="display:none;color:#F5A623;font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">⏱ Time elapsed: <span id="phase2-countdown">calculating...</span></div>
     <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
       <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being processed!</div>
       <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when ready.</div>
@@ -2336,17 +2336,15 @@ window.uploadToServer = async function() {
   // Start timer immediately
   const _vid = document.getElementById('ai-video');
   const _vidDur = _vid ? _vid.duration : 300;
-  const _estSecs = Math.round(_vidDur * 1.5);
-  let _remaining = _estSecs;
+  let _elapsed = 0;
   const _timerEl = document.getElementById('phase2-timer');
   const _countdownEl = document.getElementById('phase2-countdown');
   if (_timerEl) _timerEl.style.display = 'block';
   window._phase2Timer = setInterval(() => {
-    _remaining = Math.max(0, _remaining - 1);
-    const mins = Math.floor(_remaining / 60);
-    const secs = _remaining % 60;
-    if (_countdownEl) _countdownEl.textContent = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-    if (_remaining === 0 && _countdownEl) _countdownEl.textContent = 'Almost done...';
+    _elapsed++;
+    const mins = Math.floor(_elapsed / 60);
+    const secs = _elapsed % 60;
+    if (_countdownEl) _countdownEl.textContent = mins > 0 ? `${mins}m ${secs}s elapsed` : `${secs}s elapsed`;
   }, 1000);
   const emailEl = document.getElementById('phase2-user-email');
   if (emailEl && user.email) emailEl.textContent = user.email;
