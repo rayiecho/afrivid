@@ -2759,7 +2759,16 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
     ${d.description ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">'+d.description+(d.speaker?' Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.':'')+'</div>' : (d.speaker ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.</div>' : '')}
     ${(d.h1||d.h2||d.h3) ? '<table style="width:100%;border-collapse:collapse;margin-top:8px;"><tr>' + [d.h1,d.h2,d.h3].filter(Boolean).map(h => '<td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;"><div style="color:'+t.accent+';font-size:16px;margin-bottom:3px;">✦</div><div style="color:'+t.text+';font-size:10px;font-weight:700;">'+h+'</div></td>').join('<td style="width:8px;"></td>') + '</tr></table>' : ''}
     ${(d.instagram||d.whatsapp) ? '<div style="margin-top:12px;color:'+t.sub+';font-size:11px;">'+(d.instagram ? '📱 '+d.instagram : '')+(d.whatsapp ? ' · 📞 '+d.whatsapp : '')+'</div>' : ''}
-    <div style="position:absolute;bottom:70px;right:25px;left:310px;"><div style="height:1px;background:linear-gradient(90deg,rgba(245,166,35,0.3),transparent);margin-bottom:12px;"></div><div style="color:rgba(245,166,35,0.08);font-size:22px;letter-spacing:8px;text-align:center;">◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆</div></div>
+    <div style="margin-top:20px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+      ${d.tagline ? '<div style="background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.03));border:1px solid rgba(245,166,35,0.2);border-left:3px solid '+t.accent+';border-radius:8px;padding:14px 16px;margin-bottom:14px;"><div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:6px;">KEY MESSAGE</div><div style="color:'+t.text+';font-size:13px;font-style:italic;line-height:1.5;">\"'+d.tagline+'\"</div></div>' : ''}
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:14px 16px;">
+        <div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;">CONNECT WITH US</div>
+        ${d.contact ? '<div style="color:'+t.accent2+';font-size:12px;font-weight:700;margin-bottom:4px;">🔗 '+d.contact+'</div>' : ''}
+        ${d.instagram ? '<div style="color:'+t.sub+';font-size:11px;margin-bottom:3px;">📱 '+d.instagram+'</div>' : ''}
+        ${d.whatsapp ? '<div style="color:'+t.sub+';font-size:11px;">📞 '+d.whatsapp+'</div>' : ''}
+        ${!d.contact && !d.instagram && !d.whatsapp ? '<div style="color:'+t.sub+';font-size:11px;">afrivid.studio</div>' : ''}
+      </div>
+    </div>
   </td>
 </tr>
 </table>
