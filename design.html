@@ -542,7 +542,7 @@ body::after{
           </div>
 
           <!-- BUILD + EDIT -->
-          <button onclick="buildFlyer()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Flyer</button>
+          <button onclick="previewFlyer()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Flyer</button>
           <button onclick="document.getElementById('flyer-edit-fields').style.display=document.getElementById('flyer-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('flyer-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
           <button onclick="downloadFlyer()" id="flyer-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Flyer</button>
 
@@ -2722,7 +2722,7 @@ async function submitGlobalUpgrade() {
   }
 }
 
-window.downloadFlyer = async function() {
+window.downloadFlyer = async function(previewMode=false) {
   if (!window._lastFlyerBuild) { alert("Please build flyer first"); return; }
   const d = window._lastFlyerBuild;
   const btn = document.getElementById("flyer-download-btn");
@@ -2872,6 +2872,23 @@ body{width:800px;height:1000px;background:${d.bg==='dots'?'radial-gradient(circl
         document.head.appendChild(s);
       });
     }
+    // If preview mode — show iframe in modal instead of downloading
+    if (previewMode) {
+      iframe.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);z-index:9999;width:800px;height:1000px;border:none;border-radius:12px;box-shadow:0 0 80px rgba(0,0,0,0.8);';
+      iframe.style.visibility = 'visible';
+      // Add close overlay
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9998;cursor:pointer;';
+      overlay.onclick = () => { overlay.remove(); iframe.remove(); };
+      const closeBtn = document.createElement('div');
+      closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;color:#fff;font-size:2rem;cursor:pointer;background:rgba(0,0,0,0.5);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;';
+      closeBtn.textContent = '✕';
+      closeBtn.onclick = () => { overlay.remove(); iframe.remove(); };
+      document.body.appendChild(overlay);
+      document.body.appendChild(closeBtn);
+      if (btn) { btn.textContent = '⬇ Download Flyer'; btn.disabled = false; }
+      return;
+    }
     const flyerCanvas = await html2canvas(iframe.contentDocument.body, {
       width: 800, height: 1000, scale: 2,
       useCORS: true, allowTaint: true, backgroundColor: null
@@ -2999,6 +3016,41 @@ window.setFlyerTheme = function(theme, btn) {
     b.style.borderColor = 'rgba(255,255,255,0.2)';
   });
   if (btn) { btn.style.borderWidth = '3px'; btn.style.borderColor = '#F5A623'; }
+};
+
+window.previewFlyer = async function() {
+  // Collect data same as buildFlyer
+  const d = {
+    org: document.getElementById('flyer-org')?.value?.trim(),
+    title: document.getElementById('flyer-title')?.value?.trim(),
+    date: document.getElementById('flyer-date')?.value?.trim(),
+    time: document.getElementById('flyer-time')?.value?.trim(),
+    tagline: document.getElementById('flyer-theme-text')?.value?.trim(),
+    speaker: document.getElementById('flyer-speaker')?.value?.trim(),
+    bio: document.getElementById('flyer-bio')?.value?.trim(),
+    venue: document.getElementById('flyer-venue')?.value?.trim(),
+    contact: document.getElementById('flyer-contact')?.value?.trim(),
+    description: document.getElementById('flyer-description')?.value?.trim(),
+    h1: document.getElementById('flyer-h1')?.value?.trim(),
+    h2: document.getElementById('flyer-h2')?.value?.trim(),
+    h3: document.getElementById('flyer-h3')?.value?.trim(),
+    learn1: document.getElementById('flyer-learn1')?.value?.trim(),
+    learn2: document.getElementById('flyer-learn2')?.value?.trim(),
+    learn3: document.getElementById('flyer-learn3')?.value?.trim(),
+    instagram: document.getElementById('flyer-instagram')?.value?.trim(),
+    whatsapp: document.getElementById('flyer-whatsapp')?.value?.trim(),
+    logo: window._flyerData?.logo || null,
+    photo: window._flyerData?.photo || null,
+    theme: window._flyerData?.theme || 'dark',
+    bg: window._flyerData?.bg || 'solid'
+  };
+  if (!d.org && !d.title) { alert('Please describe your event and click AI Fill first'); return; }
+  window._lastFlyerBuild = d;
+  // Show download button
+  const dlBtn = document.getElementById('flyer-download-btn');
+  if (dlBtn) dlBtn.style.display = 'block';
+  // Call downloadFlyer in preview mode — show iframe modal
+  await downloadFlyer(true);
 };
 
 window.aiFillFlyer = async function() {
