@@ -726,8 +726,8 @@ function loadVideo(file) {
     // Reject videos over 5 minutes
     // Long video — show server processing banner instead of rejecting
     if (video.duration > 300) {
-      window._currentVideoFile = file;
-    }
+      const mins = Math.floor(video.duration / 60);
+      const secs = Math.floor(video.duration % 60);
     document.getElementById('video-duration').textContent = formatTime(video.duration);
     // Enable apply button
     const btn = document.getElementById('apply-btn');
