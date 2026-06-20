@@ -3811,16 +3811,16 @@ ${sponsorsHtml}
 // ── BUILD BANNER ──
 window.buildBanner = async function(previewMode=false) {
   const _d = window._lastBannerBuild || {};
-  const org = document.getElementById('banner-org')?.value?.trim();
-  const headline = document.getElementById('banner-headline')?.value?.trim();
+  const org = _d.org || document.getElementById('banner-org')?.value?.trim();
+  const headline = _d.headline || document.getElementById('banner-headline')?.value?.trim();
   if (!org || !headline) { alert('Please fill Organization Name and Headline'); return; }
-  const tagline = document.getElementById('banner-tagline')?.value?.trim();
-  const cta = document.getElementById('banner-cta')?.value?.trim();
-  const d = window._builderData.banner;
+  const tagline = _d.tagline || document.getElementById('banner-tagline')?.value?.trim();
+  const cta = _d.cta || document.getElementById('banner-cta')?.value?.trim();
+  const bd = _d.org ? _d : (window._builderData?.banner || {});
+  const d = { ...bd, bg: bd.bg || 'solid' };
   const t = BTHEMES[d.theme || 'dark'];
-
-  const logoUrl = await uploadImgToR2(d.logo, 'banner-logo.png');
-  const imageUrl = await uploadImgToR2(d.image, 'banner-image.jpg');
+  const logoUrl = d.logo || null;
+  const imageUrl = d.image || null;
 
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>*{margin:0;padding:0;box-sizing:border-box;}body{width:1200px;height:630px;background:${t.bg};font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>
