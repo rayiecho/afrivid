@@ -508,6 +508,8 @@ body::after{
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SOCIAL HANDLES</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;"><input id="flyer-instagram" type="text" placeholder="@instagram" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.72rem;outline:none;box-sizing:border-box;"><input id="flyer-whatsapp" type="text" placeholder="WhatsApp no." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.72rem;outline:none;box-sizing:border-box;"></div></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION LOGO</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="flyer-logo-name">Upload logo</span><input type="file" accept="image/*" style="display:none;" onchange="loadFlyerImage('logo',this)"></label></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SPEAKER PHOTO</div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span id="flyer-photo-name">Upload photo</span><input type="file" accept="image/*" style="display:none;" onchange="loadFlyerImage('photo',this)"></label></div>
+          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">WHAT YOU'LL LEARN (3 points)</div><div style="display:flex;flex-direction:column;gap:0.3rem;"><input id="flyer-learn1" type="text" placeholder="e.g. Types of scholarships" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="flyer-learn2" type="text" placeholder="e.g. How to apply" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="flyer-learn3" type="text" placeholder="e.g. Common mistakes" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div></div>
+          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">BACKGROUND STYLE</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;"><button onclick="setFlyerBg('solid',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:32px;cursor:pointer;color:#F5A623;font-size:0.6rem;font-family:'Space Mono',monospace;" title="Solid">SOLID</button><button onclick="setFlyerBg('dots',this)" style="background:radial-gradient(circle,rgba(245,166,35,0.15) 1px,#050A14 1px) center/20px 20px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Dots">DOTS</button><button onclick="setFlyerBg('grid',this)" style="background:linear-gradient(rgba(245,166,35,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.05) 1px,transparent 1px);background-size:20px 20px;background-color:#050A14;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Grid">GRID</button><button onclick="setFlyerBg('diagonal',this)" style="background:repeating-linear-gradient(45deg,rgba(245,166,35,0.03),rgba(245,166,35,0.03) 1px,#050A14 1px,#050A14 15px);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Diagonal">LINES</button><button onclick="setFlyerBg('map',this)" style="background:linear-gradient(135deg,#050A14,#0D1F35,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Map">MAP</button><button onclick="setFlyerBg('gradient',this)" style="background:linear-gradient(135deg,#1a3a2a,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Gradient">GRADIENT</button></div></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setFlyerTheme('dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setFlyerTheme('green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setFlyerTheme('blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setFlyerTheme('light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
           <button onclick="buildFlyer()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Flyer →</button>
           <button onclick="downloadFlyer()" id="flyer-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Flyer</button>
@@ -2689,7 +2691,7 @@ window.downloadFlyer = async function() {
 <meta charset="UTF-8">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;overflow:hidden;position:relative;}
+body{width:800px;height:1000px;background:${d.bg==='dots'?'radial-gradient(circle,rgba(245,166,35,0.12) 1px,transparent 1px) center/22px 22px, '+t.bg:d.bg==='grid'?'linear-gradient(rgba(245,166,35,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.06) 1px,transparent 1px) '+t.bg:d.bg==='diagonal'?'repeating-linear-gradient(45deg,rgba(245,166,35,0.04),rgba(245,166,35,0.04) 1px,'+t.bg+' 1px,'+t.bg+' 18px)':d.bg==='gradient'?'linear-gradient(135deg,'+t.bg2+','+t.bg+')':t.bg};background-size:${d.bg==='grid'?'20px 20px':'auto'};font-family:Arial,sans-serif;overflow:hidden;position:relative;}
 .header{background:linear-gradient(135deg,${t.bg2},${t.bg});padding:18px 30px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid ${t.accent};}
 .header-left{flex:1;}
 .org-name{color:${t.accent};font-size:13px;font-weight:900;letter-spacing:3px;margin-bottom:6px;}
@@ -2698,14 +2700,15 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
 .logo-box{width:80px;height:80px;flex-shrink:0;margin-left:20px;}
 .logo-box img{width:80px;height:80px;object-fit:contain;border-radius:8px;}
 .body{display:flex;height:780px;}
-.left-col{width:300px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:25px 20px;}
-.photo-wrap{width:240px;height:280px;border-radius:12px;overflow:hidden;border:3px solid ${t.accent};margin-bottom:14px;}
-.photo-wrap img{width:100%;height:100%;object-fit:cover;}
-.photo-placeholder{width:240px;height:280px;background:rgba(255,255,255,0.05);border-radius:12px;border:2px dashed rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);font-size:12px;margin-bottom:14px;}
-.speaker-name{color:${t.text};font-size:18px;font-weight:900;text-align:center;margin-bottom:4px;}
-.speaker-title{color:${t.accent};font-size:11px;text-align:center;letter-spacing:1px;font-weight:700;margin-bottom:12px;}
-.speaker-bio{color:${t.sub};font-size:11px;text-align:center;line-height:1.6;padding:0 5px;}
-.right-col{flex:1;padding:25px 25px;}
+.left-col{width:320px;position:relative;overflow:hidden;}
+.photo-wrap{width:320px;height:780px;overflow:hidden;}
+.photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:top;}
+.photo-placeholder{width:320px;height:780px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);font-size:12px;}
+.speaker-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.85));padding:20px 16px 16px;}
+.speaker-name{color:#fff;font-size:16px;font-weight:900;margin-bottom:3px;}
+.speaker-title{color:${t.accent};font-size:10px;letter-spacing:1px;font-weight:700;margin-bottom:6px;}
+.speaker-bio{color:rgba(255,255,255,0.75);font-size:10px;line-height:1.5;}
+.right-col{flex:1;padding:20px 22px;overflow:hidden;}
 .section-label{color:${t.accent};font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);}
 .field-label{color:${t.sub};font-size:10px;margin-bottom:3px;letter-spacing:1px;}
 .field-val{color:${t.text};font-size:15px;font-weight:700;margin-bottom:16px;}
@@ -2734,12 +2737,14 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
 <!-- BODY: TABLE LAYOUT for wkhtmltoimage compatibility -->
 <table style="width:100%;border-collapse:collapse;height:780px;">
 <tr>
-  <!-- LEFT: SPEAKER -->
-  <td style="width:300px;vertical-align:top;padding:25px 20px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);text-align:center;">
-    ${d.photo ? '<div style="width:240px;height:280px;border-radius:12px;overflow:hidden;border:3px solid '+t.accent+';margin:0 auto 14px;"><img src="PHOTO_PLACEHOLDER" style="width:100%;height:100%;object-fit:cover;"></div>' : '<div style="width:240px;height:280px;background:rgba(255,255,255,0.05);border-radius:12px;border:2px dashed rgba(255,255,255,0.1);margin:0 auto 14px;"></div>'}
-    ${d.speaker ? '<div style="color:'+t.text+';font-size:18px;font-weight:900;margin-bottom:4px;">'+d.speaker+'</div>' : ""}
-    <div style="color:${t.accent};font-size:10px;letter-spacing:2px;font-weight:700;margin-bottom:10px;">SPEAKER</div>
-    ${d.bio ? '<div style="color:'+t.sub+';font-size:11px;line-height:1.6;padding:0 5px;">'+d.bio+'</div>' : ""}
+  <!-- LEFT: SPEAKER HERO PHOTO -->
+  <td style="width:320px;position:relative;overflow:hidden;padding:0;">
+    ${d.photo ? '<div style="width:320px;height:780px;overflow:hidden;"><img src="PHOTO_PLACEHOLDER" style="width:100%;height:100%;object-fit:cover;object-position:top;"></div>' : '<div style="width:320px;height:780px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);font-size:12px;">Upload Speaker Photo</div>'}
+    <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.88));padding:24px 16px 16px;">
+      ${d.speaker ? '<div style="color:#fff;font-size:16px;font-weight:900;margin-bottom:3px;">'+d.speaker+'</div>' : ''}
+      <div style="color:${t.accent};font-size:10px;letter-spacing:2px;font-weight:700;margin-bottom:6px;">SPEAKER</div>
+      ${d.bio ? '<div style="color:rgba(255,255,255,0.75);font-size:10px;line-height:1.5;">'+d.bio+'</div>' : ''}
+    </div>
   </td>
 
   <!-- RIGHT: DETAILS -->
@@ -2758,6 +2763,7 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
     ${(d.description||d.speaker) ? '<div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">ABOUT</div>' : ''}
     ${d.description ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">'+d.description+(d.speaker?' Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.':'')+'</div>' : (d.speaker ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.</div>' : '')}
     ${(d.h1||d.h2||d.h3) ? '<table style="width:100%;border-collapse:collapse;margin-top:8px;"><tr>' + [d.h1,d.h2,d.h3].filter(Boolean).map(h => '<td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;"><div style="color:'+t.accent+';font-size:16px;margin-bottom:3px;">✦</div><div style="color:'+t.text+';font-size:10px;font-weight:700;">'+h+'</div></td>').join('<td style="width:8px;"></td>') + '</tr></table>' : ''}
+    \${(d.learn1||d.learn2||d.learn3) ? '<div style="margin-top:14px;"><div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;">WHAT YOU\'LL LEARN</div>' + [d.learn1,d.learn2,d.learn3].filter(Boolean).map(l => '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;"><div style="color:'+t.accent+';font-size:12px;">▸</div><div style="color:'+t.text+';font-size:11px;">'+l+'</div></div>').join('') + '</div>' : ''}
     ${(d.instagram||d.whatsapp) ? '<div style="margin-top:12px;color:'+t.sub+';font-size:11px;">'+(d.instagram ? '📱 '+d.instagram : '')+(d.whatsapp ? ' · 📞 '+d.whatsapp : '')+'</div>' : ''}
     <div style="margin-top:20px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
       ${d.tagline ? '<div style="background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.03));border:1px solid rgba(245,166,35,0.2);border-left:3px solid '+t.accent+';border-radius:8px;padding:14px 16px;margin-bottom:14px;"><div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:6px;">KEY MESSAGE</div><div style="color:'+t.text+';font-size:13px;font-style:italic;line-height:1.5;">\"'+d.tagline+'\"</div></div>' : ''}
@@ -2774,12 +2780,11 @@ body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;o
 </table>
 
 <!-- FOOTER -->
-<div class="footer">
-  <div>
-    <div class="footer-join">JOIN US</div>
-    <div class="footer-date">${d.date||""} ${d.time ? "· "+d.time : ""}</div>
-  </div>
-  <div class="footer-brand">Created with AfriVid Studio · afrivid.studio</div>
+<div class="footer" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+  ${d.date ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;">📅</div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">DATE</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.date+'</div></div></div>' : ''}
+  ${d.time ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;">🕐</div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">TIME</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.time+'</div></div></div>' : ''}
+  ${d.venue ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;">📍</div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">VENUE</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.venue+'</div></div></div>' : ''}
+  <div style="color:rgba(255,255,255,0.2);font-size:9px;text-align:right;">Created with<br>AfriVid Studio</div>
 </div>
 </body></html>`;
 
@@ -2945,6 +2950,11 @@ window.setFlyerTheme = function(theme, btn) {
   if (btn) { btn.style.borderWidth = '3px'; btn.style.borderColor = '#F5A623'; }
 };
 
+window.setFlyerBg = function(bg, btn) {
+  window._flyerData.bg = bg;
+  document.querySelectorAll('[onclick^="setFlyerBg"]').forEach(b => b.style.borderWidth = '1px');
+  if (btn) btn.style.borderWidth = '3px';
+};
 window.buildFlyer = function() {
   const org = document.getElementById('flyer-org')?.value?.trim();
   const title = document.getElementById('flyer-title')?.value?.trim();
@@ -2961,11 +2971,14 @@ window.buildFlyer = function() {
   const flyerH1 = document.getElementById('flyer-h1')?.value?.trim();
   const flyerH2 = document.getElementById('flyer-h2')?.value?.trim();
   const flyerH3 = document.getElementById('flyer-h3')?.value?.trim();
+  const flyerLearn1 = document.getElementById('flyer-learn1')?.value?.trim();
+  const flyerLearn2 = document.getElementById('flyer-learn2')?.value?.trim();
+  const flyerLearn3 = document.getElementById('flyer-learn3')?.value?.trim();
   const flyerInstagram = document.getElementById('flyer-instagram')?.value?.trim();
   const flyerWhatsapp = document.getElementById('flyer-whatsapp')?.value?.trim();
   window._lastFlyerBuild = { org, title, date, time, tagline, speaker, bio, venue, contact,
     description: flyerDescription, h1: flyerH1, h2: flyerH2, h3: flyerH3,
-    instagram: flyerInstagram, whatsapp: flyerWhatsapp,
+    instagram: flyerInstagram, whatsapp: flyerWhatsapp, learn1: flyerLearn1, learn2: flyerLearn2, learn3: flyerLearn3, bg: window._flyerData?.bg || 'solid',
     logo: window._flyerData?.logo || window._flyer_logo || null,
     photo: window._flyerData?.photo || window._flyer_photo || null,
     theme: window._flyerData?.theme || 'dark' };
@@ -3309,7 +3322,7 @@ window.buildPoster = async function() {
     '</div></div>' : '';
 
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:1000px;background:${t.bg};font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:1000px;background:${d.bg==='dots'?'radial-gradient(circle,rgba(245,166,35,0.12) 1px,transparent 1px) center/22px 22px, '+t.bg:d.bg==='grid'?'linear-gradient(rgba(245,166,35,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.06) 1px,transparent 1px) '+t.bg:d.bg==='diagonal'?'repeating-linear-gradient(45deg,rgba(245,166,35,0.04),rgba(245,166,35,0.04) 1px,'+t.bg+' 1px,'+t.bg+' 18px)':d.bg==='gradient'?'linear-gradient(135deg,'+t.bg2+','+t.bg+')':t.bg};background-size:${d.bg==='grid'?'20px 20px':'auto'};font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>
 </head><body>
 <div style="height:6px;background:linear-gradient(90deg,${t.accent},${t.accent2});"></div>
 <div style="background:linear-gradient(135deg,${t.bg2},${t.bg});padding:28px 40px 22px;text-align:center;border-bottom:2px solid ${t.accent};">
