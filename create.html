@@ -862,6 +862,17 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
       </div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+          <button onclick="setTutorialMode('concept')" id="tmode-concept" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">📊 Concept Slides</button>
+          <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">🌐 Browser Demo</button>
+        </div>
+      </div>
+      <div id="tutorial-url-row" style="display:none;margin-bottom:1rem;">
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
+        <input id="tutorial-url" type="text" placeholder="e.g. https://docs.google.com" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+      </div>
       <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">🎓 Generate Tutorial Video</button>
       <div id="tutorial-status" style="display:none;">
         <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
@@ -6280,6 +6291,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ── TUTORIAL MAKER ──
+window._tutorialMode = 'concept';
+window.setTutorialMode = function(mode) {
+  window._tutorialMode = mode;
+  const conceptBtn = document.getElementById('tmode-concept');
+  const browserBtn = document.getElementById('tmode-browser');
+  const urlRow = document.getElementById('tutorial-url-row');
+  if (mode === 'browser') {
+    browserBtn.style.background = '#F5A623';
+    browserBtn.style.color = '#050A14';
+    browserBtn.style.border = 'none';
+    conceptBtn.style.background = 'rgba(255,255,255,0.05)';
+    conceptBtn.style.color = 'rgba(255,255,255,0.6)';
+    conceptBtn.style.border = '1px solid rgba(255,255,255,0.15)';
+    urlRow.style.display = 'block';
+  } else {
+    conceptBtn.style.background = '#F5A623';
+    conceptBtn.style.color = '#050A14';
+    conceptBtn.style.border = 'none';
+    browserBtn.style.background = 'rgba(255,255,255,0.05)';
+    browserBtn.style.color = 'rgba(255,255,255,0.6)';
+    browserBtn.style.border = '1px solid rgba(255,255,255,0.15)';
+    urlRow.style.display = 'none';
+  }
+};
+
 window.generateTutorial = async function() {
   const topic = document.getElementById('tutorial-topic')?.value?.trim();
   if (!topic) { alert('Please enter a topic'); return; }
@@ -6288,6 +6324,57 @@ window.generateTutorial = async function() {
   const level = document.getElementById('tutorial-level')?.value || 'beginner';
   const user = window.currentUser;
   if (!user) { alert('Please sign in first'); return; }
+
+  // Browser demo mode
+  if (window._tutorialMode === 'browser') {
+    const url = document.getElementById('tutorial-url')?.value?.trim();
+    if (!url) { alert('Please enter a website URL'); return; }
+    const btn = document.getElementById('tutorial-generate-btn');
+    const status = document.getElementById('tutorial-status');
+    const stage = document.getElementById('tutorial-stage');
+    const bar = document.getElementById('tutorial-bar');
+    const pct = document.getElementById('tutorial-pct');
+    btn.disabled = true; btn.textContent = 'Recording...';
+    status.style.display = 'block';
+    stage.textContent = 'Starting browser demo...';
+    bar.style.width = '10%'; pct.textContent = '10%';
+    try {
+      const jobId = `bdem_${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
+      const r = await fetch('https://afrivid-browser.fly.dev/record-demo', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ job_id: jobId, url, topic, duration, user_email: user.email })
+      });
+      const rd = await r.json();
+      if (rd.error) throw new Error(rd.error);
+      bar.style.width = '30%'; pct.textContent = '30%';
+      stage.textContent = 'Browser recording in progress...';
+      window._tutorialPoll = setInterval(async () => {
+        try {
+          const s = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${jobId}`);
+          const sd = await s.json();
+          bar.style.width = (sd.progress||0) + '%';
+          pct.textContent = (sd.progress||0) + '%';
+          stage.textContent = sd.stage || 'Recording...';
+          if (sd.status === 'completed' && sd.output_url) {
+            clearInterval(window._tutorialPoll);
+            bar.style.width = '100%'; pct.textContent = '100%';
+            document.getElementById('tutorial-download').style.display = 'block';
+            document.getElementById('tutorial-download-link').href = sd.output_url;
+            btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
+          }
+          if (sd.status === 'failed') {
+            clearInterval(window._tutorialPoll);
+            stage.textContent = 'Failed. Try again.';
+            btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
+          }
+        } catch(e) {}
+      }, 5000);
+    } catch(e) {
+      stage.textContent = 'Error: ' + e.message;
+      btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
+    }
+    return;
+  }
 
   const btn = document.getElementById('tutorial-generate-btn');
   const status = document.getElementById('tutorial-status');
