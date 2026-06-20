@@ -792,6 +792,19 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">ORG NAME (shows on slides)</div>
+          <input id="slides-org" type="text" placeholder="e.g. AfriVid Studio" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box;">
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LOGO (optional)</div>
+          <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">
+            <span id="slides-logo-name">Upload logo</span>
+            <input type="file" accept="image/*" style="display:none;" onchange="loadSlidesLogo(this)">
+          </label>
+        </div>
+      </div>
       <button onclick="generateSlides()" id="slides-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">✦ Generate Slides</button>
       <div id="slides-status" style="display:none;text-align:center;padding:1rem;">
         <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.8rem;" id="slides-status-text">Generating slides...</div>
@@ -6235,6 +6248,18 @@ window.switchCreateMode = function(mode) {
 };
 
 window._generatedSlides = [];
+window._slidesLogo = null;
+
+window.loadSlidesLogo = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    window._slidesLogo = e.target.result;
+    document.getElementById('slides-logo-name').textContent = file.name.slice(0,15);
+  };
+  reader.readAsDataURL(file);
+};
 
 window.generateSlides = async function() {
   const topic = document.getElementById('slides-topic')?.value?.trim();
@@ -6306,6 +6331,9 @@ function renderSlidesPreview(slides, style, topic) {
 }
 
 function buildSlideHTML(slide, i, t, topic) {
+  const org = document.getElementById('slides-org')?.value?.trim() || '';
+  const logo = window._slidesLogo || '';
+  const footer = (org || logo) ? `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);">${logo?`<img src="${logo}" style="height:18px;object-fit:contain;">`:'<div></div>'}<div style="color:${t.sub};font-size:8px;font-family:monospace;">${org}</div></div>` : '';
   const num = String(i+1).padStart(2,'0');
   if (slide.type === 'stat') {
     return `<div style="background:${t.bg};padding:24px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;font-family:Arial,sans-serif;">
@@ -6316,6 +6344,7 @@ function buildSlideHTML(slide, i, t, topic) {
         <div style="color:${t.text};font-size:14px;font-weight:700;margin-top:8px;">${slide.title}</div>
       </div>
       <div style="height:2px;background:${t.accent};width:40px;"></div>
+      ${footer}
     </div>`;
   }
   if (slide.type === 'quote') {
