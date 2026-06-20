@@ -1183,11 +1183,21 @@ window.handleSaveToStudio = async function() {
       tc.getContext('2d').drawImage(canvas, 0, 0, 320, 320);
       thumbnail = tc.toDataURL('image/jpeg', 0.6);
     }
+    // Upload full image to R2, save only thumbnail to Firestore
+    let photoUrl = '';
+    try {
+      const blob = await (await fetch(dataURL)).blob();
+      const form = new FormData();
+      form.append('file', blob, 'photo-'+Date.now()+'.jpg');
+      const r = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload', {method:'POST', body:form});
+      const rd = await r.json();
+      photoUrl = rd.url || '';
+    } catch(e) { console.log('R2 upload failed:', e); }
     await addDoc(collection(db, 'studio_photos'), {
       userId: currentUser.uid,
       userEmail: currentUser.email,
       title: 'Edited Photo',
-      dataURL: dataURL,
+      dataURL: photoUrl || thumbnail,
       thumbnail: thumbnail,
       createdAt: serverTimestamp()
     });
