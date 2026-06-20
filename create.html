@@ -752,6 +752,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
   <div style="display:flex;gap:0.5rem;max-width:900px;margin:0 auto 1rem;padding:0 1rem;">
     <button id="mode-video-tab" onclick="switchCreateMode('video')" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">🎬 Video Creator</button>
     <button id="mode-slides-tab" onclick="switchCreateMode('slides')" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📊 Slides Generator</button>
+    <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">🎓 Tutorial Maker</button>
   </div>
 
   <!-- SLIDES GENERATOR PANEL -->
@@ -823,6 +824,65 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </div>
       </div>
       <div id="slides-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;"></div>
+    </div>
+  </div>
+
+  <!-- TUTORIAL MAKER PANEL -->
+  <div id="tutorial-maker-panel" style="display:none;max-width:900px;margin:0 auto;padding:0 1rem;">
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">🎓</div>AI Tutorial Maker</div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
+        <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
+          <select id="tutorial-duration" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="5">5 minutes</option>
+            <option value="10" selected>10 minutes</option>
+            <option value="15">15 minutes</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
+          <select id="tutorial-style" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="classic">Classic (AfriVid)</option>
+            <option value="cameroon_slide">Cameroon Slide</option>
+            <option value="unite_slide">Unite Slide</option>
+            <option value="advert_slide">Advert Slide</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
+          <select id="tutorial-level" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">🎓 Generate Tutorial Video</button>
+      <div id="tutorial-status" style="display:none;">
+        <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 Generating Tutorial...</div>
+            <div id="tutorial-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
+            <div id="tutorial-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+          </div>
+          <div id="tutorial-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Starting...</div>
+          <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem;margin-bottom:1rem;">
+            <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">📧 We will email you when ready!</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
+          </div>
+          <div id="tutorial-download" style="display:none;">
+            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Tutorial ready!</div>
+            <a id="tutorial-download-link" href="#" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Tutorial</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -6218,33 +6278,144 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="chatbot.js"></script>
 <script>
 
+
+// ── TUTORIAL MAKER ──
+window.generateTutorial = async function() {
+  const topic = document.getElementById('tutorial-topic')?.value?.trim();
+  if (!topic) { alert('Please enter a topic'); return; }
+  const duration = parseInt(document.getElementById('tutorial-duration')?.value || '10');
+  const style = document.getElementById('tutorial-style')?.value || 'classic';
+  const level = document.getElementById('tutorial-level')?.value || 'beginner';
+  const user = window.currentUser;
+  if (!user) { alert('Please sign in first'); return; }
+
+  const btn = document.getElementById('tutorial-generate-btn');
+  const status = document.getElementById('tutorial-status');
+  const stage = document.getElementById('tutorial-stage');
+  const bar = document.getElementById('tutorial-bar');
+  const pct = document.getElementById('tutorial-pct');
+
+  btn.disabled = true; btn.textContent = 'Generating...';
+  status.style.display = 'block';
+  stage.textContent = 'Creating tutorial outline...';
+  bar.style.width = '10%'; pct.textContent = '10%';
+
+  try {
+    // Step 1: Generate tutorial scenes with Claude
+    const sceneCount = duration === 5 ? 8 : duration === 10 ? 15 : 22;
+    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001', max_tokens: 3000,
+        messages: [{role:'user', content:`Create a ${duration}-minute ${level} tutorial on "${topic}" in English.
+Generate exactly ${sceneCount} scenes as a JSON array:
+[
+  {"title":"Scene Title","type":"title","voiceover":"narrator script 40-60 words","duration":${Math.round(duration*60/sceneCount)}},
+  {"title":"Table of Contents","type":"toc","voiceover":"narrator script","points":["Topic 1","Topic 2","Topic 3"],"duration":${Math.round(duration*60/sceneCount)}},
+  {"title":"Section Title","type":"content","voiceover":"narrator script 40-60 words","points":["point 1","point 2","point 3"],"duration":${Math.round(duration*60/sceneCount)}},
+  {"title":"Code Example","type":"code","voiceover":"narrator script","code":"actual code here","language":"python","duration":${Math.round(duration*60/sceneCount)}},
+  ...more scenes...
+  {"title":"Summary","type":"summary","voiceover":"narrator script","points":["key takeaway 1","key takeaway 2"],"duration":${Math.round(duration*60/sceneCount)}}
+]
+Types: title(first), toc(second), content(regular), code(for code examples), diagram(for concepts), summary(last).
+Make voiceover natural and educational. Return ONLY valid JSON array.`}]
+      })
+    });
+    bar.style.width = '30%'; pct.textContent = '30%';
+    stage.textContent = 'Building tutorial script...';
+
+    const data = await res.json();
+    const text = data.content[0].text;
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('Failed to generate tutorial script');
+    const scenes = JSON.parse(match[0]);
+
+    bar.style.width = '50%'; pct.textContent = '50%';
+    stage.textContent = 'Sending to AfriVid Cloud...';
+
+    // Step 2: Send to Fly.io for video generation
+    const jobId = `tut_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+    const r = await fetch('https://afrivid-processor.fly.dev/generate-video', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        job_id: jobId, scenes, style,
+        language: 'en', title: topic,
+        user_email: user.email, user_id: user.uid,
+        tutorial: true, level, duration
+      })
+    });
+    const rd = await r.json();
+    if (rd.error) throw new Error(rd.error);
+
+    bar.style.width = '60%'; pct.textContent = '60%';
+    stage.textContent = 'Processing tutorial video...';
+
+    // Step 3: Poll for completion
+    window._tutorialPoll = setInterval(async () => {
+      try {
+        const s = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${jobId}`);
+        const sd = await s.json();
+        bar.style.width = (sd.progress||0) + '%';
+        pct.textContent = (sd.progress||0) + '%';
+        stage.textContent = sd.stage || 'Processing...';
+        if (sd.status === 'completed' && sd.output_url) {
+          clearInterval(window._tutorialPoll);
+          bar.style.width = '100%'; pct.textContent = '100%';
+          stage.textContent = 'Tutorial ready!';
+          document.getElementById('tutorial-download').style.display = 'block';
+          document.getElementById('tutorial-download-link').href = sd.output_url;
+          btn.textContent = '🎓 Generate Tutorial Video';
+          btn.disabled = false;
+        }
+        if (sd.status === 'failed') {
+          clearInterval(window._tutorialPoll);
+          stage.textContent = 'Generation failed. Please try again.';
+          btn.textContent = '🎓 Generate Tutorial Video';
+          btn.disabled = false;
+        }
+      } catch(e) { console.log('Poll error:', e); }
+    }, 5000);
+
+  } catch(e) {
+    stage.textContent = 'Error: ' + e.message;
+    btn.textContent = '🎓 Generate Tutorial Video';
+    btn.disabled = false;
+  }
+};
+
 // ── SLIDES GENERATOR ──
 window.switchCreateMode = function(mode) {
   const videoPanel = document.getElementById('panel-1');
   const slidesPanel = document.getElementById('slides-generator-panel');
+  const tutorialPanel = document.getElementById('tutorial-maker-panel');
   const stepsBar = document.querySelector('.steps-bar');
   const videoTab = document.getElementById('mode-video-tab');
   const slidesTab = document.getElementById('mode-slides-tab');
+  const tutorialTab = document.getElementById('mode-tutorial-tab');
+
+  // Hide all panels
+  if (videoPanel) videoPanel.style.display = 'none';
+  if (slidesPanel) slidesPanel.style.display = 'none';
+  if (tutorialPanel) tutorialPanel.style.display = 'none';
+  if (stepsBar) stepsBar.style.display = 'none';
+
+  // Reset all tabs
+  const inactive = 'rgba(255,255,255,0.05)';
+  const inactiveC = 'rgba(255,255,255,0.6)';
+  const inactiveB = '1px solid rgba(255,255,255,0.15)';
+  [videoTab, slidesTab, tutorialTab].forEach(t => { if(t) { t.style.background=inactive; t.style.color=inactiveC; t.style.border=inactiveB; t.style.fontWeight='700'; }});
+
+  // Activate selected
   if (mode === 'slides') {
-    if (videoPanel) videoPanel.style.display = 'none';
-    if (stepsBar) stepsBar.style.display = 'none';
     if (slidesPanel) slidesPanel.style.display = 'block';
-    videoTab.style.background = 'rgba(255,255,255,0.05)';
-    videoTab.style.color = 'rgba(255,255,255,0.6)';
-    videoTab.style.border = '1px solid rgba(255,255,255,0.15)';
-    slidesTab.style.background = '#F5A623';
-    slidesTab.style.color = '#050A14';
-    slidesTab.style.border = 'none';
+    if (slidesTab) { slidesTab.style.background='#F5A623'; slidesTab.style.color='#050A14'; slidesTab.style.border='none'; }
+  } else if (mode === 'tutorial') {
+    if (tutorialPanel) tutorialPanel.style.display = 'block';
+    if (tutorialTab) { tutorialTab.style.background='#F5A623'; tutorialTab.style.color='#050A14'; tutorialTab.style.border='none'; }
   } else {
     if (videoPanel) videoPanel.style.display = 'block';
     if (stepsBar) stepsBar.style.display = 'flex';
-    if (slidesPanel) slidesPanel.style.display = 'none';
-    videoTab.style.background = '#F5A623';
-    videoTab.style.color = '#050A14';
-    videoTab.style.border = 'none';
-    slidesTab.style.background = 'rgba(255,255,255,0.05)';
-    slidesTab.style.color = 'rgba(255,255,255,0.6)';
-    slidesTab.style.border = '1px solid rgba(255,255,255,0.15)';
+    if (videoTab) { videoTab.style.background='#F5A623'; videoTab.style.color='#050A14'; videoTab.style.border='none'; }
   }
 };
 
