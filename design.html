@@ -3925,6 +3925,7 @@ window.buildLogo = async function(previewMode=false) {
   const tagline = _d.tagline || document.getElementById('logo-tagline')?.value?.trim();
   const bd = _d.org ? _d : (window._builderData?.logo || {});
   const d = { ...bd };
+  const style = d.style || _d.style || 'text';
   const t = BTHEMES[d.theme || 'dark'];
   const words = org.split(' ');
   const initials = words.slice(0,3).map(w=>w[0]).join('').toUpperCase();
