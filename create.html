@@ -6388,7 +6388,55 @@ window.downloadAllSlides = async function() {
 };
 
 window.downloadSlidesAsPDF = async function() {
-  alert('PDF download coming soon!');
+  if (!window._generatedSlides || !window._generatedSlides.length) { alert('Generate slides first'); return; }
+  const style = document.getElementById('slides-style')?.value || 'dark';
+  const topic = document.getElementById('slides-topic')?.value || 'Slides';
+  const t = SLIDE_THEMES[style];
+
+  // Load jsPDF
+  if (!window.jspdf) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [640, 360] });
+
+  // Load html2canvas if needed
+  if (!window.html2canvas) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  const btn = document.querySelector('[onclick="downloadSlidesAsPDF()"]');
+  if (btn) { btn.textContent = '⏳ Building PDF...'; btn.disabled = true; }
+
+  for (let i = 0; i < window._generatedSlides.length; i++) {
+    const slide = window._generatedSlides[i];
+    // Create temp div
+    const div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:640px;height:360px;';
+    div.innerHTML = buildSlideHTML(slide, i, t, topic);
+    // Make slide fill the div
+    div.firstChild.style.minHeight = '360px';
+    div.firstChild.style.height = '360px';
+    document.body.appendChild(div);
+    await new Promise(r => setTimeout(r, 100));
+    const canvas = await html2canvas(div, { width: 640, height: 360, scale: 1.5, backgroundColor: t.bg });
+    document.body.removeChild(div);
+    if (i > 0) pdf.addPage();
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 640, 360);
+  }
+
+  pdf.save(topic.replace(/[^a-z0-9]/gi, '_') + '_slides.pdf');
+  if (btn) { btn.textContent = '⬇ PDF'; btn.disabled = false; }
 };
 
 if('serviceWorker' in navigator) {
