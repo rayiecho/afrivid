@@ -3788,12 +3788,15 @@ window.buildPoster = async function(previewMode=false, downloadMode=false) {
 
   // Middle section — always show description + highlights, then images below
   const highlights = [h1,h2,h3].filter(Boolean);
+  // Hero image — full width with gradient overlay
   const imagesHtml = validProducts.length ?
-    '<div style="text-align:center;padding:16px 20px 0;"><table style="margin:0 auto;border-collapse:collapse;"><tr>' +
-    validProducts.map(url => '<td style="padding:5px;"><img src="' + url + '" style="width:' + (validProducts.length===1?'680':validProducts.length===2?'330':'210') + 'px;height:' + (validProducts.length===1?'300':'200') + 'px;object-fit:cover;border-radius:8px;border:2px solid ' + t.accent + ';"></td>').join('<td style="width:8px;"></td>') +
-    '</tr></table></div>' : '';
+    '<div style="position:relative;width:800px;margin:0;overflow:hidden;">' +
+    '<img src="' + validProducts[0] + '" style="width:800px;height:320px;object-fit:cover;display:block;">' +
+    '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,' + t.bg + ')"></div>' +
+    (validProducts.length > 1 ? '<div style="position:absolute;bottom:10px;right:10px;display:flex;gap:6px;">' + validProducts.slice(1).map(u => '<img src="'+u+'" style="width:80px;height:60px;object-fit:cover;border-radius:4px;border:2px solid '+t.accent+';">').join('') + '</div>' : '') +
+    '</div>' : '';
   const middleHtml =
-    '<div style="padding:18px 40px 0;">' +
+    '<div style="padding:14px 40px 0;">' +
     (description ? '<div style="color:' + t.sub + ';font-size:13px;line-height:1.7;text-align:center;margin-bottom:14px;padding:0 10px;">' + description + '</div>' : '') +
     (highlights.length ? '<table style="width:100%;border-collapse:collapse;"><tr>' +
     highlights.map(h => '<td style="padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid ' + t.accent + '33;border-radius:8px;text-align:center;"><div style="color:' + t.accent + ';font-size:16px;margin-bottom:4px;">✦</div><div style="color:' + t.text + ';font-size:11px;font-weight:700;">' + h + '</div></td>').join('<td style="width:8px;"></td>') +
@@ -3853,7 +3856,7 @@ ${sponsorsHtml}
 <div style="position:absolute;bottom:0;left:0;right:0;background:${t.bg2};padding:14px 40px;border-top:3px solid ${t.accent};">
   <table style="width:100%;border-collapse:collapse;"><tr>
     <td>
-      ${contact?'<div style="color:'+t.accent+';font-size:13px;font-weight:700;">'+contact+'</div>':''}
+      ${contact?'<div style="background:'+t.accent+';color:#050A14;display:inline-block;padding:6px 16px;border-radius:6px;font-size:12px;font-weight:900;margin-bottom:4px;">'+contact+'</div>':''}
       ${instagram||whatsapp ? '<div style="color:'+t.sub+';font-size:11px;margin-top:3px;">'+(instagram?instagram+' ':''+(whatsapp?'· wa: '+whatsapp:''))+'</div>' : ''}
     </td>
     <td style="text-align:right;"><div style="color:rgba(255,255,255,0.2);font-size:9px;">Created with AfriVid Studio · afrivid.studio</div></td>
