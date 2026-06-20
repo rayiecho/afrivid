@@ -570,6 +570,64 @@ body::after{
         <div id="poster-builder-panel" style="display:none;">
           <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
           <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">POSTER BUILDER</div>
+
+          <!-- STEP 1: AI FILL -->
+          <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — DESCRIBE YOUR EVENT/PRODUCT</div>
+            <textarea id="poster-ai-prompt" placeholder="e.g. Young Africans Network Tech Summit, Saturday June 20 2026, Kigali Convention Center, featuring speakers on AI and innovation, register at youngafricansnetwork.org" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:70px;resize:none;margin-bottom:0.5rem;"></textarea>
+            <button onclick="aiFillPoster()" id="poster-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill All Fields</button>
+          </div>
+
+          <!-- STEP 2: UPLOADS -->
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">📎 STEP 2 — UPLOAD IMAGES</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.4rem;">
+              <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;">
+                <span style="font-size:1.2rem;">🏢</span>
+                <span id="poster-logo-name">Org Logo</span>
+                <input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('poster','logo',this)">
+              </label>
+              <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;">
+                <span style="font-size:1.2rem;">🖼</span>
+                <span>Feature Image</span>
+                <input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImages('poster','products',this,3)">
+              </label>
+            </div>
+            <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">
+              <span>🤝 Sponsor logos (up to 3)</span>
+              <input type="file" accept="image/*" multiple style="display:none;" onchange="loadBuilderImages('poster','sponsors',this,3)">
+            </label>
+          </div>
+
+          <!-- STEP 3: STYLE -->
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 3 — PICK STYLE</div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">COLOR</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-bottom:0.5rem;">
+              <button onclick="setBuilderTheme('poster','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button>
+              <button onclick="setBuilderTheme('poster','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button>
+              <button onclick="setBuilderTheme('poster','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button>
+              <button onclick="setBuilderTheme('poster','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button>
+            </div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">BACKGROUND</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;">
+              <button onclick="setPosterBg('solid',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;color:#F5A623;font-size:0.6rem;font-family:'Space Mono',monospace;">SOLID</button>
+              <button onclick="setPosterBg('dots',this)" style="background:radial-gradient(circle,rgba(245,166,35,0.15) 1px,#050A14 1px) center/16px 16px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">DOTS</button>
+              <button onclick="setPosterBg('grid',this)" style="background:linear-gradient(rgba(245,166,35,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.08) 1px,transparent 1px);background-size:16px 16px;background-color:#050A14;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">GRID</button>
+              <button onclick="setPosterBg('diagonal',this)" style="background:repeating-linear-gradient(45deg,rgba(245,166,35,0.05),rgba(245,166,35,0.05) 1px,#050A14 1px,#050A14 12px);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">LINES</button>
+              <button onclick="setPosterBg('map',this)" style="background:linear-gradient(135deg,#050A14,#0D1F35,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">MAP</button>
+              <button onclick="setPosterBg('gradient',this)" style="background:linear-gradient(135deg,#1a3a2a,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">GRAD</button>
+            </div>
+          </div>
+
+          <!-- BUILD + EDIT -->
+          <button onclick="previewPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Poster</button>
+          <button onclick="document.getElementById('poster-edit-fields').style.display=document.getElementById('poster-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('poster-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
+          <button onclick="downloadPoster()" id="poster-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Poster</button>
+
+          <!-- HIDDEN EDIT FIELDS -->
+          <div id="poster-edit-fields" style="display:none;margin-top:0.5rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME *</div><input id="poster-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">HEADLINE *</div><input id="poster-headline" type="text" placeholder="e.g. Leadership Summit 2026" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="poster-tagline" type="text" placeholder="e.g. Empowering the Next Generation" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
@@ -584,8 +642,8 @@ body::after{
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">SPONSOR / PARTNER LOGOS (up to 3)</div><div id="poster-sponsor-thumbs" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.4rem;"></div><label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;"><span>Add sponsor logos</span><input type="file" accept="image/*" multiple style="display:none;" onchange="loadBuilderImages('poster','sponsors',this,3)"></label></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setBuilderTheme('poster','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setBuilderTheme('poster','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setBuilderTheme('poster','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setBuilderTheme('poster','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
           <button onclick="buildPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Poster →</button>
-          <button onclick="buildPoster()" id="poster-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Poster</button>
-        </div>
+          </div><!-- end poster-edit-fields -->
+        </div><!-- end poster-builder-panel -->
 
         <!-- BANNER BUILDER -->
         <div id="banner-builder-panel" style="display:none;">
@@ -3018,6 +3076,107 @@ window.setFlyerTheme = function(theme, btn) {
   if (btn) { btn.style.borderWidth = '3px'; btn.style.borderColor = '#F5A623'; }
 };
 
+window.aiFillPoster = async function() {
+  const prompt = document.getElementById('poster-ai-prompt')?.value?.trim();
+  if (!prompt) { alert('Please describe your event first'); return; }
+  const btn = document.getElementById('poster-ai-btn');
+  btn.textContent = '⏳'; btn.disabled = true;
+  try {
+    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 800,
+        messages: [{ role: 'user', content: `Extract event details from this and return ONLY valid JSON:
+"${prompt}"
+{
+  "org": "Organization name",
+  "headline": "Short punchy headline max 5 words",
+  "tagline": "Inspiring quote or tagline",
+  "date": "Date",
+  "venue": "Venue or platform",
+  "contact": "Website or link",
+  "description": "2-3 sentence description",
+  "h1": "First highlight",
+  "h2": "Second highlight",
+  "h3": "Third highlight",
+  "cta": "Call to action e.g. Register Now",
+  "instagram": "",
+  "whatsapp": ""
+}
+Return ONLY the JSON.` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content[0].text;
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON');
+    const d = JSON.parse(match[0]);
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('poster-org', d.org);
+    set('poster-headline', d.headline);
+    set('poster-tagline', d.tagline);
+    set('poster-date', d.date);
+    set('poster-venue', d.venue);
+    set('poster-contact', d.contact);
+    set('poster-description', d.description);
+    set('poster-h1', d.h1);
+    set('poster-h2', d.h2);
+    set('poster-h3', d.h3);
+    set('poster-cta', d.cta);
+    set('poster-instagram', d.instagram);
+    set('poster-whatsapp', d.whatsapp);
+    btn.textContent = '✅ Done!';
+    setTimeout(() => { btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false; }, 2000);
+  } catch(e) {
+    alert('AI Fill failed: ' + e.message);
+    btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false;
+  }
+};
+
+window.setPosterBg = function(bg, btn) {
+  if (!window._builderData) window._builderData = {};
+  if (!window._builderData.poster) window._builderData.poster = {};
+  window._builderData.poster.bg = bg;
+  document.querySelectorAll('[onclick^="setPosterBg"]').forEach(b => b.style.borderWidth = '1px');
+  if (btn) btn.style.borderWidth = '3px';
+};
+
+window.previewPoster = async function() {
+  const d = {
+    org: document.getElementById('poster-org')?.value?.trim(),
+    headline: document.getElementById('poster-headline')?.value?.trim(),
+    tagline: document.getElementById('poster-tagline')?.value?.trim(),
+    date: document.getElementById('poster-date')?.value?.trim(),
+    venue: document.getElementById('poster-venue')?.value?.trim(),
+    contact: document.getElementById('poster-contact')?.value?.trim(),
+    description: document.getElementById('poster-description')?.value?.trim(),
+    h1: document.getElementById('poster-h1')?.value?.trim(),
+    h2: document.getElementById('poster-h2')?.value?.trim(),
+    h3: document.getElementById('poster-h3')?.value?.trim(),
+    cta: document.getElementById('poster-cta')?.value?.trim(),
+    instagram: document.getElementById('poster-instagram')?.value?.trim(),
+    whatsapp: document.getElementById('poster-whatsapp')?.value?.trim(),
+  };
+  if (!d.org && !d.headline) { alert('Please describe your event and click AI Fill first'); return; }
+  const bd = window._builderData?.poster || {};
+  d.logo = bd.logo || null;
+  d.products = bd.products || [];
+  d.sponsors = bd.sponsors || [];
+  d.theme = bd.theme || 'dark';
+  d.bg = bd.bg || 'solid';
+  window._lastPosterBuild = d;
+  const dlBtn = document.getElementById('poster-download-btn');
+  if (dlBtn) dlBtn.style.display = 'block';
+  await buildPoster(true);
+};
+
+window.downloadPoster = async function() {
+  if (!window._lastPosterBuild) { alert('Please preview first'); return; }
+  await buildPoster(false, true);
+};
+
 window.previewFlyer = async function() {
   // Collect data same as buildFlyer
   const d = {
@@ -3392,7 +3551,7 @@ async function uploadImgToR2(dataURL, name) {
   } catch(e) { return null; }
 }
 
-async function renderAndDownload(html, type, width, height) {
+async function renderAndDownload(html, type, width, height, previewMode=false) {
   const buildBtn = document.querySelector('[onclick="build' + type.charAt(0).toUpperCase() + type.slice(1) + '()"]');
   if (buildBtn) { buildBtn.textContent = '⏳ Building...'; buildBtn.disabled = true; }
   try {
@@ -3430,6 +3589,25 @@ async function renderAndDownload(html, type, width, height) {
       flyerCv.height = canvas.height;
       flyerCv.getContext('2d').drawImage(canvas, 0, 0);
     }
+    // Preview mode — show in modal
+    if (previewMode) {
+      const imgUrl = canvas.toDataURL('image/png');
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9998;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+      const img = document.createElement('img');
+      img.src = imgUrl;
+      img.style.cssText = 'max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 0 80px rgba(0,0,0,0.8);';
+      const closeBtn = document.createElement('div');
+      closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;color:#fff;font-size:2rem;cursor:pointer;background:rgba(0,0,0,0.5);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;';
+      closeBtn.textContent = '✕';
+      closeBtn.onclick = () => overlay.remove();
+      overlay.onclick = () => overlay.remove();
+      overlay.appendChild(img);
+      document.body.appendChild(overlay);
+      document.body.appendChild(closeBtn);
+      if (buildBtn) { buildBtn.textContent = 'Build ' + type.charAt(0).toUpperCase() + type.slice(1) + ' →'; buildBtn.disabled = false; }
+      return;
+    }
     // Auto download as PNG
     canvas.toBlob(blob => {
       const url = URL.createObjectURL(blob);
@@ -3449,27 +3627,28 @@ async function renderAndDownload(html, type, width, height) {
 }
 
 // ── BUILD POSTER ──
-window.buildPoster = async function() {
-  const org = document.getElementById('poster-org')?.value?.trim();
-  const headline = document.getElementById('poster-headline')?.value?.trim();
+window.buildPoster = async function(previewMode=false, downloadMode=false) {
+  const _d = window._lastPosterBuild || {};
+  const org = _d.org || document.getElementById('poster-org')?.value?.trim();
+  const headline = _d.headline || document.getElementById('poster-headline')?.value?.trim();
   if (!org || !headline) { alert('Please fill Organization Name and Headline'); return; }
-  const tagline = document.getElementById('poster-tagline')?.value?.trim();
-  const date = document.getElementById('poster-date')?.value?.trim();
-  const venue = document.getElementById('poster-venue')?.value?.trim();
-  const contact = document.getElementById('poster-contact')?.value?.trim();
-  const description = document.getElementById('poster-description')?.value?.trim();
-  const h1 = document.getElementById('poster-h1')?.value?.trim();
-  const h2 = document.getElementById('poster-h2')?.value?.trim();
-  const h3 = document.getElementById('poster-h3')?.value?.trim();
-  const cta = document.getElementById('poster-cta')?.value?.trim();
-  const instagram = document.getElementById('poster-instagram')?.value?.trim();
-  const whatsapp = document.getElementById('poster-whatsapp')?.value?.trim();
-  const d = window._builderData.poster;
+  const tagline = _d.tagline || document.getElementById('poster-tagline')?.value?.trim();
+  const date = _d.date || document.getElementById('poster-date')?.value?.trim();
+  const venue = _d.venue || document.getElementById('poster-venue')?.value?.trim();
+  const contact = _d.contact || document.getElementById('poster-contact')?.value?.trim();
+  const description = _d.description || document.getElementById('poster-description')?.value?.trim();
+  const h1 = _d.h1 || document.getElementById('poster-h1')?.value?.trim();
+  const h2 = _d.h2 || document.getElementById('poster-h2')?.value?.trim();
+  const h3 = _d.h3 || document.getElementById('poster-h3')?.value?.trim();
+  const cta = _d.cta || document.getElementById('poster-cta')?.value?.trim();
+  const instagram = _d.instagram || document.getElementById('poster-instagram')?.value?.trim();
+  const whatsapp = _d.whatsapp || document.getElementById('poster-whatsapp')?.value?.trim();
+  const bd = _d.org ? _d : (window._builderData?.poster || {});
+  const d = { ...bd, bg: bd.bg || 'solid' };
   const t = BTHEMES[d.theme || 'dark'];
-
-  const logoUrl = await uploadImgToR2(d.logo, 'poster-logo.png');
-  const productUrls = await Promise.all((d.products || []).slice(0,3).map((p,i) => uploadImgToR2(p, 'poster-prod-'+i+'.jpg')));
-  const sponsorUrls = await Promise.all((d.sponsors || []).slice(0,3).map((p,i) => uploadImgToR2(p, 'poster-sponsor-'+i+'.png')));
+  const logoUrl = d.logo || null;
+  const productUrls = (d.products || []).slice(0,3);
+  const sponsorUrls = (d.sponsors || []).slice(0,3);
   const validProducts = productUrls.filter(Boolean);
   const validSponsors = sponsorUrls.filter(Boolean);
 
@@ -3532,7 +3711,7 @@ ${sponsorsHtml}
 </div>
 </body></html>`;
 
-  await renderAndDownload(html, 'poster', 800, 1000);
+  await renderAndDownload(html, "poster", 800, 1000, previewMode);
 };
 
 // ── BUILD BANNER ──
