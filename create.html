@@ -2723,7 +2723,7 @@ function detectSceneType(text) {
 
 function extractNumbers(text) {
   const matches = text.match(/(\w[\w\s]*?):\s*(\d+(?:\.\d+)?)\s*%?/g) || [];
-  const numbers = text.match(/(\d+(?:\.\d+)?)\s*(%|percent|million|billion|thousand)?/gi) || [];
+  const numbers = text.match(/(\d+(?:\.\d+)?)\s*(%|percent|million|billion|thousand)?/gi) || [];
   const result = [];
   matches.forEach(m => {
     const parts = m.match(/(.+?):\s*(\d+(?:\.\d+)?)/);
@@ -6408,6 +6408,7 @@ function buildSlideHTML(slide, i, t, topic) {
   }
 
   // Regular content slide
+  const slideImg = slide.image || '';
   const points = (slide.points||[]).slice(0,5);
   const icons = ['01','02','03','04','05'];
   return `<div style="background:${t.bg};padding:20px 24px 40px;min-height:200px;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
@@ -6415,6 +6416,7 @@ function buildSlideHTML(slide, i, t, topic) {
     <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:${t.accent};opacity:0.05;"></div>
     <div style="color:${t.accent};font-size:8px;letter-spacing:2px;font-family:monospace;margin-bottom:6px;">${num} / ${total}</div>
     <div style="color:${t.text};font-size:14px;font-weight:900;margin-bottom:12px;line-height:1.2;padding-right:20px;">${slide.title}</div>
+    ${slideImg ? `<img src="${slideImg}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;margin-bottom:8px;">` : ''}
     <div style="display:flex;flex-direction:column;gap:6px;">
       ${points.map((p,j)=>`<div style="display:flex;gap:8px;align-items:flex-start;">
         <div style="min-width:16px;height:16px;border-radius:3px;background:${t.accent};display:flex;align-items:center;justify-content:center;margin-top:1px;">
@@ -6428,16 +6430,122 @@ function buildSlideHTML(slide, i, t, topic) {
 }
 
 function previewSlide(slide, i, t, topic) {
-  const html = buildSlideHTML(slide, i, t, topic);
+  const style = document.getElementById('slides-style')?.value || 'dark';
+
   const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-  const inner = document.createElement('div');
-  inner.style.cssText = 'width:640px;border-radius:12px;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,0.8);';
-  inner.innerHTML = html;
-  overlay.appendChild(inner);
-  overlay.onclick = () => overlay.remove();
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.id = 'slide-edit-overlay';
+
+  overlay.innerHTML = `
+  <div style="display:flex;gap:1.5rem;align-items:flex-start;max-width:1100px;width:95%;padding:1rem;">
+    <!-- LEFT: PREVIEW -->
+    <div style="flex:1;">
+      <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.5rem;">PREVIEW (click slide to close)</div>
+      <div id="slide-preview-box" style="border-radius:10px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.8);cursor:pointer;" onclick="document.getElementById('slide-edit-overlay').remove()">
+        ${buildSlideHTML(slide, i, t, topic)}
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+        <button onclick="slideEditApply(${i})" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✓ Apply Changes</button>
+        <button onclick="document.getElementById('slide-edit-overlay').remove()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✕ Close</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: EDIT PANEL -->
+    <div style="width:320px;background:#0D1117;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1rem;max-height:80vh;overflow-y:auto;">
+      <div style="color:#F5A623;font-family:monospace;font-size:0.7rem;letter-spacing:1px;margin-bottom:0.75rem;">EDIT SLIDE ${i+1}</div>
+
+      <div style="margin-bottom:0.75rem;">
+        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TYPE</div>
+        <select id="edit-type" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;">
+          <option value="intro" ${slide.type==='intro'?'selected':''}>Intro</option>
+          <option value="content" ${slide.type==='content'?'selected':''}>Content</option>
+          <option value="stat" ${slide.type==='stat'?'selected':''}>Statistic</option>
+          <option value="quote" ${slide.type==='quote'?'selected':''}>Quote</option>
+          <option value="conclusion" ${slide.type==='conclusion'?'selected':''}>Conclusion</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:0.75rem;">
+        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TITLE</div>
+        <input id="edit-title" type="text" value="${(slide.title||'').replace(/"/g,'&quot;')}" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
+      </div>
+
+      <div style="margin-bottom:0.75rem;">
+        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">SUBTITLE / TAGLINE</div>
+        <input id="edit-subtitle" type="text" value="${(slide.subtitle||'').replace(/"/g,'&quot;')}" placeholder="Optional subtitle" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
+      </div>
+
+      <div style="margin-bottom:0.75rem;">
+        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">BULLET POINTS (one per line)</div>
+        <textarea id="edit-points" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:100px;resize:vertical;">${(slide.points||[]).join('')}</textarea>
+
+        <div style="color:rgba(255,255,255,0.2);font-size:0.6rem;font-family:monospace;margin-top:2px;">Up to 5 points. Press Enter for new line.</div>
+      </div>
+
+      <div style="margin-bottom:0.75rem;" id="edit-stat-group">
+        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">STAT NUMBER (e.g. 85%)</div>
+        <input id="edit-stat" type="text" value="${(slide.stat||'').replace(/"/g,'&quot;')}" placeholder="e.g. 85%" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
+        <input id="edit-stat-label" type="text" value="${(slide.stat_label||'').replace(/"/g,'&quot;')}" placeholder="Stat description" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
+      </div>
+
+      <div style="margin-bottom:0.75rem;" id="edit-quote-group">
+        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">QUOTE TEXT</div>
+        <textarea id="edit-quote" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:70px;resize:vertical;">${slide.quote||''}</textarea>
+        <input id="edit-author" type="text" value="${(slide.author||'').replace(/"/g,'&quot;')}" placeholder="Author name" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
+      </div>
+
+      <div style="margin-bottom:0.75rem;">
+        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">ADD IMAGE (optional)</div>
+        <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:monospace;">
+          <span id="edit-img-name">Upload image for this slide</span>
+          <input type="file" accept="image/*" style="display:none;" onchange="loadSlideImage(this, ${i})">
+        </label>
+      </div>
+    </div>
+  </div>`;
+
   document.body.appendChild(overlay);
+  window._currentEditSlideIndex = i;
+  window._currentEditTheme = t;
+  window._currentEditTopic = topic;
 }
+
+window.loadSlideImage = function(input, idx) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    window._generatedSlides[idx].image = e.target.result;
+    document.getElementById('edit-img-name').textContent = file.name.slice(0,20);
+    // Update preview
+    const box = document.getElementById('slide-preview-box');
+    const t = window._currentEditTheme;
+    const topic = window._currentEditTopic;
+    if (box) box.innerHTML = buildSlideHTML(window._generatedSlides[idx], idx, t, topic);
+  };
+  reader.readAsDataURL(file);
+};
+
+window.slideEditApply = function(i) {
+  const slide = window._generatedSlides[i];
+  slide.type = document.getElementById('edit-type')?.value || slide.type;
+  slide.title = document.getElementById('edit-title')?.value || slide.title;
+  slide.subtitle = document.getElementById('edit-subtitle')?.value || '';
+  const pointsRaw = document.getElementById('edit-points')?.value || '';
+  slide.points = pointsRaw.split('').map(p=>p.trim()).filter(Boolean);
+
+  slide.stat = document.getElementById('edit-stat')?.value || '';
+  slide.stat_label = document.getElementById('edit-stat-label')?.value || '';
+  slide.quote = document.getElementById('edit-quote')?.value || '';
+  slide.author = document.getElementById('edit-author')?.value || '';
+
+  // Re-render the grid
+  const style = document.getElementById('slides-style')?.value || 'dark';
+  const topic = document.getElementById('slides-topic')?.value || '';
+  const t = SLIDE_THEMES[style];
+  renderSlidesPreview(window._generatedSlides, style, topic);
+  document.getElementById('slide-edit-overlay')?.remove();
+};
 
 window.downloadAllSlides = async function() {
   alert('Downloading slides as images — this may take a moment');
