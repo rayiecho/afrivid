@@ -6342,7 +6342,7 @@ window.generateTutorial = async function() {
       const jobId = `bdem_${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
       const r = await fetch('https://afrivid-browser.fly.dev/record-demo', {
         method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ job_id: jobId, url, topic, duration, user_email: user.email })
+        body: JSON.stringify({ job_id: jobId, url, topic, duration: duration * 60, user_email: user.email })
       });
       const rd = await r.json();
       if (rd.error) throw new Error(rd.error);
