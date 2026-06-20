@@ -728,16 +728,6 @@ function loadVideo(file) {
     if (video.duration > 300) {
       const mins = Math.floor(video.duration / 60);
       const secs = Math.floor(video.duration % 60);
-      window._currentVideoFile = file;
-      const banner = document.getElementById('phase2-banner');
-      const msg = document.getElementById('phase2-duration-msg');
-      if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — server processing recommended`;
-      if (banner) banner.style.display = "block";
-    const preview = document.getElementById("phase2-prompt-preview");
-    if (preview) preview.textContent = instructions || "No instruction set";
-      // Still load the video for preview
-    }
-    document.getElementById('video-name').textContent = file.name;
     document.getElementById('video-duration').textContent = formatTime(video.duration);
     // Enable apply button
     const btn = document.getElementById('apply-btn');
@@ -754,7 +744,6 @@ function loadVideo(file) {
   window.currentVideoFile = file;
   // Check if Phase 2 server processing is recommended
   video.addEventListener('loadedmetadata', () => {
-    if (video.duration > 300) checkPhase2(file, video.duration);
   }, {once: true});
   // Show estimated processing time
   setTimeout(() => {
