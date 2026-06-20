@@ -6333,41 +6333,97 @@ function renderSlidesPreview(slides, style, topic) {
 function buildSlideHTML(slide, i, t, topic) {
   const org = document.getElementById('slides-org')?.value?.trim() || '';
   const logo = window._slidesLogo || '';
-  const footer = (org || logo) ? `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);">${logo?`<img src="${logo}" style="height:18px;object-fit:contain;">`:'<div></div>'}<div style="color:${t.sub};font-size:8px;font-family:monospace;">${org}</div></div>` : '';
+  const total = window._generatedSlides.length;
   const num = String(i+1).padStart(2,'0');
-  if (slide.type === 'stat') {
-    return `<div style="background:${t.bg};padding:24px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;font-family:Arial,sans-serif;">
-      <div style="color:${t.accent};font-size:10px;letter-spacing:2px;font-family:monospace;">${num} / ${window._generatedSlides.length}</div>
-      <div>
-        <div style="color:${t.accent};font-size:2.5rem;font-weight:900;line-height:1;">${slide.stat||''}</div>
-        <div style="color:${t.sub};font-size:11px;margin-top:4px;">${slide.stat_label||''}</div>
-        <div style="color:${t.text};font-size:14px;font-weight:700;margin-top:8px;">${slide.title}</div>
+
+  // Header with logo + org (top of every slide)
+  const header = `<div style="position:absolute;top:0;left:0;right:0;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.15);">
+    <div style="display:flex;align-items:center;gap:8px;">
+      ${logo?`<img src="${logo}" style="height:22px;object-fit:contain;border-radius:3px;">`:''}
+      <span style="color:${t.accent};font-size:8px;font-family:monospace;letter-spacing:2px;font-weight:700;">${org.toUpperCase()}</span>
+    </div>
+    <span style="color:${t.sub};font-size:8px;font-family:monospace;">${num} / ${total}</span>
+  </div>`;
+
+  // Footer (bottom)
+  const footer = `<div style="position:absolute;bottom:0;left:0;right:0;padding:5px 16px;display:flex;align-items:center;justify-content:flex-end;border-top:1px solid rgba(255,255,255,0.06);">
+    <span style="color:${t.sub};font-size:7px;font-family:monospace;opacity:0.5;">Created with AfriVid Studio</span>
+  </div>`;
+
+  // Decorative circle (top right)
+  const deco = `<div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:${t.accent};opacity:0.08;"></div>
+  <div style="position:absolute;bottom:30px;left:-20px;width:60px;height:60px;border-radius:50%;background:${t.accent2};opacity:0.06;"></div>`;
+
+  if (slide.type === 'intro') {
+    return `<div style="background:linear-gradient(135deg,${t.bg} 0%,${t.bg2} 100%);padding:32px 28px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
+      ${deco}
+      ${header}
+      <div style="position:relative;">
+        ${logo?`<img src="${logo}" style="height:28px;object-fit:contain;margin-bottom:12px;display:block;">`:''}
+        <div style="color:${t.accent};font-size:9px;letter-spacing:3px;font-family:monospace;margin-bottom:10px;text-transform:uppercase;">${org || topic}</div>
+        <div style="color:${t.text};font-size:22px;font-weight:900;line-height:1.15;margin-bottom:10px;">${slide.title}</div>
+        ${slide.subtitle?`<div style="color:${t.sub};font-size:11px;line-height:1.5;max-width:80%;">${slide.subtitle}</div>`:''}
+        <div style="margin-top:16px;height:3px;background:${t.accent};width:50px;border-radius:2px;"></div>
       </div>
-      <div style="height:2px;background:${t.accent};width:40px;"></div>
+    </div>`;
+  }
+
+  if (slide.type === 'conclusion') {
+    return `<div style="background:linear-gradient(135deg,${t.bg2} 0%,${t.bg} 100%);padding:32px 28px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;position:relative;overflow:hidden;text-align:center;">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at center,${t.accent}15,transparent 70%);"></div>
+      ${header}
+      <div style="position:relative;">
+        <div style="font-size:2rem;margin-bottom:10px;">🙏</div>
+        <div style="color:${t.accent};font-size:9px;letter-spacing:3px;font-family:monospace;margin-bottom:8px;">THANK YOU</div>
+        <div style="color:${t.text};font-size:20px;font-weight:900;line-height:1.2;margin-bottom:8px;">${slide.title}</div>
+        ${slide.subtitle?`<div style="color:${t.sub};font-size:10px;">${slide.subtitle}</div>`:''}
+        ${logo?`<img src="${logo}" style="height:24px;object-fit:contain;margin-top:12px;display:block;margin-left:auto;margin-right:auto;">`:''}
+      </div>
+    </div>`;
+  }
+
+  if (slide.type === 'stat') {
+    return `<div style="background:${t.bg};padding:20px 24px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
+      ${header}
+      <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:${t.accent};opacity:0.06;"></div>
+      <div style="color:${t.accent};font-size:9px;letter-spacing:2px;font-family:monospace;">${slide.title.toUpperCase()}</div>
+      <div style="text-align:center;padding:10px 0;">
+        <div style="color:${t.accent};font-size:3.5rem;font-weight:900;line-height:1;">${slide.stat||''}</div>
+        <div style="color:${t.sub};font-size:10px;margin-top:6px;line-height:1.4;">${slide.stat_label||''}</div>
+      </div>
+      <div style="height:2px;background:linear-gradient(90deg,${t.accent},transparent);width:60px;border-radius:2px;"></div>
       ${footer}
     </div>`;
   }
+
   if (slide.type === 'quote') {
-    return `<div style="background:${t.bg2};padding:24px;min-height:160px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;">
-      <div style="color:${t.accent};font-size:2rem;line-height:1;margin-bottom:8px;">"</div>
-      <div style="color:${t.text};font-size:12px;font-style:italic;line-height:1.5;margin-bottom:8px;">${slide.quote||slide.title}</div>
-      <div style="color:${t.accent};font-size:10px;font-weight:700;">— ${slide.author||''}</div>
+    return `<div style="background:linear-gradient(135deg,${t.bg2},${t.bg});padding:24px 28px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:10px;left:16px;font-size:4rem;color:${t.accent};opacity:0.2;font-family:serif;line-height:1;">"</div>
+      <div style="position:relative;padding-left:16px;border-left:3px solid ${t.accent};">
+        <div style="color:${t.text};font-size:12px;font-style:italic;line-height:1.6;margin-bottom:10px;">${slide.quote||slide.title}</div>
+        <div style="color:${t.accent};font-size:9px;font-weight:700;letter-spacing:1px;">— ${slide.author||'Unknown'}</div>
+      </div>
+      ${footer}
     </div>`;
   }
-  if (slide.type === 'intro' || slide.type === 'conclusion') {
-    return `<div style="background:linear-gradient(135deg,${t.bg},${t.bg2});padding:24px;min-height:160px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;text-align:center;">
-      <div style="color:${t.accent};font-size:10px;letter-spacing:3px;margin-bottom:8px;">${slide.type==='intro'?topic.toUpperCase():'THANK YOU'}</div>
-      <div style="color:${t.text};font-size:16px;font-weight:900;line-height:1.2;margin-bottom:6px;">${slide.title}</div>
-      ${slide.subtitle?`<div style="color:${t.sub};font-size:11px;">${slide.subtitle}</div>`:''}
-    </div>`;
-  }
-  const points = (slide.points||[]).slice(0,4);
-  return `<div style="background:${t.bg};padding:20px;min-height:160px;font-family:Arial,sans-serif;">
-    <div style="color:${t.accent};font-size:9px;letter-spacing:2px;margin-bottom:6px;font-family:monospace;">${num}</div>
-    <div style="color:${t.text};font-size:13px;font-weight:800;margin-bottom:8px;line-height:1.2;">${slide.title}</div>
-    <div style="display:flex;flex-direction:column;gap:4px;">
-      ${points.map(p=>`<div style="display:flex;gap:6px;align-items:flex-start;"><div style="color:${t.accent};font-size:8px;margin-top:3px;">◆</div><div style="color:${t.sub};font-size:10px;line-height:1.4;">${p}</div></div>`).join('')}
+
+  // Regular content slide
+  const points = (slide.points||[]).slice(0,5);
+  const icons = ['01','02','03','04','05'];
+  return `<div style="background:${t.bg};padding:20px 24px 40px;min-height:200px;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
+    ${header}
+    <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:${t.accent};opacity:0.05;"></div>
+    <div style="color:${t.accent};font-size:8px;letter-spacing:2px;font-family:monospace;margin-bottom:6px;">${num} / ${total}</div>
+    <div style="color:${t.text};font-size:14px;font-weight:900;margin-bottom:12px;line-height:1.2;padding-right:20px;">${slide.title}</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      ${points.map((p,j)=>`<div style="display:flex;gap:8px;align-items:flex-start;">
+        <div style="min-width:16px;height:16px;border-radius:3px;background:${t.accent};display:flex;align-items:center;justify-content:center;margin-top:1px;">
+          <span style="color:#050A14;font-size:7px;font-weight:900;font-family:monospace;">${icons[j]}</span>
+        </div>
+        <div style="color:${t.sub};font-size:10px;line-height:1.5;">${p}</div>
+      </div>`).join('')}
     </div>
+    ${footer}
   </div>`;
 }
 
