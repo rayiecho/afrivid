@@ -1009,8 +1009,8 @@ async function loadUserFiles(uid) {
       const data = d.data();
       const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
       return `<div class="content-card">
-        <div class="card-thumb">
-          <div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="card-thumb" style="${data.thumbnail ? 'background-image:url('+data.thumbnail+');background-size:cover;background-position:center;' : ''}" onclick="${data.videoUrl||data.dataURL ? 'playStudioVideo(\''+d.id+'\',\''+( data.title||'Video')+'\'  ,\''+( data.videoUrl||'')+'\'  ,\''+( data.dataURL||'')+'\')' : ''}">
+          ${!data.thumbnail ? '<div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>' : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);"><svg width="40" height="40" viewBox="0 0 24 24" fill="white" opacity="0.8"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'}
           <div class="card-type-badge badge-video">VIDEO</div>
         </div>
         <div class="card-body">
