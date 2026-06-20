@@ -683,12 +683,42 @@ body::after{
         <div id="logo-builder-panel" style="display:none;">
           <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
           <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">LOGO BUILDER</div>
-          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME *</div><input id="logo-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
-          <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="logo-tagline" type="text" placeholder="e.g. Building Africa's Future" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
-          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">LOGO STYLE</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;"><button onclick="setLogoStyle('text',this)" style="background:rgba(245,166,35,0.1);border:2px solid #F5A623;color:#F5A623;padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">TEXT ONLY</button><button onclick="setLogoStyle('icon',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">ICON + TEXT</button><button onclick="setLogoStyle('mono',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">MONOGRAM</button><button onclick="setLogoStyle('badge',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">BADGE</button></div></div>
-          <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setBuilderTheme('logo','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setBuilderTheme('logo','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setBuilderTheme('logo','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setBuilderTheme('logo','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
-          <button onclick="buildLogo()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Logo →</button>
-          <button onclick="buildLogo()" id="logo-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Logo</button>
+
+          <!-- STEP 1: AI FILL -->
+          <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — DESCRIBE YOUR ORGANIZATION</div>
+            <textarea id="logo-ai-prompt" placeholder="e.g. Young Africans Network — Building the Future Together" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:60px;resize:none;margin-bottom:0.5rem;"></textarea>
+            <button onclick="aiFillLogo()" id="logo-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill</button>
+          </div>
+
+          <!-- STEP 2: STYLE -->
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 2 — PICK STYLE</div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">LOGO STYLE</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.5rem;">
+              <button onclick="setLogoStyle('text',this)" style="background:rgba(245,166,35,0.1);border:2px solid #F5A623;color:#F5A623;padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">TEXT ONLY</button>
+              <button onclick="setLogoStyle('icon',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">ICON + TEXT</button>
+              <button onclick="setLogoStyle('mono',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">MONOGRAM</button>
+              <button onclick="setLogoStyle('badge',this)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">BADGE</button>
+            </div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">COLOR</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;">
+              <button onclick="setBuilderTheme('logo','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button>
+              <button onclick="setBuilderTheme('logo','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button>
+              <button onclick="setBuilderTheme('logo','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button>
+              <button onclick="setBuilderTheme('logo','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button>
+            </div>
+          </div>
+
+          <!-- BUILD + EDIT -->
+          <button onclick="previewLogo()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Logo</button>
+          <button onclick="document.getElementById('logo-edit-fields').style.display=document.getElementById('logo-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('logo-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
+          <button onclick="buildLogo()" id="logo-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Logo</button>
+          <div id="logo-edit-fields" style="display:none;margin-top:0.5rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
+            <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME</div><input id="logo-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+            <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="logo-tagline" type="text" placeholder="e.g. Building Africa's Future" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+          </div>
         </div>
         <button class="btn btn-gold btn-full" id="design-generate-btn" onclick="generateAIDesign()">✦ Generate Design</button>
         <div style="margin-top:0.5rem;font-size:0.68rem;color:rgba(255,255,255,0.25);font-family:'Space Mono',monospace;text-align:center;" id="design-status"></div>
@@ -3095,6 +3125,47 @@ window.setFlyerTheme = function(theme, btn) {
   if (btn) { btn.style.borderWidth = '3px'; btn.style.borderColor = '#F5A623'; }
 };
 
+window.aiFillLogo = async function() {
+  const prompt = document.getElementById('logo-ai-prompt')?.value?.trim();
+  if (!prompt) { alert('Please describe your organization first'); return; }
+  const btn = document.getElementById('logo-ai-btn');
+  btn.textContent = '⏳'; btn.disabled = true;
+  try {
+    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300,
+        messages: [{ role: 'user', content: `Extract logo details from this and return ONLY valid JSON:
+"${prompt}"
+{"org":"Organization name","tagline":"Short tagline max 5 words"}
+Return ONLY the JSON.` }] })
+    });
+    const data = await res.json();
+    const text = data.content[0].text;
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON');
+    const d = JSON.parse(match[0]);
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('logo-org', d.org);
+    set('logo-tagline', d.tagline);
+    btn.textContent = '✅ Done!';
+    setTimeout(() => { btn.textContent = '✨ AI Fill'; btn.disabled = false; }, 2000);
+  } catch(e) {
+    alert('AI Fill failed: ' + e.message);
+    btn.textContent = '✨ AI Fill'; btn.disabled = false;
+  }
+};
+
+window.previewLogo = async function() {
+  const org = document.getElementById('logo-org')?.value?.trim();
+  const tagline = document.getElementById('logo-tagline')?.value?.trim();
+  if (!org) { alert('Please describe your organization and click AI Fill first'); return; }
+  const bd = window._builderData?.logo || {};
+  window._lastLogoBuild = { org, tagline, theme: bd.theme || 'dark', style: bd.style || 'text' };
+  const dlBtn = document.getElementById('logo-download-btn');
+  if (dlBtn) dlBtn.style.display = 'block';
+  await buildLogo(true);
+};
+
 window.aiFillBanner = async function() {
   const prompt = document.getElementById('banner-ai-prompt')?.value?.trim();
   if (!prompt) { alert('Please describe your banner first'); return; }
@@ -3847,13 +3918,14 @@ window.buildBanner = async function(previewMode=false) {
 };
 
 // ── BUILD LOGO ──
-window.buildLogo = async function() {
-  const org = document.getElementById('logo-org')?.value?.trim();
+window.buildLogo = async function(previewMode=false) {
+  const _d = window._lastLogoBuild || {};
+  const org = _d.org || document.getElementById('logo-org')?.value?.trim();
   if (!org) { alert('Please fill Organization Name'); return; }
-  const tagline = document.getElementById('logo-tagline')?.value?.trim();
-  const d = window._builderData.logo;
+  const tagline = _d.tagline || document.getElementById('logo-tagline')?.value?.trim();
+  const bd = _d.org ? _d : (window._builderData?.logo || {});
+  const d = { ...bd };
   const t = BTHEMES[d.theme || 'dark'];
-  const style = d.style || 'text';
   const words = org.split(' ');
   const initials = words.slice(0,3).map(w=>w[0]).join('').toUpperCase();
 
@@ -3868,7 +3940,7 @@ window.buildLogo = async function() {
 <style>*{margin:0;padding:0;box-sizing:border-box;}body{width:500px;height:500px;background:${t.bg};font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden;}</style>
 </head><body>${styles[style]||styles.text}</body></html>`;
 
-  await renderAndDownload(html, 'logo', 500, 500);
+  await renderAndDownload(html, 'logo', 500, 500, previewMode);
 };
 </script>
 
