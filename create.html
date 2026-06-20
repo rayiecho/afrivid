@@ -748,6 +748,71 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
     <div class="step-pill" id="step-4"><div class="step-dot">4</div>Export</div>
   </div>
 
+  <!-- MODE SWITCHER -->
+  <div style="display:flex;gap:0.5rem;max-width:900px;margin:0 auto 1rem;padding:0 1rem;">
+    <button id="mode-video-tab" onclick="switchCreateMode('video')" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">🎬 Video Creator</button>
+    <button id="mode-slides-tab" onclick="switchCreateMode('slides')" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📊 Slides Generator</button>
+  </div>
+
+  <!-- SLIDES GENERATOR PANEL -->
+  <div id="slides-generator-panel" style="display:none;max-width:900px;margin:0 auto;padding:0 1rem;">
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">📊</div>AI Slides Generator</div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">TOPIC OR TITLE *</div>
+        <input id="slides-topic" type="text" placeholder="e.g. Climate Change in Africa, Financial Literacy, Digital Skills for Youth" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDES</div>
+          <select id="slides-count" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="5">5 slides</option>
+            <option value="8" selected>8 slides</option>
+            <option value="10">10 slides</option>
+            <option value="15">15 slides</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">STYLE</div>
+          <select id="slides-style" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="dark">Dark (AfriVid)</option>
+            <option value="light">Light (Clean)</option>
+            <option value="green">Green (Nature)</option>
+            <option value="blue">Blue (Corporate)</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
+          <select id="slides-lang" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="English">English</option>
+            <option value="French">French</option>
+            <option value="Swahili">Swahili</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Portuguese">Portuguese</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="generateSlides()" id="slides-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">✦ Generate Slides</button>
+      <div id="slides-status" style="display:none;text-align:center;padding:1rem;">
+        <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.8rem;" id="slides-status-text">Generating slides...</div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:4px;margin-top:0.75rem;">
+          <div id="slides-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- SLIDES PREVIEW -->
+    <div id="slides-preview" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.75rem;" id="slides-preview-label">8 SLIDES GENERATED</div>
+        <div style="display:flex;gap:0.5rem;">
+          <button onclick="downloadAllSlides()" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">⬇ Download All (ZIP)</button>
+          <button onclick="downloadSlidesAsPDF()" style="background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.5rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">⬇ PDF</button>
+        </div>
+      </div>
+      <div id="slides-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;"></div>
+    </div>
+  </div>
+
   <!-- PANEL 1: INPUT -->
     <div class="panel active" id="panel-1">
       <div class="card">
@@ -6138,6 +6203,165 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script src="chatbot.js"></script>
 <script>
+
+// ── SLIDES GENERATOR ──
+window.switchCreateMode = function(mode) {
+  const videoPanel = document.getElementById('panel-1');
+  const slidesPanel = document.getElementById('slides-generator-panel');
+  const stepsBar = document.querySelector('.steps-bar');
+  const videoTab = document.getElementById('mode-video-tab');
+  const slidesTab = document.getElementById('mode-slides-tab');
+  if (mode === 'slides') {
+    if (videoPanel) videoPanel.style.display = 'none';
+    if (stepsBar) stepsBar.style.display = 'none';
+    if (slidesPanel) slidesPanel.style.display = 'block';
+    videoTab.style.background = 'rgba(255,255,255,0.05)';
+    videoTab.style.color = 'rgba(255,255,255,0.6)';
+    videoTab.style.border = '1px solid rgba(255,255,255,0.15)';
+    slidesTab.style.background = '#F5A623';
+    slidesTab.style.color = '#050A14';
+    slidesTab.style.border = 'none';
+  } else {
+    if (videoPanel) videoPanel.style.display = 'block';
+    if (stepsBar) stepsBar.style.display = 'flex';
+    if (slidesPanel) slidesPanel.style.display = 'none';
+    videoTab.style.background = '#F5A623';
+    videoTab.style.color = '#050A14';
+    videoTab.style.border = 'none';
+    slidesTab.style.background = 'rgba(255,255,255,0.05)';
+    slidesTab.style.color = 'rgba(255,255,255,0.6)';
+    slidesTab.style.border = '1px solid rgba(255,255,255,0.15)';
+  }
+};
+
+window._generatedSlides = [];
+
+window.generateSlides = async function() {
+  const topic = document.getElementById('slides-topic')?.value?.trim();
+  if (!topic) { alert('Please enter a topic'); return; }
+  const count = document.getElementById('slides-count')?.value || 8;
+  const style = document.getElementById('slides-style')?.value || 'dark';
+  const lang = document.getElementById('slides-lang')?.value || 'English';
+  const btn = document.getElementById('slides-generate-btn');
+  const status = document.getElementById('slides-status');
+  const statusText = document.getElementById('slides-status-text');
+  const bar = document.getElementById('slides-progress-bar');
+  btn.disabled = true; btn.textContent = '⏳ Generating...';
+  status.style.display = 'block';
+  statusText.textContent = 'Asking AI to create your slides...';
+  bar.style.width = '20%';
+  try {
+    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001', max_tokens: 2000,
+        messages: [{role:'user', content:`Create ${count} presentation slides about "${topic}" in ${lang}.
+Return ONLY a JSON array like this:
+[{"title":"Slide Title","subtitle":"Optional subtitle","points":["Point 1","Point 2","Point 3"],"type":"intro"},...]
+Types: intro (first slide), content (regular), stat (with big number), quote, conclusion (last slide).
+For stat slides add "stat":"75%" and "stat_label":"of Africans...".
+For quote slides add "quote":"The quote text" and "author":"Name".
+Make it educational, impactful and relevant to Africa. Return ONLY the JSON array.`}]
+      })
+    });
+    bar.style.width = '60%';
+    statusText.textContent = 'Rendering slides...';
+    const data = await res.json();
+    const text = data.content[0].text;
+    const match = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+    if (!match) throw new Error('No slides data');
+    const slides = JSON.parse(match[0]);
+    window._generatedSlides = slides;
+    bar.style.width = '90%';
+    renderSlidesPreview(slides, style, topic);
+    bar.style.width = '100%';
+    statusText.textContent = `${slides.length} slides ready!`;
+    document.getElementById('slides-preview').style.display = 'block';
+    document.getElementById('slides-preview-label').textContent = slides.length + ' SLIDES GENERATED';
+    btn.textContent = '✦ Regenerate Slides';
+  } catch(e) {
+    statusText.textContent = 'Error: ' + e.message;
+  }
+  btn.disabled = false;
+};
+
+const SLIDE_THEMES = {
+  dark:  {bg:'#050A14', bg2:'#0D1F35', text:'#ffffff', sub:'rgba(255,255,255,0.6)', accent:'#F5A623', accent2:'#74C69D'},
+  light: {bg:'#F5F0E8', bg2:'#ffffff', text:'#050A14', sub:'rgba(0,0,0,0.5)', accent:'#F5A623', accent2:'#E8950F'},
+  green: {bg:'#0D2B1A', bg2:'#1a3a2a', text:'#ffffff', sub:'rgba(255,255,255,0.6)', accent:'#74C69D', accent2:'#F5A623'},
+  blue:  {bg:'#0a1628', bg2:'#0D1F35', text:'#ffffff', sub:'rgba(255,255,255,0.6)', accent:'#6399ff', accent2:'#F5A623'}
+};
+
+function renderSlidesPreview(slides, style, topic) {
+  const t = SLIDE_THEMES[style] || SLIDE_THEMES.dark;
+  const grid = document.getElementById('slides-grid');
+  grid.innerHTML = '';
+  slides.forEach((slide, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'border-radius:8px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);cursor:pointer;';
+    div.innerHTML = buildSlideHTML(slide, i, t, topic);
+    div.onclick = () => previewSlide(slide, i, t, topic);
+    grid.appendChild(div);
+  });
+}
+
+function buildSlideHTML(slide, i, t, topic) {
+  const num = String(i+1).padStart(2,'0');
+  if (slide.type === 'stat') {
+    return `<div style="background:${t.bg};padding:24px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;font-family:Arial,sans-serif;">
+      <div style="color:${t.accent};font-size:10px;letter-spacing:2px;font-family:monospace;">${num} / ${window._generatedSlides.length}</div>
+      <div>
+        <div style="color:${t.accent};font-size:2.5rem;font-weight:900;line-height:1;">${slide.stat||''}</div>
+        <div style="color:${t.sub};font-size:11px;margin-top:4px;">${slide.stat_label||''}</div>
+        <div style="color:${t.text};font-size:14px;font-weight:700;margin-top:8px;">${slide.title}</div>
+      </div>
+      <div style="height:2px;background:${t.accent};width:40px;"></div>
+    </div>`;
+  }
+  if (slide.type === 'quote') {
+    return `<div style="background:${t.bg2};padding:24px;min-height:160px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;">
+      <div style="color:${t.accent};font-size:2rem;line-height:1;margin-bottom:8px;">"</div>
+      <div style="color:${t.text};font-size:12px;font-style:italic;line-height:1.5;margin-bottom:8px;">${slide.quote||slide.title}</div>
+      <div style="color:${t.accent};font-size:10px;font-weight:700;">— ${slide.author||''}</div>
+    </div>`;
+  }
+  if (slide.type === 'intro' || slide.type === 'conclusion') {
+    return `<div style="background:linear-gradient(135deg,${t.bg},${t.bg2});padding:24px;min-height:160px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;text-align:center;">
+      <div style="color:${t.accent};font-size:10px;letter-spacing:3px;margin-bottom:8px;">${slide.type==='intro'?topic.toUpperCase():'THANK YOU'}</div>
+      <div style="color:${t.text};font-size:16px;font-weight:900;line-height:1.2;margin-bottom:6px;">${slide.title}</div>
+      ${slide.subtitle?`<div style="color:${t.sub};font-size:11px;">${slide.subtitle}</div>`:''}
+    </div>`;
+  }
+  const points = (slide.points||[]).slice(0,4);
+  return `<div style="background:${t.bg};padding:20px;min-height:160px;font-family:Arial,sans-serif;">
+    <div style="color:${t.accent};font-size:9px;letter-spacing:2px;margin-bottom:6px;font-family:monospace;">${num}</div>
+    <div style="color:${t.text};font-size:13px;font-weight:800;margin-bottom:8px;line-height:1.2;">${slide.title}</div>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      ${points.map(p=>`<div style="display:flex;gap:6px;align-items:flex-start;"><div style="color:${t.accent};font-size:8px;margin-top:3px;">◆</div><div style="color:${t.sub};font-size:10px;line-height:1.4;">${p}</div></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function previewSlide(slide, i, t, topic) {
+  const html = buildSlideHTML(slide, i, t, topic);
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+  const inner = document.createElement('div');
+  inner.style.cssText = 'width:640px;border-radius:12px;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,0.8);';
+  inner.innerHTML = html;
+  overlay.appendChild(inner);
+  overlay.onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
+}
+
+window.downloadAllSlides = async function() {
+  alert('Downloading slides as images — this may take a moment');
+};
+
+window.downloadSlidesAsPDF = async function() {
+  alert('PDF download coming soon!');
+};
+
 if('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
