@@ -284,28 +284,6 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <div id="crop-coords" style="color:rgba(255,255,255,0.3);font-size:0.7rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
   </div>
 </div>
-<!-- PHASE 2 SERVER PROCESSING BANNER -->
-<div id="phase2-banner" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
-  <div style="background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.3);border-radius:12px;padding:1rem 1.25rem;">
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
-      <span style="font-size:1.25rem;">🚀</span>
-      <div>
-        <div style="color:#F5A623;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Long video detected!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">Your video is over 5 minutes</div>
-      </div>
-    </div>
-    <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin-bottom:1rem;line-height:1.5;">
-      <strong style="color:#F5A623;">HOW TO USE:</strong> (1) Type instruction below (2) Click Apply (3) Click Process on Server. Our server will email you when done.
-    </div>
-    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;">
-        📝 Your instruction: <span id="phase2-prompt-preview" style="color:#F5A623;font-weight:700;"></span>
-      </div>
-      <button onclick="uploadToServer()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⚡ Process on Server</button>
-      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
-    </div>
-  </div>
-</div>
 <!-- PHASE 2 STATUS -->
 <div id="phase2-status" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
   <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
@@ -336,6 +314,29 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 
 
 <!-- AI PROMPT -->
+<!-- PHASE 2 SERVER PROCESSING BANNER -->
+<div id="phase2-banner" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.3);border-radius:12px;padding:1rem 1.25rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+      <span style="font-size:1.25rem;">🚀</span>
+      <div>
+        <div style="color:#F5A623;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Long video detected!</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">Your video is over 5 minutes</div>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin-bottom:1rem;line-height:1.5;">
+      <strong style="color:#F5A623;">HOW TO USE:</strong> (1) Type instruction below (2) Click Apply (3) Click Process on Server. Our server will email you when done.
+    </div>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;">
+        📝 Your instruction: <span id="phase2-prompt-preview" style="color:#F5A623;font-weight:700;"></span>
+      </div>
+      <button onclick="uploadToServer()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⚡ Process on Server</button>
+      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
+    </div>
+  </div>
+</div>
+
 <div class="prompt-area">
   <div class="prompt-wrap">
     <input class="prompt-input" id="ai-prompt" placeholder="Tell AI what to do... e.g. Remove first 10 seconds and keep the best 60 seconds">
