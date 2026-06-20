@@ -3790,7 +3790,7 @@ window.buildPoster = async function(previewMode=false, downloadMode=false) {
   const highlights = [h1,h2,h3].filter(Boolean);
   // Hero image — full width with gradient overlay
   const imagesHtml = validProducts.length ?
-    '<div style="position:relative;width:800px;margin:0;overflow:hidden;">' +
+    '<div style="position:relative;width:800px;margin:0 -0px;overflow:hidden;">' +
     '<img src="' + validProducts[0] + '" style="width:800px;height:320px;object-fit:cover;display:block;">' +
     '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,' + t.bg + ')"></div>' +
     (validProducts.length > 1 ? '<div style="position:absolute;bottom:10px;right:10px;display:flex;gap:6px;">' + validProducts.slice(1).map(u => '<img src="'+u+'" style="width:80px;height:60px;object-fit:cover;border-radius:4px;border:2px solid '+t.accent+';">').join('') + '</div>' : '') +
@@ -3822,7 +3822,7 @@ window.buildPoster = async function(previewMode=false, downloadMode=false) {
 </div>
 ${middleHtml}
 <div style="padding:16px 40px;">
-  ${date||venue ? '<table style="width:100%;border-collapse:collapse;margin-bottom:14px;"><tr>' +
+  ${(date||(venue&&venue.toLowerCase()!=='online platform')) ? '<table style="width:100%;border-collapse:collapse;margin-bottom:14px;"><tr>' +
     (date ? '<td style="padding:10px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:9px;letter-spacing:1px;margin-bottom:3px;">DATE</div><div style="color:' + t.text + ';font-size:13px;font-weight:700;">' + date + '</div></td>' : '') +
     (date&&venue ? '<td style="width:12px;"></td>' : '') +
     (venue ? '<td style="padding:10px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;text-align:center;"><div style="color:' + t.sub + ';font-size:9px;letter-spacing:1px;margin-bottom:3px;">VENUE</div><div style="color:' + t.text + ';font-size:13px;font-weight:700;">' + venue + '</div></td>' : '') +
