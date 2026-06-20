@@ -588,7 +588,7 @@ window.generateOnServer = async function() {
   try {
     const jobId = `vid_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
     const topic = document.getElementById('video-topic')?.value || 'AfriVid Video';
-    const style = document.getElementById('video-style')?.value || 'dark';
+    const style = document.getElementById('video-visual-style')?.value || 'classic';
     const language = document.getElementById('video-language')?.value || 'en';
     const res = await fetch('https://afrivid-processor.fly.dev/generate-video', {
       method: 'POST',
@@ -949,6 +949,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <div class="form-group">
               <label class="form-label">SLIDE THEME</label>
               <select id="video-visual-style" class="form-select">
+                <option value="classic">☀️ Classic (AfriVid)</option>
                 <option value="slides_light">☀ Light</option>
                 <option value="slides_dark">🌙 Dark</option>
                 <option value="slides_gold">✨ Gold</option>
