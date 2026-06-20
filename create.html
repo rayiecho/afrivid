@@ -6532,7 +6532,7 @@ window.slideEditApply = function(i) {
   slide.title = document.getElementById('edit-title')?.value || slide.title;
   slide.subtitle = document.getElementById('edit-subtitle')?.value || '';
   const pointsRaw = document.getElementById('edit-points')?.value || '';
-  slide.points = pointsRaw.split('').map(p=>p.trim()).filter(Boolean);
+  slide.points = pointsRaw.split(String.fromCharCode(10)).map(p=>p.trim()).filter(Boolean);
 
   slide.stat = document.getElementById('edit-stat')?.value || '';
   slide.stat_label = document.getElementById('edit-stat-label')?.value || '';
