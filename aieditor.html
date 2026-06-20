@@ -298,6 +298,9 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       Use <strong style="color:#74C69D;">AfriVid Cloud Processing</strong> — our server will process your video and email you when done. You can close this tab safely.
     </div>
     <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;">
+        📝 Your instruction: <span id="phase2-prompt-preview" style="color:#F5A623;font-weight:700;"></span>
+      </div>
       <button onclick="uploadToServer()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⚡ Process on Server</button>
       <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
     </div>
@@ -729,7 +732,9 @@ function loadVideo(file) {
       const banner = document.getElementById('phase2-banner');
       const msg = document.getElementById('phase2-duration-msg');
       if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — server processing recommended`;
-      if (banner) banner.style.display = 'block';
+      if (banner) banner.style.display = "block";
+    const preview = document.getElementById("phase2-prompt-preview");
+    if (preview) preview.textContent = instructions || "No instruction set";
       // Still load the video for preview
     }
     document.getElementById('video-name').textContent = file.name;
@@ -814,7 +819,9 @@ async function applyPrompt() {
     const mins = Math.floor(_vid.duration / 60);
     const secs = Math.floor(_vid.duration % 60);
     if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — routing to AfriVid Cloud`;
-    if (banner) banner.style.display = 'block';
+    if (banner) banner.style.display = "block";
+    const preview = document.getElementById("phase2-prompt-preview");
+    if (preview) preview.textContent = instructions || "No instruction set";
     return;
   }
 
@@ -2315,7 +2322,9 @@ function checkPhase2(file, duration) {
     window._currentVideoFile = file;
     const banner = document.getElementById('phase2-banner');
     const msg = document.getElementById('phase2-duration-msg');
-    if (banner) banner.style.display = 'block';
+    if (banner) banner.style.display = "block";
+    const preview = document.getElementById("phase2-prompt-preview");
+    if (preview) preview.textContent = instructions || "No instruction set";
     if (msg) {
       const mins = Math.floor(duration/60);
       const secs = Math.floor(duration%60);
