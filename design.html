@@ -511,6 +511,13 @@ body::after{
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">WHAT YOU'LL LEARN (3 points)</div><div style="display:flex;flex-direction:column;gap:0.3rem;"><input id="flyer-learn1" type="text" placeholder="e.g. Types of scholarships" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="flyer-learn2" type="text" placeholder="e.g. How to apply" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"><input id="flyer-learn3" type="text" placeholder="e.g. Common mistakes" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">BACKGROUND STYLE</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;"><button onclick="setFlyerBg('solid',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:32px;cursor:pointer;color:#F5A623;font-size:0.6rem;font-family:'Space Mono',monospace;" title="Solid">SOLID</button><button onclick="setFlyerBg('dots',this)" style="background:radial-gradient(circle,rgba(245,166,35,0.15) 1px,#050A14 1px) center/20px 20px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Dots">DOTS</button><button onclick="setFlyerBg('grid',this)" style="background:linear-gradient(rgba(245,166,35,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.05) 1px,transparent 1px);background-size:20px 20px;background-color:#050A14;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Grid">GRID</button><button onclick="setFlyerBg('diagonal',this)" style="background:repeating-linear-gradient(45deg,rgba(245,166,35,0.03),rgba(245,166,35,0.03) 1px,#050A14 1px,#050A14 15px);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Diagonal">LINES</button><button onclick="setFlyerBg('map',this)" style="background:linear-gradient(135deg,#050A14,#0D1F35,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Map">MAP</button><button onclick="setFlyerBg('gradient',this)" style="background:linear-gradient(135deg,#1a3a2a,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:32px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;" title="Gradient">GRADIENT</button></div></div>
           <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">COLOR SCHEME</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;"><button onclick="setFlyerTheme('dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setFlyerTheme('green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setFlyerTheme('blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setFlyerTheme('light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div></div>
+          <div style="margin-bottom:0.6rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">✨ AI AUTO-FILL</div>
+            <div style="display:flex;gap:0.4rem;">
+              <input id="flyer-ai-prompt" type="text" placeholder="e.g. YAN Scholarship session with Nsaingeh, Saturday June 20, 7PM on Google Meet" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;">
+              <button onclick="aiFillFlyer()" id="flyer-ai-btn" style="background:rgba(245,166,35,0.15);border:1px solid #F5A623;color:#F5A623;padding:0.5rem 0.75rem;border-radius:6px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;white-space:nowrap;">✨ Fill</button>
+            </div>
+          </div>
           <button onclick="buildFlyer()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.5rem;">Build Flyer →</button>
           <button onclick="downloadFlyer()" id="flyer-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Flyer</button>
         </div>
@@ -2950,6 +2957,76 @@ window.setFlyerTheme = function(theme, btn) {
   if (btn) { btn.style.borderWidth = '3px'; btn.style.borderColor = '#F5A623'; }
 };
 
+window.aiFillFlyer = async function() {
+  const prompt = document.getElementById('flyer-ai-prompt')?.value?.trim();
+  if (!prompt) { alert('Please describe your event first'); return; }
+  const btn = document.getElementById('flyer-ai-btn');
+  btn.textContent = '⏳'; btn.disabled = true;
+  try {
+    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 800,
+        messages: [{ role: 'user', content: `Extract event details from this description and return ONLY valid JSON:
+"${prompt}"
+Return this exact JSON structure:
+{
+  "org": "Organization name",
+  "title": "Event title",
+  "date": "Date e.g. Saturday, June 20th, 2026",
+  "time": "Time e.g. 7PM CAT, 8PM EAT",
+  "tagline": "Short inspiring quote or tagline",
+  "speaker": "Speaker full name",
+  "bio": "Speaker bio 1-2 sentences",
+  "venue": "Venue or platform e.g. Google Meet",
+  "contact": "Website or registration link",
+  "description": "2-3 sentence event description",
+  "h1": "First highlight e.g. Free to Join",
+  "h2": "Second highlight e.g. Open to All",
+  "h3": "Third highlight e.g. Certificate Provided",
+  "learn1": "First thing attendees will learn",
+  "learn2": "Second thing attendees will learn",
+  "learn3": "Third thing attendees will learn",
+  "instagram": "",
+  "whatsapp": ""
+}
+Return ONLY the JSON, no explanation.` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content[0].text;
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON found');
+    const d = JSON.parse(match[0]);
+    // Fill all fields
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('flyer-org', d.org);
+    set('flyer-title', d.title);
+    set('flyer-date', d.date);
+    set('flyer-time', d.time);
+    set('flyer-theme-text', d.tagline);
+    set('flyer-speaker', d.speaker);
+    set('flyer-bio', d.bio);
+    set('flyer-venue', d.venue);
+    set('flyer-contact', d.contact);
+    set('flyer-description', d.description);
+    set('flyer-h1', d.h1);
+    set('flyer-h2', d.h2);
+    set('flyer-h3', d.h3);
+    set('flyer-learn1', d.learn1);
+    set('flyer-learn2', d.learn2);
+    set('flyer-learn3', d.learn3);
+    set('flyer-instagram', d.instagram);
+    set('flyer-whatsapp', d.whatsapp);
+    btn.textContent = '✅ Done!';
+    setTimeout(() => { btn.textContent = '✨ Fill'; btn.disabled = false; }, 2000);
+  } catch(e) {
+    alert('AI Fill failed: ' + e.message);
+    btn.textContent = '✨ Fill'; btn.disabled = false;
+  }
+};
 window.setFlyerBg = function(bg, btn) {
   window._flyerData.bg = bg;
   document.querySelectorAll('[onclick^="setFlyerBg"]').forEach(b => b.style.borderWidth = '1px');
