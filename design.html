@@ -3668,7 +3668,7 @@ window.setBuilderTheme = function(type, theme, btn) {
 };
 
 window.setLogoStyle = function(style, btn) {
-  window._builderData.logo.style = style;
+  if (!window._builderData) window._builderData = {}; if (!window._builderData.logo) window._builderData.logo = {}; window._builderData.logo.style = style;
   document.querySelectorAll('[onclick*="setLogoStyle"]').forEach(b => {
     b.style.background = 'rgba(255,255,255,0.04)';
     b.style.border = '1px solid rgba(255,255,255,0.15)';
