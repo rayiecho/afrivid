@@ -598,7 +598,11 @@ window.generateOnServer = async function() {
         scenes: scenes.map(s => ({
           title: s.title || s.heading || 'Scene',
           voiceover: s.voiceover || s.narration || s.text || s.script || '',
-          duration: s.duration || 10
+          duration: s.duration || 10,
+          points: s.points || [],
+          type: s.type || 'content',
+          code: s.code || '',
+          language: s.language || ''
         })),
         user_email: user.email,
         user_id: user.uid,
