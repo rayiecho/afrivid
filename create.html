@@ -6363,7 +6363,7 @@ window.generateTutorial = async function() {
     bar.style.width = '10%'; pct.textContent = '10%';
     try {
       const jobId = `bdem_${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
-      const r = await fetch('https://afrivid-browser.fly.dev/record-demo', {
+      const r = await fetch('https://afrivid-browser-222827815864.africa-south1.run.app/record-demo', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ job_id: jobId, url, topic, duration: duration * 60, user_email: user.email })
       });
