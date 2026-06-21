@@ -627,6 +627,14 @@ window.generateOnServer = async function() {
           document.getElementById('server-gen-bar').style.width = '100%';
           document.getElementById('server-gen-pct').textContent = '100%';
           document.getElementById('server-gen-stage').textContent = '✅ Video ready!';
+          // Store server video URL for share/download buttons
+          window._serverVideoUrl = d.output_url;
+          window._serverThumbUrl = d.thumbnail_url || '';
+          // Update download button text
+          const dlBtn = document.getElementById('btn-download');
+          if (dlBtn) { dlBtn.textContent = '⬇ Download MP4'; dlBtn.onclick = () => { const a = document.createElement('a'); a.href = d.output_url; a.download = 'AfriVid-Video.mp4'; a.click(); }; }
+          const mp4Btn = document.getElementById('btn-download') ? document.querySelector('#panel-4 .btn-gold') : null;
+          if (mp4Btn) { mp4Btn.onclick = () => { const a = document.createElement('a'); a.href = d.output_url; a.download = 'AfriVid-Video.mp4'; a.click(); }; }
           goToStep(4);
           // Save to Firestore studio
           try {
@@ -1728,6 +1736,8 @@ function getTransitionAlpha() {
 
 // -- MP4 CONVERSION --
 window._downloadMP4 = async function downloadMP4() {
+  // Use server MP4 URL if available
+  if (window._serverVideoUrl) { const a = document.createElement('a'); a.href = window._serverVideoUrl; a.download = 'AfriVid-Video.mp4'; document.body.appendChild(a); a.click(); document.body.removeChild(a); return; }
   if (!currentUser) { showLogin("Sign in to download your video"); return; }
   if (!videoBlob) { alert('No video to convert.'); return; }
   
@@ -3463,10 +3473,10 @@ function drawPhotoBgScene(canvas, scene, progress, currentWord = -1, bgImg = nul
 
 // -- WHATSAPP SHARE --
 window._shareWhatsApp = function shareWhatsApp() {
-  if (!scriptData) return;
-  const text = `[vid] *${scriptData.title}*\n\nGenerated with AfriVid Studio\n\n[world] afrivid.studio\n\n#AfriVid #AfricaCreates #BuiltInAfrica`;
-  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank');
+  const videoUrl = window._serverVideoUrl || '';
+  const title = (window.scriptData && window.scriptData.title) ? window.scriptData.title : 'My AfriVid Video';
+  const text = videoUrl ? `🎬 *${title}*\n\nWatch: ${videoUrl}\n\nCreated with AfriVid Studio 🌍 afrivid.studio\n\n#AfriVid #AfricaCreates` : `🎬 *${title}*\n\nCreated with AfriVid Studio 🌍\nafrivid.studio\n\n#AfriVid #AfricaCreates`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
 function applyTransition(canvas) {
