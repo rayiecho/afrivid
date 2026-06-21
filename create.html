@@ -590,7 +590,7 @@ window.generateOnServer = async function() {
     const topic = document.getElementById('video-topic')?.value || 'AfriVid Video';
     const style = document.getElementById('video-visual-style')?.value || 'classic';
     const language = document.getElementById('video-language')?.value || 'en';
-    const res = await fetch('https://afrivid-processor.fly.dev/generate-video', {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-video', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -6443,7 +6443,7 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
 
     // Step 2: Send to Fly.io for video generation
     const jobId = `tut_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
-    const r = await fetch('https://afrivid-processor.fly.dev/generate-video', {
+    const r = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-video', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         job_id: jobId, scenes, style,
