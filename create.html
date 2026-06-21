@@ -675,7 +675,7 @@ function downloadVideo(){ if(window._downloadVideo) window._downloadVideo(); }
 function downloadMP4(){ if(window._downloadMP4) window._downloadMP4(); }
 function shareWhatsApp(){ if(window._shareWhatsApp) { window._shareWhatsApp(); return; } setTimeout(()=>{ if(window._shareWhatsApp) window._shareWhatsApp(); },1000); }
 function uploadToYouTube(){
-  if(!window._videoBlob) { alert('Please generate a video first, then click Upload to YouTube.'); return; }
+  if(!window._videoBlob && !window._serverVideoUrl) { alert('Please generate a video first, then click Upload to YouTube.'); return; }
   
   // Get title from script data
   const title = window._scriptData?.title || document.getElementById('video-topic')?.value || 'AfriVid Studio Video';
@@ -5734,7 +5734,15 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
   
   try {
     // Convert blob to mp4-compatible format
-    const blob = window._videoBlob;
+    // Use server video URL if available, otherwise use local blob
+    let blob = window._videoBlob;
+    if (!blob && window._serverVideoUrl) {
+      try {
+        const r = await fetch(window._serverVideoUrl);
+        blob = await r.blob();
+      } catch(e) { alert('Failed to fetch video: ' + e.message); return; }
+    }
+    if (!blob) { alert('No video available'); return; }
     
     // Step 1: Initialize upload
     const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
