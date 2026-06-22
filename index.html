@@ -1159,7 +1159,8 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, collection, getCountFromServer, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-const app = initializeApp(cfg);
+const {getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+const app = getApps().length ? getApps()[0] : initializeApp(cfg);
 const db = getFirestore(app);
 
 try {
