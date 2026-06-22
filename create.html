@@ -627,6 +627,8 @@ window.generateOnServer = async function() {
     if (data.error) throw new Error(data.error);
     window._serverGenJobId = data.job_id || jobId;
     document.getElementById('server-gen-stage').textContent = 'Video generation in progress...';
+    const sgdb = document.getElementById('server-gen-dashboard-btn');
+    if (sgdb) sgdb.style.display = 'flex';
     document.getElementById('server-gen-bar').style.width = '10%';
     document.getElementById('server-gen-pct').textContent = '10%';
     window._serverGenPoll = setInterval(async () => {
@@ -913,8 +915,9 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem;margin-bottom:1rem;">
             <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">📧 We will email you when ready!</div>
             <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
-            <div style="margin-top:0.75rem;">
+            <div id="tutorial-dashboard-btn" style="display:none;margin-top:0.75rem;">
               <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
+              <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">✅ Processing started — safe to leave</div>
             </div>
           </div>
           <div id="tutorial-download" style="display:none;">
@@ -1321,9 +1324,9 @@ Or just paste your raw content and we will structure it into scenes automaticall
           <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;">
             <div style="color:#F5A623;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being generated!</div>
             <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="server-gen-email" style="color:#74C69D;">your email</span> when ready.</div>
-            <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+            <div id="server-gen-dashboard-btn" style="display:none;margin-top:0.75rem;flex-wrap:wrap;align-items:center;gap:0.5rem;">
               <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
-              <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;">You can safely close this tab</div>
+              <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;">✅ Processing started — safe to leave</div>
             </div>
           </div>
           <div id="server-gen-download" style="display:none;margin-top:1rem;">
@@ -6405,6 +6408,8 @@ window.generateTutorial = async function() {
             window._serverVideoUrl = sd.output_url;
             window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
             document.getElementById('tutorial-download').style.display = 'block';
+            const tdb = document.getElementById('tutorial-dashboard-btn');
+            if (tdb) tdb.style.display = 'block';
             document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
             btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
           }
@@ -6496,6 +6501,8 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
           clearInterval(window._tutorialPoll);
           bar.style.width = '100%'; pct.textContent = '100%';
           stage.textContent = 'Tutorial ready!';
+          const tdb2 = document.getElementById('tutorial-dashboard-btn');
+          if (tdb2) tdb2.style.display = 'block';
           window._serverVideoUrl = sd.output_url;
           window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
           document.getElementById('tutorial-download').style.display = 'block';
