@@ -161,7 +161,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .section-label{font-size:0.72rem;letter-spacing:3px;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.75rem;text-align:center;}
 .section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#fff;text-align:center;margin-bottom:0.75rem;}
 .section-sub{font-size:0.95rem;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:3rem;}
-.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;}
 .tool-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;position:relative;overflow:hidden;}
 .tool-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,166,35,0.06),transparent);opacity:0;transition:opacity 0.3s;}
 .tool-card:hover{border-color:rgba(245,166,35,0.25);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.3);}
@@ -178,7 +178,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 /* STATS */
 .stats-section{position:relative;z-index:1;max-width:900px;margin:0 auto 5rem;padding:0 2rem;}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);border-radius:16px;overflow-x:auto;}
 .stat-item{background:#080808;padding:2rem;text-align:center;}
 .stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#F5A623,#74C69D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .stat-label{font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;margin-top:0.25rem;}
@@ -199,7 +199,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 /* FEATURES */
 .features-section{position:relative;z-index:1;max-width:1100px;margin:0 auto 5rem;padding:0 2rem;}
-.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;}
 .feature-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;transition:all 0.3s;}
 .feature-card:hover{background:rgba(245,166,35,0.05);border-color:rgba(245,166,35,0.2);transform:translateY(-4px);}
 .feature-icon{margin-bottom:1rem;}
@@ -610,7 +610,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div class="section-label" style="text-align:center;">ONLY ON AFRIVID</div>
   <h2 class="section-title">Built different. Built for Africa.</h2>
   <p class="section-sub">Features you won't find on Canva, InVideo or any Western tool.</p>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;">
 
     <div style="background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.02));border:1px solid rgba(245,166,35,0.2);border-radius:16px;padding:1.5rem;">
       <div style="margin-bottom:0.75rem;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
@@ -824,7 +824,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div class="section-label" style="text-align:center;">PERFECT FOR</div>
   <h2 class="section-title">Who uses AfriVid Studio?</h2>
   <p class="section-sub">From classrooms to boardrooms — AfriVid works for everyone.</p>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;">
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.75rem;">🎓</div>
       <div style="font-weight:700;color:#fff;margin-bottom:0.4rem;">Teachers & Educators</div>
@@ -863,7 +863,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div class="section-label" style="text-align:center;">WHY AFRIVID</div>
   <h2 class="section-title" style="text-align:center;">AfriVid vs other tools</h2>
   <p class="section-sub" style="text-align:center;">The only platform built specifically for African creators.</p>
-  <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;">
+  <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow-x:auto;">
     <table style="width:100%;border-collapse:collapse;font-family:'Space Mono',monospace;font-size:0.78rem;">
       <tr style="background:rgba(245,166,35,0.08);border-bottom:1px solid rgba(255,255,255,0.06);">
         <td style="padding:1rem 1.5rem;color:rgba(255,255,255,0.5);font-size:0.7rem;letter-spacing:2px;">FEATURE</td>
@@ -965,7 +965,7 @@ function playDemoVideo() {
   <div class="section-label" style="text-align:center;">WHAT PEOPLE SAY</div>
   <h2 class="section-title">Creators love AfriVid</h2>
   <p class="section-sub">Real feedback from African creators using AfriVid Studio.</p>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;">
 
     <div style="background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.02));border:1px solid rgba(245,166,35,0.2);border-radius:16px;padding:1.75rem;position:relative;">
       <div style="color:#F5A623;font-size:1.5rem;margin-bottom:1rem;">"</div>
