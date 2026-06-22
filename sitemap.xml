@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://afrivid.studio/</loc><priority>1.0</priority><changefreq>weekly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/create.html</loc><priority>0.9</priority><changefreq>weekly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/aieditor.html</loc><priority>0.9</priority><changefreq>weekly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/edit.html</loc><priority>0.8</priority><changefreq>weekly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/photo.html</loc><priority>0.8</priority><changefreq>weekly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/design.html</loc><priority>0.8</priority><changefreq>weekly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/studio.html</loc><priority>0.7</priority><changefreq>weekly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/pricing.html</loc><priority>0.8</priority><changefreq>monthly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/contact.html</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/privacy.html</loc><priority>0.5</priority><changefreq>monthly</changefreq><lastmod>2026-06-13</lastmod></url>
-  <url><loc>https://afrivid.studio/terms.html</loc><priority>0.5</priority><changefreq>monthly</changefreq><lastmod>2026-06-13</lastmod></url>
+  <url><loc>https://afrivid.studio/</loc><priority>1.0</priority><changefreq>weekly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/create.html</loc><priority>0.9</priority><changefreq>weekly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/aieditor.html</loc><priority>0.9</priority><changefreq>weekly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/edit.html</loc><priority>0.8</priority><changefreq>weekly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/photo.html</loc><priority>0.8</priority><changefreq>weekly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/design.html</loc><priority>0.8</priority><changefreq>weekly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/studio.html</loc><priority>0.7</priority><changefreq>weekly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/pricing.html</loc><priority>0.8</priority><changefreq>monthly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/contact.html</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/privacy.html</loc><priority>0.5</priority><changefreq>monthly</changefreq><lastmod>2026-06-22</lastmod></url>
+  <url><loc>https://afrivid.studio/terms.html</loc><priority>0.5</priority><changefreq>monthly</changefreq><lastmod>2026-06-22</lastmod></url>
 </urlset>
