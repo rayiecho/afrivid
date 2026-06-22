@@ -627,7 +627,7 @@ window.generateOnServer = async function() {
         if (d.status === 'completed' && d.output_url) {
           clearInterval(window._serverGenPoll);
           document.getElementById('server-gen-download').style.display = 'block';
-          document.getElementById('server-gen-link').href = d.output_url;
+          document.getElementById('server-gen-link').dataset.url = d.output_url;
           document.getElementById('server-gen-bar').style.width = '100%';
           document.getElementById('server-gen-pct').textContent = '100%';
           document.getElementById('server-gen-stage').textContent = '✅ Video ready!';
@@ -904,7 +904,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </div>
           <div id="tutorial-download" style="display:none;">
             <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Tutorial ready!</div>
-            <a id="tutorial-download-link" href="#" download="AfriVid-Tutorial.mp4" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Tutorial</a>
+            <button id="tutorial-download-link" onclick="(async()=>{const btn=this;btn.textContent='Downloading...';btn.disabled=true;try{const r=await fetch(btn.dataset.url);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Tutorial.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Tutorial';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Tutorial</button>
             <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-left:0.5rem;">▶ Upload to YouTube</button>
           </div>
         </div>
@@ -1308,7 +1308,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
           </div>
           <div id="server-gen-download" style="display:none;margin-top:1rem;">
             <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Video ready!</div>
-            <a id="server-gen-link" href="#" download="AfriVid-Video.mp4" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-size:0.85rem;">⬇ Download Video</a>
+            <button id="server-gen-link" onclick="(async()=>{const btn=this;btn.textContent='Downloading...';btn.disabled=true;try{const r=await fetch(btn.dataset.url);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Video';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">⬇ Download Video</button>
           </div>
         </div>
       </div>
@@ -6385,7 +6385,7 @@ window.generateTutorial = async function() {
             window._serverVideoUrl = sd.output_url;
             window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
             document.getElementById('tutorial-download').style.display = 'block';
-            document.getElementById('tutorial-download-link').href = sd.output_url;
+            document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
             btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
           }
           if (sd.status === 'failed') {
@@ -6479,7 +6479,7 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
           window._serverVideoUrl = sd.output_url;
           window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
           document.getElementById('tutorial-download').style.display = 'block';
-          document.getElementById('tutorial-download-link').href = sd.output_url;
+          document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
           btn.textContent = '🎓 Generate Tutorial Video';
           btn.disabled = false;
         }
