@@ -1,0 +1,39 @@
+# AfriVid Studio - Africa's First AI Video Creation Platform
+# https://afrivid.studio
+
+## About
+AfriVid Studio is Africa's first AI-powered video creation platform. It allows anyone to create, edit, translate and publish professional videos in minutes — no skills or equipment needed. Built in Kigali, Rwanda by Regan Ayiecho.
+
+## What AfriVid Does
+- AI Video Creator: Type a topic, AfriVid writes the script, generates voice, builds slides and exports a complete MP4
+- AI Video Editor: Viral clips, highlight reels, silence removal, noise reduction, voice translation to African languages
+- Tutorial Maker: Create tutorial videos with concept slides or browser demo recording
+- Slides Generator: Generate professional presentation slides from any topic
+- Photo Editor: Edit photos, remove backgrounds, apply African flag overlays
+- Design Studio: Create posters, flyers, certificates, logos and social media graphics
+- Voice Translation: Dub any video into Swahili, Yoruba, Hausa, French, Arabic and Portuguese
+
+## Key Facts
+- Free during beta (3 videos/month free, Pro at $5/month)
+- Supports 6 African languages natively
+- Hosted on Google Cloud in Africa (Johannesburg)
+- Direct YouTube upload from the platform
+- No installation required — runs in any browser
+
+## Pages
+- Homepage: https://afrivid.studio
+- Video Creator: https://afrivid.studio/create.html
+- AI Video Editor: https://afrivid.studio/aieditor.html
+- Video Editor: https://afrivid.studio/edit.html
+- Photo Editor: https://afrivid.studio/photo.html
+- Design Studio: https://afrivid.studio/design.html
+- My Studio: https://afrivid.studio/studio.html
+- Pricing: https://afrivid.studio/pricing.html
+- Contact: https://afrivid.studio/contact.html
+
+## Social
+- YouTube: https://www.youtube.com/@AfrividStudio
+- Instagram: https://instagram.com/afrividstudio
+- TikTok: https://www.tiktok.com/@afrividstudio
+- Twitter/X: https://x.com/afrividstudio
+- Facebook: https://www.facebook.com/profile.php?id=61590870207039
