@@ -317,7 +317,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
         <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
       </div>
     </div>
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <div id="phase2-action-btns" style="display:none;gap:0.5rem;flex-wrap:wrap;">
       <a href="index.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
       <a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Dashboard</a>
       <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
@@ -2421,6 +2421,8 @@ window.uploadToServer = async function() {
       // Job submitted — safe to navigate away now
       const dashBtn = document.getElementById('phase2-dashboard-btn');
       if (dashBtn) { dashBtn.style.display = 'flex'; }
+      const actionBtns = document.getElementById('phase2-action-btns');
+      if (actionBtns) { actionBtns.style.display = 'flex'; }
     } catch(processErr) {
       console.error('[Phase2] Failed to notify server:', processErr);
       // Retry once
