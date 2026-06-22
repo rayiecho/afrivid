@@ -171,6 +171,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
   <meta property="twitter:image" content="https://afrivid.studio/images/logo.png">
   <meta property="twitter:title" content="AfriVid Studio — Africa's First AI Video Creation Platform">
   <meta property="twitter:description" content="Create professional videos in minutes with AI. Built for Africa.">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -307,7 +308,10 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     </div>
     <div id="phase2-download" style="display:none;margin-top:1rem;">
       <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
-      <a id="phase2-download-link" href="#" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</a>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button id="phase2-download-link" data-url="" onclick="(async()=>{const btn=document.getElementById('phase2-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Edited.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Processed Video';btn.disabled=false;})()" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</button>
+        <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">▶ Upload to YouTube</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2444,7 +2448,7 @@ async function pollJobStatus() {
       const dl = document.getElementById('phase2-download');
       const dlLink = document.getElementById('phase2-download-link');
       if (dl) dl.style.display = 'block';
-      if (dlLink) dlLink.href = data.output_url;
+      if (dlLink) { dlLink.dataset.url = data.output_url; window._serverVideoUrl = data.output_url; window._scriptData = { title: window._currentVideoFile?.name || 'AfriVid Edited Video', description: 'Edited with AfriVid Studio' }; }
       if (bar) bar.style.width = '100%';
       if (pct) pct.textContent = '100%';
       if (stage) stage.textContent = '✅ Processing complete!';
@@ -2563,6 +2567,51 @@ window.cancelCrop = function() {
   document.getElementById('crop-selection-box').style.display = 'none';
 };
 
+</script>
+
+<script>
+function uploadToYouTube(){
+  if(!window._serverVideoUrl) { alert('Please process a video first, then click Upload to YouTube.'); return; }
+  const title = window._scriptData?.title || window._currentVideoFile?.name || 'AfriVid Edited Video';
+  const description = window._scriptData?.description || 'Edited with AfriVid Studio — afrivid.studio';
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: '957196729758-e50mss0sujt5jo70matst27mbc3kiapb.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/youtube.upload',
+    callback: async (tokenResponse) => {
+      if(tokenResponse.error){ alert('Google sign-in failed: ' + tokenResponse.error); return; }
+      await doYouTubeUpload(tokenResponse.access_token, title, description);
+    }
+  });
+  client.requestAccessToken();
+}
+window.doYouTubeUpload = async function(accessToken, title, description) {
+  const btn = document.querySelector('[onclick="uploadToYouTube()"]');
+  if(btn) { btn.textContent = '↑ Uploading...'; btn.disabled = true; }
+  try {
+    const proxyUrl = 'https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url=' + encodeURIComponent(window._serverVideoUrl);
+    const r = await fetch(proxyUrl);
+    const blob = await r.blob();
+    const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json', 'X-Upload-Content-Type': 'video/mp4', 'X-Upload-Content-Length': blob.size },
+      body: JSON.stringify({ snippet: { title, description: description + '\n\nCreated with AfriVid Studio — afrivid.studio', tags: ['AfriVid','Africa','Video Editor','AfriVid Studio'], categoryId: '27' }, status: { privacyStatus: 'public' } })
+    });
+    if(!initRes.ok) { const err = await initRes.json(); throw new Error(err.error?.message || 'Upload init failed'); }
+    const uploadUrl = initRes.headers.get('Location');
+    const uploadRes = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': 'video/mp4', 'Content-Length': blob.size }, body: blob });
+    if(!uploadRes.ok) { const err = await uploadRes.json(); throw new Error(err.error?.message || 'Upload failed'); }
+    const videoData = await uploadRes.json();
+    if(btn) { btn.textContent = '✅ Uploaded!'; btn.disabled = false; }
+    setTimeout(() => { if(btn) btn.textContent = '▶ Upload to YouTube'; }, 3000);
+    if(confirm('✅ Video uploaded to YouTube!\n\nVideo ID: ' + videoData.id + '\n\nOpen your video now?')) {
+      window.open('https://www.youtube.com/watch?v=' + videoData.id, '_blank');
+    }
+  } catch(e) {
+    console.error('YouTube upload error:', e);
+    if(btn) { btn.textContent = '▶ Upload to YouTube'; btn.disabled = false; }
+    alert('Upload failed: ' + e.message);
+  }
+};
 </script>
 </body>
 </html>
