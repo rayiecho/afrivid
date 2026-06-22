@@ -905,6 +905,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           <div id="tutorial-download" style="display:none;">
             <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Tutorial ready!</div>
             <a id="tutorial-download-link" href="#" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Tutorial</a>
+            <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-left:0.5rem;">▶ Upload to YouTube</button>
           </div>
         </div>
       </div>
@@ -6381,6 +6382,8 @@ window.generateTutorial = async function() {
           if (sd.status === 'completed' && sd.output_url) {
             clearInterval(window._tutorialPoll);
             bar.style.width = '100%'; pct.textContent = '100%';
+            window._serverVideoUrl = sd.output_url;
+            window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
             document.getElementById('tutorial-download').style.display = 'block';
             document.getElementById('tutorial-download-link').href = sd.output_url;
             btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
@@ -6473,6 +6476,8 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
           clearInterval(window._tutorialPoll);
           bar.style.width = '100%'; pct.textContent = '100%';
           stage.textContent = 'Tutorial ready!';
+          window._serverVideoUrl = sd.output_url;
+          window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
           document.getElementById('tutorial-download').style.display = 'block';
           document.getElementById('tutorial-download-link').href = sd.output_url;
           btn.textContent = '🎓 Generate Tutorial Video';
