@@ -6412,7 +6412,7 @@ window.generateTutorial = async function() {
 
   try {
     // Step 1: Generate tutorial scenes with Claude
-    const sceneCount = duration === 5 ? 8 : duration === 10 ? 15 : 22;
+    const sceneCount = duration === 1 ? 3 : duration === 2 ? 4 : duration === 5 ? 8 : duration === 10 ? 15 : 22;
     const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
