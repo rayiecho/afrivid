@@ -4047,70 +4047,85 @@ window.buildProductPoster = async function(previewMode, downloadMode) {
   const website = document.getElementById('pp-website')?.value?.trim() || '';
   const features = [];
   for (let n=1; n<=6; n++) {
-    const icon = document.getElementById('pp-f'+n+'-icon')?.value?.trim() || '✦';
     const fname = document.getElementById('pp-f'+n+'-name')?.value?.trim() || '';
-    if (fname) features.push({icon: icon, name: fname});
+    if (fname) features.push(fname);
   }
   const d = window._ppData || {};
   const t = BTHEMES[d.theme || 'dark'];
   const logoUrl = d.logo || null;
-  let bgStyle = t.bg;
-  if (d.bg === 'dots') bgStyle = 'radial-gradient(circle,rgba(245,166,35,0.12) 1px,transparent 1px) center/22px 22px, ' + t.bg;
-  else if (d.bg === 'grid') bgStyle = 'linear-gradient(rgba(245,166,35,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.06) 1px,transparent 1px) ' + t.bg;
-  else if (d.bg === 'diagonal') bgStyle = 'repeating-linear-gradient(45deg,rgba(245,166,35,0.04),rgba(245,166,35,0.04) 1px,' + t.bg + ' 1px,' + t.bg + ' 18px)';
-  else if (d.bg === 'gradient') bgStyle = 'linear-gradient(135deg,' + t.bg2 + ',' + t.bg + ')';
-  else if (d.bg === 'map') bgStyle = 'linear-gradient(135deg,' + t.bg + ',' + t.bg2 + ',' + t.bg + ')';
-  const featureRows = [];
+
+  // Premium SVG icons map
   const ppIcons = {
-    'Video Creator':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
-    'AI Video Editor':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-    'Tutorial Maker':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
-    'Slides Generator':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
-    'Voice Translation':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',
-    'Photo Editor':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
-    'Design Studio':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
-    'default':'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+    'Video Creator':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+    'AI Video Editor':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    'Tutorial Maker':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    'Slides Generator':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
+    'Voice Translation':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',
+    'Photo Editor':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+    'Design Studio':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+    'default':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="'+t.accent+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
   };
-  const getIcon = (f) => ppIcons[f.name] || ppIcons['default'];
-  for (let i=0; i<features.length; i+=2) {
-    const left = features[i]; const right = features[i+1];
-    const rightCell = right
-      ? '<td style="padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;text-align:center;vertical-align:middle;">'+getIcon(right)+'<div style="color:'+t.text+';font-size:12px;font-weight:700;margin-top:6px;">'+right.name+'</div></td>'
-      : '<td></td>';
-    featureRows.push('<tr><td style="padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;text-align:center;vertical-align:middle;">'+getIcon(left)+'<div style="color:'+t.text+';font-size:12px;font-weight:700;margin-top:6px;">'+left.name+'</div></td><td style="width:12px;"></td>'+rightCell+'</tr><tr><td colspan="3" style="height:10px;"></td></tr>');
-  }
-  const bgSize = d.bg === 'grid' ? '20px 20px' : 'auto';
-  const fSize = headline.length > 25 ? '32' : headline.length > 15 ? '40' : '48';
+  const getIcon = (name) => ppIcons[name] || ppIcons['default'];
+
+  // Africa map watermark SVG
+  const africaWatermark = '<svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.03;pointer-events:none;" width="600" height="620" viewBox="0 0 600 620" fill="' + t.accent + '"><path d="M300 20 C200 20 140 60 120 120 C100 180 110 220 130 260 C150 300 140 330 120 360 C100 390 90 420 100 460 C110 500 140 530 170 550 C200 570 230 580 260 570 C290 560 310 540 330 520 C350 500 370 480 390 470 C410 460 440 450 460 430 C480 410 490 380 480 350 C470 320 450 300 440 270 C430 240 440 210 450 180 C460 150 460 120 440 90 C420 60 380 30 340 22 Z"/></svg>';
+
+  // 3-column feature grid
+  const featureCols = features.slice(0, 6);
+  while (featureCols.length < 6) featureCols.push('');
+  const row1 = featureCols.slice(0, 3);
+  const row2 = featureCols.slice(3, 6);
+  const buildFeatureCell = (fname) => {
+    if (!fname) return '<td style="width:33%;padding:8px;"></td>';
+    return '<td style="width:33%;padding:8px;vertical-align:top;">'
+      + '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-left:3px solid ' + t.accent + ';border-radius:10px;padding:18px 14px;text-align:center;">'
+      + '<div style="margin-bottom:10px;">' + getIcon(fname) + '</div>'
+      + '<div style="color:' + t.text + ';font-size:11px;font-weight:700;letter-spacing:0.5px;">' + fname.toUpperCase() + '</div>'
+      + '</div>'
+      + '</td>';
+  };
+  const featuresHtml = '<table style="width:100%;border-collapse:collapse;">'
+    + '<tr>' + row1.map(buildFeatureCell).join('') + '</tr>'
+    + '<tr><td colspan="3" style="height:8px;"></td></tr>'
+    + '<tr>' + row2.map(buildFeatureCell).join('') + '</tr>'
+    + '</table>';
+
+  const fSize = headline.length > 30 ? '34' : headline.length > 20 ? '42' : '52';
   const logoHtml = logoUrl
-    ? '<img src="' + logoUrl + '" style="width:72px;height:72px;object-fit:contain;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;border-radius:12px;">'
-    : '<div style="width:72px;height:72px;background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 + ');border-radius:16px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;"><div style="color:#050A14;font-size:28px;font-weight:900;">' + name[0] + '</div></div>';
-  const taglineHtml = tagline ? '<div style="color:' + t.accent2 + ';font-size:15px;font-style:italic;margin-top:6px;">"' + tagline + '"</div>' : '';
-  const websiteHtml = website ? '<div style="color:' + t.sub + ';font-size:13px;margin-top:6px;">' + website + '</div>' : '';
-  const ppHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:820px;background:' + bgStyle + ';background-size:' + bgSize + ';font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style></head><body>'
-    + '<div style="height:6px;background:linear-gradient(90deg,' + t.accent + ',' + t.accent2 + ');"></div>'
-    + '<div style="background:linear-gradient(135deg,' + t.bg2 + ',' + t.bg + ');padding:32px 48px 24px;text-align:center;border-bottom:2px solid ' + t.accent + ';">'
+    ? '<img src="' + logoUrl + '" style="width:68px;height:68px;object-fit:contain;display:block;margin:0 auto 14px;border-radius:12px;">'
+    : '<div style="width:64px;height:64px;background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 + ');border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><span style="color:#050A14;font-size:26px;font-weight:900;">' + name[0] + '</span></div>';
+
+  const ppHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:980px;background:radial-gradient(ellipse at 30% 20%,rgba(245,166,35,0.07) 0%,transparent 60%),' + t.bg + ';font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>'
+    + '</head><body>'
+    + africaWatermark
+    + '<div style="height:5px;background:linear-gradient(90deg,' + t.accent + ',' + t.accent2 + ',' + t.accent + ');"></div>'
+    + '<div style="padding:36px 52px 28px;text-align:center;position:relative;">'
     + logoHtml
-    + '<div style="color:' + t.accent + ';font-size:11px;font-weight:900;letter-spacing:3px;margin-bottom:10px;">' + name.toUpperCase() + '</div>'
-    + '<div style="color:' + t.text + ';font-size:' + fSize + 'px;font-weight:900;line-height:1.1;margin-bottom:10px;">' + headline.toUpperCase() + '</div>'
-    + taglineHtml
+    + '<div style="display:inline-block;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:30px;padding:5px 18px;margin-bottom:18px;">'
+    + '<span style="color:' + t.accent + ';font-size:10px;font-weight:900;letter-spacing:3px;">' + name.toUpperCase() + '</span>'
     + '</div>'
-    + '<div style="height:1px;background:linear-gradient(90deg,transparent,' + t.accent + '44,transparent);margin:0 48px;"></div>'
-    + '<div style="padding:24px 48px 0;">'
-    + '<div style="color:' + t.sub + ';font-size:10px;letter-spacing:3px;text-align:center;margin-bottom:16px;">WHAT YOU CAN DO</div>'
-    + '<table style="width:100%;border-collapse:collapse;">' + featureRows.join('') + '</table>'
+    + '<div style="color:' + t.text + ';font-size:' + fSize + 'px;font-weight:900;line-height:1.1;margin-bottom:14px;letter-spacing:-1px;">' + headline.toUpperCase() + '</div>'
+    + (tagline ? '<div style="color:' + t.accent2 + ';font-size:14px;font-style:italic;font-weight:400;opacity:0.85;">' + tagline + '</div>' : '')
     + '</div>'
-    + '<div style="text-align:center;padding:24px 48px 16px;">'
-    + '<div style="display:inline-block;background:' + t.accent + ';color:#050A14;padding:14px 40px;border-radius:10px;font-size:16px;font-weight:900;letter-spacing:1px;margin-bottom:12px;">' + cta + '</div>'
-    + websiteHtml
+    + '<div style="margin:0 52px;height:1px;background:linear-gradient(90deg,transparent,' + t.accent + '55,transparent);"></div>'
+    + '<div style="padding:22px 44px 0;">'
+    + '<div style="color:rgba(255,255,255,0.25);font-size:9px;font-weight:700;letter-spacing:4px;text-align:center;margin-bottom:16px;text-transform:uppercase;">What You Can Do</div>'
+    + featuresHtml
     + '</div>'
-    + '<div style="position:absolute;bottom:0;left:0;right:0;background:' + t.bg2 + ';padding:14px 48px;border-top:3px solid ' + t.accent + ';display:flex;justify-content:space-between;align-items:center;">'
-    + '<div style="color:' + t.accent + ';font-size:12px;font-weight:900;">' + name + '</div>'
-    + '<div style="color:rgba(255,255,255,0.2);font-size:9px;">Created with AfriVid Studio · afrivid.studio</div>'
+    + '<div style="padding:24px 52px 20px;text-align:center;">'
+    + '<div style="display:inline-block;background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 + ');color:#050A14;padding:15px 52px;border-radius:50px;font-size:15px;font-weight:900;letter-spacing:1px;box-shadow:0 8px 30px rgba(245,166,35,0.35);margin-bottom:10px;">' + cta + '</div>'
+    + (website ? '<div style="color:rgba(255,255,255,0.3);font-size:11px;letter-spacing:2px;margin-top:8px;">' + website.toUpperCase() + '</div>' : '')
+    + '</div>'
+    + '<div style="position:absolute;bottom:0;left:0;right:0;padding:12px 52px;background:linear-gradient(90deg,' + t.accent + '18,' + t.accent2 + '10);border-top:1px solid ' + t.accent + '33;display:flex;justify-content:space-between;align-items:center;">'
+    + '<span style="color:' + t.accent + ';font-size:11px;font-weight:900;letter-spacing:2px;">' + name.toUpperCase() + '</span>'
+    + '<span style="color:rgba(255,255,255,0.15);font-size:9px;letter-spacing:1px;">CREATED WITH AFRIVID STUDIO</span>'
     + '</div>'
     + '</body></html>';
+
   const dlBtn = document.getElementById('pp-download-btn');
   if (dlBtn) dlBtn.style.display = 'block';
-  await renderAndDownload(ppHtml, 'productPoster', 800, 820, previewMode);
+  await renderAndDownload(ppHtml, 'productPoster', 800, 980, previewMode);
 };
 </script>
 
