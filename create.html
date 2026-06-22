@@ -636,9 +636,9 @@ window.generateOnServer = async function() {
           window._serverThumbUrl = d.thumbnail_url || '';
           // Update download button text
           const dlBtn = document.getElementById('btn-download');
-          if (dlBtn) { dlBtn.textContent = '⬇ Download MP4'; dlBtn.onclick = () => { const a = document.createElement('a'); a.href = d.output_url; a.download = 'AfriVid-Video.mp4'; a.click(); }; }
+          if (dlBtn) { dlBtn.textContent = '⬇ Download MP4'; dlBtn.onclick = async () => { dlBtn.textContent='Downloading...';dlBtn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}dlBtn.textContent='⬇ Download MP4';dlBtn.disabled=false;}; }
           const mp4Btn = document.getElementById('btn-download') ? document.querySelector('#panel-4 .btn-gold') : null;
-          if (mp4Btn) { mp4Btn.onclick = () => { const a = document.createElement('a'); a.href = d.output_url; a.download = 'AfriVid-Video.mp4'; a.click(); }; }
+          if (mp4Btn) { mp4Btn.onclick = async () => { mp4Btn.textContent='Downloading...';mp4Btn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}mp4Btn.textContent='🎬 Download MP4';mp4Btn.disabled=false;}; }
           goToStep(4);
           // Save to Firestore studio
           try {
