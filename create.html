@@ -6428,6 +6428,7 @@ Generate exactly ${sceneCount} scenes as a JSON array:
   {"title":"Summary","type":"summary","voiceover":"narrator script","points":["key takeaway 1","key takeaway 2"],"duration":${Math.round(duration*60/sceneCount)}}
 ]
 Types: title(first), toc(second), content(regular), code(for code examples), diagram(for concepts), summary(last).
+CRITICAL: Each voiceover must be EXACTLY ${Math.round(duration*60/sceneCount*2.5)} words. Count carefully.
 Make voiceover natural and educational. Return ONLY valid JSON array.`}]
       })
     });
