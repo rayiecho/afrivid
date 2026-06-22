@@ -473,6 +473,7 @@ body::after{
           <option value="pro_poster">Professional Poster</option>
           <option value="pro_banner">Professional Banner</option>
           <option value="pro_logo">Professional Logo</option>
+          <option value="product_poster">Product / App Poster</option>
         </select>
         
         <!-- Image upload for reference -->
@@ -706,6 +707,63 @@ body::after{
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="logo-tagline" type="text" placeholder="e.g. Building Africa's Future" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           </div>
         </div>
+        <!-- PRODUCT POSTER BUILDER -->
+        <div id="product_poster-builder-panel" style="display:none;">
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
+          <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">PRODUCT / APP POSTER</div>
+          <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — AI FILL</div>
+            <textarea id="pp-ai-prompt" placeholder="e.g. AfriVid Studio — Africa's first AI video creation platform, create edit translate publish" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:60px;resize:none;margin-bottom:0.5rem;"></textarea>
+            <button onclick="aiFillProductPoster()" id="pp-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill All Fields</button>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">📎 STEP 2 — LOGO</div>
+            <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">
+              <span id="pp-logo-name">Upload Logo</span>
+              <input type="file" accept="image/*" style="display:none;" onchange="loadPPImage('logo',this)">
+            </label>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 3 — STYLE</div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">COLOR</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-bottom:0.5rem;">
+              <button onclick="setPPTheme('dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button>
+              <button onclick="setPPTheme('green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button>
+              <button onclick="setPPTheme('blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button>
+              <button onclick="setPPTheme('light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button>
+            </div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">BACKGROUND</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;">
+              <button onclick="setPPBg('solid',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;color:#F5A623;font-size:0.6rem;font-family:'Space Mono',monospace;">SOLID</button>
+              <button onclick="setPPBg('dots',this)" style="background:radial-gradient(circle,rgba(245,166,35,0.15) 1px,#050A14 1px) center/16px 16px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">DOTS</button>
+              <button onclick="setPPBg('grid',this)" style="background:linear-gradient(rgba(245,166,35,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.08) 1px,transparent 1px);background-size:16px 16px;background-color:#050A14;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">GRID</button>
+              <button onclick="setPPBg('gradient',this)" style="background:linear-gradient(135deg,#1a3a2a,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">GRAD</button>
+              <button onclick="setPPBg('diagonal',this)" style="background:repeating-linear-gradient(45deg,rgba(245,166,35,0.05),rgba(245,166,35,0.05) 1px,#050A14 1px,#050A14 12px);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">LINES</button>
+              <button onclick="setPPBg('map',this)" style="background:linear-gradient(135deg,#050A14,#0D1F35,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">MAP</button>
+            </div>
+          </div>
+          <button onclick="previewProductPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Poster</button>
+          <button onclick="document.getElementById('pp-edit-fields').style.display=document.getElementById('pp-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('pp-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
+          <button onclick="buildProductPoster(false,true)" id="pp-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Poster</button>
+          <div id="pp-edit-fields" style="display:none;margin-top:0.5rem;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
+            <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">APP / PRODUCT NAME *</div><input id="pp-name" type="text" placeholder="e.g. AfriVid Studio" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+            <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">HEADLINE *</div><input id="pp-headline" type="text" placeholder="e.g. Africa's First AI Video Suite" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+            <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="pp-tagline" type="text" placeholder="e.g. Create. Edit. Translate. Publish." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">6 FEATURES</div>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem;">
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f1-icon" type="text" placeholder="🎬" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f1-name" type="text" placeholder="Video Creator" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f2-icon" type="text" placeholder="✂️" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f2-name" type="text" placeholder="AI Video Editor" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f3-icon" type="text" placeholder="📊" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f3-name" type="text" placeholder="Slides Generator" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f4-icon" type="text" placeholder="🗣" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f4-name" type="text" placeholder="Voice Translation" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f5-icon" type="text" placeholder="🖼" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f5-name" type="text" placeholder="Photo Editor" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f6-icon" type="text" placeholder="🎨" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f6-name" type="text" placeholder="Design Studio" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+            </div>
+            <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">CALL TO ACTION</div><input id="pp-cta" type="text" placeholder="e.g. Start Creating Free" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+            <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">WEBSITE</div><input id="pp-website" type="text" placeholder="e.g. afrivid.studio" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
+            <button onclick="buildProductPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;">Build Poster →</button>
+          </div>
+        </div><!-- end product_poster-builder-panel -->
         <div style="margin-top:0.5rem;font-size:0.68rem;color:rgba(255,255,255,0.25);font-family:'Space Mono',monospace;text-align:center;" id="design-status"></div>
       </div>
 
@@ -3062,7 +3120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiPrompt = document.getElementById('design-ai-prompt');
     const refBox = document.getElementById('design-ref-images');
     // Hide all builder panels
-    ['flyer','poster','banner','logo'].forEach(t => {
+    ['flyer','poster','banner','logo','product_poster'].forEach(t => {
       const p = document.getElementById(t+'-builder-panel');
       if (p) p.style.display = 'none';
     });
@@ -3930,6 +3988,118 @@ window.buildLogo = async function(previewMode=false) {
 </head><body>${styles[style]||styles.text}</body></html>`;
 
   await renderAndDownload(html, 'logo', 500, 500, previewMode);
+};
+
+if (!window._ppData) window._ppData = { logo: null, theme: 'dark', bg: 'solid' };
+window.loadPPImage = function(type, input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { window._ppData[type] = e.target.result; document.getElementById('pp-logo-name').textContent = '✅ ' + file.name; document.getElementById('pp-logo-name').style.color = '#74C69D'; };
+  reader.readAsDataURL(file);
+};
+window.setPPTheme = function(theme, btn) {
+  window._ppData.theme = theme;
+  document.querySelectorAll('[onclick^="setPPTheme"]').forEach(b => { b.style.borderWidth='1px'; b.style.borderColor='rgba(255,255,255,0.2)'; });
+  if (btn) { btn.style.borderWidth='3px'; btn.style.borderColor='#F5A623'; }
+};
+window.setPPBg = function(bg, btn) {
+  window._ppData.bg = bg;
+  document.querySelectorAll('[onclick^="setPPBg"]').forEach(b => { b.style.borderWidth='1px'; b.style.borderColor='rgba(255,255,255,0.2)'; });
+  if (btn) { btn.style.borderWidth='2px'; btn.style.borderColor='#F5A623'; }
+};
+window.aiFillProductPoster = async function() {
+  const prompt = document.getElementById('pp-ai-prompt')?.value?.trim();
+  if (!prompt) { alert('Please describe your product first'); return; }
+  const btn = document.getElementById('pp-ai-btn');
+  btn.textContent = '⏳ Filling...'; btn.disabled = true;
+  try {
+    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800,
+        messages: [{role:'user', content:'Based on: "' + prompt + '"\nReturn ONLY valid JSON:\n{"name":"app name","headline":"short powerful headline max 6 words","tagline":"subtitle max 8 words","f1_icon":"emoji","f1_name":"feature 1","f2_icon":"emoji","f2_name":"feature 2","f3_icon":"emoji","f3_name":"feature 3","f4_icon":"emoji","f4_name":"feature 4","f5_icon":"emoji","f5_name":"feature 5","f6_icon":"emoji","f6_name":"feature 6","cta":"call to action","website":"website"}'}]
+      })
+    });
+    const data = await res.json();
+    const match = data.content[0].text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON');
+    const d = JSON.parse(match[0]);
+    if (d.name) document.getElementById('pp-name').value = d.name;
+    if (d.headline) document.getElementById('pp-headline').value = d.headline;
+    if (d.tagline) document.getElementById('pp-tagline').value = d.tagline;
+    for (let n=1; n<=6; n++) {
+      if (d['f'+n+'_icon']) document.getElementById('pp-f'+n+'-icon').value = d['f'+n+'_icon'];
+      if (d['f'+n+'_name']) document.getElementById('pp-f'+n+'-name').value = d['f'+n+'_name'];
+    }
+    if (d.cta) document.getElementById('pp-cta').value = d.cta;
+    if (d.website) document.getElementById('pp-website').value = d.website;
+    document.getElementById('pp-edit-fields').style.display = 'block';
+    btn.textContent = '✅ Filled!';
+    setTimeout(() => { btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false; }, 2000);
+  } catch(e) { btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false; alert('AI fill failed: ' + e.message); }
+};
+window.previewProductPoster = async function() { await buildProductPoster(true); };
+window.buildProductPoster = async function(previewMode, downloadMode) {
+  const name = document.getElementById('pp-name')?.value?.trim();
+  const headline = document.getElementById('pp-headline')?.value?.trim();
+  if (!name || !headline) { alert('Please fill App Name and Headline'); return; }
+  const tagline = document.getElementById('pp-tagline')?.value?.trim() || '';
+  const cta = document.getElementById('pp-cta')?.value?.trim() || 'Start Free';
+  const website = document.getElementById('pp-website')?.value?.trim() || '';
+  const features = [];
+  for (let n=1; n<=6; n++) {
+    const icon = document.getElementById('pp-f'+n+'-icon')?.value?.trim() || '✦';
+    const fname = document.getElementById('pp-f'+n+'-name')?.value?.trim() || '';
+    if (fname) features.push({icon: icon, name: fname});
+  }
+  const d = window._ppData || {};
+  const t = BTHEMES[d.theme || 'dark'];
+  const logoUrl = d.logo || null;
+  let bgStyle = t.bg;
+  if (d.bg === 'dots') bgStyle = 'radial-gradient(circle,rgba(245,166,35,0.12) 1px,transparent 1px) center/22px 22px, ' + t.bg;
+  else if (d.bg === 'grid') bgStyle = 'linear-gradient(rgba(245,166,35,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.06) 1px,transparent 1px) ' + t.bg;
+  else if (d.bg === 'diagonal') bgStyle = 'repeating-linear-gradient(45deg,rgba(245,166,35,0.04),rgba(245,166,35,0.04) 1px,' + t.bg + ' 1px,' + t.bg + ' 18px)';
+  else if (d.bg === 'gradient') bgStyle = 'linear-gradient(135deg,' + t.bg2 + ',' + t.bg + ')';
+  else if (d.bg === 'map') bgStyle = 'linear-gradient(135deg,' + t.bg + ',' + t.bg2 + ',' + t.bg + ')';
+  const featureRows = [];
+  for (let i=0; i<features.length; i+=2) {
+    const left = features[i]; const right = features[i+1];
+    const rightCell = right
+      ? '<td style="padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;text-align:center;vertical-align:middle;"><div style="font-size:26px;margin-bottom:6px;">'+right.icon+'</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+right.name+'</div></td>'
+      : '<td></td>';
+    featureRows.push('<tr><td style="padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;text-align:center;vertical-align:middle;"><div style="font-size:26px;margin-bottom:6px;">'+left.icon+'</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+left.name+'</div></td><td style="width:12px;"></td>'+rightCell+'</tr><tr><td colspan="3" style="height:10px;"></td></tr>');
+  }
+  const bgSize = d.bg === 'grid' ? '20px 20px' : 'auto';
+  const fSize = headline.length > 25 ? '32' : headline.length > 15 ? '40' : '48';
+  const logoHtml = logoUrl
+    ? '<img src="' + logoUrl + '" style="width:72px;height:72px;object-fit:contain;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;border-radius:12px;">'
+    : '<div style="width:72px;height:72px;background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 + ');border-radius:16px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;"><div style="color:#050A14;font-size:28px;font-weight:900;">' + name[0] + '</div></div>';
+  const taglineHtml = tagline ? '<div style="color:' + t.accent2 + ';font-size:15px;font-style:italic;margin-top:6px;">"' + tagline + '"</div>' : '';
+  const websiteHtml = website ? '<div style="color:' + t.sub + ';font-size:13px;margin-top:6px;">' + website + '</div>' : '';
+  const ppHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:1000px;background:' + bgStyle + ';background-size:' + bgSize + ';font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style></head><body>'
+    + '<div style="height:6px;background:linear-gradient(90deg,' + t.accent + ',' + t.accent2 + ');"></div>'
+    + '<div style="background:linear-gradient(135deg,' + t.bg2 + ',' + t.bg + ');padding:32px 48px 24px;text-align:center;border-bottom:2px solid ' + t.accent + ';">'
+    + logoHtml
+    + '<div style="color:' + t.accent + ';font-size:11px;font-weight:900;letter-spacing:3px;margin-bottom:10px;">' + name.toUpperCase() + '</div>'
+    + '<div style="color:' + t.text + ';font-size:' + fSize + 'px;font-weight:900;line-height:1.1;margin-bottom:10px;">' + headline.toUpperCase() + '</div>'
+    + taglineHtml
+    + '</div>'
+    + '<div style="height:1px;background:linear-gradient(90deg,transparent,' + t.accent + '44,transparent);margin:0 48px;"></div>'
+    + '<div style="padding:24px 48px 0;">'
+    + '<div style="color:' + t.sub + ';font-size:10px;letter-spacing:3px;text-align:center;margin-bottom:16px;">WHAT YOU CAN DO</div>'
+    + '<table style="width:100%;border-collapse:collapse;">' + featureRows.join('') + '</table>'
+    + '</div>'
+    + '<div style="text-align:center;padding:24px 48px 16px;">'
+    + '<div style="display:inline-block;background:' + t.accent + ';color:#050A14;padding:14px 40px;border-radius:10px;font-size:16px;font-weight:900;letter-spacing:1px;margin-bottom:12px;">' + cta + '</div>'
+    + websiteHtml
+    + '</div>'
+    + '<div style="position:absolute;bottom:0;left:0;right:0;background:' + t.bg2 + ';padding:14px 48px;border-top:3px solid ' + t.accent + ';display:flex;justify-content:space-between;align-items:center;">'
+    + '<div style="color:' + t.accent + ';font-size:12px;font-weight:900;">' + name + '</div>'
+    + '<div style="color:rgba(255,255,255,0.2);font-size:9px;">Created with AfriVid Studio · afrivid.studio</div>'
+    + '</div>'
+    + '</body></html>';
+  const dlBtn = document.getElementById('pp-download-btn');
+  if (dlBtn) dlBtn.style.display = 'block';
+  await renderAndDownload(ppHtml, 'productPoster', 800, 1000, previewMode);
 };
 </script>
 
