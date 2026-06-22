@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(function() {
+  window.addEventListener('error', function(e) { console.error('[AfriVid Comedy ERROR] ' + e.message); });
+  window.addEventListener('unhandledrejection', function(e) { console.error('[AfriVid Comedy PROMISE] ' + (e.reason?.message || e.reason)); });
+  console.log('[AfriVid Comedy] Initialized');
+})();
+</script>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AfriVid Comedy Studio — Create African animated comedy videos with personified animal characters.">
+<meta name="robots" content="noindex">
+<title>AfriVid Comedy Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;}
+.back-btn:hover{color:#F5A623;}
+.topbar-divider{width:1px;height:20px;background:rgba(255,255,255,0.1);}
+.topbar-title{font-size:1rem;font-weight:800;color:#fff;}
+.topbar-title span{color:#F5A623;}
+.user-badge{font-size:0.72rem;color:#74C69D;font-family:'Space Mono',monospace;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;}
+.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
+.main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2.5rem 2rem 6rem;}
+.comedy-hero{text-align:center;padding:3rem 2rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:2rem;}
+.comedy-hero-badge{display:inline-block;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:30px;padding:0.4rem 1.2rem;font-size:0.72rem;font-weight:700;color:#F5A623;letter-spacing:2px;font-family:'Space Mono',monospace;margin-bottom:1rem;}
+.comedy-hero h1{font-size:2.8rem;font-weight:900;line-height:1.1;margin-bottom:0.75rem;}
+.comedy-hero h1 span{color:#F5A623;}
+.comedy-hero p{color:rgba(255,255,255,0.5);font-size:0.95rem;max-width:500px;margin:0 auto 1.5rem;}
+.steps-bar{display:flex;gap:8px;margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.steps-bar::-webkit-scrollbar{display:none;}
+.step-pill{display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:rgba(255,255,255,0.35);font-size:0.78rem;font-weight:700;white-space:nowrap;flex-shrink:0;transition:all 0.2s;font-family:'Syne',sans-serif;cursor:default;}
+.step-pill.active{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.1);color:#F5A623;}
+.step-pill.done{border-color:rgba(116,198,157,0.3);background:rgba(116,198,157,0.08);color:#74C69D;}
+.step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.step-pill.active .step-dot{background:#F5A623;color:#050A14;}
+.step-pill.done .step-dot{background:#74C69D;color:#050A14;}
+.step-pill:not(.active):not(.done) .step-dot{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);}
+.panel{display:none;}.panel.active{display:block;}
+.card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.25rem;margin-bottom:1rem;}
+.card-title{font-size:0.95rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;color:#fff;}
+.card-icon{width:32px;height:32px;border-radius:8px;background:rgba(245,166,35,0.12);display:flex;align-items:center;justify-content:center;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.form-group{display:flex;flex-direction:column;gap:0.5rem;}
+.form-group.full{grid-column:span 2;}
+.form-label{font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#F5A623;font-family:'Space Mono',monospace;}
+.form-input,.form-select,.form-textarea{background:#1a1a1a;border:1px solid rgba(245,166,35,0.15);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;width:100%;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(245,166,35,0.5);}
+.form-textarea{resize:vertical;min-height:100px;line-height:1.6;}
+.form-select option{background:#1a1a1a;}
+.form-hint{font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;}
+.btn{padding:0.85rem 2rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+.btn-gold{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.3);}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
+.btn-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;}
+.char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:1rem;}
+.char-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;position:relative;}
+.char-emoji{font-size:2.5rem;text-align:center;margin-bottom:0.5rem;}
+.char-name{font-weight:700;font-size:0.85rem;color:#fff;margin-bottom:0.25rem;}
+.char-role{font-size:0.7rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;margin-bottom:0.5rem;}
+.char-remove{position:absolute;top:0.5rem;right:0.5rem;background:rgba(255,255,255,0.05);border:none;color:rgba(255,255,255,0.3);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:0.7rem;}
+.animal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:0.5rem;margin-bottom:1rem;}
+.animal-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem;text-align:center;cursor:pointer;font-size:1.4rem;transition:all 0.2s;}
+.animal-btn:hover,.animal-btn.selected{border-color:#F5A623;background:rgba(245,166,35,0.1);}
+.animal-btn span{display:block;font-size:0.55rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;margin-top:2px;}
+.scene-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;}
+.scene-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;}
+.scene-num{background:rgba(245,166,35,0.15);color:#F5A623;font-size:0.65rem;font-weight:700;font-family:'Space Mono',monospace;padding:0.2rem 0.5rem;border-radius:4px;}
+.scene-type{font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;}
+.scene-char{font-weight:700;font-size:0.85rem;margin-bottom:0.25rem;}
+.scene-text{font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.6;font-style:italic;}
+.scene-duration{font-size:0.65rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;margin-top:0.35rem;}
+.progress-wrap{background:rgba(255,255,255,0.06);border-radius:6px;height:8px;margin:0.75rem 0;}
+.progress-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,#F5A623,#74C69D);transition:width 0.5s;}
+.lock-overlay{position:fixed;inset:0;background:rgba(8,8,8,0.97);z-index:200;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+.lock-box{max-width:480px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;align-items:center;justify-content:center;}
+.modal-overlay.active{display:flex;}
+.login-box{background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;width:90%;max-width:420px;position:relative;}
+@media(max-width:768px){
+  .topbar{padding:0.75rem 1rem;}
+  .main{padding:1.5rem 1rem 5rem;}
+  .comedy-hero h1{font-size:1.8rem;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:span 1;}
+  .btn-row{flex-direction:column;}
+  .btn-row .btn{width:100%;justify-content:center;}
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">← Dashboard</a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">AfriVid <span>Comedy</span> Studio</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div id="user-badge" class="user-badge" style="display:none;"></div>
+    <button class="btn-signin" id="btn-signin" onclick="showLogin()" style="display:none;">Sign In</button>
+  </div>
+</nav>
+
+<div class="lock-overlay" id="lock-overlay">
+  <div class="lock-box">
+    <div style="font-size:3rem;margin-bottom:1rem;">🎭</div>
+    <div style="font-size:1.8rem;font-weight:900;margin-bottom:0.75rem;">AfriVid Comedy Studio</div>
+    <div style="color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;" id="lock-sub">Create African comedy videos with personified animal characters, multiple voices and accents.<br><br>This feature requires a <strong style="color:#F5A623;">Pro account</strong> or Comedy credits.</div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
+      <button onclick="showLogin()" class="btn btn-gold" style="width:100%;max-width:300px;justify-content:center;">Sign In to Continue</button>
+      <a href="pricing.html" style="color:rgba(255,255,255,0.4);font-size:0.8rem;font-family:'Space Mono',monospace;">View pricing →</a>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="comedy-main" style="display:none;">
+  <div class="comedy-hero">
+    <div class="comedy-hero-badge">🎭 COMEDY STUDIO — BETA</div>
+    <h1>African Characters.<br><span>Real Comedy.</span></h1>
+    <p>Pick your animal characters, set the scene, and AfriVid generates a full comedy video with voices, dialogue and African music.</p>
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">⚡ Pro feature · Each video uses 1 comedy credit</div>
+  </div>
+
+  <div class="steps-bar">
+    <div class="step-pill active" id="step-1-pill"><div class="step-dot">1</div>Characters</div>
+    <div class="step-pill" id="step-2-pill"><div class="step-dot">2</div>Episode & Scene</div>
+    <div class="step-pill" id="step-3-pill"><div class="step-dot">3</div>Script</div>
+    <div class="step-pill" id="step-4-pill"><div class="step-dot">4</div>Generate</div>
+  </div>
+  <div class="panel active" id="panel-1">
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📺</div>Comedy Series</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Series Name</label>
+          <input type="text" id="series-name" class="form-input" placeholder="e.g. The Savanna Files">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Video Length</label>
+          <select id="video-length" class="form-select">
+            <option value="30">30 seconds — TikTok/Reels</option>
+            <option value="45" selected>45 seconds — Shorts</option>
+            <option value="60">60 seconds — Full Short</option>
+            <option value="180">3 minutes — YouTube Episode</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Comedy Style</label>
+          <select id="comedy-style" class="form-select">
+            <option value="witty" selected>🧠 Witty — Smart dialogue</option>
+            <option value="slapstick">😂 Slapstick — Physical comedy</option>
+            <option value="roast">🔥 Roast — Characters mock each other</option>
+            <option value="cultural">🌍 Cultural — African everyday life</option>
+            <option value="workplace">💼 Workplace — Office/business comedy</option>
+            <option value="family">👨‍👩‍👧 Family — Household drama comedy</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Language</label>
+          <select id="comedy-language" class="form-select">
+            <option value="English" selected>English</option>
+            <option value="Swahili">Swahili</option>
+            <option value="Pidgin English">Pidgin English (Nigerian)</option>
+            <option value="Sheng">Sheng (Kenyan)</option>
+            <option value="French">French</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🦁</div>Characters <span style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-weight:400;margin-left:0.5rem;">2-5 characters</span></div>
+      <div class="char-grid" id="char-display"></div>
+      <div id="add-char-form" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.25rem;">
+        <div style="font-size:0.72rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:1rem;">+ ADD CHARACTER</div>
+        <div style="margin-bottom:0.75rem;">
+          <div class="form-label" style="margin-bottom:0.5rem;">Pick Animal</div>
+          <div class="animal-grid">
+            <div class="animal-btn" data-animal="🐔" onclick="selectAnimal('🐔','Hen')"><div>🐔</div><span>Hen</span></div>
+            <div class="animal-btn" data-animal="🦜" onclick="selectAnimal('🦜','Parrot')"><div>🦜</div><span>Parrot</span></div>
+            <div class="animal-btn" data-animal="🦁" onclick="selectAnimal('🦁','Lion')"><div>🦁</div><span>Lion</span></div>
+            <div class="animal-btn" data-animal="🐘" onclick="selectAnimal('🐘','Elephant')"><div>🐘</div><span>Elephant</span></div>
+            <div class="animal-btn" data-animal="🦒" onclick="selectAnimal('🦒','Giraffe')"><div>🦒</div><span>Giraffe</span></div>
+            <div class="animal-btn" data-animal="🐊" onclick="selectAnimal('🐊','Croc')"><div>🐊</div><span>Croc</span></div>
+            <div class="animal-btn" data-animal="🦓" onclick="selectAnimal('🦓','Zebra')"><div>🦓</div><span>Zebra</span></div>
+            <div class="animal-btn" data-animal="🐆" onclick="selectAnimal('🐆','Leopard')"><div>🐆</div><span>Leopard</span></div>
+            <div class="animal-btn" data-animal="🦏" onclick="selectAnimal('🦏','Rhino')"><div>🦏</div><span>Rhino</span></div>
+            <div class="animal-btn" data-animal="🐒" onclick="selectAnimal('🐒','Monkey')"><div>🐒</div><span>Monkey</span></div>
+            <div class="animal-btn" data-animal="🦛" onclick="selectAnimal('🦛','Hippo')"><div>🦛</div><span>Hippo</span></div>
+            <div class="animal-btn" data-animal="🐢" onclick="selectAnimal('🐢','Tortoise')"><div>🐢</div><span>Tortoise</span></div>
+          </div>
+        </div>
+        <div class="form-grid" style="margin-bottom:0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Character Name</label>
+            <input type="text" id="char-name" class="form-input" placeholder="e.g. Mama Njeri">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Voice</label>
+            <select id="char-voice" class="form-select">
+              <optgroup label="Female">
+                <option value="asteria">Asteria — Warm</option>
+                <option value="athena">Athena — Clear</option>
+                <option value="hera">Hera — Bold</option>
+                <option value="luna">Luna — Soft</option>
+              </optgroup>
+              <optgroup label="Male">
+                <option value="helios">Helios — Deep</option>
+                <option value="orion">Orion — Strong</option>
+                <option value="zeus">Zeus — Powerful</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Accent / Culture</label>
+            <select id="char-accent" class="form-select">
+              <option value="Kenyan English">Kenyan English</option>
+              <option value="Nigerian English">Nigerian English — Lagos</option>
+              <option value="South African English">South African — Joburg</option>
+              <option value="Ugandan English">Ugandan English</option>
+              <option value="Rwandan English">Rwandan English</option>
+              <option value="Tanzanian English">Tanzanian English</option>
+              <option value="Ghanaian English">Ghanaian English</option>
+              <option value="Standard English">Standard English</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Personality</label>
+            <select id="char-personality" class="form-select">
+              <option value="strict and traditional">Strict and Traditional</option>
+              <option value="hustler and street smart">Hustler and Street Smart</option>
+              <option value="cool and laid back">Cool and Laid Back</option>
+              <option value="dramatic and loud">Dramatic and Loud</option>
+              <option value="wise and philosophical">Wise and Philosophical</option>
+              <option value="naive and innocent">Naive and Innocent</option>
+              <option value="greedy and selfish">Greedy and Selfish</option>
+              <option value="anxious and nervous">Anxious and Nervous</option>
+            </select>
+          </div>
+        </div>
+        <button onclick="addCharacter()" class="btn btn-gold" style="width:100%;justify-content:center;">+ Add Character</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button onclick="goToStep(2)" class="btn btn-gold">Next — Set the Scene →</button>
+    </div>
+  </div>
+  <div class="panel" id="panel-2">
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📺</div>Episode</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Episode Number</label>
+          <input type="number" id="episode-num" class="form-input" value="1" min="1" max="999">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Episode Title</label>
+          <input type="text" id="episode-title" class="form-input" placeholder="e.g. The Rent Crisis">
+        </div>
+      </div>
+      <div style="margin-top:1rem;">
+        <div class="form-label" style="margin-bottom:0.5rem;">Previous Episodes</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.75rem;" id="episode-grid">
+          <div style="background:#1a1a1a;border:1px solid #F5A623;border-radius:10px;padding:0.75rem;text-align:center;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.25rem;">NEW</div>
+            <div style="font-size:0.8rem;font-weight:700;color:#fff;">New Episode</div>
+            <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:#F5A623;margin-top:0.25rem;">+ Create</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🎬</div>The Scenario</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
+        <button onclick="setScenario(this,'Rent is overdue and the landlord shows up unannounced')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">🏠 Rent drama</button>
+        <button onclick="setScenario(this,'Job interview goes hilariously wrong')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">💼 Job interview</button>
+        <button onclick="setScenario(this,'Village meeting gets completely out of hand')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">🌳 Village meeting</button>
+        <button onclick="setScenario(this,'Someone borrowed money and keeps making excuses')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">💸 Borrowed money</button>
+        <button onclick="setScenario(this,'Wedding planning chaos with too many opinions')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">💒 Wedding chaos</button>
+        <button onclick="setScenario(this,'Market day bargaining goes too far')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">🛒 Market bargain</button>
+        <button onclick="setScenario(this,'Social media post causes family drama')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">📱 Social media drama</button>
+        <button onclick="setScenario(this,'First day at a new job with a terrible boss')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;">😤 Terrible boss</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Scenario Description</label>
+        <textarea id="scenario-text" class="form-textarea" placeholder="Describe what happens... e.g. Mama Njeri comes to collect rent but Chidi keeps making excuses about the economy..."></textarea>
+        <div class="form-hint">Be specific — the more detail, the funnier the script</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button onclick="goToStep(1)" class="btn btn-outline">← Back</button>
+      <button onclick="generateScript()" class="btn btn-gold" id="btn-generate-script">✦ Generate Comedy Script →</button>
+    </div>
+  </div>
+  <div class="panel" id="panel-3">
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📝</div>Comedy Script <span id="script-ep-label" style="font-size:0.72rem;color:rgba(255,255,255,0.3);font-weight:400;margin-left:0.5rem;font-family:'Space Mono',monospace;"></span></div>
+      <div id="script-loading" style="text-align:center;padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">✍️</div>
+        <div style="color:#F5A623;font-weight:700;margin-bottom:0.5rem;">Writing your comedy script...</div>
+        <div style="color:rgba(255,255,255,0.3);font-size:0.8rem;font-family:'Space Mono',monospace;">AI is crafting dialogue for your characters</div>
+        <div class="progress-wrap" style="margin-top:1rem;"><div class="progress-bar" id="script-progress" style="width:0%"></div></div>
+      </div>
+      <div id="script-scenes" style="display:none;"></div>
+    </div>
+    <div class="btn-row" id="script-actions" style="display:none;">
+      <button onclick="goToStep(2)" class="btn btn-outline">← Redo Scenario</button>
+      <button onclick="generateScript()" class="btn btn-outline">🔄 Regenerate</button>
+      <button onclick="goToStep(4)" class="btn btn-gold">Generate Video →</button>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-4">
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🎬</div>Generating Comedy Video</div>
+      <div style="text-align:center;padding:1.5rem 0;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;" id="gen-emoji">🎭</div>
+        <div style="font-weight:700;font-size:1rem;margin-bottom:0.5rem;" id="gen-stage">Preparing characters...</div>
+        <div class="progress-wrap"><div class="progress-bar" id="gen-progress" style="width:0%"></div></div>
+        <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;" id="gen-pct">0%</div>
+      </div>
+      <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:1rem;margin-top:1rem;">
+        <div style="color:#F5A623;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">📧 We will email you when ready!</div>
+        <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;" id="gen-email-display">Processing your video...</div>
+      </div>
+      <div id="comedy-dashboard-btn" style="display:none;margin-top:1rem;gap:0.5rem;flex-wrap:wrap;">
+        <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard</a>
+        <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
+      </div>
+    </div>
+    <div class="card" id="comedy-result" style="display:none;">
+      <div class="card-title"><div class="card-icon">🎉</div>Your Comedy Video is Ready!</div>
+      <video id="comedy-preview" controls style="width:100%;border-radius:10px;background:#000;max-height:400px;margin-bottom:1rem;"></video>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <button id="comedy-download-btn" data-url="" onclick="downloadComedyVideo()" class="btn btn-gold">⬇ Download Video</button>
+        <button onclick="uploadComedyToYouTube()" class="btn" style="background:#FF0000;color:#fff;border:none;padding:0.85rem 2rem;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;">▶ Upload to YouTube</button>
+        <button onclick="goToStep(2)" class="btn btn-outline">🎬 Make Another Episode</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="login-modal">
+  <div class="login-box">
+    <button onclick="closeLogin()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.2rem;cursor:pointer;">✕</button>
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:1.5rem;font-weight:900;margin-bottom:0.25rem;">Sign In</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">AfriVid Comedy Studio</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+      <input type="email" id="login-email" placeholder="Email address" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;width:100%;">
+      <input type="password" id="login-password" placeholder="Password" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;width:100%;">
+      <button onclick="doSignIn()" class="btn btn-gold" style="width:100%;justify-content:center;">Sign In →</button>
+    </div>
+    <div style="text-align:center;margin-top:1rem;">
+      <a href="pricing.html" style="color:rgba(255,255,255,0.3);font-size:0.78rem;">Need an account? View pricing →</a>
+    </div>
+  </div>
+</div>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp, getDocs, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  window.currentUser = user;
+  if (user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    document.getElementById('user-badge').style.display = 'block';
+    document.getElementById('user-badge').textContent = user.displayName || user.email.split('@')[0];
+    try {
+      const snap = await getDoc(doc(db, 'studio_users', user.uid));
+      const data = snap.data() || {};
+      const plan = data.plan || 'beta';
+      const comedyCredits = data.comedy_credits || 0;
+      const hasAccess = plan === 'pro' || plan === 'admin' || comedyCredits > 0;
+      if (hasAccess) {
+        document.getElementById('lock-overlay').style.display = 'none';
+        document.getElementById('comedy-main').style.display = 'block';
+        window._userPlan = plan;
+        loadEpisodes(user.uid);
+      } else {
+        document.getElementById('lock-sub').innerHTML = 'You need a <strong style="color:#F5A623;">Pro account</strong> or comedy credits.<br><br>Current plan: <strong style="color:#fff;">' + plan + '</strong>';
+      }
+    } catch(e) { console.error('Auth check:', e); }
+  } else {
+    document.getElementById('btn-signin').style.display = 'block';
+  }
+});
+
+async function loadEpisodes(uid) {
+  try {
+    const q = query(collection(db, 'comedy_episodes'), where('userId','==',uid), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    const grid = document.getElementById('episode-grid');
+    snap.forEach(d => {
+      const ep = d.data();
+      const card = document.createElement('div');
+      card.style.cssText = 'background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem;text-align:center;cursor:pointer;';
+      card.innerHTML = '<div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:Space Mono,monospace;margin-bottom:0.25rem;">EP ' + ep.episodeNum + '</div><div style="font-size:0.8rem;font-weight:700;color:#fff;">' + (ep.episodeTitle||'Untitled') + '</div><div style="font-size:0.6rem;font-family:Space Mono,monospace;color:#74C69D;margin-top:0.25rem;">Done</div>';
+      grid.appendChild(card);
+    });
+  } catch(e) { console.log('Episodes:', e); }
+}
+
+window.doSignIn = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    closeLogin();
+  } catch(e) { alert('Sign in failed: ' + e.message); }
+};
+
+window.saveEpisode = async function(data) {
+  if (!currentUser) return;
+  try {
+    await addDoc(collection(db, 'comedy_episodes'), { ...data, userId: currentUser.uid, createdAt: serverTimestamp() });
+  } catch(e) { console.error('Save episode:', e); }
+};
+
+window.generateScript = async function() {
+  const chars = window._characters || [];
+  if (chars.length < 2) { alert('Please add at least 2 characters'); return; }
+  const scenario = document.getElementById('scenario-text').value.trim();
+  if (!scenario) { alert('Please describe the scenario'); return; }
+  goToStep(3);
+  document.getElementById('script-loading').style.display = 'block';
+  document.getElementById('script-scenes').style.display = 'none';
+  document.getElementById('script-actions').style.display = 'none';
+  let prog = 0;
+  const pi = setInterval(() => { prog = Math.min(prog+2,85); document.getElementById('script-progress').style.width = prog+'%'; }, 100);
+  const length = parseInt(document.getElementById('video-length').value);
+  const style = document.getElementById('comedy-style').value;
+  const language = document.getElementById('comedy-language').value;
+  const epNum = document.getElementById('episode-num').value;
+  const epTitle = document.getElementById('episode-title').value || 'Untitled Episode';
+  const seriesName = document.getElementById('series-name').value || 'AfriVid Comedy';
+  document.getElementById('script-ep-label').textContent = 'EP ' + epNum + ' — ' + epTitle;
+  const charDesc = chars.map(c => c.name + ' (' + c.emoji + ' ' + c.animal + ', ' + c.personality + ', ' + c.accent + ')').join(', ');
+  const sceneCount = length <= 30 ? 6 : length <= 45 ? 8 : length <= 60 ? 10 : 20;
+  try {
+    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:2000,
+        messages:[{role:'user', content:'Write a ' + style + ' African comedy script in ' + language + ' for a ' + length + '-second video.\nSeries: ' + seriesName + '\nEpisode ' + epNum + ': ' + epTitle + '\nScenario: ' + scenario + '\nCharacters: ' + charDesc + '\nReturn ONLY a JSON array of exactly ' + sceneCount + ' scenes:\n[{"scene":1,"type":"narration|dialogue|reaction|text","character":"name or NARRATOR","text":"what they say","duration":3,"emotion":"happy|angry|shocked|nervous|laughing"}]\nRules: start with NARRATOR setting scene, alternate characters, each line max 15 words, end with funny punchline, total duration=' + length + 's, return ONLY JSON array'}]
+      })
+    });
+    const data = await res.json();
+    clearInterval(pi);
+    document.getElementById('script-progress').style.width = '100%';
+    const text = data.content[0].text;
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('No script generated');
+    const scenes = JSON.parse(match[0]);
+    window._comedyScript = scenes;
+    window._comedyMeta = { seriesName, epNum, epTitle, length, style, language, chars };
+    renderScript(scenes);
+  } catch(e) {
+    clearInterval(pi);
+    document.getElementById('script-loading').innerHTML = '<div style="color:#ff6b6b;text-align:center;padding:1rem;">Failed: ' + e.message + '<br><br><button onclick="goToStep(2)" class="btn btn-outline">Try Again</button></div>';
+  }
+};
+
+window.renderScript = function(scenes) {
+  const chars = window._characters || [];
+  document.getElementById('script-loading').style.display = 'none';
+  const c = document.getElementById('script-scenes');
+  c.style.display = 'block'; c.innerHTML = '';
+  scenes.forEach(s => {
+    const ch = chars.find(x => x.name === s.character);
+    const div = document.createElement('div');
+    div.className = 'scene-card';
+    div.innerHTML = '<div class="scene-header"><div class="scene-num">SCENE ' + s.scene + '</div><div class="scene-type">' + (s.type||'dialogue').toUpperCase() + '</div></div><div class="scene-char">' + (ch?ch.emoji+' ':'') + s.character + (s.emotion?' <span style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:Space Mono,monospace;">['+s.emotion+']</span>':'') + '</div><div class="scene-text">"' + s.text + '"</div><div class="scene-duration">Duration: ' + s.duration + 's</div>';
+    c.appendChild(div);
+  });
+  document.getElementById('script-actions').style.display = 'flex';
+};
+
+window.generateComedyVideo = async function() {
+  if (!window.currentUser) { alert('Please sign in'); return; }
+  const script = window._comedyScript;
+  const meta = window._comedyMeta;
+  const chars = window._characters;
+  if (!script||!chars) { alert('Please generate a script first'); return; }
+  const stages = [
+    {emoji:'🎭',text:'Setting up characters...',pct:10},
+    {emoji:'🎙',text:'Generating voices...',pct:25},
+    {emoji:'🖼',text:'Finding character images...',pct:45},
+    {emoji:'🎬',text:'Assembling scenes...',pct:65},
+    {emoji:'🎵',text:'Adding music and effects...',pct:80},
+    {emoji:'✅',text:'Finishing up...',pct:92}
+  ];
+  let si = 0;
+  const sInt = setInterval(() => { if(si<stages.length){const s=stages[si];document.getElementById('gen-emoji').textContent=s.emoji;document.getElementById('gen-stage').textContent=s.text;document.getElementById('gen-progress').style.width=s.pct+'%';document.getElementById('gen-pct').textContent=s.pct+'%';si++;} }, 3000);
+  const ed = document.getElementById('gen-email-display');
+  if (window.currentUser.email) ed.textContent = 'Will email ' + window.currentUser.email + ' when ready';
+  try {
+    const jobId = 'comedy_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-comedy', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ job_id:jobId, script, characters:chars, meta, user_email:window.currentUser.email, user_id:window.currentUser.uid })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    clearInterval(sInt);
+    await window.saveEpisode({ seriesName:meta.seriesName, episodeNum:meta.epNum, episodeTitle:meta.epTitle, jobId:data.job_id||jobId, status:'processing' });
+    document.getElementById('comedy-dashboard-btn').style.display = 'flex';
+    window._comedyPoll = setInterval(async () => {
+      try {
+        const r = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + (data.job_id||jobId));
+        const d = await r.json();
+        document.getElementById('gen-progress').style.width = (d.progress||0)+'%';
+        document.getElementById('gen-pct').textContent = (d.progress||0)+'%';
+        document.getElementById('gen-stage').textContent = d.stage||'Processing...';
+        if (d.status==='completed'&&d.output_url) {
+          clearInterval(window._comedyPoll);
+          document.getElementById('gen-progress').style.width='100%';
+          document.getElementById('comedy-result').style.display='block';
+          document.getElementById('comedy-preview').src=d.output_url;
+          document.getElementById('comedy-download-btn').dataset.url=d.output_url;
+          window._comedyVideoUrl=d.output_url;
+        }
+        if (d.status==='failed') { clearInterval(window._comedyPoll); document.getElementById('gen-stage').textContent='Failed. Please try again.'; }
+      } catch(e) { console.error('Poll:',e); }
+    }, 4000);
+  } catch(e) {
+    clearInterval(sInt);
+    document.getElementById('gen-stage').textContent = 'Failed: ' + e.message;
+    document.getElementById('gen-emoji').textContent = '❌';
+  }
+};
+
+window.downloadComedyVideo = async function() {
+  const btn = document.getElementById('comedy-download-btn');
+  const url = btn.dataset.url;
+  if (!url) { alert('No video ready'); return; }
+  btn.textContent='Downloading...'; btn.disabled=true;
+  try {
+    const r = await fetch('https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(url));
+    const b = await r.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = 'AfriVid-Comedy-' + (window._comedyMeta?.seriesName||'Episode') + '.mp4';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch(e) { alert('Download failed: '+e.message); }
+  btn.textContent='⬇ Download Video'; btn.disabled=false;
+};
+
+window.uploadComedyToYouTube = function() {
+  if (!window._comedyVideoUrl) { alert('No video ready'); return; }
+  window._serverVideoUrl = window._comedyVideoUrl;
+  window._scriptData = { title:(window._comedyMeta?.seriesName||'AfriVid Comedy')+' EP'+(window._comedyMeta?.epNum||1)+' — '+(window._comedyMeta?.epTitle||''), description:'African comedy series — afrivid.studio' };
+  alert('YouTube upload coming soon for Comedy Studio!');
+};
+
+console.log('[AfriVid Comedy] Ready');
+</script>
+<script>
+window._characters = [];
+window._selectedAnimal = null;
+
+window.selectAnimal = function(emoji, animal) {
+  window._selectedAnimal = { emoji, animal };
+  document.querySelectorAll('.animal-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('[data-animal="' + emoji + '"]')?.classList.add('selected');
+};
+
+window.addCharacter = function() {
+  const name = document.getElementById('char-name').value.trim();
+  if (!name) { alert('Please enter a character name'); return; }
+  if (!window._selectedAnimal) { alert('Please pick an animal'); return; }
+  if (window._characters.length >= 5) { alert('Maximum 5 characters'); return; }
+  const char = {
+    name,
+    voice: document.getElementById('char-voice').value,
+    accent: document.getElementById('char-accent').value,
+    personality: document.getElementById('char-personality').value,
+    emoji: window._selectedAnimal.emoji,
+    animal: window._selectedAnimal.animal
+  };
+  window._characters.push(char);
+  renderCharacters();
+  document.getElementById('char-name').value = '';
+  window._selectedAnimal = null;
+  document.querySelectorAll('.animal-btn').forEach(b => b.classList.remove('selected'));
+};
+
+window.removeCharacter = function(idx) {
+  window._characters.splice(idx, 1);
+  renderCharacters();
+};
+
+window.renderCharacters = function() {
+  const grid = document.getElementById('char-display');
+  grid.innerHTML = '';
+  window._characters.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'char-card';
+    div.innerHTML = '<button class="char-remove" onclick="removeCharacter(' + i + ')">✕</button><div class="char-emoji">' + c.emoji + '</div><div class="char-name">' + c.name + '</div><div class="char-role">' + c.accent + '</div><div style="font-size:0.68rem;color:rgba(255,255,255,0.25);font-family:Space Mono,monospace;">' + c.voice + ' · ' + c.personality.split(' ')[0] + '</div>';
+    grid.appendChild(div);
+  });
+};
+
+window.setScenario = function(btn, text) {
+  document.getElementById('scenario-text').value = text;
+  document.querySelectorAll('[onclick^="setScenario"]').forEach(b => { b.style.borderColor='rgba(255,255,255,0.08)'; b.style.color='rgba(255,255,255,0.6)'; });
+  btn.style.borderColor = '#F5A623';
+  btn.style.color = '#F5A623';
+};
+
+window.goToStep = function(step) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('panel-' + i).classList.remove('active');
+    const pill = document.getElementById('step-' + i + '-pill');
+    if (i < step) { pill.classList.remove('active'); pill.classList.add('done'); pill.querySelector('.step-dot').textContent = '✓'; }
+    else if (i === step) { pill.classList.add('active'); pill.classList.remove('done'); }
+    else { pill.classList.remove('active','done'); pill.querySelector('.step-dot').textContent = i; }
+  }
+  document.getElementById('panel-' + step).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (step === 4) window.generateComedyVideo();
+};
+
+window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); };
+window.closeLogin = function() { document.getElementById('login-modal').classList.remove('active'); };
+</script>
+</body>
+</html>
