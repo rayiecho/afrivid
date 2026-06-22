@@ -4096,7 +4096,7 @@ window.buildProductPoster = async function(previewMode, downloadMode) {
     : '<div style="width:64px;height:64px;background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 + ');border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><span style="color:#050A14;font-size:26px;font-weight:900;">' + name[0] + '</span></div>';
 
   const ppHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-    + '<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:980px;background:radial-gradient(ellipse at 30% 20%,rgba(245,166,35,0.07) 0%,transparent 60%),' + t.bg + ';font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>'
+    + '<style>*{margin:0;padding:0;box-sizing:border-box;}body{width:800px;height:780px;background:radial-gradient(ellipse at 30% 20%,rgba(245,166,35,0.07) 0%,transparent 60%),' + t.bg + ';font-family:Arial,sans-serif;overflow:hidden;position:relative;}</style>'
     + '</head><body>'
     + africaWatermark
     + '<div style="height:5px;background:linear-gradient(90deg,' + t.accent + ',' + t.accent2 + ',' + t.accent + ');"></div>'
@@ -4125,7 +4125,7 @@ window.buildProductPoster = async function(previewMode, downloadMode) {
 
   const dlBtn = document.getElementById('pp-download-btn');
   if (dlBtn) dlBtn.style.display = 'block';
-  await renderAndDownload(ppHtml, 'productPoster', 800, 980, previewMode);
+  await renderAndDownload(ppHtml, 'productPoster', 800, 780, previewMode);
 };
 </script>
 
