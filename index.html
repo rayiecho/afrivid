@@ -1154,28 +1154,22 @@ async function submitGlobalUpgrade() {
 }
 </script>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getCountFromServer, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-const {getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-const db = getFirestore(app);
-
-try {
-  const [usersSnap, videosSnap] = await Promise.all([
-    getCountFromServer(collection(db, 'studio_users')),
-    getCountFromServer(collection(db, 'studio_videos'))
-  ]);
-  const users = usersSnap.data().count || 0;
-  const videos = videosSnap.data().count || 0;
-  document.getElementById('stat-users').textContent = users + '+';
-  document.getElementById('stat-videos').textContent = videos + '+';
-} catch(e) {
-  document.getElementById('stat-users').textContent = '6+';
-  document.getElementById('stat-videos').textContent = '65+';
-}
+<script>
+(async () => {
+  try {
+    const { getFirestore, collection, getCountFromServer } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const db = getFirestore();
+    const [usersSnap, videosSnap] = await Promise.all([
+      getCountFromServer(collection(db, 'studio_users')),
+      getCountFromServer(collection(db, 'studio_videos'))
+    ]);
+    document.getElementById('stat-users').textContent = usersSnap.data().count + '+';
+    document.getElementById('stat-videos').textContent = videosSnap.data().count + '+';
+  } catch(e) {
+    document.getElementById('stat-users').textContent = '6+';
+    document.getElementById('stat-videos').textContent = '65+';
+  }
+})();
 </script>
 </body>
 </html>
