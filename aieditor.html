@@ -318,7 +318,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       </div>
     </div>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <a href="studio.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
+      <a href="index.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
       <a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Dashboard</a>
       <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
     </div>
@@ -775,7 +775,7 @@ function loadVideo(file) {
     const estStr = estMin > 0 ? `${estMin}m ${estSec}s` : `${estSec}s`;
     const sizeStr = (file.size / 1024 / 1024).toFixed(1);
     addLog('all', `[i] Estimated processing time: ~${estStr} | File size: ${sizeStr}MB`);
-    if (dur > 300) addLog('all', '[!] Large video detected. Processing may take several minutes. Keep this tab open.');
+    if (dur > 300 && !window._phase2Mode) addLog('all', '[!] Large video detected. Processing may take several minutes. Keep this tab open.');
   }, 500);
     video.addEventListener('durationchange', () => {
       if(video.duration && isFinite(video.duration)) {
