@@ -309,6 +309,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <video id="wh-preview" controls style="width:100%;border-radius:10px;background:#000;max-height:420px;margin-bottom:1rem;"></video>
       <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
         <button id="wh-download-btn" data-url="" onclick="downloadEpisode()" class="btn btn-gold">⬇ Download Episode</button>
+        <button id="wh-tiktok-btn" data-url="" onclick="cutTikTok()" class="btn btn-outline" style="display:none;">✂️ Cut TikTok Clips</button>
+        <button id="wh-youtube-btn" data-url="" onclick="cutYouTube()" class="btn btn-outline" style="display:none;">▶️ Cut YouTube Clips</button>
+        <div id="youtube-status" style="display:none;margin-top:0.75rem;">
+          <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;font-family:'Space Mono',monospace;" id="youtube-status-text">Cutting clips...</div>
+          <div id="youtube-clips-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-top:0.75rem;"></div>
+        </div>
+        <div id="tiktok-status" style="display:none;margin-top:0.75rem;">
+          <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;font-family:'Space Mono',monospace;" id="tiktok-status-text">Cutting clips...</div>
+          <div id="tiktok-clips-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-top:0.75rem;"></div>
+        </div>
         <button onclick="uploadEpisodeToYouTube()" class="btn" style="background:#FF0000;color:#fff;border:none;padding:0.85rem 2rem;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;">▶ Upload to YouTube</button>
         <button onclick="goToStep(1)" class="btn btn-outline">🎬 Next Episode</button>
       </div>
@@ -341,6 +351,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <div id="pod-result" style="display:none;margin-top:1rem;">
           <video id="pod-video" controls style="width:100%;border-radius:8px;"></video>
           <a id="pod-download" href="#" download style="display:block;text-align:center;margin-top:0.75rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;">⬇ Download Episode</a>
+        <button id="pod-tiktok-btn" onclick="cutPodcastTikTok()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">✂️ Cut TikTok Clips</button>
+        <button id="pod-youtube-btn" onclick="cutPodcastYouTube()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">▶️ Cut YouTube Clips</button>
         </div>
       </div>
     </div>
@@ -543,6 +555,10 @@ window.generateEpisode = async function() {
           document.getElementById('wh-result').style.display='block';
           document.getElementById('wh-preview').src=d.output_url;
           document.getElementById('wh-download-btn').dataset.url=d.output_url;
+          document.getElementById('wh-tiktok-btn').dataset.url=d.output_url;
+          document.getElementById('wh-tiktok-btn').style.display='flex';
+          document.getElementById('wh-youtube-btn').dataset.url=d.output_url;
+          document.getElementById('wh-youtube-btn').style.display='flex';
           window._whVideoUrl=d.output_url;
         }
         if (d.status==='failed') { clearInterval(window._whPoll); document.getElementById('gen-stage').textContent='Failed. Try again.'; }
@@ -621,6 +637,55 @@ window.closeLogin = function() { document.getElementById('login-modal').classLis
 
 console.log('[Watering Hole] Ready');
 
+// ── TIKTOK CUTTER ────────────────────────────────
+window.cutTikTok = async function() {
+  const btn = document.getElementById('wh-tiktok-btn');
+  const url = btn.dataset.url;
+  if (!url) return;
+  btn.disabled = true;
+  btn.textContent = '✂️ Cutting...';
+  document.getElementById('tiktok-status').style.display = 'block';
+  document.getElementById('tiktok-status-text').textContent = 'Sending to cutter...';
+  const jobId = 'tiktok_' + Date.now();
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({job_id: jobId, video_url: url, title: window._scriptData?.title || 'Watering Hole', clip_duration: 58})
+    });
+    const data = await res.json();
+    if (!data.accepted) throw new Error('Not accepted');
+    // Poll
+    let done = false, attempts = 0;
+    while (!done && attempts < 30) {
+      await new Promise(r => setTimeout(r, 8000));
+      attempts++;
+      const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+      const status = await st.json();
+      document.getElementById('tiktok-status-text').textContent = status.stage || 'Cutting...';
+      if (status.status === 'completed') {
+        done = true;
+        try {
+          const clips = JSON.parse(status.stage);
+          const grid = document.getElementById('tiktok-clips-grid');
+          grid.innerHTML = clips.map(cl => `
+            <a href="${cl.url}" download style="display:block;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.5rem;text-align:center;color:#F5A623;font-size:0.72rem;font-family:'Space Mono',monospace;text-decoration:none;">
+              📱 Clip ${cl.clip}<br><span style="color:rgba(255,255,255,0.3);font-size:0.65rem;">${cl.start}s–${cl.start+cl.duration}s</span>
+            </a>`).join('');
+          document.getElementById('tiktok-status-text').textContent = `✅ ${clips.length} TikTok clips ready!`;
+        } catch(e) {
+          document.getElementById('tiktok-status-text').textContent = '✅ Clips ready — check downloads';
+        }
+      } else if (status.status === 'failed') {
+        throw new Error(status.stage);
+      }
+    }
+  } catch(e) {
+    document.getElementById('tiktok-status-text').textContent = '❌ ' + e.message;
+  }
+  btn.disabled = false;
+  btn.textContent = '✂️ Cut TikTok Clips';
+};
 // ── PODCAST TAB ──────────────────────────────────
 const PODCAST_EPISODES = [
   {ep:1, title:"The Hustler's Budget", desc:"Kenya Finance Bill 2025 — who really pays?"},
@@ -727,6 +792,128 @@ async function generatePodcast() {
     document.getElementById('pod-gen-btn').style.display = 'block';
   }
 }
+window.cutYouTube = async function() {
+  const btn = document.getElementById('wh-youtube-btn');
+  const url = btn.dataset.url;
+  if (!url) return;
+  btn.disabled = true;
+  btn.textContent = '▶️ Cutting...';
+  document.getElementById('youtube-status').style.display = 'block';
+  document.getElementById('youtube-status-text').textContent = 'Cutting YouTube clips (8 min max)...';
+  const jobId = 'yt_' + Date.now();
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({job_id: jobId, video_url: url, title: window._scriptData?.title || 'Watering Hole', clip_duration: 480})
+    });
+    await res.json();
+    let done = false, attempts = 0;
+    while (!done && attempts < 30) {
+      await new Promise(r => setTimeout(r, 8000));
+      attempts++;
+      const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+      const status = await st.json();
+      document.getElementById('youtube-status-text').textContent = status.stage || 'Cutting...';
+      if (status.status === 'completed') {
+        done = true;
+        try {
+          const clips = JSON.parse(status.stage);
+          const grid = document.getElementById('youtube-clips-grid');
+          grid.innerHTML = clips.map(cl => `
+            <a href="${cl.url}" download style="display:block;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.5rem;text-align:center;color:#F5A623;font-size:0.72rem;font-family:'Space Mono',monospace;text-decoration:none;">
+              ▶️ Part ${cl.clip}<br><span style="color:rgba(255,255,255,0.3);font-size:0.65rem;">${Math.floor(cl.start/60)}m–${Math.floor((cl.start+cl.duration)/60)}m</span>
+            </a>`).join('');
+          document.getElementById('youtube-status-text').textContent = `✅ ${clips.length} YouTube clips ready!`;
+        } catch(e) {}
+      } else if (status.status === 'failed') {
+        document.getElementById('youtube-status-text').textContent = '❌ ' + status.stage;
+        break;
+      }
+    }
+  } catch(e) {
+    document.getElementById('youtube-status-text').textContent = '❌ ' + e.message;
+  }
+  btn.disabled = false;
+  btn.textContent = '▶️ Cut YouTube Clips';
+};
+
+window.cutPodcastYouTube = async function() {
+  const url = document.getElementById('pod-video').src;
+  if (!url) return;
+  const jobId = 'yt_pod_' + Date.now();
+  document.getElementById('pod-youtube-btn').textContent = '▶️ Cutting...';
+  document.getElementById('pod-youtube-btn').disabled = true;
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({job_id: jobId, video_url: url, title: 'Watering Hole Podcast', clip_duration: 480})
+    });
+    await res.json();
+    let done = false, attempts = 0;
+    while (!done && attempts < 30) {
+      await new Promise(r => setTimeout(r, 8000));
+      attempts++;
+      const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+      const status = await st.json();
+      if (status.status === 'completed') {
+        done = true;
+        try {
+          const clips = JSON.parse(status.stage);
+          const links = clips.map(cl => `<a href="${cl.url}" download style="color:#F5A623;font-size:0.75rem;display:block;margin-top:0.3rem;">▶️ Part ${cl.clip} (${Math.floor(cl.start/60)}m–${Math.floor((cl.start+cl.duration)/60)}m)</a>`).join('');
+          document.getElementById('pod-youtube-btn').insertAdjacentHTML('afterend', `<div style="margin-top:0.5rem;">${links}</div>`);
+        } catch(e) {}
+        document.getElementById('pod-youtube-btn').textContent = '✅ Parts Ready';
+      } else if (status.status === 'failed') {
+        document.getElementById('pod-youtube-btn').textContent = '❌ Failed';
+        break;
+      }
+    }
+  } catch(e) {
+    document.getElementById('pod-youtube-btn').textContent = '❌ Error';
+  }
+  document.getElementById('pod-youtube-btn').disabled = false;
+};
+
+window.cutPodcastTikTok = async function() {
+  const url = document.getElementById('pod-video').src;
+  if (!url) return;
+  const ep = _selectedPodcastEp || 1;
+  const jobId = 'tiktok_pod_' + Date.now();
+  document.getElementById('pod-tiktok-btn').textContent = '✂️ Cutting...';
+  document.getElementById('pod-tiktok-btn').disabled = true;
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({job_id: jobId, video_url: url, title: 'Watering Hole Podcast EP' + ep, clip_duration: 58})
+    });
+    const data = await res.json();
+    let done = false, attempts = 0;
+    while (!done && attempts < 30) {
+      await new Promise(r => setTimeout(r, 8000));
+      attempts++;
+      const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+      const status = await st.json();
+      if (status.status === 'completed') {
+        done = true;
+        try {
+          const clips = JSON.parse(status.stage);
+          const links = clips.map(cl => `<a href="${cl.url}" download style="color:#F5A623;font-size:0.75rem;display:block;margin-top:0.3rem;">📱 Clip ${cl.clip} (${cl.start}s–${cl.start+cl.duration}s)</a>`).join('');
+          document.getElementById('pod-tiktok-btn').insertAdjacentHTML('afterend', `<div style="margin-top:0.5rem;">${links}</div>`);
+        } catch(e) {}
+        document.getElementById('pod-tiktok-btn').textContent = '✅ Clips Ready';
+      } else if (status.status === 'failed') {
+        document.getElementById('pod-tiktok-btn').textContent = '❌ Failed';
+        break;
+      }
+    }
+  } catch(e) {
+    document.getElementById('pod-tiktok-btn').textContent = '❌ Error';
+  }
+  document.getElementById('pod-tiktok-btn').disabled = false;
+};
 // ─────────────────────────────────────────────────
 </script>
 </body>
