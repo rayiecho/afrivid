@@ -135,6 +135,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     </div>
   </div>
 
+  <!-- TAB SWITCHER -->
+  <div style="display:flex;gap:0;justify-content:center;margin:1.5rem 0 0;border-bottom:1px solid rgba(255,255,255,0.08);">
+    <button id="tab-series" onclick="switchTab('series')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid #F5A623;color:#F5A623;font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">🎭 Comedy Series</button>
+    <button id="tab-podcast" onclick="switchTab('podcast')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.4);font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">🎙️ Podcast</button>
+  </div>
+
+  <!-- SERIES SECTION -->
+  <div id="section-series">
   <div class="steps-bar">
     <div class="step-pill active" id="step-1-pill"><div class="step-dot">1</div>Episode</div>
     <div class="step-pill" id="step-2-pill"><div class="step-dot">2</div>Cast & Scene</div>
@@ -306,6 +314,42 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       </div>
     </div>
   </div>
+  </div><!-- end section-series -->
+
+  <!-- PODCAST SECTION -->
+  <div id="section-podcast" style="display:none;">
+    <div class="hero" style="padding:1.5rem 0 1rem;">
+      <div class="hero-badge">🎙️ LINDA MWANANCHI CHANNEL</div>
+      <h1 style="font-size:2rem;">The Watering Hole<br><span>Podcast</span></h1>
+      <div class="hero-tagline">"Where the animals discuss what the humans won't"</div>
+    </div>
+    <div style="max-width:900px;margin:0 auto;padding:0 1rem;">
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:1rem;">SEASON 1 — KENYA POLITICS</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;" id="podcast-episode-grid"></div>
+    </div>
+    <div style="max-width:600px;margin:2rem auto;padding:0 1rem;" id="podcast-generate-section">
+      <div class="card">
+        <div class="card-title"><div class="card-icon">🎙️</div><span id="pod-ep-title">Select an Episode</span></div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;" id="pod-ep-desc"></div>
+        <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="generatePodcast()" id="pod-gen-btn">🎙️ Generate Episode</button>
+        <div id="pod-status" style="display:none;margin-top:1rem;text-align:center;">
+          <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;" id="pod-status-text">Generating...</div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:4px;margin-top:0.5rem;">
+            <div id="pod-progress-bar" style="background:#F5A623;height:4px;border-radius:4px;width:0%;transition:width 0.5s;"></div>
+          </div>
+        </div>
+        <div id="pod-result" style="display:none;margin-top:1rem;">
+          <video id="pod-video" controls style="width:100%;border-radius:8px;"></video>
+          <a id="pod-download" href="#" download style="display:block;text-align:center;margin-top:0.75rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;">⬇ Download Episode</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:900px;margin:0 auto;padding:0 1rem 2rem;">
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:1rem;">RECENT EPISODES</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem;" id="podcast-history"></div>
+    </div>
+  </div><!-- end section-podcast -->
+
 
 </div>
 
@@ -576,6 +620,114 @@ window.showLogin = function() { document.getElementById('login-modal').classList
 window.closeLogin = function() { document.getElementById('login-modal').classList.remove('active'); };
 
 console.log('[Watering Hole] Ready');
+
+// ── PODCAST TAB ──────────────────────────────────
+const PODCAST_EPISODES = [
+  {ep:1, title:"The Hustler's Budget", desc:"Kenya Finance Bill 2025 — who really pays?"},
+  {ep:2, title:"Who Ate the Money?", desc:"Government corruption scandals exposed"},
+  {ep:3, title:"The Protest Generation", desc:"Gen Z protests and the parliament raid"},
+  {ep:4, title:"Beba Beba", desc:"Cost of living, fuel prices, unga crisis"},
+  {ep:5, title:"The Handshake", desc:"Political betrayals and broken coalitions"},
+  {ep:6, title:"Mama Mboga Economy", desc:"Small businesses suffering in silence"},
+  {ep:7, title:"The Fake News Factory", desc:"Media manipulation and propaganda"},
+  {ep:8, title:"Elections Coming", desc:"2027 campaigns and political games"},
+  {ep:9, title:"The NGO Invasion", desc:"Foreign aid dependency exposed"},
+  {ep:10, title:"Police State", desc:"Brutality and human rights violations"},
+  {ep:11, title:"Education Crisis", desc:"School fees, university funding chaos"},
+  {ep:12, title:"The Final Word", desc:"Season 1 recap and the verdict"},
+];
+
+let _selectedPodcastEp = null;
+
+function switchTab(tab) {
+  document.getElementById('section-series').style.display = tab === 'series' ? 'block' : 'none';
+  document.getElementById('section-podcast').style.display = tab === 'podcast' ? 'block' : 'none';
+  document.getElementById('tab-series').style.borderBottomColor = tab === 'series' ? '#F5A623' : 'transparent';
+  document.getElementById('tab-series').style.color = tab === 'series' ? '#F5A623' : 'rgba(255,255,255,0.4)';
+  document.getElementById('tab-podcast').style.borderBottomColor = tab === 'podcast' ? '#F5A623' : 'transparent';
+  document.getElementById('tab-podcast').style.color = tab === 'podcast' ? '#F5A623' : 'rgba(255,255,255,0.4)';
+  if (tab === 'podcast') renderPodcastEpisodes();
+}
+
+function renderPodcastEpisodes() {
+  const grid = document.getElementById('podcast-episode-grid');
+  if (!grid) return;
+  grid.innerHTML = PODCAST_EPISODES.map(ep => `
+    <div onclick="selectPodcastEp(${ep.ep})" id="pod-card-${ep.ep}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;cursor:pointer;transition:all 0.2s;">
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">EP ${ep.ep}</div>
+      <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">${ep.title}</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${ep.desc}</div>
+    </div>
+  `).join('');
+}
+
+function selectPodcastEp(epNum) {
+  _selectedPodcastEp = epNum;
+  const ep = PODCAST_EPISODES.find(e => e.ep === epNum);
+  // Highlight selected
+  PODCAST_EPISODES.forEach(e => {
+    const card = document.getElementById('pod-card-' + e.ep);
+    if (card) {
+      card.style.borderColor = e.ep === epNum ? '#F5A623' : 'rgba(255,255,255,0.07)';
+      card.style.background = e.ep === epNum ? 'rgba(245,166,35,0.08)' : 'rgba(255,255,255,0.03)';
+    }
+  });
+  document.getElementById('pod-ep-title').textContent = 'EP' + epNum + ': ' + ep.title;
+  document.getElementById('pod-ep-desc').textContent = ep.desc;
+  document.getElementById('podcast-generate-section').style.display = 'block';
+  document.getElementById('pod-result').style.display = 'none';
+  document.getElementById('pod-status').style.display = 'none';
+  document.getElementById('pod-gen-btn').style.display = 'block';
+}
+
+async function generatePodcast() {
+  if (!_selectedPodcastEp) { alert('Please select an episode'); return; }
+  if (!window.currentUser) { showLogin(); return; }
+  const jobId = 'pod_' + Date.now();
+  document.getElementById('pod-gen-btn').style.display = 'none';
+  document.getElementById('pod-status').style.display = 'block';
+  document.getElementById('pod-status-text').textContent = 'Starting podcast generation...';
+  document.getElementById('pod-progress-bar').style.width = '5%';
+
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-podcast', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({job_id: jobId, episode: _selectedPodcastEp, user_email: window.currentUser.email})
+    });
+    const data = await res.json();
+    if (!data.accepted) throw new Error('Not accepted');
+
+    // Poll status
+    let done = false;
+    let attempts = 0;
+    while (!done && attempts < 60) {
+      await new Promise(r => setTimeout(r, 10000));
+      attempts++;
+      const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+      const status = await st.json();
+      const pct = status.progress || Math.min(attempts * 5, 90);
+      document.getElementById('pod-progress-bar').style.width = pct + '%';
+      document.getElementById('pod-status-text').textContent = status.stage || 'Generating...';
+      if (status.status === 'completed') {
+        done = true;
+        document.getElementById('pod-progress-bar').style.width = '100%';
+        document.getElementById('pod-status-text').textContent = '✅ Episode ready!';
+        document.getElementById('pod-video').src = status.output_url;
+        document.getElementById('pod-download').href = status.output_url;
+        document.getElementById('pod-result').style.display = 'block';
+        document.getElementById('pod-gen-btn').style.display = 'block';
+      } else if (status.status === 'failed') {
+        throw new Error(status.stage || 'Generation failed');
+      }
+    }
+    if (!done) throw new Error('Timed out');
+  } catch(e) {
+    document.getElementById('pod-status-text').textContent = '❌ ' + e.message;
+    document.getElementById('pod-gen-btn').style.display = 'block';
+  }
+}
+// ─────────────────────────────────────────────────
 </script>
 </body>
 </html>
