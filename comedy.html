@@ -314,6 +314,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <button id="wh-tiktok-btn" data-url="" onclick="cutTikTok()" class="btn btn-outline" style="display:none;">✂️ Cut TikTok Clips</button>
         <button id="wh-youtube-btn" data-url="" onclick="cutYouTube()" class="btn btn-outline" style="display:none;">▶️ Cut YouTube Clips</button>
         <button id="wh-yt-upload-btn" data-url="" onclick="uploadWHToYouTube()" class="btn btn-outline" style="display:none;background:#FF0000;border-color:#FF0000;color:#fff;">▶ Upload to YouTube</button>
+        <button id="wh-tt-upload-btn" onclick="uploadWHTikTok()" class="btn btn-outline" style="display:none;background:#010101;border-color:#010101;color:#fff;">📱 Upload to TikTok</button>
         <div id="youtube-status" style="display:none;margin-top:0.75rem;">
           <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;font-family:'Space Mono',monospace;" id="youtube-status-text">Cutting clips...</div>
           <div id="youtube-clips-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-top:0.75rem;"></div>
@@ -355,6 +356,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
           <video id="pod-video" controls style="width:100%;border-radius:8px;"></video>
           <a id="pod-download" href="#" download style="display:block;text-align:center;margin-top:0.75rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;">⬇ Download Episode</a>
         <button id="pod-tiktok-btn" onclick="cutPodcastTikTok()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">✂️ Cut TikTok Clips</button>
+        <button onclick="uploadPodcastTikTok()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;background:#010101;border-color:#010101;color:#fff;">📱 Upload to TikTok</button>
         <button id="pod-youtube-btn" onclick="cutPodcastYouTube()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">▶️ Cut YouTube Clips</button>
         <button id="pod-yt-upload-btn" onclick="uploadPodcastToYouTube()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;background:#FF0000;border-color:#FF0000;color:#fff;">▶ Upload to YouTube</button>
         </div>
@@ -392,6 +394,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
           <video id="dating-video" controls style="width:100%;border-radius:8px;"></video>
           <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap;">
             <a id="dating-download" href="#" download style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.5rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;">⬇ Download</a>
+            <button onclick="uploadDatingTikTok()" class="btn btn-outline" style="flex:1;justify-content:center;font-size:0.8rem;background:#010101;border-color:#010101;color:#fff;">📱 TikTok</button>
             <button onclick="cutDatingTikTok()" class="btn btn-outline" style="flex:1;justify-content:center;font-size:0.8rem;">✂️ TikTok Clips</button>
             <button onclick="uploadDatingToYouTube()" class="btn btn-outline" style="flex:1;justify-content:center;font-size:0.8rem;background:#FF0000;border-color:#FF0000;color:#fff;">▶ YouTube</button>
           </div>
@@ -597,6 +600,7 @@ window.generateEpisode = async function() {
           document.getElementById('wh-tiktok-btn').style.display='flex';
           document.getElementById('wh-youtube-btn').dataset.url=d.output_url;
           document.getElementById('wh-youtube-btn').style.display='flex';
+          document.getElementById('wh-tt-upload-btn').style.display='flex';
           document.getElementById('wh-yt-upload-btn').dataset.url=d.output_url;
           document.getElementById('wh-yt-upload-btn').style.display='flex';
           window._whVideoUrl=d.output_url;
@@ -829,6 +833,114 @@ window.uploadDatingToYouTube = async function() {
     }
   });
   client.requestAccessToken();
+};
+// ─────────────────────────────────────────────────
+
+// ── TIKTOK UPLOAD ─────────────────────────────────
+const TIKTOK_CLIENT_KEY = 'awpb980dci91ht42';
+const TIKTOK_REDIRECT_URI = 'https://rayiecho.github.io/afrivid/comedy.html';
+
+window.initTikTokUpload = async function(videoUrl, title) {
+  // Store video URL and title for after OAuth
+  window._tiktokVideoUrl = videoUrl;
+  window._tiktokTitle = title;
+  // Check if we already have a token
+  const token = sessionStorage.getItem('tiktok_access_token');
+  if (token) {
+    await doTikTokUpload(token, videoUrl, title);
+    return;
+  }
+  // Start OAuth flow
+  const state = Math.random().toString(36).substring(7);
+  sessionStorage.setItem('tiktok_state', state);
+  const authUrl = `https://www.tiktok.com/v2/auth/authorize/?client_key=${TIKTOK_CLIENT_KEY}&scope=user.info.basic,video.upload&response_type=code&redirect_uri=${encodeURIComponent(TIKTOK_REDIRECT_URI)}&state=${state}`;
+  window.open(authUrl, 'tiktok_auth', 'width=600,height=700');
+};
+
+// Handle TikTok OAuth callback
+window.handleTikTokCallback = async function() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const state = params.get('state');
+  if (!code || state !== sessionStorage.getItem('tiktok_state')) return;
+  // Exchange code for token via our processor
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/tiktok-token', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({code, redirect_uri: TIKTOK_REDIRECT_URI})
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      sessionStorage.setItem('tiktok_access_token', data.access_token);
+      // Resume upload
+      if (window._tiktokVideoUrl) {
+        await doTikTokUpload(data.access_token, window._tiktokVideoUrl, window._tiktokTitle);
+      }
+    }
+  } catch(e) {
+    alert('TikTok auth failed: ' + e.message);
+  }
+  // Clean URL
+  window.history.replaceState({}, document.title, window.location.pathname);
+};
+
+window.doTikTokUpload = async function(accessToken, videoUrl, title) {
+  try {
+    // Use PULL_FROM_URL — TikTok pulls directly from R2
+    const res = await fetch('https://open.tiktokapis.com/v2/post/publish/inbox/video/init/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        source_info: {
+          source: 'PULL_FROM_URL',
+          video_url: videoUrl
+        }
+      })
+    });
+    const data = await res.json();
+    if (data.error?.code === 'ok') {
+      alert('✅ Video sent to TikTok inbox!\n\nOpen TikTok app → Inbox → Complete your post\n\nPublish ID: ' + data.data?.publish_id);
+    } else {
+      throw new Error(data.error?.message || 'Upload failed');
+    }
+  } catch(e) {
+    alert('TikTok upload failed: ' + e.message);
+  }
+};
+
+// Check for TikTok callback on page load
+if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+  window.handleTikTokCallback();
+}
+
+// TikTok upload buttons for each section
+window.uploadWHTikTok = function() {
+  const url = document.getElementById('wh-tiktok-btn')?.dataset?.url || window._whVideoUrl;
+  if (!url) { alert('No video ready'); return; }
+  const title = (window._whMeta?.epTitle || 'Watering Hole') + ' #KenyaPolitics #Satire #LindaMwananchi';
+  window.initTikTokUpload(url, title);
+};
+
+window.uploadPodcastTikTok = function() {
+  const url = document.getElementById('pod-video')?.src;
+  if (!url) { alert('No video ready'); return; }
+  const ep = _selectedPodcastEp || 1;
+  const epData = PODCAST_EPISODES.find(e => e.ep === ep);
+  const title = 'Watering Hole Podcast EP' + ep + ' #KenyaPolitics #LindaMwananchi';
+  window.initTikTokUpload(url, title);
+};
+
+window.uploadDatingTikTok = function() {
+  const url = document.getElementById('dating-video')?.src;
+  if (!url) { alert('No video ready'); return; }
+  const ep = _selectedDatingEp || 1;
+  const epData = DATING_EPISODES.find(e => e.ep === ep);
+  const title = 'The Dating Files EP' + ep + ': ' + (epData?.title||'') + ' #Relationships #Kenya #LindaMwananchi';
+  window.initTikTokUpload(url, title);
 };
 // ─────────────────────────────────────────────────
 // ── YOUTUBE UPLOAD ────────────────────────────────
