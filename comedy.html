@@ -760,13 +760,13 @@ async function generateDating() {
     const data = await res.json();
     if (!data.accepted) throw new Error('Not accepted');
     let done = false, attempts = 0;
-    while (!done && attempts < 60) {
+    while (!done && attempts < 120) {
       await new Promise(r => setTimeout(r, 10000));
       attempts++;
+      const pct = status && status.progress ? status.progress : Math.min(attempts * 3, 90);
+      document.getElementById('dating-progress-bar').style.width = pct + '%';
       const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
       const status = await st.json();
-      const pct = status.progress || Math.min(attempts * 5, 90);
-      document.getElementById('dating-progress-bar').style.width = pct + '%';
       document.getElementById('dating-status-text').textContent = status.stage || 'Generating...';
       if (status.status === 'completed') {
         done = true;
