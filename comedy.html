@@ -140,6 +140,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div style="display:flex;gap:0;justify-content:center;margin:1.5rem 0 0;border-bottom:1px solid rgba(255,255,255,0.08);">
     <button id="tab-series" onclick="switchTab('series')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid #F5A623;color:#F5A623;font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">🎭 Comedy Series</button>
     <button id="tab-podcast" onclick="switchTab('podcast')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.4);font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">🎙️ Podcast</button>
+    <button id="tab-dating" onclick="switchTab('dating')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.4);font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">💕 Dating Files</button>
   </div>
 
   <!-- SERIES SECTION -->
@@ -364,6 +365,40 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem;" id="podcast-history"></div>
     </div>
   </div><!-- end section-podcast -->
+
+  <!-- DATING FILES SECTION -->
+  <div id="section-dating" style="display:none;">
+    <div class="hero" style="padding:1.5rem 0 1rem;">
+      <div class="hero-badge">💕 THE DATING FILES</div>
+      <h1 style="font-size:2rem;">Real Talk.<br><span>Kenyan Love.</span></h1>
+      <div class="hero-tagline">"Because love in Kenya is a whole series"</div>
+    </div>
+    <div style="max-width:900px;margin:0 auto;padding:0 1rem;">
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:1rem;">30 EPISODES — RELATIONSHIP SERIES</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;" id="dating-episode-grid"></div>
+    </div>
+    <div style="max-width:600px;margin:2rem auto;padding:0 1rem;" id="dating-generate-section">
+      <div class="card">
+        <div class="card-title"><div class="card-icon">💕</div><span id="dating-ep-title">Select an Episode</span></div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;" id="dating-ep-desc"></div>
+        <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="generateDating()" id="dating-gen-btn">💕 Generate Episode</button>
+        <div id="dating-status" style="display:none;margin-top:1rem;text-align:center;">
+          <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;" id="dating-status-text">Generating...</div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:4px;margin-top:0.5rem;">
+            <div id="dating-progress-bar" style="background:#F5A623;height:4px;border-radius:4px;width:0%;transition:width 0.5s;"></div>
+          </div>
+        </div>
+        <div id="dating-result" style="display:none;margin-top:1rem;">
+          <video id="dating-video" controls style="width:100%;border-radius:8px;"></video>
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap;">
+            <a id="dating-download" href="#" download style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.5rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;">⬇ Download</a>
+            <button onclick="cutDatingTikTok()" class="btn btn-outline" style="flex:1;justify-content:center;font-size:0.8rem;">✂️ TikTok Clips</button>
+            <button onclick="uploadDatingToYouTube()" class="btn btn-outline" style="flex:1;justify-content:center;font-size:0.8rem;background:#FF0000;border-color:#FF0000;color:#fff;">▶ YouTube</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end section-dating -->
 
 
 </div>
@@ -643,6 +678,159 @@ window.closeLogin = function() { document.getElementById('login-modal').classLis
 console.log('[Watering Hole] Ready');
 
 
+
+// ── DATING FILES ─────────────────────────────────
+const DATING_EPISODES = [
+  {ep:1,title:"Why He Went Silent",desc:"A man was texting every day then suddenly disappeared. What happened?"},
+  {ep:2,title:"She Said She Is Fine",desc:"She said she is fine but she is clearly not fine. How to read the signs."},
+  {ep:3,title:"The Two Week I Love You",desc:"He said I love you after only two weeks. Red flag or just emotional?"},
+  {ep:4,title:"The Bill Splitter",desc:"Should a man always pay on a date or should couples split the bill?"},
+  {ep:5,title:"The Situationship Trap",desc:"You are not together but you are not apart either."},
+  {ep:6,title:"Why Good Women Pick Bad Men",desc:"She is educated, beautiful, successful — but keeps choosing the wrong man."},
+  {ep:7,title:"The Side Dish Problem",desc:"He has a main and a side. She knows but stays. Who is really the problem?"},
+  {ep:8,title:"Morning Texts Mean Nothing",desc:"He texts good morning every day but has not taken you out once."},
+  {ep:9,title:"The Ex Who Came Back",desc:"Your ex is back with apologies and flowers. Another chance?"},
+  {ep:10,title:"Mama's Boy Alert",desc:"He calls his mother before making any decision. Sweet or a problem?"},
+  {ep:11,title:"The Proposal Delay",desc:"Together five years and no ring. How long is too long to wait?"},
+  {ep:12,title:"She Checks His Phone",desc:"She goes through his phone every night. Trust issues or just careful?"},
+  {ep:13,title:"The Friend Zone Escape",desc:"Friends for two years and now you have feelings. What do you do?"},
+  {ep:14,title:"He Forgot the Anniversary",desc:"He forgot your anniversary and did not even apologize properly."},
+  {ep:15,title:"Long Distance Love",desc:"Can a long distance relationship actually work?"},
+  {ep:16,title:"The Jealous Partner",desc:"Every time you talk to someone else there is a fight."},
+  {ep:17,title:"Money Problems in Love",desc:"Does money destroy relationships?"},
+  {ep:18,title:"The Social Media Couple",desc:"They post everything online but fight every night at home."},
+  {ep:19,title:"Meeting the Parents",desc:"Never introduced you to his family after one year. What does this mean?"},
+  {ep:20,title:"The Apology That Never Comes",desc:"He knows he was wrong but will never say sorry."},
+  {ep:21,title:"She Changed After Marriage",desc:"Before marriage she was fun. After marriage everything changed."},
+  {ep:22,title:"The Constant Comparison",desc:"He keeps comparing you to his ex."},
+  {ep:23,title:"Friends or Relationship",desc:"His female best friend calls him every night."},
+  {ep:24,title:"The Clingy Partner",desc:"She wants to know where you are every minute."},
+  {ep:25,title:"Second Chance Romance",desc:"You broke up twice already. Now he wants to try again."},
+  {ep:26,title:"The Bedroom Problem",desc:"Everything is perfect except one thing."},
+  {ep:27,title:"His Friends Hate You",desc:"His friends do not like you and he keeps choosing them."},
+  {ep:28,title:"The Working Too Much Man",desc:"He works morning to night and you barely see him."},
+  {ep:29,title:"She Wants Babies Now",desc:"She is ready for children but you are not."},
+  {ep:30,title:"The Final Warning",desc:"You have given him too many chances. When is enough actually enough?"},
+];
+
+let _selectedDatingEp = null;
+
+function renderDatingEpisodes() {
+  const grid = document.getElementById('dating-episode-grid');
+  if (!grid) return;
+  grid.innerHTML = DATING_EPISODES.map(ep => `
+    <div onclick="selectDatingEp(${ep.ep})" id="dating-card-${ep.ep}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;cursor:pointer;transition:all 0.2s;">
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">EP ${ep.ep}</div>
+      <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">${ep.title}</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${ep.desc}</div>
+    </div>`).join('');
+}
+
+function selectDatingEp(epNum) {
+  _selectedDatingEp = epNum;
+  const ep = DATING_EPISODES.find(e => e.ep === epNum);
+  DATING_EPISODES.forEach(e => {
+    const card = document.getElementById('dating-card-' + e.ep);
+    if (card) {
+      card.style.borderColor = e.ep === epNum ? '#F5A623' : 'rgba(255,255,255,0.07)';
+      card.style.background = e.ep === epNum ? 'rgba(245,166,35,0.08)' : 'rgba(255,255,255,0.03)';
+    }
+  });
+  document.getElementById('dating-ep-title').textContent = 'EP' + epNum + ': ' + ep.title;
+  document.getElementById('dating-ep-desc').textContent = ep.desc;
+  document.getElementById('dating-result').style.display = 'none';
+  document.getElementById('dating-status').style.display = 'none';
+  document.getElementById('dating-gen-btn').style.display = 'block';
+}
+
+async function generateDating() {
+  if (!_selectedDatingEp) { alert('Please select an episode'); return; }
+  if (!window.currentUser) { showLogin(); return; }
+  const jobId = 'dating_' + Date.now();
+  document.getElementById('dating-gen-btn').style.display = 'none';
+  document.getElementById('dating-status').style.display = 'block';
+  document.getElementById('dating-status-text').textContent = 'Starting Dating Files generation...';
+  document.getElementById('dating-progress-bar').style.width = '5%';
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-dating', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({job_id: jobId, episode: _selectedDatingEp, user_email: window.currentUser.email})
+    });
+    const data = await res.json();
+    if (!data.accepted) throw new Error('Not accepted');
+    let done = false, attempts = 0;
+    while (!done && attempts < 60) {
+      await new Promise(r => setTimeout(r, 10000));
+      attempts++;
+      const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+      const status = await st.json();
+      const pct = status.progress || Math.min(attempts * 5, 90);
+      document.getElementById('dating-progress-bar').style.width = pct + '%';
+      document.getElementById('dating-status-text').textContent = status.stage || 'Generating...';
+      if (status.status === 'completed') {
+        done = true;
+        document.getElementById('dating-progress-bar').style.width = '100%';
+        document.getElementById('dating-video').src = status.output_url;
+        document.getElementById('dating-download').href = status.output_url;
+        document.getElementById('dating-result').style.display = 'block';
+        document.getElementById('dating-gen-btn').style.display = 'block';
+      } else if (status.status === 'failed') {
+        throw new Error(status.stage || 'Generation failed');
+      }
+    }
+    if (!done) throw new Error('Timed out');
+  } catch(e) {
+    document.getElementById('dating-status-text').textContent = '❌ ' + e.message;
+    document.getElementById('dating-gen-btn').style.display = 'block';
+  }
+}
+
+window.cutDatingTikTok = async function() {
+  const url = document.getElementById('dating-video').src;
+  if (!url) return;
+  const jobId = 'tiktok_dating_' + Date.now();
+  const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({job_id: jobId, video_url: url, clip_duration: 58})
+  });
+  const data = await res.json();
+  let attempts = 0;
+  while (attempts < 20) {
+    await new Promise(r => setTimeout(r, 8000));
+    attempts++;
+    const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+    const status = await st.json();
+    if (status.status === 'completed') {
+      try {
+        const clips = JSON.parse(status.stage);
+        const links = clips.map(cl => `<a href="${cl.url}" download style="color:#F5A623;font-size:0.75rem;display:block;margin-top:0.3rem;">📱 Clip ${cl.clip}</a>`).join('');
+        document.getElementById('dating-result').insertAdjacentHTML('beforeend', `<div style="margin-top:0.5rem;">${links}</div>`);
+      } catch(e) {}
+      break;
+    }
+  }
+};
+
+window.uploadDatingToYouTube = async function() {
+  const url = document.getElementById('dating-video').src;
+  if (!url) return;
+  const ep = _selectedDatingEp || 1;
+  const epData = DATING_EPISODES.find(e => e.ep === ep);
+  const title = 'The Dating Files EP' + ep + ': ' + (epData?.title || '');
+  const description = 'The Dating Files — Real talk about Kenyan relationships.\n\nEpisode ' + ep + ': ' + (epData?.desc||'') + '\n\nLinda Mwananchi Channel';
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: '957196729758-e50mss0sujt5jo70matst27mbc3kiapb.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/youtube.upload',
+    callback: async (tokenResponse) => {
+      if (tokenResponse.error) { alert('Sign-in failed'); return; }
+      window._serverVideoUrl = url; window._videoBlob = null;
+      await doYouTubeUpload(tokenResponse.access_token, title, description);
+    }
+  });
+  client.requestAccessToken();
+};
+// ─────────────────────────────────────────────────
 // ── YOUTUBE UPLOAD ────────────────────────────────
 window.uploadWHToYouTube = async function() {
   const btn = document.getElementById('wh-yt-upload-btn');
@@ -753,10 +941,14 @@ let _selectedPodcastEp = null;
 function switchTab(tab) {
   document.getElementById('section-series').style.display = tab === 'series' ? 'block' : 'none';
   document.getElementById('section-podcast').style.display = tab === 'podcast' ? 'block' : 'none';
+  document.getElementById('section-dating').style.display = tab === 'dating' ? 'block' : 'none';
   document.getElementById('tab-series').style.borderBottomColor = tab === 'series' ? '#F5A623' : 'transparent';
   document.getElementById('tab-series').style.color = tab === 'series' ? '#F5A623' : 'rgba(255,255,255,0.4)';
   document.getElementById('tab-podcast').style.borderBottomColor = tab === 'podcast' ? '#F5A623' : 'transparent';
   document.getElementById('tab-podcast').style.color = tab === 'podcast' ? '#F5A623' : 'rgba(255,255,255,0.4)';
+  document.getElementById('tab-dating').style.borderBottomColor = tab === 'dating' ? '#F5A623' : 'transparent';
+  document.getElementById('tab-dating').style.color = tab === 'dating' ? '#F5A623' : 'rgba(255,255,255,0.4)';
+  if (tab === 'dating') renderDatingEpisodes();
   if (tab === 'podcast') renderPodcastEpisodes();
 }
 
