@@ -92,6 +92,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .char-grid{grid-template-columns:repeat(3,1fr);}
 }
 </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <nav class="topbar">
@@ -311,6 +312,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <button id="wh-download-btn" data-url="" onclick="downloadEpisode()" class="btn btn-gold">⬇ Download Episode</button>
         <button id="wh-tiktok-btn" data-url="" onclick="cutTikTok()" class="btn btn-outline" style="display:none;">✂️ Cut TikTok Clips</button>
         <button id="wh-youtube-btn" data-url="" onclick="cutYouTube()" class="btn btn-outline" style="display:none;">▶️ Cut YouTube Clips</button>
+        <button id="wh-yt-upload-btn" data-url="" onclick="uploadWHToYouTube()" class="btn btn-outline" style="display:none;background:#FF0000;border-color:#FF0000;color:#fff;">▶ Upload to YouTube</button>
         <div id="youtube-status" style="display:none;margin-top:0.75rem;">
           <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;font-family:'Space Mono',monospace;" id="youtube-status-text">Cutting clips...</div>
           <div id="youtube-clips-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;margin-top:0.75rem;"></div>
@@ -353,6 +355,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
           <a id="pod-download" href="#" download style="display:block;text-align:center;margin-top:0.75rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;">⬇ Download Episode</a>
         <button id="pod-tiktok-btn" onclick="cutPodcastTikTok()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">✂️ Cut TikTok Clips</button>
         <button id="pod-youtube-btn" onclick="cutPodcastYouTube()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">▶️ Cut YouTube Clips</button>
+        <button id="pod-yt-upload-btn" onclick="uploadPodcastToYouTube()" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;background:#FF0000;border-color:#FF0000;color:#fff;">▶ Upload to YouTube</button>
         </div>
       </div>
     </div>
@@ -559,6 +562,8 @@ window.generateEpisode = async function() {
           document.getElementById('wh-tiktok-btn').style.display='flex';
           document.getElementById('wh-youtube-btn').dataset.url=d.output_url;
           document.getElementById('wh-youtube-btn').style.display='flex';
+          document.getElementById('wh-yt-upload-btn').dataset.url=d.output_url;
+          document.getElementById('wh-yt-upload-btn').style.display='flex';
           window._whVideoUrl=d.output_url;
         }
         if (d.status==='failed') { clearInterval(window._whPoll); document.getElementById('gen-stage').textContent='Failed. Try again.'; }
@@ -637,6 +642,47 @@ window.closeLogin = function() { document.getElementById('login-modal').classLis
 
 console.log('[Watering Hole] Ready');
 
+
+// ── YOUTUBE UPLOAD ────────────────────────────────
+window.uploadWHToYouTube = async function() {
+  const btn = document.getElementById('wh-yt-upload-btn');
+  const url = btn.dataset.url;
+  if (!url) return;
+  const title = 'Watering Hole S' + (window._whMeta?.season||1) + 'EP' + (window._whMeta?.epNum||1) + ' — ' + (window._whMeta?.epTitle||'');
+  const description = 'African political satire — The Watering Hole Comedy Series\n\nLinda Mwananchi Channel\nafrivid.studio';
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: '957196729758-e50mss0sujt5jo70matst27mbc3kiapb.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/youtube.upload',
+    callback: async (tokenResponse) => {
+      if (tokenResponse.error) { alert('Sign-in failed: ' + tokenResponse.error); return; }
+      window._serverVideoUrl = url;
+      window._videoBlob = null;
+      await doYouTubeUpload(tokenResponse.access_token, title, description);
+    }
+  });
+  client.requestAccessToken();
+};
+
+window.uploadPodcastToYouTube = async function() {
+  const url = document.getElementById('pod-video').src;
+  if (!url) return;
+  const ep = _selectedPodcastEp || 1;
+  const epData = PODCAST_EPISODES.find(e => e.ep === ep);
+  const title = 'The Watering Hole Podcast EP' + ep + ': ' + (epData?.title || '');
+  const description = 'The Watering Hole Podcast — where the animals discuss what the humans won\'t.\n\nEpisode ' + ep + ': ' + (epData?.desc||'') + '\n\nLinda Mwananchi Channel\nafrivid.studio';
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: '957196729758-e50mss0sujt5jo70matst27mbc3kiapb.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/youtube.upload',
+    callback: async (tokenResponse) => {
+      if (tokenResponse.error) { alert('Sign-in failed: ' + tokenResponse.error); return; }
+      window._serverVideoUrl = url;
+      window._videoBlob = null;
+      await doYouTubeUpload(tokenResponse.access_token, title, description);
+    }
+  });
+  client.requestAccessToken();
+};
+// ─────────────────────────────────────────────────
 // ── TIKTOK CUTTER ────────────────────────────────
 window.cutTikTok = async function() {
   const btn = document.getElementById('wh-tiktok-btn');
