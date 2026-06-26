@@ -779,6 +779,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
     <button id="mode-video-tab" onclick="switchCreateMode('video')" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">🎬 Video Creator</button>
     <button id="mode-slides-tab" onclick="switchCreateMode('slides')" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📊 Slides Generator</button>
     <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">🎓 Tutorial Maker</button>
+    <button id="mode-ad-tab" onclick="switchCreateMode('ad')" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📱 Ad Maker</button>
   </div>
 
   <!-- SLIDES GENERATOR PANEL -->
@@ -929,6 +930,49 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       </div>
     </div>
   </div>
+
+  <!-- AD MAKER PANEL -->
+  <div id="ad-maker-panel" style="display:none;max-width:900px;margin:0 auto;padding:0 1rem;">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:1.5rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;background:rgba(245,166,35,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">📱</div>
+        <div style="font-weight:800;font-size:1rem;">AI Video Ad Maker</div>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS NAME *</label>
+        <input id="ad-business-name" type="text" placeholder="e.g. Mama Tomato Fresh Produce" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">DESCRIBE YOUR PRODUCT/SERVICE *</label>
+        <textarea id="ad-description" placeholder="e.g. We sell fresh farm tomatoes in Nairobi. Delivery within 2 hours. Ksh 200 per kg. Best quality direct from Limuru farms. Call 0722000000." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;height:100px;resize:vertical;"></textarea>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
+        <input id="ad-url" type="text" placeholder="e.g. https://yourwebsite.com" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+      </div>
+      <button onclick="generateAd()" id="ad-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">📱 Generate Video Ad</button>
+      <div id="ad-status" style="display:none;">
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:1rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+            <div id="ad-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">Starting...</div>
+            <div id="ad-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:6px;">
+            <div id="ad-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+          </div>
+          <div style="color:rgba(245,166,35,0.7);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">📧 We will email you when ready! You can close this tab safely.</div>
+        </div>
+      </div>
+      <div id="ad-result" style="display:none;margin-top:1rem;">
+        <video id="ad-video" controls style="width:100%;border-radius:10px;margin-bottom:0.75rem;"></video>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <a id="ad-download" href="#" target="_blank" download style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;">⬇ Download</a>
+          <button onclick="uploadAdToYouTube()" class="btn" style="flex:1;background:#FF0000;border:none;color:#fff;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">▶ YouTube</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END AD MAKER PANEL -->
 
   <!-- PANEL 1: INPUT -->
     <div class="panel active" id="panel-1">
@@ -7101,6 +7145,93 @@ const _cUsageCheck = setInterval(() => {
   if (window.currentUser) { clearInterval(_cUsageCheck); loadCreatorUsage(); }
 }, 500);
 setTimeout(() => clearInterval(_cUsageCheck), 10000);
+
+// ── AD MAKER ─────────────────────────────────
+async function generateAd() {
+  const businessName = document.getElementById('ad-business-name').value.trim();
+  const description = document.getElementById('ad-description').value.trim();
+  const adUrl = document.getElementById('ad-url').value.trim();
+
+  if (!businessName || !description) {
+    alert('Please enter your business name and description');
+    return;
+  }
+
+  if (!window.currentUser) { showLogin(); return; }
+
+  const jobId = 'ad_' + Date.now();
+  const btn = document.getElementById('ad-generate-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+  document.getElementById('ad-status').style.display = 'block';
+  document.getElementById('ad-result').style.display = 'none';
+  document.getElementById('ad-bar').style.width = '5%';
+  document.getElementById('ad-pct').textContent = '5%';
+  document.getElementById('ad-stage').textContent = 'Starting ad generation...';
+
+  try {
+    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-ad', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        job_id: jobId,
+        business_name: businessName,
+        description: description,
+        url: adUrl,
+        user_email: window.currentUser.email
+      })
+    });
+    const data = await res.json();
+    if (!data.accepted) throw new Error('Not accepted');
+
+    // Poll
+    let done = false, attempts = 0;
+    const startTime = Date.now();
+    const poll = setInterval(async () => {
+      try {
+        attempts++;
+        const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
+        const status = await st.json();
+        const elapsed = (Date.now() - startTime) / 1000;
+        const estimated = Math.min(5 + (elapsed / 180) * 90, 95);
+        const pct = Math.max(status.progress || 0, Math.floor(estimated));
+        document.getElementById('ad-bar').style.width = pct + '%';
+        document.getElementById('ad-pct').textContent = pct + '%';
+        document.getElementById('ad-stage').textContent = status.stage || 'Generating...';
+        if (status.status === 'completed') {
+          clearInterval(poll);
+          document.getElementById('ad-bar').style.width = '100%';
+          document.getElementById('ad-pct').textContent = '100%';
+          document.getElementById('ad-video').src = status.output_url;
+          document.getElementById('ad-download').href = status.output_url;
+          document.getElementById('ad-result').style.display = 'block';
+          window._serverVideoUrl = status.output_url;
+          window._scriptData = { title: businessName + ' — Video Ad', description: description };
+          btn.textContent = '📱 Generate Video Ad';
+          btn.disabled = false;
+        } else if (status.status === 'failed') {
+          clearInterval(poll);
+          document.getElementById('ad-stage').textContent = '❌ ' + (status.stage || 'Failed');
+          btn.textContent = '📱 Generate Video Ad';
+          btn.disabled = false;
+        }
+        if (attempts > 120) { clearInterval(poll); btn.disabled = false; btn.textContent = '📱 Generate Video Ad'; }
+      } catch(e) {}
+    }, 5000);
+  } catch(e) {
+    document.getElementById('ad-stage').textContent = '❌ ' + e.message;
+    btn.textContent = '📱 Generate Video Ad';
+    btn.disabled = false;
+  }
+}
+
+window.uploadAdToYouTube = function() {
+  const url = document.getElementById('ad-video').src;
+  if (!url) return;
+  window._serverVideoUrl = url;
+  uploadToYouTube();
+};
+// ─────────────────────────────────────────────
 </script>
 </body>
 </html>
