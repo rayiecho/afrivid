@@ -950,6 +950,17 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
         <input id="ad-url" type="text" placeholder="e.g. https://yourwebsite.com" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <input type="file" id="ad-logo-input" accept="image/*" onchange="previewAdLogo(this)" style="display:none;">
+          <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📷 Upload Logo</button>
+          <div id="ad-logo-preview" style="display:none;align-items:center;gap:0.5rem;">
+            <img id="ad-logo-img" style="height:40px;border-radius:4px;object-fit:contain;background:rgba(255,255,255,0.1);padding:4px;">
+            <button onclick="clearAdLogo()" style="background:none;border:none;color:rgba(255,100,100,0.7);cursor:pointer;font-size:0.8rem;">✕ Remove</button>
+          </div>
+        </div>
+      </div>
       <button onclick="generateAd()" id="ad-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">📱 Generate Video Ad</button>
       <div id="ad-status" style="display:none;">
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:1rem;">
@@ -7166,6 +7177,26 @@ const _cUsageCheck = setInterval(() => {
 setTimeout(() => clearInterval(_cUsageCheck), 10000);
 
 // ── AD MAKER ─────────────────────────────────
+window._adLogoBase64 = null;
+
+window.previewAdLogo = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    window._adLogoBase64 = e.target.result;
+    document.getElementById('ad-logo-img').src = e.target.result;
+    document.getElementById('ad-logo-preview').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearAdLogo = function() {
+  window._adLogoBase64 = null;
+  document.getElementById('ad-logo-input').value = '';
+  document.getElementById('ad-logo-preview').style.display = 'none';
+};
+
 async function generateAd() {
   const businessName = document.getElementById('ad-business-name').value.trim();
   const description = document.getElementById('ad-description').value.trim();
@@ -7197,6 +7228,7 @@ async function generateAd() {
         business_name: businessName,
         description: description,
         url: adUrl,
+        logo_base64: window._adLogoBase64 || null,
         user_email: window.currentUser.email
       })
     });
