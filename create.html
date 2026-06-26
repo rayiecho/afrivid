@@ -6572,6 +6572,25 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
 
 // ── SLIDES GENERATOR ──
 window.switchCreateMode = function(mode) {
+  // Handle ad tab
+  const adPanel = document.getElementById('ad-maker-panel');
+  const adTab = document.getElementById('mode-ad-tab');
+  if (adPanel) adPanel.style.display = 'none';
+  if (adTab) { adTab.style.background = 'rgba(255,255,255,0.05)'; adTab.style.color = 'rgba(255,255,255,0.6)'; }
+  if (mode === 'ad') {
+    if (adPanel) adPanel.style.display = 'block';
+    if (adTab) { adTab.style.background = '#F5A623'; adTab.style.color = '#050A14'; }
+    ['tutorial-maker-panel','slides-panel'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    ['mode-video-tab','mode-slides-tab','mode-tutorial-tab'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.background = 'rgba(255,255,255,0.05)'; el.style.color = 'rgba(255,255,255,0.6)'; }
+    });
+    return;
+  }
   const videoPanel = document.getElementById('panel-1');
   const slidesPanel = document.getElementById('slides-generator-panel');
   const tutorialPanel = document.getElementById('tutorial-maker-panel');
