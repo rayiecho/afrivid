@@ -696,7 +696,7 @@ function uploadToYouTube(){
   if(!window._videoBlob && !window._serverVideoUrl) { alert('Please generate a video first, then click Upload to YouTube.'); return; }
   
   // Get title from script data
-  const title = window._scriptData?.title || document.getElementById('video-topic')?.value || 'AfriVid Studio Video';
+  const title = window._scriptData?.title || document.getElementById('tutorial-topic')?.value || document.getElementById('video-topic')?.value || 'AfriVid Studio Video — Linda Mwananchi Channel';
   const description = window._scriptData?.description || 'Created with AfriVid Studio — afrivid.studio';
   
   // Request YouTube OAuth token
