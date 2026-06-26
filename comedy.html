@@ -832,6 +832,66 @@ window.uploadDatingToYouTube = async function() {
 };
 // ─────────────────────────────────────────────────
 
+
+window.doYouTubeUpload = async function(accessToken, title, description) {
+  try {
+    const url = window._serverVideoUrl;
+    if (!url) { alert('No video available'); return; }
+
+    // Fetch video as blob
+    const vr = await fetch(url);
+    const blob = await vr.blob();
+
+    // Step 1: Initialize upload
+    const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json',
+        'X-Upload-Content-Type': 'video/mp4',
+        'X-Upload-Content-Length': blob.size
+      },
+      body: JSON.stringify({
+        snippet: {
+          title: title || 'Linda Mwananchi Channel',
+          description: description || 'Linda Mwananchi Channel — afrivid.studio',
+          tags: ['Kenya', 'LindaMwananchi', 'AfriVid', 'Satire', 'KenyaPolitics'],
+          categoryId: '22'
+        },
+        status: { privacyStatus: 'public' }
+      })
+    });
+
+    if (!initRes.ok) {
+      const err = await initRes.json();
+      throw new Error(err.error?.message || 'Upload initialization failed');
+    }
+
+    const uploadUrl = initRes.headers.get('Location');
+    if (!uploadUrl) throw new Error('No upload URL received');
+
+    // Step 2: Upload video
+    const uploadRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'video/mp4', 'Content-Length': blob.size },
+      body: blob
+    });
+
+    if (!uploadRes.ok) {
+      const err = await uploadRes.json();
+      throw new Error(err.error?.message || 'Video upload failed');
+    }
+
+    const videoData = await uploadRes.json();
+    const videoId = videoData.id;
+
+    if (confirm('✅ Video uploaded to YouTube!\n\nOpen your video now?')) {
+      window.open('https://www.youtube.com/watch?v=' + videoId, '_blank');
+    }
+  } catch(e) {
+    alert('Upload failed: ' + e.message);
+  }
+};
 // ── YOUTUBE UPLOAD ────────────────────────────────
 window.uploadWHToYouTube = async function() {
   const btn = document.getElementById('wh-yt-upload-btn');
