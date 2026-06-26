@@ -5784,7 +5784,7 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
       },
       body: JSON.stringify({
         snippet: {
-          title: title,
+          title: title || 'AfriVid Studio Video — Linda Mwananchi Channel',
           description: description + '\n\nCreated with AfriVid Studio — Africa\'s first smart video suite. Visit afrivid.studio',
           tags: ['AfriVid', 'Africa', 'Video Creator', 'AfriVid Studio'],
           categoryId: '27' // Education

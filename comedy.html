@@ -613,6 +613,14 @@ window.generateEpisode = async function() {
 
 window.downloadEpisode = async function() {
   const btn = document.getElementById('wh-download-btn');
+  const url = btn?.dataset?.url || window._whVideoUrl;
+  if (!url) { alert('No video ready'); return; }
+  const a = document.createElement('a');
+  a.href = url; a.download = 'WateringHole.mp4'; a.target = '_blank';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  return;
+  // old code below
+  const btn = document.getElementById('wh-download-btn');
   const url = btn.dataset.url; if(!url){alert('No video');return;}
   btn.textContent='Downloading...'; btn.disabled=true;
   try {
