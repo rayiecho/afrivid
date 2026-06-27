@@ -619,19 +619,6 @@ window.downloadEpisode = async function() {
   a.href = url; a.download = 'WateringHole.mp4'; a.target = '_blank';
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   return;
-  // old code below
-  btn = document.getElementById('wh-download-btn');
-  const url = btn.dataset.url; if(!url){alert('No video');return;}
-  btn.textContent='Downloading...'; btn.disabled=true;
-  try {
-    const r = await fetch('https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(url));
-    const b = await r.blob();
-    const a = document.createElement('a');
-    a.href=URL.createObjectURL(b);
-    a.download='WateringHole-S'+(window._whMeta?.season||1)+'EP'+(window._whMeta?.epNum||1)+'.mp4';
-    a.click(); URL.revokeObjectURL(a.href);
-  } catch(e){alert('Download failed: '+e.message);}
-  btn.textContent='⬇ Download Episode'; btn.disabled=false;
 };
 
 window.uploadEpisodeToYouTube = function() {
