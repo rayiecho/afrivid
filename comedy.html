@@ -620,7 +620,7 @@ window.downloadEpisode = async function() {
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   return;
   // old code below
-  const btn = document.getElementById('wh-download-btn');
+  btn = document.getElementById('wh-download-btn');
   const url = btn.dataset.url; if(!url){alert('No video');return;}
   btn.textContent='Downloading...'; btn.disabled=true;
   try {
