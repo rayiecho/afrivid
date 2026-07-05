@@ -717,6 +717,9 @@ function handleVideoUpload(e) {
 function loadVideo(file) {
   currentVideoFile = file;
   window.currentVideoFile = file;
+  window._autoCaptionsTriggered = false;
+  window._captionWords = null;
+  window._captionWps = null;
   const url = URL.createObjectURL(file);
   const video = document.getElementById('ai-video');
   // Show loading state on button
@@ -762,6 +765,19 @@ function loadVideo(file) {
     document.getElementById('drop-zone') && (document.querySelector('.drop-zone').style.display = 'none');
     document.getElementById('video-preview-area').style.display = 'block';
     addLog('all', `[ok] Loaded: ${file.name} (${formatTime(video.duration)})`);
+    if (!window._autoCaptionsTriggered) {
+      window._autoCaptionsTriggered = true;
+      (async () => {
+        try {
+          addLog('captions', '[~] Auto-generating captions...');
+          const text = await transcribe();
+          if (text) {
+            startKaraokeCaptions(text);
+            addLog('captions', '[ok] Captions ready!');
+          }
+        } catch(e) { console.log('[AutoCaptions]', e.message); }
+      })();
+    }
   window.currentVideoFile = file;
   // Check if Phase 2 server processing is recommended
   video.addEventListener('loadedmetadata', () => {
@@ -1111,7 +1127,7 @@ async function claudeAsk(prompt, maxTokens) {
 }
 
 // ── EXPORT ──
-async function exportClips(clips, filename) {
+async function exportClips(clips, filename, bitrate) {
   addLog('all', `[~] Exporting ${clips.length} clip(s)...`);
   const video = document.getElementById('ai-video');
 
@@ -1156,7 +1172,7 @@ async function exportClips(clips, filename) {
 
   const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
     ? 'video/webm;codecs=vp9,opus' : 'video/webm';
-  const recorder = new MediaRecorder(stream, {mimeType, videoBitsPerSecond: 2500000});
+  const recorder = new MediaRecorder(stream, {mimeType, videoBitsPerSecond: bitrate || 2500000});
   const chunks = [];
   recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
   recorder.start(100);
@@ -1177,6 +1193,9 @@ async function exportClips(clips, filename) {
       function frame() {
         if (!video.paused && video.currentTime < clipEnd) {
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          if (window._captionWords && window._captionWords.length) {
+            drawCaptionFrame(ctx, canvas, video.currentTime);
+          }
           animId = requestAnimationFrame(frame);
         } else {
           video.pause();
@@ -1285,7 +1304,7 @@ async function runAIEdit(instructions) {
   updateProcessingProgress(5, 'Analyzing instructions...', 0);
   let plan;
   try {
-    const raw = await claudeAsk(`You are an AI video editor. Video is ${totalSecs}s long. User said: "${instructions}". Return ONLY valid JSON: {"summary":"what you will do","actions":[]} where action types are: trim (needs start,end in seconds), speed (needs factor: 0.5=slowmo 2=fast), silence, highlight (needs duration:60), noise, caption, aspect (needs ratio: 9:16 or 16:9 or 1:1), music (needs mood: inspirational/calm/upbeat), thumbnail. Only include actions the user asked for.`, 800);
+    const raw = await claudeAsk(`You are an AI video editor. Video is ${totalSecs}s long. User said: "${instructions}". Return ONLY valid JSON: {"summary":"what you will do","actions":[]} where action types are: trim (needs start,end in seconds), speed (needs factor: 0.5=slowmo 2=fast), silence, highlight (needs duration:60), noise, caption, aspect (needs ratio: 9:16 or 16:9 or 1:1), music (needs mood: inspirational/calm/upbeat), thumbnail, compress (needs bitrate: pick 400000 for "a lot"/"heavily"/"max compression", 800000 for "compress"/moderate, 1500000 for "slightly"/"a little"), translate (needs lang: ISO code like sw/fr/es, default sw), bgremove (needs mode: blur or remove, default blur). Only include actions the user asked for.`, 800);
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('No JSON found');
     plan = JSON.parse(match[0]);
@@ -1354,6 +1373,18 @@ async function runAIEdit(instructions) {
       case 'thumbnail':
         updateProcessingProgress(pct, 'Extracting best frame...', i+1);
         await doThumbnail();
+        break;
+      case 'compress':
+        updateProcessingProgress(pct, 'Compressing video...', i+1);
+        await exportClips([{ start: 0, end: video.duration }], 'AfriVid-Compressed', action.bitrate || 800000);
+        break;
+      case 'translate':
+        updateProcessingProgress(pct, `Translating to ${action.lang||'sw'}...`, i+1);
+        await doTranslate(action.lang || 'sw');
+        break;
+      case 'bgremove':
+        updateProcessingProgress(pct, 'Removing background...', i+1);
+        await doBgRemove(action.mode || 'blur');
         break;
       default:
         addLog('all', `[!] Unknown action: ${action.type}`);
@@ -1662,6 +1693,8 @@ function startKaraokeCaptions(text) {
   }
   const words = text.split(' ');
   const wps = words.length / (video.duration || 60);
+  window._captionWords = words;
+  window._captionWps = wps;
   video.addEventListener('timeupdate', () => {
     const wi = Math.floor(video.currentTime * wps);
     const cs = 8, start = Math.floor(wi/cs)*cs;
@@ -1675,6 +1708,44 @@ function startKaraokeCaptions(text) {
     overlay.innerHTML = chunk.length ? `<span style="background:${bg};color:${color};font-size:${fs};font-weight:${fw};padding:0.4rem 0.85rem;border-radius:6px;font-family:Syne,sans-serif;display:inline-block;">${chunk.map((w,i)=>i===active?`<span style="color:#F5A623;font-weight:900;">${w}</span>`:w).join(' ')}</span>` : '';
   });
   video.addEventListener('ended', ()=>{ overlay.innerHTML=''; });
+}
+
+function drawCaptionFrame(ctx, canvas, currentTime) {
+  const words = window._captionWords;
+  const wps = window._captionWps;
+  if (!words || !wps) return;
+  const wi = Math.floor(currentTime * wps);
+  const cs = 8, start = Math.floor(wi/cs)*cs;
+  const chunk = words.slice(start, start+cs);
+  if (!chunk.length) return;
+  const cs2 = currentCaptionStyle;
+  let color = '#ffffff', fs = Math.round(canvas.height*0.045), fw = '700', bgAlpha = 0.75, showBg = true;
+  if (cs2 === 'bold') { fs = Math.round(canvas.height*0.055); fw = '900'; bgAlpha = 0.9; }
+  else if (cs2 === 'minimal') { showBg = false; }
+  else if (cs2 === 'tiktok') { showBg = false; color = '#fffc00'; fs = Math.round(canvas.height*0.06); fw = '900'; }
+  const text = chunk.join(' ');
+  ctx.save();
+  ctx.font = `${fw} ${fs}px Syne, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  const x = canvas.width / 2;
+  const y = canvas.height - Math.round(canvas.height*0.1);
+  const metrics = ctx.measureText(text);
+  if (showBg) {
+    const padX = 20, padY = 14;
+    const bw = metrics.width + padX*2, bh = fs + padY*2;
+    ctx.fillStyle = `rgba(0,0,0,${bgAlpha})`;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(x-bw/2, y-fs-padY+4, bw, bh, 8);
+      ctx.fill();
+    } else {
+      ctx.fillRect(x-bw/2, y-fs-padY+4, bw, bh);
+    }
+  }
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+  ctx.restore();
 }
 
 async function doNoiseRemoval() {
