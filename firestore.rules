@@ -6,10 +6,16 @@ service cloud.firestore {
     // The old email/UID check is gone on purpose — that password was public for 6+ weeks
     // and is the likely breach vector; anyone who had it passed isAdmin() and hit the
     // catch-all rule at the bottom, giving them read/write on every collection.
+    // admin.html requires two steps before it ever calls signInWithPopup: clicking a one-time
+    // emailed link, then completing Google Sign-In. Requiring sign_in_provider == 'google.com'
+    // here means that even if the email-link step alone ever left a session active due to a
+    // client bug, it could not read/write anything admin-only — only a completed Google
+    // sign-in counts at the data layer.
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email == 'reaganayiecho@gmail.com'
-        && request.auth.token.email_verified == true;
+        && request.auth.token.email_verified == true
+        && request.auth.token.firebase.sign_in_provider == 'google.com';
     }
 
     // Accepts either `uid` or `userId` as the owner field, since different pages in the
