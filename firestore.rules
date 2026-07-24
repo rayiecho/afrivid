@@ -41,7 +41,11 @@ service cloud.firestore {
     match /studio_users/{userId} {
       allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
       allow create: if request.auth != null && request.auth.uid == userId
-        && !request.resource.data.keys().hasAny(['plan', 'betaLimit', 'customLimit', 'banned', 'planUpdatedAt', 'limitSetBy', 'limitSetAt']);
+        // Every signup flow across the site writes plan:'beta' on account creation — that's
+        // fine; only self-assigning 'pro'/'admin'/etc at signup, or the other privileged
+        // fields, is blocked.
+        && !request.resource.data.keys().hasAny(['betaLimit', 'customLimit', 'banned', 'planUpdatedAt', 'limitSetBy', 'limitSetAt'])
+        && request.resource.data.get('plan', 'beta') == 'beta';
       allow update: if isAdmin()
         || (request.auth != null && request.auth.uid == userId && !touchesPrivilegedFields());
       allow delete: if isAdmin();
