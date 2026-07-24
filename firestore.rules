@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Admin is now ONLY the Google account signed in via admin.html's Google Sign-In flow.
+    // The old email/UID check is gone on purpose — that password was public for 6+ weeks
+    // and is the likely breach vector; anyone who had it passed isAdmin() and hit the
+    // catch-all rule at the bottom, giving them read/write on every collection.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'reaganayiecho@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    // Accepts either `uid` or `userId` as the owner field, since different pages in the
+    // codebase write different field names for the same purpose. Using .get(field, null)
+    // instead of dot-access so a doc missing one of the two fields doesn't error out.
+    function claimsOwnership() {
+      return request.resource.data.get('uid', null) == request.auth.uid
+        || request.resource.data.get('userId', null) == request.auth.uid;
+    }
+    function ownsExisting() {
+      return resource.data.get('uid', null) == request.auth.uid
+        || resource.data.get('userId', null) == request.auth.uid;
+    }
+
+    // Fields only admin may ever set. Blocks a user from granting themselves Pro,
+    // raising their own limits, or un-banning themselves via a direct write.
+    function touchesPrivilegedFields() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['plan', 'betaLimit', 'customLimit', 'banned', 'planUpdatedAt', 'limitSetBy', 'limitSetAt']);
+    }
+
+    // Users can read/write their own profile — no public read, no self-granted privilege fields.
+    match /studio_users/{userId} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+      allow create: if request.auth != null && request.auth.uid == userId
+        && !request.resource.data.keys().hasAny(['plan', 'betaLimit', 'customLimit', 'banned', 'planUpdatedAt', 'limitSetBy', 'limitSetAt']);
+      allow update: if isAdmin()
+        || (request.auth != null && request.auth.uid == userId && !touchesPrivilegedFields());
+      allow delete: if isAdmin();
+    }
+
+    // Videos
+    match /studio_videos/{docId} {
+      allow read, delete: if isAdmin() || (request.auth != null && ownsExisting());
+      allow create: if request.auth != null && claimsOwnership();
+      allow update: if isAdmin();
+    }
+
+    // Photos
+    match /studio_photos/{docId} {
+      allow read, delete: if isAdmin() || (request.auth != null && ownsExisting());
+      allow create: if request.auth != null && claimsOwnership();
+      allow update: if isAdmin();
+    }
+
+    // Designs
+    match /studio_designs/{docId} {
+      allow read, delete: if isAdmin() || (request.auth != null && ownsExisting());
+      allow create: if request.auth != null && claimsOwnership();
+      allow update: if isAdmin();
+    }
+
+    // Feedback - anyone can submit, but can't put someone else's uid on it
+    match /feedback/{docId} {
+      allow create: if request.resource.data.get('userId', 'anonymous') == 'anonymous'
+        || (request.auth != null && request.resource.data.userId == request.auth.uid);
+      allow read, write: if isAdmin();
+    }
+
+    // Upgrade requests - anyone can submit (contains PII: name/email/phone/payment — admin-only read)
+    match /upgrade_requests/{docId} {
+      allow create: if request.resource.data.get('userId', 'anonymous') == 'anonymous'
+        || (request.auth != null && request.resource.data.userId == request.auth.uid);
+      allow read, write: if isAdmin();
+    }
+
+    // AfriBrain data
+    match /afribrain_data/{docId} {
+      allow create: if request.auth != null;
+      allow read, write: if isAdmin();
+    }
+
+    // Admin finances - admin only
+    match /admin_transactions/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Admin settings - admin only
+    match /admin/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Announcements - all signed-in users read, admin writes
+    match /announcements/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Catch-all - admin can access everything else; everyone else denied by default
+    match /{collection}/{docId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

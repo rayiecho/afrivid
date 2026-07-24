@@ -1605,7 +1605,11 @@ window.downloadStudioItem = function(src, title, type) {
 }
 
 // Delete item from studio
+// Firestore Security Rules are the real enforcement (only the owner's uid or admin can delete) —
+// this allowlist just avoids handing an arbitrary collection name to deleteDoc from the client.
+const STUDIO_CONTENT_COLLECTIONS = ['studio_videos', 'studio_photos', 'studio_designs'];
 window.deleteStudioItem = function(collection, id) {
+  if (!STUDIO_CONTENT_COLLECTIONS.includes(collection)) return;
   if (!confirm('Delete this item from Studio?')) return;
   if (window.db && window.deleteDoc && window.doc) {
     deleteDoc(doc(db, collection, id))

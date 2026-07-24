@@ -244,8 +244,9 @@ window._feedbackLoaded = false;
   <div class="login-box">
     <div class="login-logo">AfriVid</div>
     <div class="login-sub">ADMIN DASHBOARD</div>
-    <form onsubmit="doAdminLogin();return false;"><input type="password" class="login-input" id="admin-pwd" autocomplete="current-password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()">
-    <button class="login-btn" type="submit">Access Dashboard</button></form>
+    <form id="admin-email-form" onsubmit="submitAdminEmail();return false;"><input type="email" class="login-input" id="admin-email" autocomplete="username" placeholder="Admin email address">
+    <button class="login-btn" type="submit">Continue</button></form>
+    <button class="login-btn" id="admin-google-btn" style="display:none;width:100%;" onclick="doAdminGoogleSignIn()">Sign in with Google</button>
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
@@ -724,7 +725,7 @@ window._feedbackLoaded = false;
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, getDocs, doc, setDoc, addDoc, deleteDoc, query, orderBy, limit, where, getDoc, updateDoc, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
@@ -742,25 +743,58 @@ const db = getFirestore(app);
   window.db = db;
 const auth = getAuth(app);
 
-// Sign in admin with Firebase Auth so Firestore rules pass
-window.adminFirebaseSignIn = async function adminFirebaseSignIn() {
-  try {
-    const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
-    // Try to use current session first
-    if (auth.currentUser) return;
-    // Silent sign in using stored credentials
-    const adminEmail = 'afrividstudio@gmail.com';
-    const adminPwd = 'Regan6440';
-    console.log('[Admin] Signing in as', adminEmail);
-    const cred = await signInWithEmailAndPassword(auth, adminEmail, adminPwd);
-    console.log('[Admin] Signed in! UID:', cred.user.uid);
-    if(window._adminLog) window._adminLog('SUCCESS', 'Firebase signed in as ' + adminEmail + ' UID: ' + cred.user.uid);
-  } catch(e) {
-    console.error('[Admin Firebase Auth FAILED]', e.code, e.message);
-    if(window._adminLog) window._adminLog('PERMISSION', 'Firebase auth failed: ' + e.message + ' (' + e.code + ')');
-    if(window.showToast) showToast('[!] Firebase login failed: ' + e.message, 'error');
+// ── AUTH ──
+// Only this Google account may ever see the dashboard. No password is stored or compared anywhere in this file —
+// identity is the live Firebase Auth session itself, verified on every auth-state change (see onAuthStateChanged below).
+const ALLOWED_ADMIN_EMAIL = 'reaganayiecho@gmail.com';
+
+window.submitAdminEmail = function submitAdminEmail() {
+  const typed = document.getElementById('admin-email').value.trim().toLowerCase();
+  const err = document.getElementById('login-err');
+  if (typed !== ALLOWED_ADMIN_EMAIL) {
+    err.textContent = 'This email is not authorized for admin access.';
+    return;
   }
-}
+  err.textContent = '';
+  document.getElementById('admin-email-form').style.display = 'none';
+  document.getElementById('admin-google-btn').style.display = 'block';
+};
+
+window.doAdminGoogleSignIn = async function doAdminGoogleSignIn() {
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ login_hint: ALLOWED_ADMIN_EMAIL });
+    const result = await signInWithPopup(auth, provider);
+    const signedInEmail = (result.user.email || '').toLowerCase();
+    if (signedInEmail !== ALLOWED_ADMIN_EMAIL) {
+      await signOut(auth);
+      err.textContent = 'Access denied — this Google account is not authorized for admin access.';
+    }
+    // onAuthStateChanged below reveals the dashboard once the signed-in email is confirmed.
+  } catch (e) {
+    console.error('[Admin] Google sign-in failed:', e.code, e.message);
+    err.textContent = 'Sign-in failed: ' + e.message;
+  }
+};
+
+window.doLogout = async function doLogout() {
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, (user) => {
+  const isAuthorizedAdmin = !!user && (user.email || '').toLowerCase() === ALLOWED_ADMIN_EMAIL;
+  document.getElementById('login-screen').style.display = isAuthorizedAdmin ? 'none' : 'flex';
+  document.getElementById('admin-app').style.display = isAuthorizedAdmin ? 'block' : 'none';
+  if (isAuthorizedAdmin) {
+    if (window._adminLog) window._adminLog('SUCCESS', 'Admin session active: ' + user.email);
+    loadOverview();
+  } else if (user) {
+    // Signed in with Firebase but not the authorized admin account — never show the dashboard.
+    signOut(auth);
+  }
+});
 let storage;
 try { storage = getStorage(app); } catch(e) {}
 
@@ -1339,67 +1373,11 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ── INIT ──
-loadOverview();
+// Dashboard load is now driven entirely by onAuthStateChanged above — no unconditional load here.
 </script>
 
 <script>
-// ── AUTH ──
-const ADMIN_PWD = 'Regan6440';
-
-function doAdminLogin() {
-  const pwd = document.getElementById('admin-pwd').value;
-  if(pwd === ADMIN_PWD) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-app').style.display = 'block';
-    sessionStorage.setItem('afrivid_admin','1');
-    // Store admin credentials for Firebase auth
-    const adminEmail = document.getElementById('admin-email').value.trim() || 'afrividstudio@gmail.com';
-    sessionStorage.setItem('admin_fb_email', adminEmail);
-    sessionStorage.setItem('admin_fb_pwd', pwd); // Used for Firebase auth
-    // Sign in to Firebase
-    adminFirebaseSignIn().then(() => {
-      loadOverview();
-    });
-  } else {
-    document.getElementById('login-err').textContent = 'Incorrect password';
-    document.getElementById('admin-pwd').value = '';
-  }
-}
-
-function doLogout() {
-  sessionStorage.removeItem('afrivid_admin');
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('admin-app').style.display = 'none';
-  document.getElementById('admin-pwd').value = '';
-}
-
-// Auto-login if session exists
-if(sessionStorage.getItem('afrivid_admin')==='1') {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('admin-app').style.display = 'block';
-  // Wait for ES modules to load then sign in
-  window.addEventListener('load', () => {
-    if(window.adminFirebaseSignIn) {
-      window.adminFirebaseSignIn().then(() => {
-        console.log('[Admin] Auto Firebase done');
-        if(window.loadOverview) loadOverview();
-      }).catch(e => {
-        console.error('[Admin] Auto Firebase failed:', e.message);
-      });
-    }
-  });
-}
-  adminFirebaseSignIn().then(() => {
-    console.log('[Admin] Auto-login Firebase done');
-    loadOverview();
-  }).catch(e => {
-    console.error('[Admin] Auto Firebase failed:', e.message);
-    if(window._adminLog) window._adminLog('PERMISSION', 'Auto Firebase failed: ' + e.message);
-  });
-
-document.getElementById('admin-pwd').addEventListener('keydown', e => {
-  if(e.key==='Enter') doAdminLogin();
-});
+// Auth is handled in the module script above (Google Sign-In restricted to ALLOWED_ADMIN_EMAIL).
 
   // ── UPGRADE REQUESTS ──
   window.loadUpgrades = async function() {
