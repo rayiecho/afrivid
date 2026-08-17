@@ -174,7 +174,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
 .step-pill.active .step-dot{background:var(--gold);color:var(--bg);}
 .step-pill.done .step-dot{background:var(--green);color:var(--bg);}
-.step-pill:not(.active):not(.done) .step-dot{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);}
+.step-pill:not(.active):not(.done) .step-dot{background:rgba(23,20,15,0.08);color:rgba(23,20,15,0.45);}
 
 /* PANELS */
 .panel{display:none;}
@@ -566,7 +566,7 @@ body::after{
     <div class="navbar-badge">AfriVid Studio</div>
   </a>
   <div class="navbar-actions">
-    <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+    <a href="index.html" style="font-size:0.72rem;color:rgba(23,20,15,0.45);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
   </div>
 </nav>
 
@@ -633,13 +633,35 @@ window.generateOnServer = async function() {
     if (sgdb) sgdb.style.display = 'flex';
     document.getElementById('server-gen-bar').style.width = '10%';
     document.getElementById('server-gen-pct').textContent = '10%';
+    let pollAttempts = 0;
+    let lastProgress = -1;
+    let stalledSince = Date.now();
     window._serverGenPoll = setInterval(async () => {
       try {
+        pollAttempts++;
         const r = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${window._serverGenJobId}`);
         const d = await r.json();
         document.getElementById('server-gen-bar').style.width = (d.progress||0) + '%';
         document.getElementById('server-gen-pct').textContent = (d.progress||0) + '%';
         document.getElementById('server-gen-stage').textContent = d.stage || 'Processing...';
+        // The backend can die mid-job (e.g. the instance scales down while still working in the
+        // background) without ever writing 'completed' or 'failed' — leaving this polling loop
+        // running forever showing a frozen percentage with zero feedback. Track how long progress
+        // has actually been stuck, not just how long we've been polling.
+        if ((d.progress||0) !== lastProgress) { lastProgress = d.progress||0; stalledSince = Date.now(); }
+        const stalledMinutes = (Date.now() - stalledSince) / 60000;
+        if (d.status !== 'completed' && d.status !== 'failed' && stalledMinutes > 6) {
+          clearInterval(window._serverGenPoll);
+          document.getElementById('server-gen-stage').textContent = 'Stalled — no progress for 6+ minutes. This job likely died on our end; please try again.';
+          if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
+          return;
+        }
+        if (pollAttempts > 360) {
+          clearInterval(window._serverGenPoll);
+          document.getElementById('server-gen-stage').textContent = 'Taking much longer than usual — please try again.';
+          if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
+          return;
+        }
         if (d.status === 'completed' && d.output_url) {
           clearInterval(window._serverGenPoll);
           document.getElementById('server-gen-download').style.display = 'block';
@@ -1371,24 +1393,24 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <!-- SERVER PROCESSING STATUS -->
         <div id="server-gen-status" style="display:none;margin-top:1rem;background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">AfriVid Cloud Generating...</div>
-            <div id="server-gen-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+            <div style="color:#8B6F47;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">AfriVid Cloud Generating...</div>
+            <div id="server-gen-pct" style="color:#C4701E;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
-          <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
-            <div id="server-gen-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+          <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:6px;margin-bottom:0.75rem;">
+            <div id="server-gen-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#E08A2E,#8B6F47);border-radius:6px;transition:width 0.5s;"></div>
           </div>
-          <div id="server-gen-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Starting...</div>
-          <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;">
-            <div style="color:#F5A623;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">Your video is being generated!</div>
-            <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">We'll email you at <span id="server-gen-email" style="color:#74C69D;">your email</span> when ready.</div>
+          <div id="server-gen-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Starting...</div>
+          <div style="background:rgba(224,138,46,0.08);border:1px solid rgba(224,138,46,0.25);border-radius:8px;padding:0.75rem 1rem;">
+            <div style="color:#C4701E;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">Your video is being generated!</div>
+            <div style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;">We'll email you at <span id="server-gen-email" style="color:#8B6F47;">your email</span> when ready.</div>
             <div id="server-gen-dashboard-btn" style="display:none;margin-top:0.75rem;flex-wrap:wrap;align-items:center;gap:0.5rem;">
-              <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
-              <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;">Processing started — safe to leave</div>
+              <a href="index.html" style="background:rgba(224,138,46,0.1);border:1px solid rgba(224,138,46,0.35);color:#C4701E;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
+              <div style="color:rgba(23,20,15,0.4);font-size:0.72rem;font-family:'Space Mono',monospace;">Processing started — safe to leave</div>
             </div>
           </div>
           <div id="server-gen-download" style="display:none;margin-top:1rem;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Video ready!</div>
-            <button id="server-gen-link" onclick="(async()=>{const btn=document.getElementById('server-gen-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='Download Video';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">Download Video</button>
+            <div style="color:#8B6F47;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Video ready!</div>
+            <button id="server-gen-link" onclick="(async()=>{const btn=document.getElementById('server-gen-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='Download Video';btn.disabled=false;})()" data-url="" style="background:#8B6F47;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">Download Video</button>
           </div>
         </div>
       </div>
@@ -1440,8 +1462,8 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <label class="form-label-m">PASSWORD</label>
         <input type="password" id="login-password" class="form-input-m" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
-      </div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.5);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#C4701E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+      </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="form-label-m">FULL NAME</label>
         <input type="text" id="signup-name" class="form-input-m" placeholder="Your full name">
@@ -1449,19 +1471,18 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <input type="email" id="signup-email" class="form-input-m" placeholder="you@example.com">
         <label class="form-label-m">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input-m" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
-          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#F5A623;flex-shrink:0;" required>
-          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#F5A623;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#F5A623;text-decoration:none;">Privacy Policy</a></label>
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
+          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#C4701E;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#C4701E;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
-          <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#74C69D;flex-shrink:0;" checked>
-          <label for="afribrain-consent">Help build <span style="color:#74C69D;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#74C69D;text-decoration:none;">Learn more</a></label>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+          <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
+          <label for="afribrain-consent">Help build <span style="color:#8B6F47;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#8B6F47;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
-      </div>
-      <div class="login-error-m" id="login-error"></form>
-      </div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.5);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#C4701E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+      </form>
+      <div class="login-error-m" id="login-error"></div>
     </div>
 
 <script type="module">/* v234513 */
@@ -4151,7 +4172,7 @@ function renderLibrary() {
     grid.innerHTML = `<div style="text-align:center;color:var(--muted);padding:4rem;grid-column:span 3;">
       <div style="font-size:3rem;margin-bottom:1rem;">[books]</div>
       <div style="font-family:var(--font-mono);font-size:0.82rem;">// Your library is empty</div>
-      <div style="font-size:0.78rem;margin-top:0.5rem;color:rgba(255,255,255,0.2);">Generated videos, designs and edited videos will appear here</div>
+      <div style="font-size:0.78rem;margin-top:0.5rem;color:rgba(23,20,15,0.35);">Generated videos, designs and edited videos will appear here</div>
     </div>`;
     return;
   }
@@ -5749,7 +5770,7 @@ window._loadSceneAssets = function(event) {
         
         // Show thumbnail
         const thumb = document.createElement('div');
-        thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);';
+        thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(23,20,15,0.12);';
         thumb.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">
           <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
         list.appendChild(thumb);
@@ -5769,7 +5790,7 @@ window.removeSceneAsset = function(id) {
   if(list) list.innerHTML = '';
   window.sceneAssets.forEach(asset => {
     const thumb = document.createElement('div');
-    thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);';
+    thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(23,20,15,0.12);';
     thumb.innerHTML = `<img src="${asset.src}" style="width:100%;height:100%;object-fit:cover;">
       <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
     list.appendChild(thumb);
@@ -6267,20 +6288,20 @@ window.setTutorialMode = function(mode) {
   const browserBtn = document.getElementById('tmode-browser');
   const urlRow = document.getElementById('tutorial-url-row');
   if (mode === 'browser') {
-    browserBtn.style.background = '#F5A623';
-    browserBtn.style.color = '#050A14';
+    browserBtn.style.background = '#E08A2E';
+    browserBtn.style.color = '#17140F';
     browserBtn.style.border = 'none';
-    conceptBtn.style.background = 'rgba(255,255,255,0.05)';
-    conceptBtn.style.color = 'rgba(255,255,255,0.6)';
-    conceptBtn.style.border = '1px solid rgba(255,255,255,0.15)';
+    conceptBtn.style.background = 'rgba(23,20,15,0.04)';
+    conceptBtn.style.color = 'rgba(23,20,15,0.6)';
+    conceptBtn.style.border = '1px solid rgba(23,20,15,0.15)';
     urlRow.style.display = 'block';
   } else {
-    conceptBtn.style.background = '#F5A623';
-    conceptBtn.style.color = '#050A14';
+    conceptBtn.style.background = '#E08A2E';
+    conceptBtn.style.color = '#17140F';
     conceptBtn.style.border = 'none';
-    browserBtn.style.background = 'rgba(255,255,255,0.05)';
-    browserBtn.style.color = 'rgba(255,255,255,0.6)';
-    browserBtn.style.border = '1px solid rgba(255,255,255,0.15)';
+    browserBtn.style.background = 'rgba(23,20,15,0.04)';
+    browserBtn.style.color = 'rgba(23,20,15,0.6)';
+    browserBtn.style.border = '1px solid rgba(23,20,15,0.15)';
     urlRow.style.display = 'none';
   }
 };
