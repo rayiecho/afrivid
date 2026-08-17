@@ -650,13 +650,16 @@ window.generateOnServer = async function() {
         // has actually been stuck, not just how long we've been polling.
         if ((d.progress||0) !== lastProgress) { lastProgress = d.progress||0; stalledSince = Date.now(); }
         const stalledMinutes = (Date.now() - stalledSince) / 60000;
-        if (d.status !== 'completed' && d.status !== 'failed' && stalledMinutes > 6) {
+        // A single scene can legitimately take up to ~12 minutes now (600s Wav2Lip attempt +
+        // ffmpeg loop/crop overhead), so the stall threshold has to sit safely above that or
+        // a genuinely-still-working job gets misreported as dead.
+        if (d.status !== 'completed' && d.status !== 'failed' && stalledMinutes > 15) {
           clearInterval(window._serverGenPoll);
-          document.getElementById('server-gen-stage').textContent = 'Stalled — no progress for 6+ minutes. This job likely died on our end; please try again.';
+          document.getElementById('server-gen-stage').textContent = 'Stalled — no progress for 15+ minutes. This job likely died on our end; please try again.';
           if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
           return;
         }
-        if (pollAttempts > 360) {
+        if (pollAttempts > 720) {
           clearInterval(window._serverGenPoll);
           document.getElementById('server-gen-stage').textContent = 'Taking much longer than usual — please try again.';
           if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
@@ -6918,7 +6921,7 @@ async function generateAd() {
     // based on elapsed time and always displayed whichever was higher (real or fake), which
     // meant a genuinely stalled or failed job still looked like it was climbing toward 95%
     // instead of showing the real, stuck state.
-    let done = false, attempts = 0;
+    let attempts = 0, lastProgress = -1, stalledSince = Date.now();
     const poll = setInterval(async () => {
       try {
         attempts++;
@@ -6945,7 +6948,18 @@ async function generateAd() {
           btn.textContent = 'Generate Video Ad';
           btn.disabled = false;
         }
-        if (attempts > 120) { clearInterval(poll); btn.disabled = false; btn.textContent = 'Generate Video Ad'; }
+        // A single scene's Wav2Lip attempt can legitimately take up to ~12 minutes, so track
+        // actual stalled time (no progress movement) rather than a flat attempt-count cap —
+        // a flat 10-minute cap was declaring genuinely-still-working multi-scene jobs dead.
+        if (pct !== lastProgress) { lastProgress = pct; stalledSince = Date.now(); }
+        const stalledMinutes = (Date.now() - stalledSince) / 60000;
+        if (status.status !== 'completed' && status.status !== 'failed' && stalledMinutes > 15) {
+          clearInterval(poll);
+          document.getElementById('ad-stage').textContent = 'Stalled — no progress for 15+ minutes. Please try again.';
+          btn.disabled = false; btn.textContent = 'Generate Video Ad';
+          return;
+        }
+        if (attempts > 720) { clearInterval(poll); btn.disabled = false; btn.textContent = 'Generate Video Ad'; }
       } catch(e) {}
     }, 5000);
   } catch(e) {
