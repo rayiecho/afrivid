@@ -85,7 +85,7 @@
     return _logs;
   };
 
-  console.log('[AfriVid] Error logger initialized ✅');
+  console.log('[AfriVid] Error logger initialized');
 })();
 </script>
 
@@ -594,7 +594,7 @@ window.generateOnServer = async function() {
   const scenes = (window.scriptData?.scenes) || (typeof scriptData !== "undefined" && scriptData?.scenes) || window._scenes || [];
   if (!scenes.length) { alert('Please generate a script first'); return; }
   const btn = document.getElementById('btn-generate-server');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Starting...'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Starting...'; }
   document.getElementById('server-gen-status').style.display = 'block';
   document.getElementById('server-gen-stage').textContent = 'Sending to AfriVid Cloud...';
   const emailEl = document.getElementById('server-gen-email');
@@ -646,15 +646,15 @@ window.generateOnServer = async function() {
           document.getElementById('server-gen-link').dataset.url = d.output_url;
           document.getElementById('server-gen-bar').style.width = '100%';
           document.getElementById('server-gen-pct').textContent = '100%';
-          document.getElementById('server-gen-stage').textContent = '✅ Video ready!';
+          document.getElementById('server-gen-stage').textContent = 'Video ready!';
           // Store server video URL for share/download buttons
           window._serverVideoUrl = d.output_url;
           window._serverThumbUrl = d.thumbnail_url || '';
           // Update download button text
           const dlBtn = document.getElementById('btn-download');
-          if (dlBtn) { dlBtn.textContent = '⬇ Download MP4'; dlBtn.onclick = async () => { dlBtn.textContent='Downloading...';dlBtn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}dlBtn.textContent='⬇ Download MP4';dlBtn.disabled=false;}; }
+          if (dlBtn) { dlBtn.textContent = 'Download MP4'; dlBtn.onclick = async () => { dlBtn.textContent='Downloading...';dlBtn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}dlBtn.textContent='Download MP4';dlBtn.disabled=false;}; }
           const mp4Btn = document.getElementById('btn-download') ? document.querySelector('#panel-4 .btn-gold') : null;
-          if (mp4Btn) { mp4Btn.onclick = async () => { mp4Btn.textContent='Downloading...';mp4Btn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}mp4Btn.textContent='🎬 Download MP4';mp4Btn.disabled=false;}; }
+          if (mp4Btn) { mp4Btn.onclick = async () => { mp4Btn.textContent='Downloading...';mp4Btn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}mp4Btn.textContent='Download MP4';mp4Btn.disabled=false;}; }
           goToStep(4);
           // Save to Firestore studio
           try {
@@ -677,13 +677,13 @@ window.generateOnServer = async function() {
         }
         if (d.status === 'failed') {
           clearInterval(window._serverGenPoll);
-          document.getElementById('server-gen-stage').textContent = '❌ Generation failed.';
+          document.getElementById('server-gen-stage').textContent = 'Generation failed.';
         }
       } catch(e) { console.log('Poll error:', e); }
     }, 5000);
   } catch(e) {
     document.getElementById('server-gen-stage').textContent = 'Failed: ' + e.message;
-    if (btn) { btn.disabled = false; btn.textContent = '⚡ Generate Video'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
   }
 };
 function handleSaveToStudio(){ 
@@ -778,16 +778,16 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
 
   <!-- MODE SWITCHER -->
   <div style="display:flex;gap:0.5rem;max-width:900px;margin:0 auto 1rem;padding:0 1rem;">
-    <button id="mode-video-tab" onclick="switchCreateMode('video')" class="tool-tab active">🎬 Video Creator</button>
-    <button id="mode-slides-tab" onclick="switchCreateMode('slides')" class="tool-tab">📊 Slides Generator</button>
-    <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" class="tool-tab">🎓 Tutorial Maker</button>
-    <button id="mode-ad-tab" onclick="switchCreateMode('ad')" class="tool-tab">📱 Ad Maker</button>
+    <button id="mode-video-tab" onclick="switchCreateMode('video')" class="tool-tab active">Video Creator</button>
+    <button id="mode-slides-tab" onclick="switchCreateMode('slides')" class="tool-tab">Slides Generator</button>
+    <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" class="tool-tab">Tutorial Maker</button>
+    <button id="mode-ad-tab" onclick="switchCreateMode('ad')" class="tool-tab">Ad Maker</button>
   </div>
 
   <!-- SLIDES GENERATOR PANEL -->
   <div id="slides-generator-panel" style="display:none;max-width:900px;margin:0 auto;padding:0 1rem;">
     <div class="card">
-      <div class="card-title"><div class="card-title-icon">📊</div>AI Slides Generator</div>
+      <div class="card-title"><div class="card-title-icon"></div>AI Slides Generator</div>
       <div style="margin-bottom:1rem;">
         <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">TOPIC OR TITLE *</div>
         <input id="slides-topic" type="text" placeholder="e.g. Climate Change in Africa, Financial Literacy, Digital Skills for Youth" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
@@ -835,7 +835,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </label>
         </div>
       </div>
-      <button onclick="generateSlides()" id="slides-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">✦ Generate Slides</button>
+      <button onclick="generateSlides()" id="slides-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">Generate Slides</button>
       <div id="slides-status" style="display:none;text-align:center;padding:1rem;">
         <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.8rem;" id="slides-status-text">Generating slides...</div>
         <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:4px;margin-top:0.75rem;">
@@ -848,8 +848,8 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
         <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.75rem;" id="slides-preview-label">8 SLIDES GENERATED</div>
         <div style="display:flex;gap:0.5rem;">
-          <button onclick="downloadAllSlides()" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">⬇ Download All (ZIP)</button>
-          <button onclick="downloadSlidesAsPDF()" style="background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.5rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">⬇ PDF</button>
+          <button onclick="downloadAllSlides()" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Download All (ZIP)</button>
+          <button onclick="downloadSlidesAsPDF()" style="background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.5rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">PDF</button>
         </div>
       </div>
       <div id="slides-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;"></div>
@@ -859,7 +859,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
   <!-- TUTORIAL MAKER PANEL -->
   <div id="tutorial-maker-panel" style="display:none;max-width:900px;margin:0 auto;padding:0 1rem;">
     <div class="card">
-      <div class="card-title"><div class="card-title-icon">🎓</div>AI Tutorial Maker</div>
+      <div class="card-title"><div class="card-title-icon"></div>AI Tutorial Maker</div>
       <div style="margin-bottom:1rem;">
         <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
         <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
@@ -896,19 +896,19 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       <div style="margin-bottom:1rem;">
         <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
-          <button onclick="setTutorialMode('concept')" id="tmode-concept" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">📊 Concept Slides</button>
-          <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">🌐 Browser Demo</button>
+          <button onclick="setTutorialMode('concept')" id="tmode-concept" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Concept Slides</button>
+          <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Browser Demo</button>
         </div>
       </div>
       <div id="tutorial-url-row" style="display:none;margin-bottom:1rem;">
         <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
         <input id="tutorial-url" type="text" placeholder="e.g. https://docs.google.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
-      <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">🎓 Generate Tutorial Video</button>
+      <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">Generate Tutorial Video</button>
       <div id="tutorial-status" style="display:none;">
         <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 Generating Tutorial...</div>
+            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Generating Tutorial...</div>
             <div id="tutorial-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
           <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:6px;margin-bottom:0.75rem;">
@@ -916,16 +916,16 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </div>
           <div id="tutorial-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Starting...</div>
           <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem;margin-bottom:1rem;">
-            <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">📧 We will email you when ready!</div>
+            <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">We will email you when ready!</div>
             <div style="color:rgba(23,20,15,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
             <div id="tutorial-dashboard-btn" style="display:none;margin-top:0.75rem;">
-              <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
-              <div style="color:rgba(23,20,15,0.4);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">✅ Processing started — safe to leave</div>
+              <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
+              <div style="color:rgba(23,20,15,0.4);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">Processing started — safe to leave</div>
             </div>
           </div>
           <div id="tutorial-download" style="display:none;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Tutorial ready!</div>
-            <button id="tutorial-download-link" onclick="(async()=>{const btn=document.getElementById('tutorial-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Tutorial.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Tutorial';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Tutorial</button>
+            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Tutorial ready!</div>
+            <button id="tutorial-download-link" onclick="(async()=>{const btn=document.getElementById('tutorial-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Tutorial.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='Download Tutorial';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Download Tutorial</button>
             <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-left:0.5rem;">▶ Upload to YouTube</button>
           </div>
         </div>
@@ -937,7 +937,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
   <div id="ad-maker-panel" style="display:none;max-width:900px;margin:0 auto;padding:0 1rem;">
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.5rem;margin-bottom:1rem;">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
-        <div style="width:36px;height:36px;background:rgba(245,166,35,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">📱</div>
+        <div style="width:36px;height:36px;background:rgba(245,166,35,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;"></div>
         <div style="font-weight:800;font-size:1rem;">AI Video Ad Maker</div>
       </div>
       <div style="margin-bottom:1rem;">
@@ -956,14 +956,14 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
         <div style="display:flex;align-items:center;gap:1rem;">
           <input type="file" id="ad-logo-input" accept="image/*" onchange="previewAdLogo(this)" style="display:none;">
-          <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📷 Upload Logo</button>
+          <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Upload Logo</button>
           <div id="ad-logo-preview" style="display:none;align-items:center;gap:0.5rem;">
             <img id="ad-logo-img" style="height:40px;border-radius:4px;object-fit:contain;background:rgba(23,20,15,0.12);padding:4px;">
-            <button onclick="clearAdLogo()" style="background:none;border:none;color:rgba(255,100,100,0.7);cursor:pointer;font-size:0.8rem;">✕ Remove</button>
+            <button onclick="clearAdLogo()" style="background:none;border:none;color:rgba(255,100,100,0.7);cursor:pointer;font-size:0.8rem;">Remove</button>
           </div>
         </div>
       </div>
-      <button onclick="generateAd()" id="ad-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">📱 Generate Video Ad</button>
+      <button onclick="generateAd()" id="ad-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">Generate Video Ad</button>
       <div id="ad-status" style="display:none;">
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:1rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
@@ -973,13 +973,13 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           <div style="background:rgba(23,20,15,0.04);border-radius:4px;height:6px;">
             <div id="ad-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
           </div>
-          <div style="color:rgba(245,166,35,0.7);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">📧 We will email you when ready! You can close this tab safely.</div>
+          <div style="color:rgba(245,166,35,0.7);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">We will email you when ready! You can close this tab safely.</div>
         </div>
       </div>
       <div id="ad-result" style="display:none;margin-top:1rem;">
         <video id="ad-video" controls style="width:100%;border-radius:10px;margin-bottom:0.75rem;"></video>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <a id="ad-download" href="#" target="_blank" download style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;">⬇ Download</a>
+          <a id="ad-download" href="#" target="_blank" download style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;">Download</a>
           <button onclick="uploadAdToYouTube()" class="btn" style="flex:1;background:#FF0000;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">▶ YouTube</button>
         </div>
       </div>
@@ -991,12 +991,12 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
     <div class="panel active" id="panel-1">
       <div class="card">
         <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">AfriVid AI Video Creator — Create Professional Videos in Minutes</h1>
-        <div class="card-title"><div class="card-title-icon">🎬</div>Video Creator</div>
+        <div class="card-title"><div class="card-title-icon"></div>Video Creator</div>
 
         <!-- MODE TOGGLE -->
         <div class="mode-toggle" style="margin-bottom:1.25rem;">
-          <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">✦ AI Generate</button>
-          <button class="mode-btn" id="mode-own" onclick="setMode('own')">✍ Own Script</button>
+          <button class="mode-btn active" id="mode-ai" onclick="setMode('ai')">AI Generate</button>
+          <button class="mode-btn" id="mode-own" onclick="setMode('own')">Own Script</button>
         </div>
 
         <div>
@@ -1047,16 +1047,16 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
                 <div class="form-group">
                   <label class="form-label">CATEGORY</label>
                   <select id="video-program" class="form-select">
-                    <option value="General knowledge and education">📚 General Education</option>
+                    <option value="General knowledge and education">General Education</option>
                     <option value="Artificial Intelligence and technology">Technology & AI</option>
-                    <option value="Finance money and financial literacy">💰 Finance</option>
-                    <option value="Business and entrepreneurship">📊 Business</option>
-                    <option value="IT Training and digital skills">💻 IT & Digital</option>
-                    <option value="Scholarships and global opportunities">🎓 Scholarships</option>
-                    <option value="Career development and public speaking">💼 Career</option>
-                    <option value="Leadership and 21st century skills">🎯 Leadership</option>
-                    <option value="Community impact and social change">🌍 Community</option>
-                    <option value="Mental health and wellbeing">🧠 Mental Health</option>
+                    <option value="Finance money and financial literacy">Finance</option>
+                    <option value="Business and entrepreneurship">Business</option>
+                    <option value="IT Training and digital skills">IT & Digital</option>
+                    <option value="Scholarships and global opportunities">Scholarships</option>
+                    <option value="Career development and public speaking">Career</option>
+                    <option value="Leadership and 21st century skills">Leadership</option>
+                    <option value="Community impact and social change">Community</option>
+                    <option value="Mental health and wellbeing">Mental Health</option>
                   </select>
                 </div>
               </div>
@@ -1111,17 +1111,17 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <div class="form-group">
               <label class="form-label">SLIDE THEME</label>
               <select id="video-visual-style" class="form-select">
-                <option value="classic">☀️ Classic (AfriVid)</option>
-                <option value="slides_light">☀ Light</option>
-                <option value="slides_dark">🌙 Dark</option>
-                <option value="slides_gold">✨ Gold</option>
-                <option value="cameroon_slide">🎙️ Cameroon Slide</option>
-                <option value="advert_slide">📢 Advert Slide</option>
-                <option value="unite_slide">🌍 Unite Slide</option>
-                <option value="whiteboard">🖊 Whiteboard</option>
-                <option value="cinematic">🎬 Cinematic</option>
-                <option value="photobg">🌍 Photo BG</option>
-                <option value="splitflow">⚡ Split Flow (New)</option>
+                <option value="classic">Classic (AfriVid)</option>
+                <option value="slides_light">Light</option>
+                <option value="slides_dark">Dark</option>
+                <option value="slides_gold">Gold</option>
+                <option value="cameroon_slide">Cameroon Slide</option>
+                <option value="advert_slide">Advert Slide</option>
+                <option value="unite_slide">Unite Slide</option>
+                <option value="whiteboard">Whiteboard</option>
+                <option value="cinematic">Cinematic</option>
+                <option value="photobg">Photo BG</option>
+                <option value="splitflow">Split Flow (New)</option>
               </select>
             </div>
 
@@ -1145,21 +1145,21 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <div class="form-group">
               <label class="form-label">MUSIC</label>
               <select id="bg-music" class="form-select">
-                <option value="none">🔇 None</option>
-                <option value="inspirational">🌍 Inspirational</option>
-                <option value="upbeat">⚡ Upbeat</option>
-                <option value="calm">🌊 Calm</option>
-                <option value="corporate">💼 Corporate</option>
+                <option value="none">None</option>
+                <option value="inspirational">Inspirational</option>
+                <option value="upbeat">Upbeat</option>
+                <option value="calm">Calm</option>
+                <option value="corporate">Corporate</option>
               </select>
             </div>
 
             <div class="form-group">
               <label class="form-label">TRANSITION</label>
               <select id="scene-transition" class="form-select">
-                <option value="fade">✨ Fade</option>
-                <option value="slide">➡ Slide</option>
-                <option value="zoom">🔍 Zoom</option>
-                <option value="none">⚡ Cut</option>
+                <option value="fade">Fade</option>
+                <option value="slide">Slide</option>
+                <option value="zoom">Zoom</option>
+                <option value="none">Cut</option>
               </select>
             </div>
 
@@ -1177,7 +1177,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <div class="form-group">
               <label class="form-label">PRESENTER PHOTO</label>
               <input type="file" id="presenter-photo" accept="image/*" style="display:none" onchange="loadPresenterPhoto(event)">
-              <button onclick="document.getElementById('presenter-photo').click()" style="width:100%;background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.75rem;cursor:pointer;text-align:left;">📷 Upload Photo</button>
+              <button onclick="document.getElementById('presenter-photo').click()" style="width:100%;background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.75rem;cursor:pointer;text-align:left;">Upload Photo</button>
               <span id="presenter-photo-name" style="font-size:0.68rem;color:var(--muted);font-family:var(--font-mono);display:block;margin-top:0.3rem;">No photo</span>
             </div>
 
@@ -1272,8 +1272,8 @@ Or just paste your raw content and we will structure it into scenes automaticall
             <div class="form-group" id="karibu-gender-group" style="display:none;">
               <label class="form-label">KARIBU GENDER</label>
               <select id="karibu-gender" class="form-select" onchange="window._karibuGender = this.value">
-                <option value="male">👨🏿 Male</option>
-                <option value="female">👩🏿 Female</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
               </select>
             </div>
             <div class="form-group">
@@ -1289,7 +1289,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
 
         <div class="btn-row" style="position:sticky;bottom:0;background:#FBF7EF;padding:1rem 0;margin-top:auto;">
           <button class="btn btn-gold" id="btn-generate" onclick="handleGenerateScript()">
-            ✨ Generate Script
+            Generate Script
           </button>
         </div>
       </div>
@@ -1306,7 +1306,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
     <div class="panel" id="panel-2">
       <div class="card">
         <div class="card-title">
-          <div class="card-title-icon">🎬</div>
+          <div class="card-title-icon"></div>
           <span id="script-title-display">Video Script</span>
           <span class="tag tag-gold" id="script-duration-tag">1 min</span>
         </div>
@@ -1327,9 +1327,9 @@ Or just paste your raw content and we will structure it into scenes automaticall
           </div>
         </div></div>
         <div class="btn-row">
-          <button class="btn btn-gold" onclick="goToStep(3)">✅ Approve & Generate Video</button>
+          <button class="btn btn-gold" onclick="goToStep(3)">Approve & Generate Video</button>
           <button class="btn btn-outline" onclick="goToStep(1)">← Edit Details</button>
-          <button class="btn btn-outline" onclick="generateScript()">🔄 Regenerate Script</button>
+          <button class="btn btn-outline" onclick="generateScript()">Regenerate Script</button>
         </div>
       </div>
     </div>
@@ -1338,7 +1338,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
     <div class="panel" id="panel-3">
       <div class="card">
         <div class="card-title">
-          <div class="card-title-icon">🎥</div>
+          <div class="card-title-icon"></div>
           Video Preview
         </div>
 
@@ -1347,7 +1347,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
           <div class="crop-overlay" id="crop-overlay"></div>
           <div class="crop-selection" id="crop-selection" style="display:none;"></div>
           <div class="canvas-overlay" id="canvas-overlay">
-            <div class="canvas-overlay-icon">🎬</div>
+            <div class="canvas-overlay-icon"></div>
             <div>Click "Start Recording" to begin</div>
           </div>
         </div>
@@ -1365,13 +1365,13 @@ Or just paste your raw content and we will structure it into scenes automaticall
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-gold" id="btn-generate-server" onclick="generateOnServer()" style="font-size:1rem;padding:0.85rem 2rem;">⚡ Generate Video</button>
+          <button class="btn btn-gold" id="btn-generate-server" onclick="generateOnServer()" style="font-size:1rem;padding:0.85rem 2rem;">Generate Video</button>
           <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
         </div>
         <!-- SERVER PROCESSING STATUS -->
         <div id="server-gen-status" style="display:none;margin-top:1rem;background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 AfriVid Cloud Generating...</div>
+            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">AfriVid Cloud Generating...</div>
             <div id="server-gen-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
           <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
@@ -1379,16 +1379,16 @@ Or just paste your raw content and we will structure it into scenes automaticall
           </div>
           <div id="server-gen-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Starting...</div>
           <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;">
-            <div style="color:#F5A623;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being generated!</div>
-            <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="server-gen-email" style="color:#74C69D;">your email</span> when ready.</div>
+            <div style="color:#F5A623;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">Your video is being generated!</div>
+            <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">We'll email you at <span id="server-gen-email" style="color:#74C69D;">your email</span> when ready.</div>
             <div id="server-gen-dashboard-btn" style="display:none;margin-top:0.75rem;flex-wrap:wrap;align-items:center;gap:0.5rem;">
-              <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
-              <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;">✅ Processing started — safe to leave</div>
+              <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
+              <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;">Processing started — safe to leave</div>
             </div>
           </div>
           <div id="server-gen-download" style="display:none;margin-top:1rem;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Video ready!</div>
-            <button id="server-gen-link" onclick="(async()=>{const btn=document.getElementById('server-gen-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Video';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">⬇ Download Video</button>
+            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Video ready!</div>
+            <button id="server-gen-link" onclick="(async()=>{const btn=document.getElementById('server-gen-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='Download Video';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">Download Video</button>
           </div>
         </div>
       </div>
@@ -1397,14 +1397,14 @@ Or just paste your raw content and we will structure it into scenes automaticall
     <!-- PANEL 4: DOWNLOAD -->
     <div class="panel" id="panel-4">
       <div class="download-card">
-        <div class="download-icon">🎉</div>
+        <div class="download-icon"></div>
         <div class="download-title">Your Video is Ready!</div>
         <div class="download-sub" id="download-info">Your YAN training video has been generated successfully.</div>
         <div class="btn-row" style="justify-content:center;">
-          <button class="btn btn-green" id="btn-download" onclick="downloadVideo()">⬇ Download WebM</button>
-          <button class="btn btn-gold" onclick="downloadMP4()">🎬 Download MP4</button>
-          <button class="btn btn-outline" onclick="handleSaveToStudio()" style="background:rgba(116,198,157,0.1);border-color:#74C69D;color:#74C69D;">💾 Save to Studio</button>
-          <button class="btn btn-outline" onclick="shareWhatsApp()" style="background:#25D366;border-color:#25D366;color:#fff;">💬 Share on WhatsApp</button>
+          <button class="btn btn-green" id="btn-download" onclick="downloadVideo()">Download WebM</button>
+          <button class="btn btn-gold" onclick="downloadMP4()">Download MP4</button>
+          <button class="btn btn-outline" onclick="handleSaveToStudio()" style="background:rgba(116,198,157,0.1);border-color:#74C69D;color:#74C69D;">Save to Studio</button>
+          <button class="btn btn-outline" onclick="shareWhatsApp()" style="background:#25D366;border-color:#25D366;color:#fff;">Share on WhatsApp</button>
           <button class="btn btn-outline" onclick="uploadToYouTube()" style="background:#FF0000;border-color:#FF0000;color:#fff;">▶ Upload to YouTube</button>
           <button class="btn btn-outline" onclick="makeAnother()">+ Make Another Video</button>
         </div>
@@ -1412,7 +1412,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
 
       <div class="card">
         <div class="card-title">
-          <div class="card-title-icon">📋</div>
+          <div class="card-title-icon"></div>
           Video Details
         </div>
         <div id="final-details" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--muted);line-height:2;"></div>
@@ -1424,7 +1424,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
   <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="login-modal">
   <div class="login-box">
-    <button class="modal-close" onclick="hideLogin()">✕</button>
+    <button class="modal-close" onclick="hideLogin()"></button>
     <div class="login-header">
       <div class="login-icon">A</div>
       <div class="login-title">AfriVid <span>Studio</span></div>
@@ -1455,7 +1455,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
         </div>
         <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#74C69D;flex-shrink:0;" checked>
-          <label for="afribrain-consent">✅ Help build <span style="color:#74C69D;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#74C69D;text-decoration:none;">Learn more</a></label>
+          <label for="afribrain-consent">Help build <span style="color:#74C69D;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#74C69D;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
         <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
@@ -1966,7 +1966,7 @@ function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
     ctx.fillStyle = 'rgba(245,166,35,0.3)';
     ctx.font = `${H*0.08}px Arial`;
     ctx.textAlign = 'center';
-    ctx.fillText('🎬', imgX + imgW/2, imgY + imgH/2 + H*0.03);
+    ctx.fillText('', imgX + imgW/2, imgY + imgH/2 + H*0.03);
     ctx.fillStyle = 'rgba(255,255,255,0.2)';
     ctx.font = `${H*0.022}px Arial`;
     ctx.fillText('Generating scene...', imgX + imgW/2, imgY + imgH/2 + H*0.12);
@@ -2462,7 +2462,7 @@ function drawAdvertSlide(canvas, scene, progress, currentWord, frame) {
     ctx.fillStyle = 'rgba(245,166,35,0.3)';
     ctx.font = `${H*0.07}px Arial`;
     ctx.textAlign = 'center';
-    ctx.fillText('🎬', imgX + imgW/2, imgY + imgH/2 + H*0.025);
+    ctx.fillText('', imgX + imgW/2, imgY + imgH/2 + H*0.025);
   }
 
   // Bold headline below image
@@ -2723,7 +2723,7 @@ function drawUniteSlide(canvas, scene, progress, currentWord) {
     ctx.fillStyle = t.accent + '88';
     ctx.font = `${H*0.08}px Arial`;
     ctx.textAlign = 'center';
-    ctx.fillText('🌍', imgX + imgW/2, imgY + imgH/2 + H*0.03);
+    ctx.fillText('', imgX + imgW/2, imgY + imgH/2 + H*0.03);
   }
 
   // ── BULLET POINTS (left side) ──
@@ -3522,7 +3522,7 @@ function drawPhotoBgScene(canvas, scene, progress, currentWord = -1, bgImg = nul
 window._shareWhatsApp = function shareWhatsApp() {
   const videoUrl = window._serverVideoUrl || '';
   const title = (window.scriptData && window.scriptData.title) ? window.scriptData.title : 'My AfriVid Video';
-  const text = videoUrl ? `🎬 *${title}*\n\nWatch: ${videoUrl}\n\nCreated with AfriVid Studio 🌍 afrivid.studio\n\n#AfriVid #AfricaCreates` : `🎬 *${title}*\n\nCreated with AfriVid Studio 🌍\nafrivid.studio\n\n#AfriVid #AfricaCreates`;
+  const text = videoUrl ? `*${title}*\n\nWatch: ${videoUrl}\n\nCreated with AfriVid Studio afrivid.studio\n\n#AfriVid #AfricaCreates` : `*${title}*\n\nCreated with AfriVid Studio\nafrivid.studio\n\n#AfriVid #AfricaCreates`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
@@ -4592,22 +4592,22 @@ window._doSignUp = window.doSignUp = async function() {
         body: JSON.stringify({
           from: 'AfriVid Studio <support@afrivid.studio>',
           to: [email],
-          subject: 'Welcome to AfriVid Studio! 🌍',
+          subject: 'Welcome to AfriVid Studio!',
           html: `
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
-              <h1 style="color:#F5A623;">Welcome to AfriVid Studio, ${name}! 🌍</h1>
+              <h1 style="color:#F5A623;">Welcome to AfriVid Studio, ${name}!</h1>
               <p style="color:rgba(255,255,255,0.8);line-height:1.7;">You've just joined Africa's First AI Video Creation Platform. We're excited to have you!</p>
               <div style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:1.5rem;margin:1.5rem 0;">
                 <h3 style="color:#F5A623;margin-top:0;">Your Free Plan Includes:</h3>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ 3 AI videos per month</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ 3 AI editor sessions per month</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ 3 voice translations per month</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ Photo editor — unlimited</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">✅ Design studio — unlimited</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">3 AI videos per month</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">3 AI editor sessions per month</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">3 voice translations per month</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Photo editor — unlimited</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Design studio — unlimited</p>
               </div>
               <a href="https://afrivid.studio/create.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Create Your First Video →</a>
               <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:2rem;">Need help? Reply to this email or visit afrivid.studio</p>
-              <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;">AfriVid Studio · afrivid.studio · Built for Africa 🌍</p>
+              <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;">AfriVid Studio · afrivid.studio · Built for Africa</p>
             </div>
           `
         })
@@ -5542,7 +5542,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
       lastActive: serverTimestamp()
     });
     updateDoc(doc(db, 'public_stats', 'counts'), { videoCount: increment(1) }).catch(() => {});
-    alert('✅ Video saved to your Studio!');
+    alert('Video saved to your Studio!');
   } catch(e) {
     alert('Save failed: ' + e.message);
   }
@@ -5751,7 +5751,7 @@ window._loadSceneAssets = function(event) {
         const thumb = document.createElement('div');
         thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);';
         thumb.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">
-          <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;">✕</button>`;
+          <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
         list.appendChild(thumb);
         addLog('info', `[+] Asset loaded: ${file.name}`);
       };
@@ -5771,7 +5771,7 @@ window.removeSceneAsset = function(id) {
     const thumb = document.createElement('div');
     thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);';
     thumb.innerHTML = `<img src="${asset.src}" style="width:100%;height:100%;object-fit:cover;">
-      <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;">✕</button>`;
+      <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
     list.appendChild(thumb);
   });
 };
@@ -5844,12 +5844,12 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
     const videoData = await uploadRes.json();
     const videoId = videoData.id;
 
-    if(btn) { btn.textContent = '✅ Uploaded!'; btn.disabled = false; }
+    if(btn) { btn.textContent = 'Uploaded!'; btn.disabled = false; }
     
     // Show success
     setTimeout(() => { if(btn) btn.textContent = '▶ Upload to YouTube'; }, 3000);
     
-    if(confirm('✅ Video uploaded to YouTube!\n\nVideo ID: ' + videoId + '\n\nOpen your video now?')) {
+    if(confirm('Video uploaded to YouTube!\n\nVideo ID: ' + videoId + '\n\nOpen your video now?')) {
       window.open('https://www.youtube.com/watch?v=' + videoId, '_blank');
     }
 
@@ -6119,7 +6119,7 @@ function resetPassword() {
   import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js').then(({sendPasswordResetEmail, getAuth}) => {
     const auth = getAuth();
     sendPasswordResetEmail(auth, emailToReset)
-      .then(() => alert('✅ Password reset email sent to ' + emailToReset + '. Check your inbox.'))
+      .then(() => alert('Password reset email sent to ' + emailToReset + '. Check your inbox.'))
       .catch(e => alert('Error: ' + e.message));
   });
 }
@@ -6153,10 +6153,10 @@ window.convertAndDownloadMP4 = async function() {
     a.download = `AfriVid-${title}.mp4`;
     a.click();
     addLog('success', `[ok] Real MP4 downloaded! ${(mp4Blob.size/1024/1024).toFixed(1)}MB`);
-    if(btn) { btn.disabled=false; btn.textContent='🎬 Download Real MP4'; }
+    if(btn) { btn.disabled=false; btn.textContent='Download Real MP4'; }
   } catch(e) {
     addLog('error', '[x] MP4 conversion failed: ' + e.message);
-    if(btn) { btn.disabled=false; btn.textContent='🎬 Download Real MP4'; }
+    if(btn) { btn.disabled=false; btn.textContent='Download Real MP4'; }
   }
 };
 
@@ -6166,27 +6166,27 @@ window.convertAndDownloadMP4 = async function() {
 <div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:#FFFFFF;box-shadow:0 20px 60px rgba(0,0,0,0.35);border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
+      <div style="font-size:2rem;margin-bottom:0.5rem;"></div>
       <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
-      <div style="color:rgba(23,20,15,0.5);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
+      <div style="color:rgba(23,20,15,0.5);font-size:0.8rem;">Help us build a better AfriVid for Africa</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
-      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🐛 Bug</button>
-      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">✨ Feature</button>
-      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🔥 Praise</button>
-      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💬 General</button>
-      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
-      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
+      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Bug</button>
+      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Feature</button>
+      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Praise</button>
+      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">General</button>
+      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Complaint</button>
+      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Idea</button>
     </div>
     <input type="hidden" id="feedback-type" value="general">
     <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
       <span style="color:rgba(23,20,15,0.5);font-size:0.78rem;">Rate AfriVid:</span>
       <div id="star-rating" style="display:flex;gap:0.25rem;">
-        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;">⭐</span>
+        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;"></span>
       </div>
     </div>
     <input type="hidden" id="feedback-rating" value="5">
@@ -6195,7 +6195,7 @@ window.convertAndDownloadMP4 = async function() {
       <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.35);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.35);font-size:0.7rem;">Your feedback goes directly to the AfriVid team</div>
   </div>
 </div>
 
@@ -6235,7 +6235,7 @@ async function submitFeedback() {
     document.getElementById('feedback-msg').value = '';
     document.getElementById('feedback-modal').style.display = 'none';
     if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
-    alert('✅ Thank you for your feedback!');
+    alert('Thank you for your feedback!');
   } catch(e) {
     if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
     alert('Failed: ' + e.message);
@@ -6245,7 +6245,7 @@ async function submitFeedback() {
 (function(){
   const fab = document.createElement('button');
   fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
-  fab.innerHTML = '💬 Feedback';
+  fab.innerHTML = 'Feedback';
   fab.onclick = () => {
     const modal = document.getElementById('feedback-modal');
     if(modal) { modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; }
@@ -6333,18 +6333,18 @@ window.generateTutorial = async function() {
             const tdb = document.getElementById('tutorial-dashboard-btn');
             if (tdb) tdb.style.display = 'block';
             document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
-            btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
+            btn.textContent = 'Generate Tutorial Video'; btn.disabled = false;
           }
           if (sd.status === 'failed') {
             clearInterval(window._tutorialPoll);
             stage.textContent = 'Failed. Try again.';
-            btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
+            btn.textContent = 'Generate Tutorial Video'; btn.disabled = false;
           }
         } catch(e) {}
       }, 5000);
     } catch(e) {
       stage.textContent = 'Error: ' + e.message;
-      btn.textContent = '🎓 Generate Tutorial Video'; btn.disabled = false;
+      btn.textContent = 'Generate Tutorial Video'; btn.disabled = false;
     }
     return;
   }
@@ -6429,13 +6429,13 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
           window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
           document.getElementById('tutorial-download').style.display = 'block';
           document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
-          btn.textContent = '🎓 Generate Tutorial Video';
+          btn.textContent = 'Generate Tutorial Video';
           btn.disabled = false;
         }
         if (sd.status === 'failed') {
           clearInterval(window._tutorialPoll);
           stage.textContent = 'Generation failed. Please try again.';
-          btn.textContent = '🎓 Generate Tutorial Video';
+          btn.textContent = 'Generate Tutorial Video';
           btn.disabled = false;
         }
       } catch(e) { console.log('Poll error:', e); }
@@ -6443,7 +6443,7 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
 
   } catch(e) {
     stage.textContent = 'Error: ' + e.message;
-    btn.textContent = '🎓 Generate Tutorial Video';
+    btn.textContent = 'Generate Tutorial Video';
     btn.disabled = false;
   }
 };
@@ -6494,7 +6494,7 @@ window.generateSlides = async function() {
   const status = document.getElementById('slides-status');
   const statusText = document.getElementById('slides-status-text');
   const bar = document.getElementById('slides-progress-bar');
-  btn.disabled = true; btn.textContent = '⏳ Generating...';
+  btn.disabled = true; btn.textContent = 'Generating...';
   status.style.display = 'block';
   statusText.textContent = 'Asking AI to create your slides...';
   bar.style.width = '20%';
@@ -6526,7 +6526,7 @@ Make it educational, impactful and relevant to Africa. Return ONLY the JSON arra
     statusText.textContent = `${slides.length} slides ready!`;
     document.getElementById('slides-preview').style.display = 'block';
     document.getElementById('slides-preview-label').textContent = slides.length + ' SLIDES GENERATED';
-    btn.textContent = '✦ Regenerate Slides';
+    btn.textContent = 'Regenerate Slides';
   } catch(e) {
     statusText.textContent = 'Error: ' + e.message;
   }
@@ -6596,7 +6596,7 @@ function buildSlideHTML(slide, i, t, topic) {
       <div style="position:absolute;inset:0;background:radial-gradient(circle at center,${t.accent}15,transparent 70%);"></div>
       ${header}
       <div style="position:relative;">
-        <div style="font-size:2rem;margin-bottom:10px;">🙏</div>
+        <div style="font-size:2rem;margin-bottom:10px;"></div>
         <div style="color:${t.accent};font-size:9px;letter-spacing:3px;font-family:monospace;margin-bottom:8px;">THANK YOU</div>
         <div style="color:${t.text};font-size:20px;font-weight:900;line-height:1.2;margin-bottom:8px;">${slide.title}</div>
         ${slide.subtitle?`<div style="color:${t.sub};font-size:10px;">${slide.subtitle}</div>`:''}
@@ -6668,8 +6668,8 @@ function previewSlide(slide, i, t, topic) {
         ${buildSlideHTML(slide, i, t, topic)}
       </div>
       <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
-        <button onclick="slideEditApply(${i})" style="flex:1;background:#F5A623;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✓ Apply Changes</button>
-        <button onclick="document.getElementById('slide-edit-overlay').remove()" style="background:rgba(23,20,15,0.1);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✕ Close</button>
+        <button onclick="slideEditApply(${i})" style="flex:1;background:#F5A623;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">Apply Changes</button>
+        <button onclick="document.getElementById('slide-edit-overlay').remove()" style="background:rgba(23,20,15,0.1);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">Close</button>
       </div>
     </div>
 
@@ -6803,7 +6803,7 @@ window.downloadSlidesAsPDF = async function() {
   }
 
   const btn = document.querySelector('[onclick="downloadSlidesAsPDF()"]');
-  if (btn) { btn.textContent = '⏳ Building PDF...'; btn.disabled = true; }
+  if (btn) { btn.textContent = 'Building PDF...'; btn.disabled = true; }
 
   for (let i = 0; i < window._generatedSlides.length; i++) {
     const slide = window._generatedSlides[i];
@@ -6823,12 +6823,12 @@ window.downloadSlidesAsPDF = async function() {
   }
 
   pdf.save(topic.replace(/[^a-z0-9]/gi, '_') + '_slides.pdf');
-  if (btn) { btn.textContent = '⬇ PDF'; btn.disabled = false; }
+  if (btn) { btn.textContent = 'PDF'; btn.disabled = false; }
 };
 
 if('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
+    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready')).catch(e => console.log('[AfriVid] SW:', e));
   });
 }
 </script>
@@ -6870,7 +6870,7 @@ async function generateAd() {
   const jobId = 'ad_' + Date.now();
   const btn = document.getElementById('ad-generate-btn');
   btn.disabled = true;
-  btn.textContent = '⏳ Generating...';
+  btn.textContent = 'Generating...';
   document.getElementById('ad-status').style.display = 'block';
   document.getElementById('ad-result').style.display = 'none';
   document.getElementById('ad-bar').style.width = '5%';
@@ -6916,20 +6916,20 @@ async function generateAd() {
           document.getElementById('ad-result').style.display = 'block';
           window._serverVideoUrl = status.output_url;
           window._scriptData = { title: businessName + ' — Video Ad', description: description };
-          btn.textContent = '📱 Generate Video Ad';
+          btn.textContent = 'Generate Video Ad';
           btn.disabled = false;
         } else if (status.status === 'failed') {
           clearInterval(poll);
-          document.getElementById('ad-stage').textContent = '❌ ' + (status.stage || 'Failed');
-          btn.textContent = '📱 Generate Video Ad';
+          document.getElementById('ad-stage').textContent = '' + (status.stage || 'Failed');
+          btn.textContent = 'Generate Video Ad';
           btn.disabled = false;
         }
-        if (attempts > 120) { clearInterval(poll); btn.disabled = false; btn.textContent = '📱 Generate Video Ad'; }
+        if (attempts > 120) { clearInterval(poll); btn.disabled = false; btn.textContent = 'Generate Video Ad'; }
       } catch(e) {}
     }, 5000);
   } catch(e) {
-    document.getElementById('ad-stage').textContent = '❌ ' + e.message;
-    btn.textContent = '📱 Generate Video Ad';
+    document.getElementById('ad-stage').textContent = '' + e.message;
+    btn.textContent = 'Generate Video Ad';
     btn.disabled = false;
   }
 }

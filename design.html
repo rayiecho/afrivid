@@ -85,7 +85,7 @@
     return _logs;
   };
 
-  console.log('[AfriVid] Error logger initialized ✅');
+  console.log('[AfriVid] Error logger initialized');
 })();
 </script>
 
@@ -455,22 +455,22 @@ body::after{
 
           <!-- STEP 1: AI FILL -->
           <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — DESCRIBE YOUR EVENT</div>
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 1 — DESCRIBE YOUR EVENT</div>
             <textarea id="flyer-ai-prompt" placeholder="e.g. Young Africans Network Scholarship Session with Nsaingeh Bernadette, Saturday June 20 2026, 7PM CAT on Google Meet, register at youngafricansnetwork.org" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:70px;resize:none;margin-bottom:0.5rem;"></textarea>
-            <button onclick="aiFillFlyer()" id="flyer-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill All Fields</button>
+            <button onclick="aiFillFlyer()" id="flyer-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">AI Fill All Fields</button>
           </div>
 
           <!-- STEP 2: UPLOADS -->
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">📎 STEP 2 — UPLOAD IMAGES</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 2 — UPLOAD IMAGES</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">
               <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;">
-                <span style="font-size:1.2rem;">👤</span>
+                <span style="font-size:1.2rem;"></span>
                 <span id="flyer-photo-name">Speaker Photo</span>
                 <input type="file" accept="image/*" style="display:none;" onchange="loadFlyerImage('photo',this)">
               </label>
               <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;">
-                <span style="font-size:1.2rem;">🏢</span>
+                <span style="font-size:1.2rem;"></span>
                 <span id="flyer-logo-name">Org Logo</span>
                 <input type="file" accept="image/*" style="display:none;" onchange="loadFlyerImage('logo',this)">
               </label>
@@ -479,7 +479,7 @@ body::after{
 
           <!-- STEP 3: STYLE -->
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 3 — PICK STYLE</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 3 — PICK STYLE</div>
             <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">COLOR</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-bottom:0.5rem;">
               <button onclick="setFlyerTheme('dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button>
@@ -499,13 +499,13 @@ body::after{
           </div>
 
           <!-- BUILD + EDIT -->
-          <button onclick="previewFlyer()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Flyer</button>
-          <button onclick="document.getElementById('flyer-edit-fields').style.display=document.getElementById('flyer-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('flyer-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
-          <button onclick="downloadFlyer()" id="flyer-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Flyer</button>
+          <button onclick="previewFlyer()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Flyer</button>
+          <button onclick="document.getElementById('flyer-edit-fields').style.display=document.getElementById('flyer-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('flyer-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button onclick="downloadFlyer()" id="flyer-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Flyer</button>
 
           <!-- HIDDEN EDIT FIELDS -->
           <div id="flyer-edit-fields" style="display:none;margin-top:0.5rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME *</div><input id="flyer-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">EVENT TITLE *</div><input id="flyer-title" type="text" placeholder="e.g. Mental Health Session" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.6rem;"><div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">DATE</div><input id="flyer-date" type="text" placeholder="Wednesday June 18" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div><div><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TIME</div><input id="flyer-time" type="text" placeholder="2:00 PM EAT" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;"></div></div>
@@ -530,35 +530,35 @@ body::after{
 
           <!-- STEP 1: AI FILL -->
           <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — DESCRIBE YOUR EVENT/PRODUCT</div>
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 1 — DESCRIBE YOUR EVENT/PRODUCT</div>
             <textarea id="poster-ai-prompt" placeholder="e.g. Young Africans Network Tech Summit, Saturday June 20 2026, Kigali Convention Center, featuring speakers on AI and innovation, register at youngafricansnetwork.org" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:70px;resize:none;margin-bottom:0.5rem;"></textarea>
-            <button onclick="aiFillPoster()" id="poster-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill All Fields</button>
+            <button onclick="aiFillPoster()" id="poster-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">AI Fill All Fields</button>
           </div>
 
           <!-- STEP 2: UPLOADS -->
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">📎 STEP 2 — UPLOAD IMAGES</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 2 — UPLOAD IMAGES</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.4rem;">
               <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;">
-                <span style="font-size:1.2rem;">🏢</span>
+                <span style="font-size:1.2rem;"></span>
                 <span id="poster-logo-name">Org Logo</span>
                 <input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('poster','logo',this)">
               </label>
               <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;">
-                <span style="font-size:1.2rem;">🖼</span>
+                <span style="font-size:1.2rem;"></span>
                 <span>Feature Image</span>
                 <input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImages('poster','products',this,3)">
               </label>
             </div>
             <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">
-              <span>🤝 Sponsor logos (up to 3)</span>
+              <span>Sponsor logos (up to 3)</span>
               <input type="file" accept="image/*" multiple style="display:none;" onchange="loadBuilderImages('poster','sponsors',this,3)">
             </label>
           </div>
 
           <!-- STEP 3: STYLE -->
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 3 — PICK STYLE</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 3 — PICK STYLE</div>
             <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">COLOR</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-bottom:0.5rem;">
               <button onclick="setBuilderTheme('poster','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button>
@@ -578,13 +578,13 @@ body::after{
           </div>
 
           <!-- BUILD + EDIT -->
-          <button onclick="previewPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Poster</button>
-          <button onclick="document.getElementById('poster-edit-fields').style.display=document.getElementById('poster-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('poster-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
-          <button onclick="downloadPoster()" id="poster-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Poster</button>
+          <button onclick="previewPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Poster</button>
+          <button onclick="document.getElementById('poster-edit-fields').style.display=document.getElementById('poster-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('poster-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button onclick="downloadPoster()" id="poster-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Poster</button>
 
           <!-- HIDDEN EDIT FIELDS -->
           <div id="poster-edit-fields" style="display:none;margin-top:0.5rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME *</div><input id="poster-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">HEADLINE *</div><input id="poster-headline" type="text" placeholder="e.g. Leadership Summit 2026" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="poster-tagline" type="text" placeholder="e.g. Empowering the Next Generation" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
@@ -607,29 +607,29 @@ body::after{
           <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
           <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">BANNER BUILDER</div>
           <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — DESCRIBE YOUR BANNER</div>
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 1 — DESCRIBE YOUR BANNER</div>
             <textarea id="banner-ai-prompt" placeholder="e.g. Young Africans Network — Empowering African Youth, join us at youngafricansnetwork.org" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:60px;resize:none;margin-bottom:0.5rem;"></textarea>
-            <button onclick="aiFillBanner()" id="banner-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill All Fields</button>
+            <button onclick="aiFillBanner()" id="banner-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">AI Fill All Fields</button>
           </div>
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">📎 STEP 2 — UPLOAD IMAGES</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 2 — UPLOAD IMAGES</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">
-              <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;"><span style="font-size:1.2rem;">🏢</span><span id="banner-logo-name">Org Logo</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('banner','logo',this)"></label>
-              <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;"><span style="font-size:1.2rem;">🖼</span><span id="banner-image-name">Feature Image</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('banner','image',this)"></label>
+              <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;"><span style="font-size:1.2rem;"></span><span id="banner-logo-name">Org Logo</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('banner','logo',this)"></label>
+              <label style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.6rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-align:center;"><span style="font-size:1.2rem;"></span><span id="banner-image-name">Feature Image</span><input type="file" accept="image/*" style="display:none;" onchange="loadBuilderImage('banner','image',this)"></label>
             </div>
           </div>
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 3 — PICK STYLE</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 3 — PICK STYLE</div>
             <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">COLOR</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-bottom:0.5rem;"><button onclick="setBuilderTheme('banner','dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button><button onclick="setBuilderTheme('banner','green',this)" style="background:#1a3a2a;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Green"></button><button onclick="setBuilderTheme('banner','blue',this)" style="background:#0a1628;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Blue"></button><button onclick="setBuilderTheme('banner','light',this)" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.2);border-radius:6px;height:28px;cursor:pointer;" title="Light"></button></div>
             <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">BACKGROUND</div>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;"><button onclick="setBannerBg('solid',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;color:#F5A623;font-size:0.6rem;font-family:'Space Mono',monospace;">SOLID</button><button onclick="setBannerBg('dots',this)" style="background:radial-gradient(circle,rgba(245,166,35,0.15) 1px,#050A14 1px) center/16px 16px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">DOTS</button><button onclick="setBannerBg('grid',this)" style="background:linear-gradient(rgba(245,166,35,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.08) 1px,transparent 1px);background-size:16px 16px;background-color:#050A14;border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">GRID</button><button onclick="setBannerBg('gradient',this)" style="background:linear-gradient(135deg,#1a3a2a,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">GRAD</button></div>
           </div>
-          <button onclick="previewBanner()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Banner</button>
-          <button onclick="document.getElementById('banner-edit-fields').style.display=document.getElementById('banner-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('banner-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
-          <button onclick="buildBanner()" id="banner-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Banner</button>
+          <button onclick="previewBanner()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Banner</button>
+          <button onclick="document.getElementById('banner-edit-fields').style.display=document.getElementById('banner-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('banner-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button onclick="buildBanner()" id="banner-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Banner</button>
           <div id="banner-edit-fields" style="display:none;margin-top:0.5rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME</div><input id="banner-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">HEADLINE</div><input id="banner-headline" type="text" placeholder="e.g. Empowering Young Africans" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="banner-tagline" type="text" placeholder="e.g. Building Africa's Future" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
@@ -643,14 +643,14 @@ body::after{
 
           <!-- STEP 1: AI FILL -->
           <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — DESCRIBE YOUR ORGANIZATION</div>
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 1 — DESCRIBE YOUR ORGANIZATION</div>
             <textarea id="logo-ai-prompt" placeholder="e.g. Young Africans Network — Building the Future Together" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:60px;resize:none;margin-bottom:0.5rem;"></textarea>
-            <button onclick="aiFillLogo()" id="logo-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill</button>
+            <button onclick="aiFillLogo()" id="logo-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">AI Fill</button>
           </div>
 
           <!-- STEP 2: STYLE -->
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 2 — PICK STYLE</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 2 — PICK STYLE</div>
             <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">LOGO STYLE</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.5rem;">
               <button onclick="setLogoStyle('text',this)" style="background:rgba(245,166,35,0.1);border:2px solid #F5A623;color:#F5A623;padding:0.4rem;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.65rem;">TEXT ONLY</button>
@@ -668,11 +668,11 @@ body::after{
           </div>
 
           <!-- BUILD + EDIT -->
-          <button onclick="previewLogo()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Logo</button>
-          <button onclick="document.getElementById('logo-edit-fields').style.display=document.getElementById('logo-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('logo-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
-          <button onclick="buildLogo()" id="logo-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Logo</button>
+          <button onclick="previewLogo()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Logo</button>
+          <button onclick="document.getElementById('logo-edit-fields').style.display=document.getElementById('logo-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('logo-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button onclick="buildLogo()" id="logo-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Logo</button>
           <div id="logo-edit-fields" style="display:none;margin-top:0.5rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">ORGANIZATION NAME</div><input id="logo-org" type="text" placeholder="e.g. Young Africans Network" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="logo-tagline" type="text" placeholder="e.g. Building Africa's Future" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
           </div>
@@ -682,19 +682,19 @@ body::after{
           <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;"></div>
           <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.75rem;">PRODUCT / APP POSTER</div>
           <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">✨ STEP 1 — AI FILL</div>
+            <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 1 — AI FILL</div>
             <textarea id="pp-ai-prompt" placeholder="e.g. AfriVid Studio — Africa's first AI video creation platform, create edit translate publish" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(245,166,35,0.3);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.75rem;outline:none;box-sizing:border-box;min-height:60px;resize:none;margin-bottom:0.5rem;"></textarea>
-            <button onclick="aiFillProductPoster()" id="pp-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">✨ AI Fill All Fields</button>
+            <button onclick="aiFillProductPoster()" id="pp-ai-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">AI Fill All Fields</button>
           </div>
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">📎 STEP 2 — LOGO</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 2 — LOGO</div>
             <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">
               <span id="pp-logo-name">Upload Logo</span>
               <input type="file" accept="image/*" style="display:none;" onchange="loadPPImage('logo',this)">
             </label>
           </div>
           <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">🎨 STEP 3 — STYLE</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;">STEP 3 — STYLE</div>
             <div style="font-size:0.6rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;">COLOR</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-bottom:0.5rem;">
               <button onclick="setPPTheme('dark',this)" style="background:#050A14;border:2px solid #F5A623;border-radius:6px;height:28px;cursor:pointer;" title="Dark"></button>
@@ -712,22 +712,22 @@ body::after{
               <button onclick="setPPBg('map',this)" style="background:linear-gradient(135deg,#050A14,#0D1F35,#050A14);border:1px solid rgba(255,255,255,0.2);border-radius:6px;height:28px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.6rem;font-family:'Space Mono',monospace;">MAP</button>
             </div>
           </div>
-          <button onclick="previewProductPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">👁 Preview Poster</button>
-          <button onclick="document.getElementById('pp-edit-fields').style.display=document.getElementById('pp-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('pp-edit-fields').style.display==='block'?'▲ Hide Fields':'✏️ Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">✏️ Edit Fields</button>
-          <button onclick="buildProductPoster(false,true)" id="pp-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">⬇ Download Poster</button>
+          <button onclick="previewProductPoster()" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Poster</button>
+          <button onclick="document.getElementById('pp-edit-fields').style.display=document.getElementById('pp-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('pp-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button onclick="buildProductPoster(false,true)" id="pp-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Poster</button>
           <div id="pp-edit-fields" style="display:none;margin-top:0.5rem;">
-            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">✏️ EDIT FIELDS</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">APP / PRODUCT NAME *</div><input id="pp-name" type="text" placeholder="e.g. AfriVid Studio" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">HEADLINE *</div><input id="pp-headline" type="text" placeholder="e.g. Africa's First AI Video Suite" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">TAGLINE</div><input id="pp-tagline" type="text" placeholder="e.g. Create. Edit. Translate. Publish." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
             <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">6 FEATURES</div>
             <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem;">
-              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f1-icon" type="text" placeholder="🎬" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f1-name" type="text" placeholder="Video Creator" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
-              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f2-icon" type="text" placeholder="✂️" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f2-name" type="text" placeholder="AI Video Editor" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
-              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f3-icon" type="text" placeholder="📊" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f3-name" type="text" placeholder="Slides Generator" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
-              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f4-icon" type="text" placeholder="🗣" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f4-name" type="text" placeholder="Voice Translation" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
-              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f5-icon" type="text" placeholder="🖼" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f5-name" type="text" placeholder="Photo Editor" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
-              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f6-icon" type="text" placeholder="🎨" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f6-name" type="text" placeholder="Design Studio" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f1-icon" type="text" placeholder="" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f1-name" type="text" placeholder="Video Creator" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f2-icon" type="text" placeholder="" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f2-name" type="text" placeholder="AI Video Editor" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f3-icon" type="text" placeholder="" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f3-name" type="text" placeholder="Slides Generator" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f4-icon" type="text" placeholder="" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f4-name" type="text" placeholder="Voice Translation" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f5-icon" type="text" placeholder="" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f5-name" type="text" placeholder="Photo Editor" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
+              <div style="display:grid;grid-template-columns:60px 1fr;gap:0.3rem;"><input id="pp-f6-icon" type="text" placeholder="" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-size:0.85rem;outline:none;text-align:center;"><input id="pp-f6-name" type="text" placeholder="Design Studio" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;"></div>
             </div>
             <div style="margin-bottom:0.6rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">CALL TO ACTION</div><input id="pp-cta" type="text" placeholder="e.g. Start Creating Free" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
             <div style="margin-bottom:0.75rem;"><div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.3rem;">WEBSITE</div><input id="pp-website" type="text" placeholder="e.g. afrivid.studio" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;"></div>
@@ -744,20 +744,20 @@ body::after{
         </button>
         <div id="template-grid-wrap" style="display:none;padding:0 0.75rem 0.75rem;">
         <div class="template-grid">
-          <button class="template-btn" onclick="loadTemplate('logo')">🔵 Logo</button>
-          <button class="template-btn" onclick="loadTemplate('poster')">📋 Poster</button>
-          <button class="template-btn" onclick="loadTemplate('certificate')">🏆 Certificate</button>
-          <button class="template-btn" onclick="loadTemplate('flyer')">📢 Flyer</button>
-          <button class="template-btn" onclick="loadTemplate('social')">📱 Social</button>
-          <button class="template-btn" onclick="loadTemplate('banner')">🖼 Banner</button>
-          <button class="template-btn" onclick="loadTemplate('wedding')">💒 Wedding</button>
-          <button class="template-btn" onclick="loadTemplate('graduation')">🎓 Graduation</button>
-          <button class="template-btn" onclick="loadTemplate('church')">⛪ Church</button>
-          <button class="template-btn" onclick="loadTemplate('business_open')">🏪 Grand Opening</button>
-          <button class="template-btn" onclick="loadTemplate('whatsapp')">📱 WhatsApp</button>
-          <button class="template-btn" onclick="loadTemplate('youtube')">🎯 YouTube</button>
-          <button class="template-btn" onclick="loadTemplate('school')">🏫 School Notice</button>
-          <button class="template-btn" onclick="loadTemplate('birthday')">🎂 Birthday</button>
+          <button class="template-btn" onclick="loadTemplate('logo')">Logo</button>
+          <button class="template-btn" onclick="loadTemplate('poster')">Poster</button>
+          <button class="template-btn" onclick="loadTemplate('certificate')">Certificate</button>
+          <button class="template-btn" onclick="loadTemplate('flyer')">Flyer</button>
+          <button class="template-btn" onclick="loadTemplate('social')">Social</button>
+          <button class="template-btn" onclick="loadTemplate('banner')">Banner</button>
+          <button class="template-btn" onclick="loadTemplate('wedding')">Wedding</button>
+          <button class="template-btn" onclick="loadTemplate('graduation')">Graduation</button>
+          <button class="template-btn" onclick="loadTemplate('church')">Church</button>
+          <button class="template-btn" onclick="loadTemplate('business_open')">Grand Opening</button>
+          <button class="template-btn" onclick="loadTemplate('whatsapp')">WhatsApp</button>
+          <button class="template-btn" onclick="loadTemplate('youtube')">YouTube</button>
+          <button class="template-btn" onclick="loadTemplate('school')">School Notice</button>
+          <button class="template-btn" onclick="loadTemplate('birthday')">Birthday</button>
         </div>
         </div>
       </div>
@@ -795,7 +795,7 @@ body::after{
           <button class="btn btn-outline" style="flex:1;padding:0.6rem;" onclick="addShape('circle')">● Circle</button>
         </div>
         <label style="display:block;background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);color:rgba(23,20,15,0.65);padding:0.6rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(224,138,46,0.4)'" onmouseout="this.style.borderColor='rgba(23,20,15,0.1)'">
-          🖼 Add Image
+          Add Image
           <input type="file" accept="image/*" style="display:none;" onchange="addImageElement(event)">
         </label>
       </div>
@@ -813,7 +813,7 @@ body::after{
           <input type="hidden" id="design-element-weight" value="700">
           <div class="btn-row">
           <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="undoDesign()">↩ Undo</button>
-          <button class="btn" style="flex:1;padding:0.55rem;font-size:0.78rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;" onclick="deleteElement()">🗑 Delete</button>
+          <button class="btn" style="flex:1;padding:0.55rem;font-size:0.78rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;" onclick="deleteElement()">Delete</button>
         </div>
       </div>
 
@@ -835,13 +835,13 @@ body::after{
   <button class="tt-btn" id="tt-bold" onclick="toggleTextProp('weight','800','400')"><b>B</b></button>
   <button class="tt-btn" id="tt-italic" onclick="toggleTextProp('style','italic','normal')"><i>I</i></button>
   <div class="tt-sep"></div>
-  <button class="tt-btn" onclick="updateTextProp('align','left')">⬅</button>
+  <button class="tt-btn" onclick="updateTextProp('align','left')"></button>
   <button class="tt-btn" onclick="updateTextProp('align','center')">≡</button>
-  <button class="tt-btn" onclick="updateTextProp('align','right')">➡</button>
+  <button class="tt-btn" onclick="updateTextProp('align','right')"></button>
   <div class="tt-sep"></div>
   <input type="color" id="tt-color" value="#ffffff" onchange="updateTextProp('color', this.value)">
   <div class="tt-sep"></div>
-  <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;">🗑</button>
+  <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;"></button>
   <div class="tt-sep"></div>
   <button class="tt-btn" onclick="closeInlineEditor()" style="color:#74C69D;font-weight:900;font-size:0.75rem;white-space:nowrap;padding:0 0.5rem;">→ Close Edit</button>
 </div>
@@ -865,8 +865,8 @@ body::after{
             <button class="crop-ratio-btn" onclick="setCropRatio('A4')">A4</button>
           </div>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-            <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">✓ Apply Crop</button>
-            <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">✕ Cancel</button>
+            <button class="btn btn-gold" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="applyCrop()">Apply Crop</button>
+            <button class="btn btn-outline" style="flex:1;padding:0.55rem;font-size:0.78rem;" onclick="cancelCrop()">Cancel</button>
           </div>
         </div>
       </div>
@@ -875,13 +875,13 @@ body::after{
       <div class="card">
         <div class="control-label">EXPORT</div>
         <div class="btn-row">
-          <button class="btn btn-gold" onclick="downloadDesign('png')">⬇ PNG</button>
-          <button class="btn btn-outline" onclick="downloadDesign('jpeg')">⬇ JPEG</button>
-          <button class="btn btn-outline" onclick="downloadDesignSVG()">⬇ SVG</button>
-          <button class="btn btn-outline" onclick="downloadDesign('png',2)">⬇ 2× HD</button>
-          <button class="btn btn-green" onclick="handleSaveToStudio()">💾 Studio</button>
-          <button class="btn btn-outline" onclick="toggleCrop()">⬚ Crop</button>
-          <button class="btn btn-outline" onclick="clearCanvas()">✕ Clear</button>
+          <button class="btn btn-gold" onclick="downloadDesign('png')">PNG</button>
+          <button class="btn btn-outline" onclick="downloadDesign('jpeg')">JPEG</button>
+          <button class="btn btn-outline" onclick="downloadDesignSVG()">SVG</button>
+          <button class="btn btn-outline" onclick="downloadDesign('png',2)">2× HD</button>
+          <button class="btn btn-green" onclick="handleSaveToStudio()">Studio</button>
+          <button class="btn btn-outline" onclick="toggleCrop()">Crop</button>
+          <button class="btn btn-outline" onclick="clearCanvas()">Clear</button>
         </div>
       </div>
 
@@ -894,7 +894,7 @@ body::after{
 <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="login-modal">
   <div class="login-box">
-    <button class="modal-close" onclick="hideLogin()">✕</button>
+    <button class="modal-close" onclick="hideLogin()"></button>
     <div class="login-header">
       <div class="login-icon">A</div>
       <div class="login-title">AfriVid <span>Studio</span></div>
@@ -924,7 +924,7 @@ body::after{
         </div>
         <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
-          <label for="afribrain-consent">✅ Help build <span style="color:#8B6F47;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#8B6F47;text-decoration:none;">Learn more</a></label>
+          <label for="afribrain-consent">Help build <span style="color:#8B6F47;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#8B6F47;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
       </form>
@@ -1334,7 +1334,7 @@ window._loadTemplate = window.loadTemplate = function(type) {
       {type:'rect',x:0,y:0,w:1080,h:8,color:'#F5A623'},
       {type:'rect',x:0,y:1072,w:1080,h:8,color:'#F5A623'},
       {type:'circle',x:540,y:300,r:180,color:'rgba(245,166,35,0.08)'},
-      {type:'text',text:'💍',x:490,y:220,color:'#F5A623',size:100,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'',x:490,y:220,color:'#F5A623',size:100,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'WE ARE GETTING MARRIED',x:540,y:380,color:'#F5A623',size:38,font:'Syne',weight:800,align:'center'},
       {type:'text',text:'JOHN & AMARA',x:540,y:480,color:'#ffffff',size:72,font:'Syne',weight:900,align:'center'},
       {type:'rect',x:240,y:510,w:600,h:4,color:'rgba(245,166,35,0.5)'},
@@ -1345,19 +1345,19 @@ window._loadTemplate = window.loadTemplate = function(type) {
     graduation: {bg:'linear-gradient(135deg,#050A14,#0D2B1A)',size:'1080x1080',els:[
       {type:'rect',x:0,y:0,w:1080,h:8,color:'#F5A623'},
       {type:'circle',x:540,y:280,r:160,color:'rgba(245,166,35,0.1)'},
-      {type:'text',text:'🎓',x:490,y:200,color:'#F5A623',size:110,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'',x:490,y:200,color:'#F5A623',size:110,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'CONGRATULATIONS',x:540,y:400,color:'#F5A623',size:44,font:'Syne',weight:900,align:'center'},
       {type:'text',text:'AMARA OKONKWO',x:540,y:490,color:'#ffffff',size:66,font:'Syne',weight:900,align:'center'},
       {type:'rect',x:240,y:520,w:600,h:4,color:'rgba(245,166,35,0.5)'},
       {type:'text',text:'Bachelor of Science in Computer Engineering',x:540,y:590,color:'#74C69D',size:28,font:'Syne',weight:600,align:'center'},
       {type:'text',text:'University of Nairobi · Class of 2025',x:540,y:640,color:'rgba(255,255,255,0.7)',size:26,font:'Syne',weight:400,align:'center'},
-      {type:'text',text:'Your future is bright! 🌟',x:540,y:720,color:'rgba(245,166,35,0.8)',size:28,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'Your future is bright!',x:540,y:720,color:'rgba(245,166,35,0.8)',size:28,font:'Syne',weight:400,align:'center'},
     ]},
     church: {bg:'linear-gradient(135deg,#030818,#0A1628)',size:'1080x1920',els:[
       {type:'rect',x:0,y:0,w:1080,h:10,color:'#F5A623'},
       {type:'rect',x:0,y:1910,w:1080,h:10,color:'#F5A623'},
       {type:'circle',x:540,y:400,r:220,color:'rgba(245,166,35,0.06)'},
-      {type:'text',text:'✝',x:490,y:280,color:'rgba(245,166,35,0.4)',size:180,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'',x:490,y:280,color:'rgba(245,166,35,0.4)',size:180,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'HOLY GHOST',x:540,y:600,color:'#F5A623',size:72,font:'Syne',weight:900,align:'center'},
       {type:'text',text:'CRUSADE 2025',x:540,y:690,color:'#ffffff',size:66,font:'Syne',weight:900,align:'center'},
       {type:'rect',x:200,y:720,w:680,h:4,color:'rgba(245,166,35,0.4)'},
@@ -1372,7 +1372,7 @@ window._loadTemplate = window.loadTemplate = function(type) {
     business_open: {bg:'linear-gradient(135deg,#0A0F1E,#1A2A0A)',size:'1080x1080',els:[
       {type:'rect',x:0,y:0,w:1080,h:10,color:'#F5A623'},
       {type:'rect',x:0,y:1070,w:1080,h:10,color:'#F5A623'},
-      {type:'text',text:'🎉',x:490,y:120,color:'#F5A623',size:100,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'',x:490,y:120,color:'#F5A623',size:100,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'GRAND OPENING',x:540,y:280,color:'#F5A623',size:62,font:'Syne',weight:900,align:'center'},
       {type:'text',text:'MAMA AFRICA BOUTIQUE',x:540,y:370,color:'#ffffff',size:48,font:'Syne',weight:900,align:'center'},
       {type:'rect',x:200,y:400,w:680,h:4,color:'rgba(245,166,35,0.5)'},
@@ -1380,12 +1380,12 @@ window._loadTemplate = window.loadTemplate = function(type) {
       {type:'text',text:'Saturday, 1st March 2025',x:540,y:550,color:'#74C69D',size:36,font:'Syne',weight:700,align:'center'},
       {type:'text',text:'10:00 AM - 6:00 PM',x:540,y:610,color:'rgba(255,255,255,0.7)',size:30,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'Tom Mboya Street, Nairobi CBD',x:540,y:670,color:'rgba(255,255,255,0.6)',size:26,font:'Syne',weight:400,align:'center'},
-      {type:'text',text:'🎁 FREE GIFTS · DISCOUNTS · FOOD',x:540,y:760,color:'#F5A623',size:30,font:'Syne',weight:700,align:'center'},
+      {type:'text',text:'FREE GIFTS · DISCOUNTS · FOOD',x:540,y:760,color:'#F5A623',size:30,font:'Syne',weight:700,align:'center'},
       {type:'text',text:'Call: +254 700 000 000',x:540,y:870,color:'rgba(255,255,255,0.6)',size:26,font:'Syne',weight:400,align:'center'},
     ]},
     whatsapp: {bg:'linear-gradient(135deg,#075E54,#128C7E)',size:'1080x1920',els:[
       {type:'circle',x:540,y:400,r:200,color:'rgba(255,255,255,0.05)'},
-      {type:'text',text:'💬',x:490,y:280,color:'rgba(255,255,255,0.8)',size:130,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'',x:490,y:280,color:'rgba(255,255,255,0.8)',size:130,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'GOOD MORNING!',x:540,y:560,color:'#ffffff',size:72,font:'Syne',weight:900,align:'center'},
       {type:'text',text:'Start your day with purpose',x:540,y:650,color:'rgba(255,255,255,0.85)',size:36,font:'Syne',weight:400,align:'center'},
       {type:'rect',x:300,y:690,w:480,h:4,color:'rgba(255,255,255,0.3)'},
@@ -1393,7 +1393,7 @@ window._loadTemplate = window.loadTemplate = function(type) {
       {type:'text',text:'fatal: it is the courage to continue',x:540,y:820,color:'rgba(255,255,255,0.9)',size:28,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'that counts."',x:540,y:860,color:'rgba(255,255,255,0.9)',size:28,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'— Winston Churchill',x:540,y:930,color:'rgba(255,255,255,0.6)',size:24,font:'Syne',weight:400,align:'center'},
-      {type:'text',text:'Have a blessed day! 🙏',x:540,y:1050,color:'#25D366',size:38,font:'Syne',weight:700,align:'center'},
+      {type:'text',text:'Have a blessed day!',x:540,y:1050,color:'#25D366',size:38,font:'Syne',weight:700,align:'center'},
     ]},
     youtube: {bg:'#0F0F0F',size:'1280x720',els:[
       {type:'rect',x:0,y:0,w:1280,h:720,color:'linear-gradient(135deg,#0F0F0F,#1A1A2E)'},
@@ -1411,7 +1411,7 @@ window._loadTemplate = window.loadTemplate = function(type) {
       {type:'rect',x:0,y:1742,w:1240,h:12,color:'#2D6A4F'},
       {type:'rect',x:0,y:0,w:12,h:1754,color:'#2D6A4F'},
       {type:'rect',x:1228,y:0,w:12,h:1754,color:'#2D6A4F'},
-      {type:'text',text:'🏫',x:570,y:100,color:'#2D6A4F',size:80,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'',x:570,y:100,color:'#2D6A4F',size:80,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'GREENHILL ACADEMY',x:620,y:220,color:'#2D6A4F',size:52,font:'Syne',weight:900,align:'center'},
       {type:'rect',x:200,y:250,w:840,h:4,color:'#F5A623'},
       {type:'text',text:'SCHOOL FEE NOTICE',x:620,y:340,color:'#050A14',size:58,font:'Syne',weight:800,align:'center'},
@@ -1431,13 +1431,13 @@ window._loadTemplate = window.loadTemplate = function(type) {
     ]},
     birthday: {bg:'linear-gradient(135deg,#1A0030,#3D0080)',size:'1080x1080',els:[
       {type:'circle',x:540,y:300,r:200,color:'rgba(245,166,35,0.1)'},
-      {type:'text',text:'🎂',x:490,y:160,color:'#F5A623',size:130,font:'Syne',weight:400,align:'center'},
+      {type:'text',text:'',x:490,y:160,color:'#F5A623',size:130,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'HAPPY BIRTHDAY',x:540,y:420,color:'#F5A623',size:58,font:'Syne',weight:900,align:'center'},
-      {type:'text',text:'AMARA! 🎉',x:540,y:510,color:'#ffffff',size:72,font:'Syne',weight:900,align:'center'},
+      {type:'text',text:'AMARA!',x:540,y:510,color:'#ffffff',size:72,font:'Syne',weight:900,align:'center'},
       {type:'rect',x:240,y:545,w:600,h:4,color:'rgba(245,166,35,0.5)'},
       {type:'text',text:'Wishing you all the joy and',x:540,y:620,color:'rgba(255,255,255,0.85)',size:32,font:'Syne',weight:400,align:'center'},
       {type:'text',text:'blessings this special day brings!',x:540,y:665,color:'rgba(255,255,255,0.85)',size:32,font:'Syne',weight:400,align:'center'},
-      {type:'text',text:'With love 💕',x:540,y:760,color:'#F5A623',size:36,font:'Syne',weight:600,align:'center'},
+      {type:'text',text:'With love',x:540,y:760,color:'#F5A623',size:36,font:'Syne',weight:600,align:'center'},
     ]},
   };
   const t = templates[type];
@@ -1601,7 +1601,7 @@ window.addDesignRefImages = function(event) {
       thumb.style.cssText = 'position:relative;width:48px;height:48px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);';
       thumb.innerHTML = `
         <img src="${dataURL}" style="width:100%;height:100%;object-fit:cover;">
-        <button onclick="removeDesignRef(this,'${dataURL}')" style="position:absolute;top:0;right:0;background:rgba(230,51,41,0.8);border:none;color:#fff;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+        <button onclick="removeDesignRef(this,'${dataURL}')" style="position:absolute;top:0;right:0;background:rgba(230,51,41,0.8);border:none;color:#fff;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;"></button>
       `;
       container.appendChild(thumb);
     };
@@ -1677,7 +1677,7 @@ window._generateAIDesign = window.generateAIDesign = async function() {
       addLog('error','[x] '+e2.message);
     }
   }
-  btn.textContent='✦ Generate Design'; btn.disabled=false;
+  btn.textContent='Generate Design'; btn.disabled=false;
 }
 
 window._downloadDesign = window.downloadDesign = function(format, scale=1) {
@@ -1746,7 +1746,7 @@ window._handleSaveToStudio = window.handleSaveToStudio = async function() {
 // Show saved toast notification
 const toast = document.createElement('div');
 toast.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#74C69D;color:#050A14;padding:0.75rem 1.25rem;border-radius:10px;font-weight:800;font-size:0.85rem;z-index:9999;font-family:Syne,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
-toast.textContent = '✅ Saved to Studio!';
+toast.textContent = 'Saved to Studio!';
 document.body.appendChild(toast);
 setTimeout(() => toast.remove(), 3000);
   } catch(e) {
@@ -2200,8 +2200,8 @@ function renderDesignCropUI(cropUI, container, canvas) {
     <div data-handle="w" style="position:absolute;left:${x-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:w-resize;"></div>
     <div data-handle="e" style="position:absolute;left:${x+w-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:e-resize;"></div>
     <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:0.5rem;z-index:60;">
-      <button onclick="window._applyCrop()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">✓ Apply</button>
-      <button onclick="window._cancelCrop()" style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.5rem 1.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">✕ Cancel</button>
+      <button onclick="window._applyCrop()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Apply</button>
+      <button onclick="window._cancelCrop()" style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.5rem 1.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Cancel</button>
     </div>
   `;
   let dragging=false,dHandle=null,dStart=null,dOrig=null;
@@ -2312,7 +2312,7 @@ window._showEditBtn = function(idx) {
     btn = document.createElement('button');
     btn.id = 'float-edit-btn';
     btn.style.cssText = 'position:fixed;z-index:999;background:#F5A623;border:none;color:#050A14;padding:0.4rem 1rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
-    btn.textContent = '✏ Edit Text';
+    btn.textContent = 'Edit Text';
     document.body.appendChild(btn);
   }
   const canvas = document.getElementById('design-canvas');
@@ -2499,7 +2499,7 @@ function restoreDesignWork() {
     banner.id = 'design-restore-banner';
     banner.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:999;background:#FFFFFF;border:1px solid rgba(224,138,46,0.4);border-radius:12px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem;font-family:Syne,sans-serif;font-size:0.82rem;color:#17140F;box-shadow:0 4px 20px rgba(0,0,0,0.15);';
     banner.innerHTML = `
-      <span>🎨 You have unsaved design work (${data.elements.length} elements)</span>
+      <span>You have unsaved design work (${data.elements.length} elements)</span>
       <button onclick="restoreDesignCanvas()" style="background:#E08A2E;border:none;color:#17140F;padding:0.35rem 0.85rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Restore</button>
       <button onclick="localStorage.removeItem('${DESIGN_SAVE_KEY}');document.getElementById('design-restore-banner').remove();" style="background:none;border:1px solid rgba(23,20,15,0.15);color:rgba(23,20,15,0.55);padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Discard</button>
     `;
@@ -2574,13 +2574,13 @@ document.addEventListener('DOMContentLoaded', () => {
   <button class="tt-btn" id="tt-bold" onclick="toggleTextProp('weight','800','400')"><b>B</b></button>
   <button class="tt-btn" id="tt-italic" onclick="toggleTextProp('style','italic','normal')"><i>I</i></button>
   <div class="tt-sep"></div>
-  <button class="tt-btn" onclick="updateTextProp('align','left')">⬅</button>
+  <button class="tt-btn" onclick="updateTextProp('align','left')"></button>
   <button class="tt-btn" onclick="updateTextProp('align','center')">≡</button>
-  <button class="tt-btn" onclick="updateTextProp('align','right')">➡</button>
+  <button class="tt-btn" onclick="updateTextProp('align','right')"></button>
   <div class="tt-sep"></div>
   <input type="color" id="tt-color" value="#ffffff" onchange="updateTextProp('color', this.value)">
   <div class="tt-sep"></div>
-  <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;">🗑</button>
+  <button class="tt-btn" onclick="deleteSelected()" style="color:#E63329;"></button>
   <div class="tt-sep"></div>
   <button class="tt-btn" onclick="closeInlineEditor()" style="color:#74C69D;font-weight:900;font-size:0.75rem;white-space:nowrap;padding:0 0.5rem;">→ Close Edit</button>
 </div>
@@ -2599,7 +2599,7 @@ function resetPassword() {
   import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js').then(({sendPasswordResetEmail, getAuth}) => {
     const auth = getAuth();
     sendPasswordResetEmail(auth, emailToReset)
-      .then(() => alert('✅ Password reset email sent to ' + emailToReset + '. Check your inbox.'))
+      .then(() => alert('Password reset email sent to ' + emailToReset + '. Check your inbox.'))
       .catch(e => alert('Error: ' + e.message));
   });
 }
@@ -2610,27 +2610,27 @@ function resetPassword() {
 <div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
+      <div style="font-size:2rem;margin-bottom:0.5rem;"></div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
-      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🐛 Bug</button>
-      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">✨ Feature</button>
-      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🔥 Praise</button>
-      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💬 General</button>
-      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
-      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
+      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Bug</button>
+      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Feature</button>
+      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Praise</button>
+      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">General</button>
+      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Complaint</button>
+      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Idea</button>
     </div>
     <input type="hidden" id="feedback-type" value="general">
     <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
       <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rate AfriVid:</span>
       <div id="star-rating" style="display:flex;gap:0.25rem;">
-        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;">⭐</span>
+        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
+        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;"></span>
       </div>
     </div>
     <input type="hidden" id="feedback-rating" value="5">
@@ -2639,7 +2639,7 @@ function resetPassword() {
       <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team</div>
   </div>
 </div>
 
@@ -2679,7 +2679,7 @@ async function submitFeedback() {
     document.getElementById('feedback-msg').value = '';
     document.getElementById('feedback-modal').style.display = 'none';
     if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
-    alert('✅ Thank you for your feedback!');
+    alert('Thank you for your feedback!');
   } catch(e) {
     if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
     alert('Failed: ' + e.message);
@@ -2689,7 +2689,7 @@ async function submitFeedback() {
 (function(){
   const fab = document.createElement('button');
   fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
-  fab.innerHTML = '💬 Feedback';
+  fab.innerHTML = 'Feedback';
   fab.onclick = () => {
     const modal = document.getElementById('feedback-modal');
     if(modal) { modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; }
@@ -2702,7 +2702,7 @@ async function submitFeedback() {
 <script>
 if('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
+    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready')).catch(e => console.log('[AfriVid] SW:', e));
   });
 }
 </script>
@@ -2713,7 +2713,7 @@ window.downloadFlyer = async function(previewMode=false) {
   if (!window._lastFlyerBuild) { alert("Please build flyer first"); return; }
   const d = window._lastFlyerBuild;
   const btn = document.getElementById("flyer-download-btn");
-  if (btn) { btn.textContent = "⏳ Rendering..."; btn.disabled = true; }
+  if (btn) { btn.textContent = "Rendering..."; btn.disabled = true; }
 
   const TH = {
     dark:{bg:"#050A14",bg2:"#0D1F35",accent:"#F5A623",accent2:"#74C69D",text:"#fff",sub:"rgba(255,255,255,0.6)"},
@@ -2800,16 +2800,16 @@ body{width:800px;height:1000px;background:${d.bg==='dots'?'radial-gradient(circl
 
     ${(d.description||d.speaker) ? '<div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">ABOUT</div>' : ''}
     ${d.description ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">'+d.description+(d.speaker?' Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.':'')+'</div>' : (d.speaker ? '<div style="color:'+t.sub+';font-size:12px;line-height:1.7;margin-bottom:14px;">Led by <strong style="color:'+t.text+';">'+d.speaker+'</strong>.</div>' : '')}
-    ${(d.h1||d.h2||d.h3) ? '<table style="width:100%;border-collapse:collapse;margin-top:8px;"><tr>' + [d.h1,d.h2,d.h3].filter(Boolean).map(h => '<td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;"><div style="color:'+t.accent+';font-size:16px;margin-bottom:3px;">✦</div><div style="color:'+t.text+';font-size:10px;font-weight:700;">'+h+'</div></td>').join('<td style="width:8px;"></td>') + '</tr></table>' : ''}
+    ${(d.h1||d.h2||d.h3) ? '<table style="width:100%;border-collapse:collapse;margin-top:8px;"><tr>' + [d.h1,d.h2,d.h3].filter(Boolean).map(h => '<td style="padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;text-align:center;"><div style="color:'+t.accent+';font-size:16px;margin-bottom:3px;"></div><div style="color:'+t.text+';font-size:10px;font-weight:700;">'+h+'</div></td>').join('<td style="width:8px;"></td>') + '</tr></table>' : ''}
     ${(d.learn1||d.learn2||d.learn3) ? '<div style="margin-top:14px;"><div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;">WHAT YOU\'LL LEARN</div>' + [d.learn1,d.learn2,d.learn3].filter(Boolean).map(l => '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;"><div style="color:'+t.accent+';font-size:12px;">▸</div><div style="color:'+t.text+';font-size:11px;">'+l+'</div></div>').join('') + '</div>' : ''}
-    ${(d.instagram||d.whatsapp) ? '<div style="margin-top:12px;color:'+t.sub+';font-size:11px;">'+(d.instagram ? '📱 '+d.instagram : '')+(d.whatsapp ? ' · 📞 '+d.whatsapp : '')+'</div>' : ''}
+    ${(d.instagram||d.whatsapp) ? '<div style="margin-top:12px;color:'+t.sub+';font-size:11px;">'+(d.instagram ? ''+d.instagram : '')+(d.whatsapp ? ' · '+d.whatsapp : '')+'</div>' : ''}
     <div style="margin-top:20px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
       ${d.tagline ? '<div style="background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.03));border:1px solid rgba(245,166,35,0.2);border-left:3px solid '+t.accent+';border-radius:8px;padding:14px 16px;margin-bottom:14px;"><div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:6px;">KEY MESSAGE</div><div style="color:'+t.text+';font-size:13px;font-style:italic;line-height:1.5;">\"'+d.tagline+'\"</div></div>' : ''}
       <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:14px 16px;">
         <div style="color:'+t.accent+';font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:8px;">CONNECT WITH US</div>
-        ${d.contact ? '<div style="color:'+t.accent2+';font-size:12px;font-weight:700;margin-bottom:4px;">🔗 '+d.contact+'</div>' : ''}
-        ${d.instagram ? '<div style="color:'+t.sub+';font-size:11px;margin-bottom:3px;">📱 '+d.instagram+'</div>' : ''}
-        ${d.whatsapp ? '<div style="color:'+t.sub+';font-size:11px;">📞 '+d.whatsapp+'</div>' : ''}
+        ${d.contact ? '<div style="color:'+t.accent2+';font-size:12px;font-weight:700;margin-bottom:4px;">'+d.contact+'</div>' : ''}
+        ${d.instagram ? '<div style="color:'+t.sub+';font-size:11px;margin-bottom:3px;">'+d.instagram+'</div>' : ''}
+        ${d.whatsapp ? '<div style="color:'+t.sub+';font-size:11px;">'+d.whatsapp+'</div>' : ''}
         ${!d.contact && !d.instagram && !d.whatsapp ? '<div style="color:'+t.sub+';font-size:11px;">afrivid.studio</div>' : ''}
       </div>
     </div>
@@ -2819,9 +2819,9 @@ body{width:800px;height:1000px;background:${d.bg==='dots'?'radial-gradient(circl
 
 <!-- FOOTER -->
 <div class="footer" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-  ${d.date ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;">📅</div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">DATE</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.date+'</div></div></div>' : ''}
-  ${d.time ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;">🕐</div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">TIME</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.time+'</div></div></div>' : ''}
-  ${d.venue ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;">📍</div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">VENUE</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.venue+'</div></div></div>' : ''}
+  ${d.date ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;"></div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">DATE</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.date+'</div></div></div>' : ''}
+  ${d.time ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;"></div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">TIME</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.time+'</div></div></div>' : ''}
+  ${d.venue ? '<div style="display:flex;align-items:center;gap:6px;"><div style="font-size:18px;"></div><div><div style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:1px;">VENUE</div><div style="color:'+t.text+';font-size:12px;font-weight:700;">'+d.venue+'</div></div></div>' : ''}
   <div style="color:rgba(255,255,255,0.2);font-size:9px;text-align:right;">Created with<br>AfriVid Studio</div>
 </div>
 </body></html>`;
@@ -2869,11 +2869,11 @@ body{width:800px;height:1000px;background:${d.bg==='dots'?'radial-gradient(circl
       overlay.onclick = () => { overlay.remove(); iframe.remove(); };
       const closeBtn = document.createElement('div');
       closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;color:#fff;font-size:2rem;cursor:pointer;background:rgba(0,0,0,0.5);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;';
-      closeBtn.textContent = '✕';
+      closeBtn.textContent = '';
       closeBtn.onclick = () => { overlay.remove(); iframe.remove(); };
       document.body.appendChild(overlay);
       document.body.appendChild(closeBtn);
-      if (btn) { btn.textContent = '⬇ Download Flyer'; btn.disabled = false; }
+      if (btn) { btn.textContent = 'Download Flyer'; btn.disabled = false; }
       return;
     }
     const flyerCanvas = await html2canvas(iframe.contentDocument.body, {
@@ -2917,11 +2917,11 @@ body{width:800px;height:1000px;background:${d.bg==='dots'?'radial-gradient(circl
 
 
 
-    if (btn) { btn.textContent = "⬇ Download Flyer"; btn.disabled = false; }
+    if (btn) { btn.textContent = "Download Flyer"; btn.disabled = false; }
 
   } catch(e) {
     alert("Download failed: " + e.message);
-    if (btn) { btn.textContent = "⬇ Download Flyer"; btn.disabled = false; }
+    if (btn) { btn.textContent = "Download Flyer"; btn.disabled = false; }
   }
 }
 window._drawFlyerOnCanvas = function(ctx, W, H, d, cb) {
@@ -2988,7 +2988,7 @@ window.loadFlyerImage = function(type, input) {
     window._flyerData[type] = e.target.result;
     window['_flyer_' + type] = e.target.result; // backup storage
     document.querySelectorAll('#flyer-' + type + '-name').forEach(el => {
-      el.textContent = '✅ ' + file.name;
+      el.textContent = '' + file.name;
       el.style.color = '#74C69D';
     });
     console.log('[Flyer] ' + type + ' stored! size:', e.target.result.length);
@@ -3009,7 +3009,7 @@ window.aiFillLogo = async function() {
   const prompt = document.getElementById('logo-ai-prompt')?.value?.trim();
   if (!prompt) { alert('Please describe your organization first'); return; }
   const btn = document.getElementById('logo-ai-btn');
-  btn.textContent = '⏳'; btn.disabled = true;
+  btn.textContent = 'Generating...'; btn.disabled = true;
   try {
     const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -3027,11 +3027,11 @@ Return ONLY the JSON.` }] })
     const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
     set('logo-org', d.org);
     set('logo-tagline', d.tagline);
-    btn.textContent = '✅ Done!';
-    setTimeout(() => { btn.textContent = '✨ AI Fill'; btn.disabled = false; }, 2000);
+    btn.textContent = 'Done!';
+    setTimeout(() => { btn.textContent = 'AI Fill'; btn.disabled = false; }, 2000);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
-    btn.textContent = '✨ AI Fill'; btn.disabled = false;
+    btn.textContent = 'AI Fill'; btn.disabled = false;
   }
 };
 
@@ -3050,7 +3050,7 @@ window.aiFillBanner = async function() {
   const prompt = document.getElementById('banner-ai-prompt')?.value?.trim();
   if (!prompt) { alert('Please describe your banner first'); return; }
   const btn = document.getElementById('banner-ai-btn');
-  btn.textContent = '⏳'; btn.disabled = true;
+  btn.textContent = 'Generating...'; btn.disabled = true;
   try {
     const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -3070,11 +3070,11 @@ Return ONLY the JSON.` }] })
     set('banner-headline', d.headline);
     set('banner-tagline', d.tagline);
     set('banner-cta', d.cta);
-    btn.textContent = '✅ Done!';
-    setTimeout(() => { btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false; }, 2000);
+    btn.textContent = 'Done!';
+    setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
-    btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false;
+    btn.textContent = 'AI Fill All Fields'; btn.disabled = false;
   }
 };
 
@@ -3109,7 +3109,7 @@ window.aiFillPoster = async function() {
   const prompt = document.getElementById('poster-ai-prompt')?.value?.trim();
   if (!prompt) { alert('Please describe your event first'); return; }
   const btn = document.getElementById('poster-ai-btn');
-  btn.textContent = '⏳'; btn.disabled = true;
+  btn.textContent = 'Generating...'; btn.disabled = true;
   try {
     const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
@@ -3156,11 +3156,11 @@ Return ONLY the JSON.` }]
     set('poster-cta', d.cta);
     set('poster-instagram', d.instagram);
     set('poster-whatsapp', d.whatsapp);
-    btn.textContent = '✅ Done!';
-    setTimeout(() => { btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false; }, 2000);
+    btn.textContent = 'Done!';
+    setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
-    btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false;
+    btn.textContent = 'AI Fill All Fields'; btn.disabled = false;
   }
 };
 
@@ -3245,7 +3245,7 @@ window.aiFillFlyer = async function() {
   const prompt = document.getElementById('flyer-ai-prompt')?.value?.trim();
   if (!prompt) { alert('Please describe your event first'); return; }
   const btn = document.getElementById('flyer-ai-btn');
-  btn.textContent = '⏳'; btn.disabled = true;
+  btn.textContent = 'Generating...'; btn.disabled = true;
   try {
     const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
@@ -3304,11 +3304,11 @@ Return ONLY the JSON, no explanation.` }]
     set('flyer-learn3', d.learn3);
     set('flyer-instagram', d.instagram);
     set('flyer-whatsapp', d.whatsapp);
-    btn.textContent = '✅ Done!';
-    setTimeout(() => { btn.textContent = '✨ Fill'; btn.disabled = false; }, 2000);
+    btn.textContent = 'Done!';
+    setTimeout(() => { btn.textContent = 'Fill'; btn.disabled = false; }, 2000);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
-    btn.textContent = '✨ Fill'; btn.disabled = false;
+    btn.textContent = 'Fill'; btn.disabled = false;
   }
 };
 window.setFlyerBg = function(bg, btn) {
@@ -3513,7 +3513,7 @@ window.loadBuilderImage = function(type, field, input) {
     if (!window._builderData[type]) window._builderData[type] = {};
     window._builderData[type][field] = e.target.result;
     const el = document.getElementById(type + '-' + field + '-name');
-    if (el) { el.textContent = '✅ ' + file.name; el.style.color = '#74C69D'; }
+    if (el) { el.textContent = '' + file.name; el.style.color = '#74C69D'; }
   };
   reader.readAsDataURL(file);
 };
@@ -3582,7 +3582,7 @@ async function uploadImgToR2(dataURL, name) {
 
 async function renderAndDownload(html, type, width, height, previewMode=false) {
   const buildBtn = document.querySelector('[onclick="build' + type.charAt(0).toUpperCase() + type.slice(1) + '()"]');
-  if (buildBtn) { buildBtn.textContent = '⏳ Building...'; buildBtn.disabled = true; }
+  if (buildBtn) { buildBtn.textContent = 'Building...'; buildBtn.disabled = true; }
   try {
     // Render HTML in a hidden iframe, then capture with html2canvas
     const iframe = document.createElement('iframe');
@@ -3628,7 +3628,7 @@ async function renderAndDownload(html, type, width, height, previewMode=false) {
       img.style.cssText = 'max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 0 80px rgba(0,0,0,0.8);';
       const closeBtn = document.createElement('div');
       closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;color:#fff;font-size:2rem;cursor:pointer;background:rgba(0,0,0,0.5);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;';
-      closeBtn.textContent = '✕';
+      closeBtn.textContent = '';
       closeBtn.onclick = () => overlay.remove();
       overlay.onclick = () => overlay.remove();
       overlay.appendChild(img);
@@ -3694,7 +3694,7 @@ window.buildPoster = async function(previewMode=false, downloadMode=false) {
     '<div style="padding:14px 40px 0;">' +
     (description ? '<div style="color:' + t.sub + ';font-size:13px;line-height:1.7;text-align:center;margin-bottom:14px;padding:0 10px;">' + description + '</div>' : '') +
     (highlights.length ? '<table style="width:100%;border-collapse:collapse;"><tr>' +
-    highlights.map(h => '<td style="padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid ' + t.accent + '33;border-radius:8px;text-align:center;"><div style="color:' + t.accent + ';font-size:16px;margin-bottom:4px;">✦</div><div style="color:' + t.text + ';font-size:11px;font-weight:700;">' + h + '</div></td>').join('<td style="width:8px;"></td>') +
+    highlights.map(h => '<td style="padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid ' + t.accent + '33;border-radius:8px;text-align:center;"><div style="color:' + t.accent + ';font-size:16px;margin-bottom:4px;"></div><div style="color:' + t.text + ';font-size:11px;font-weight:700;">' + h + '</div></td>').join('<td style="width:8px;"></td>') +
     '</tr></table>' : '') +
     '</div>' + imagesHtml;
     '</div>';
@@ -3730,19 +3730,19 @@ ${sponsorsHtml}
   <div style="height:1px;background:linear-gradient(90deg,transparent,${t.accent}44,transparent);margin-bottom:20px;"></div>
   <table style="width:100%;border-collapse:collapse;"><tr>
     <td style="text-align:center;padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;">
-      <div style="color:${t.accent};font-size:28px;margin-bottom:6px;">🎬</div>
+      <div style="color:${t.accent};font-size:28px;margin-bottom:6px;"></div>
       <div style="color:${t.text};font-size:11px;font-weight:700;">CREATE</div>
       <div style="color:${t.sub};font-size:10px;margin-top:3px;">AI Video Generation</div>
     </td>
     <td style="width:12px;"></td>
     <td style="text-align:center;padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;">
-      <div style="color:${t.accent};font-size:28px;margin-bottom:6px;">✂️</div>
+      <div style="color:${t.accent};font-size:28px;margin-bottom:6px;"></div>
       <div style="color:${t.text};font-size:11px;font-weight:700;">EDIT</div>
       <div style="color:${t.sub};font-size:10px;margin-top:3px;">Smart AI Editing</div>
     </td>
     <td style="width:12px;"></td>
     <td style="text-align:center;padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;">
-      <div style="color:${t.accent};font-size:28px;margin-bottom:6px;">🚀</div>
+      <div style="color:${t.accent};font-size:28px;margin-bottom:6px;"></div>
       <div style="color:${t.text};font-size:11px;font-weight:700;">SHARE</div>
       <div style="color:${t.sub};font-size:10px;margin-top:3px;">Publish Everywhere</div>
     </td>
@@ -3831,7 +3831,7 @@ if (!window._ppData) window._ppData = { logo: null, theme: 'dark', bg: 'solid' }
 window.loadPPImage = function(type, input) {
   const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => { window._ppData[type] = e.target.result; document.getElementById('pp-logo-name').textContent = '✅ ' + file.name; document.getElementById('pp-logo-name').style.color = '#74C69D'; };
+  reader.onload = e => { window._ppData[type] = e.target.result; document.getElementById('pp-logo-name').textContent = '' + file.name; document.getElementById('pp-logo-name').style.color = '#74C69D'; };
   reader.readAsDataURL(file);
 };
 window.setPPTheme = function(theme, btn) {
@@ -3848,7 +3848,7 @@ window.aiFillProductPoster = async function() {
   const prompt = document.getElementById('pp-ai-prompt')?.value?.trim();
   if (!prompt) { alert('Please describe your product first'); return; }
   const btn = document.getElementById('pp-ai-btn');
-  btn.textContent = '⏳ Filling...'; btn.disabled = true;
+  btn.textContent = 'Filling...'; btn.disabled = true;
   try {
     const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -3870,9 +3870,9 @@ window.aiFillProductPoster = async function() {
     if (d.cta) document.getElementById('pp-cta').value = d.cta;
     if (d.website) document.getElementById('pp-website').value = d.website;
     document.getElementById('pp-edit-fields').style.display = 'block';
-    btn.textContent = '✅ Filled!';
-    setTimeout(() => { btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false; }, 2000);
-  } catch(e) { btn.textContent = '✨ AI Fill All Fields'; btn.disabled = false; alert('AI fill failed: ' + e.message); }
+    btn.textContent = 'Filled!';
+    setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
+  } catch(e) { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; alert('AI fill failed: ' + e.message); }
 };
 window.previewProductPoster = async function() { await buildProductPoster(true); };
 window.buildProductPoster = async function(previewMode, downloadMode) {
