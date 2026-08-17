@@ -41,17 +41,6 @@
       ]
     },
     {
-      "name": "AI Editor",
-      "short_name": "AI Edit",
-      "url": "/aieditor.html",
-      "icons": [
-        {
-          "src": "/images/logo.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
       "name": "My Studio",
       "short_name": "Studio",
       "url": "/studio.html",
