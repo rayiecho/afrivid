@@ -1027,7 +1027,7 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp();  }
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, setDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, doc, setDoc, addDoc, collection, updateDoc, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
@@ -1833,6 +1833,7 @@ window.doSignUp=async function(){
     await updateProfile(cred.user,{displayName:name});
     await sendEmailVerification(cred.user);
     await setDoc(doc(db,'studio_users',cred.user.uid),{name,email,videosGenerated:0,joinedAt:serverTimestamp(),plan:'beta'});
+    updateDoc(doc(db,'public_stats','counts'),{userCount:increment(1)}).catch(()=>{});
     hideLogin();
   }catch(e){err.style.display='block';err.textContent='[!] '+e.message.replace('Firebase: ','');}
 }

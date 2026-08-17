@@ -108,6 +108,23 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Public homepage stats — a single denormalized counter doc so the landing page can show
+    // real totals without needing list/read access to studio_users or studio_videos (locked
+    // down after the breach, see above). Anyone can read it. Writes are restricted to signed-in
+    // users nudging exactly one counter up by exactly 1 per request, so a compromised or
+    // malicious client can only inflate a vanity number, never read or corrupt anything else.
+    match /public_stats/counts {
+      allow read: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin()
+        || (request.auth != null
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['userCount'])
+            && request.resource.data.userCount == resource.data.userCount + 1)
+        || (request.auth != null
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['videoCount'])
+            && request.resource.data.videoCount == resource.data.videoCount + 1);
+    }
+
     // Catch-all - admin can access everything else; everyone else denied by default
     match /{collection}/{docId} {
       allow read, write: if isAdmin();

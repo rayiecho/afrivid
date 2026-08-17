@@ -4227,6 +4227,7 @@ function saveToLibrary(blob, title, duration) {
         createdAt: serverTimestamp()
       }).then(() => {
         addLog('success', '[ok] Video saved to your Studio!');
+        updateDoc(doc(db, 'public_stats', 'counts'), { videoCount: increment(1) }).catch(() => {});
       }).catch(e => addLog('error', '[x] Studio save failed: ' + e.message));
     });
   }
@@ -4674,6 +4675,7 @@ window._doSignUp = window.doSignUp = async function() {
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
       name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'beta'
     });
+    updateDoc(doc(db, 'public_stats', 'counts'), { userCount: increment(1) }).catch(() => {});
 
     // Send welcome email
     try {
@@ -5632,6 +5634,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
       videosGenerated: increment(1),
       lastActive: serverTimestamp()
     });
+    updateDoc(doc(db, 'public_stats', 'counts'), { videoCount: increment(1) }).catch(() => {});
     alert('✅ Video saved to your Studio!');
   } catch(e) {
     alert('Save failed: ' + e.message);
@@ -5652,6 +5655,7 @@ async function trackVideoGeneration(title, duration) {
       duration: duration,
       createdAt: serverTimestamp()
     });
+    updateDoc(doc(db, 'public_stats', 'counts'), { videoCount: increment(1) }).catch(() => {});
     userProfile.videosGenerated = (userProfile.videosGenerated || 0) + 1;
     if(window.updateUserUI) window.updateUserUI(); // Update display immediately
     if(window.updateUserUI) window.updateUserUI();

@@ -693,6 +693,7 @@ window.doSignUp = async function() {
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
       name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'beta'
     });
+    updateDoc(doc(db, 'public_stats', 'counts'), { userCount: increment(1) }).catch(() => {});
     hideLogin();
   } catch(e) {
     err.style.display = 'block';
