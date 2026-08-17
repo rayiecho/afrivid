@@ -1746,7 +1746,7 @@ Convert any time references like "1:30" to seconds (90). "Remove first 30 second
 Return ONLY the JSON array, nothing else.`;
 
   try {
-    const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const response = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -3375,7 +3375,7 @@ Return ONLY a JSON array:
 Each clip should be 10-20 seconds. Total duration should be ~${targetDuration} seconds.`;
 
   try {
-    const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const response = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -3564,7 +3564,7 @@ window.translateVideo = async function(targetLang) {
     if(log) log.innerHTML = `<span style="color:#F5A623">[~] Translating text...</span>`;
 
     // Step 2: Translate with Claude
-    const translateRes = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const translateRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -3959,7 +3959,7 @@ Return ONLY this JSON array:
 ]
 formats: "shorts" (YouTube), "reels" (Instagram), "tiktok"`;
 
-    const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const response = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({

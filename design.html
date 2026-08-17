@@ -1698,7 +1698,7 @@ window._generateAIDesign = window.generateAIDesign = async function() {
   } catch(e) {
     // Fallback to text-based design
     try {
-      const res2 = await fetch('https://yan-ai-worker.youngafricansn.workers.dev',{
+      const res2 = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate',{
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           model:'claude-sonnet-4-6',max_tokens:2000,
@@ -2122,7 +2122,7 @@ window._generateDesign = window.generateDesign = async function() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
 
-    const response = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const response = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
@@ -3187,7 +3187,7 @@ window.aiFillLogo = async function() {
   const btn = document.getElementById('logo-ai-btn');
   btn.textContent = '⏳'; btn.disabled = true;
   try {
-    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300,
         messages: [{ role: 'user', content: `Extract logo details from this and return ONLY valid JSON:
@@ -3228,7 +3228,7 @@ window.aiFillBanner = async function() {
   const btn = document.getElementById('banner-ai-btn');
   btn.textContent = '⏳'; btn.disabled = true;
   try {
-    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500,
         messages: [{ role: 'user', content: `Extract banner details from this and return ONLY valid JSON:
@@ -3287,7 +3287,7 @@ window.aiFillPoster = async function() {
   const btn = document.getElementById('poster-ai-btn');
   btn.textContent = '⏳'; btn.disabled = true;
   try {
-    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -3423,7 +3423,7 @@ window.aiFillFlyer = async function() {
   const btn = document.getElementById('flyer-ai-btn');
   btn.textContent = '⏳'; btn.disabled = true;
   try {
-    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -4026,7 +4026,7 @@ window.aiFillProductPoster = async function() {
   const btn = document.getElementById('pp-ai-btn');
   btn.textContent = '⏳ Filling...'; btn.disabled = true;
   try {
-    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800,
         messages: [{role:'user', content:'Based on: "' + prompt + '"\nReturn ONLY valid JSON:\n{"name":"app name","headline":"short powerful headline max 6 words","tagline":"subtitle max 8 words","f1_icon":"emoji","f1_name":"feature 1","f2_icon":"emoji","f2_name":"feature 2","f3_icon":"emoji","f3_name":"feature 3","f4_icon":"emoji","f4_name":"feature 4","f5_icon":"emoji","f5_name":"feature 5","f6_icon":"emoji","f6_name":"feature 6","cta":"call to action","website":"website"}'}]

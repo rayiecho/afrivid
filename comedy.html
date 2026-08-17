@@ -509,7 +509,7 @@ window.generateScript = async function() {
   };
   const castDesc = selected.map(c => charProfiles[c]).join('\n');
   try {
-    const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:2000,
         messages:[{role:'user', content:'Write a ' + tone + ' script for the African animated series WATERING HOLE.\nSetting: The Savanna — a community where animals live like humans with full society, politics, culture.\nEpisode S'+season+'EP'+epNum+': '+epTitle+'\nScene: '+scenario+'\nCast:\n'+castDesc+'\nReturn ONLY a JSON array of exactly '+sceneCount+' scenes:\n[{"scene":1,"type":"dialogue","character":"exact character name","text":"what they say - max 12 words, punchy","duration":3,"emotion":"happy|angry|shocked|nervous|laughing|serious"}]\nRules:\n- NO narrator, NO introductions, characters just talk\n- Kenyan English accent for all\n- Short punchy lines — comedy lives in brevity\n- Each character stays true to their personality\n- Political satire should feel real and sharp\n- End with a killer punchline\n- Total duration='+length+'s\n- Return ONLY JSON array'}]

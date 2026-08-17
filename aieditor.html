@@ -1114,7 +1114,7 @@ async function transcribe() {
 }
 
 async function claudeAsk(prompt, maxTokens) {
-  const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+  const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       model:'claude-haiku-4-5-20251001',

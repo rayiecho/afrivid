@@ -466,7 +466,7 @@ window._feedbackLoaded = false;
           <div class="system-card">
             <div class="system-info">
               <div class="system-name">Script Generator</div>
-              <div class="system-url">yan-ai-worker.youngafricansn.workers.dev</div>
+              <div class="system-url">afrivid-tts.afrividstudio.workers.dev/ai-generate</div>
             </div>
             <div><span class="status-dot status-checking" id="dot-ai"></span><span id="status-ai" style="font-size:0.72rem;font-family:var(--font-mono);">Checking...</span></div>
           </div>
@@ -1060,12 +1060,12 @@ window.viewUser = function(uid) {
 
 // ── SYSTEM ──
 async function checkWorkers() {
-  const check = async (url, dotId, statusId) => {
+  const check = async (url, dotId, statusId, method) => {
     const dot = document.getElementById(dotId);
     const status = document.getElementById(statusId);
     try {
       const start = Date.now();
-      const res = await fetch(url, {method:'GET', signal: AbortSignal.timeout(5000)});
+      const res = await fetch(url, {method: method || 'GET', signal: AbortSignal.timeout(5000)});
       const ms = Date.now() - start;
       dot.className = 'status-dot status-online';
       status.textContent = `Online (${ms}ms)`;
@@ -1077,7 +1077,11 @@ async function checkWorkers() {
     }
   };
   check('https://afrivid-tts.afrividstudio.workers.dev','dot-tts','status-tts');
-  check('https://yan-ai-worker.youngafricansn.workers.dev','dot-ai','status-ai');
+  // This worker only accepts POST (it's a single-purpose Claude API proxy) and doesn't send
+  // CORS headers on its 405 response to GET, so a GET check here always misreports it as
+  // offline. OPTIONS is the cheapest request it handles correctly with CORS headers, so it
+  // reflects real reachability without spending an actual AI generation call.
+  check('https://afrivid-tts.afrividstudio.workers.dev/ai-generate','dot-ai','status-ai','OPTIONS');
 
   // Firebase check
   try {
