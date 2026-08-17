@@ -114,17 +114,17 @@
    everything else here (radius scale, glow technique, gradient, motion) is the new systemic
    layer this redesign introduces on top of them. */
 :root{
-  --bg:#050A14;
-  --surface:#0D1524;
-  --surface-2:#141F35;
-  --border:rgba(255,255,255,0.08);
-  --border-gold:rgba(245,166,35,0.18);
-  --text:#F8F9FC;
-  --text-muted:rgba(248,249,252,0.6);
-  --text-faint:rgba(248,249,252,0.35);
-  --gold:#F5A623;
-  --gold-dark:#E8931A;
-  --green:#74C69D;
+  --bg:#FBF7EF;
+  --surface:#FFFFFF;
+  --surface-2:#F3EDE0;
+  --border:rgba(23,20,15,0.1);
+  --border-gold:rgba(224,138,46,0.3);
+  --text:#17140F;
+  --text-muted:rgba(23,20,15,0.62);
+  --text-faint:rgba(23,20,15,0.4);
+  --gold:#E08A2E;
+  --gold-dark:#C4701E;
+  --green:#8B6F47;
   --red:#E63329;
   --gradient-gold:linear-gradient(135deg,var(--gold),var(--gold-dark));
   --gradient-accent:linear-gradient(135deg,var(--gold),var(--green));
@@ -132,14 +132,14 @@
   --radius-md:10px;
   --radius-lg:16px;
   --radius-full:9999px;
-  --glow-gold:0 0 20px rgba(245,166,35,.35),0 0 60px rgba(245,166,35,.15);
-  --glow-green:0 0 20px rgba(116,198,157,.35),0 0 60px rgba(116,198,157,.15);
+  --glow-gold:0 0 20px rgba(224,138,46,.35),0 0 60px rgba(224,138,46,.15);
+  --glow-green:0 0 20px rgba(139,111,71,.3),0 0 60px rgba(139,111,71,.12);
   --transition:all 0.2s ease;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(23,20,15,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(23,20,15,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
 
 /* ── MOTION ── restrained: entrance + live-state pulse only, nothing aggressive.
    Scoped to .panel (a deliberate step transition), not .card — cards are added/replaced
@@ -150,7 +150,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .panel.active{animation:slideUp 0.35s ease both;}
 
 /* TOPBAR */
-.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,10,20,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .topbar-left{display:flex;align-items:center;gap:1rem;}
 .back-btn{display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
 .back-btn:hover{color:var(--gold);}
@@ -269,16 +269,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:var(--bg);margin:0 auto 1rem;}
 .login-title{font-size:1.4rem;font-weight:800;color:var(--text);}
 .login-title span{color:var(--gold);}
-.login-card{background:rgba(13,21,36,0.95);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;}
-.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
+.login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.auth-tabs{display:flex;background:rgba(23,20,15,0.05);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
 .auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
 .form-label-m{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
-.form-input-m{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
-.form-input-m:focus{border-color:rgba(245,166,35,0.5);}
+.form-input-m{width:100%;background:rgba(23,20,15,0.03);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
+.form-input-m:focus{border-color:rgba(224,138,46,0.6);}
 .btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-auth:hover{box-shadow:var(--glow-gold);}
-.login-error-m{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
+.login-error-m{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(200,45,35,0.08);border:1px solid rgba(200,45,35,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#B23A2E;font-family:'Space Mono',monospace;}
 .modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:var(--text-faint);font-size:1.5rem;cursor:pointer;}
 
 /* RESPONSIVE */
@@ -297,7 +297,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .loading-sub{font-size:0.78rem;color:var(--text-faint);font-family:'Space Mono',monospace;animation:pulse 1.6s ease-in-out infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,10,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
 .navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:var(--gold);padding:0.2rem 0.6rem;border-radius:var(--radius-full);font-family:'Space Mono',monospace;letter-spacing:1px;}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
@@ -560,49 +560,6 @@ body::after{
 </head>
 <body>
 
-<!-- UPGRADE BANNER - shows for free users only -->
-<div id="upgrade-banner" style="display:none;background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05));border-bottom:1px solid rgba(245,166,35,0.2);padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-  <div style="display:flex;align-items:center;gap:0.75rem;">
-    <span style="color:#F5A623;font-size:0.85rem;">⚡</span>
-    <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-family:'Syne',sans-serif;">You're on the <strong style="color:#fff;">Free Plan</strong> — <span id="banner-usage">3 videos left</span> this month</span>
-  </div>
-  <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.4rem 1.25rem;border-radius:20px;font-weight:900;text-decoration:none;font-size:0.78rem;font-family:'Syne',sans-serif;white-space:nowrap;">Upgrade to Pro $5/mo →</a>
-</div>
-<script>
-// Show banner for free users
-(function() {
-  function checkAndShowBanner() {
-    if (!window.currentUser) return;
-    setTimeout(async () => {
-      try {
-        const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-        const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-        const db = getFirestore(app);
-        const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
-        if (!snap.exists()) return;
-        const data = snap.data();
-        const plan = data.plan || 'beta';
-        if (plan === 'pro') return; // Hide for Pro users
-        const used = data.videosGenerated || 0;
-        const limit = data.betaLimit || 3;
-        const remaining = Math.max(0, limit - used);
-        const banner = document.getElementById('upgrade-banner');
-        const usage = document.getElementById('banner-usage');
-        if (banner) banner.style.display = 'flex';
-        if (usage) usage.textContent = `${remaining} video${remaining!==1?'s':''} left`;
-      } catch(e) {}
-    }, 2000);
-  }
-  document.addEventListener('DOMContentLoaded', () => {
-    const check = setInterval(() => {
-      if (window.currentUser) { clearInterval(check); checkAndShowBanner(); }
-    }, 500);
-    setTimeout(() => clearInterval(check), 10000);
-  });
-})();
-</script>
 <nav class="navbar">
   <a href="index.html" class="navbar-brand" style="text-decoration:none;">
     <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
@@ -832,13 +789,13 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
     <div class="card">
       <div class="card-title"><div class="card-title-icon">📊</div>AI Slides Generator</div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">TOPIC OR TITLE *</div>
-        <input id="slides-topic" type="text" placeholder="e.g. Climate Change in Africa, Financial Literacy, Digital Skills for Youth" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">TOPIC OR TITLE *</div>
+        <input id="slides-topic" type="text" placeholder="e.g. Climate Change in Africa, Financial Literacy, Digital Skills for Youth" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDES</div>
-          <select id="slides-count" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDES</div>
+          <select id="slides-count" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="5">5 slides</option>
             <option value="8" selected>8 slides</option>
             <option value="10">10 slides</option>
@@ -846,8 +803,8 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">STYLE</div>
-          <select id="slides-style" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">STYLE</div>
+          <select id="slides-style" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="dark">Dark (AfriVid)</option>
             <option value="light">Light (Clean)</option>
             <option value="green">Green (Nature)</option>
@@ -855,8 +812,8 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
-          <select id="slides-lang" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
+          <select id="slides-lang" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="English">English</option>
             <option value="French">French</option>
             <option value="Swahili">Swahili</option>
@@ -867,12 +824,12 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">ORG NAME (shows on slides)</div>
-          <input id="slides-org" type="text" placeholder="e.g. AfriVid Studio" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">ORG NAME (shows on slides)</div>
+          <input id="slides-org" type="text" placeholder="e.g. AfriVid Studio" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box;">
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LOGO (optional)</div>
-          <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LOGO (optional)</div>
+          <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(23,20,15,0.18);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;">
             <span id="slides-logo-name">Upload logo</span>
             <input type="file" accept="image/*" style="display:none;" onchange="loadSlidesLogo(this)">
           </label>
@@ -881,7 +838,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       <button onclick="generateSlides()" id="slides-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">✦ Generate Slides</button>
       <div id="slides-status" style="display:none;text-align:center;padding:1rem;">
         <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.8rem;" id="slides-status-text">Generating slides...</div>
-        <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:4px;margin-top:0.75rem;">
+        <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:4px;margin-top:0.75rem;">
           <div id="slides-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
         </div>
       </div>
@@ -904,13 +861,13 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
     <div class="card">
       <div class="card-title"><div class="card-title-icon">🎓</div>AI Tutorial Maker</div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
-        <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
+        <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
-          <select id="tutorial-duration" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
+          <select id="tutorial-duration" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="1">1 minute</option>
             <option value="2">2 minutes</option>
             <option value="5" selected>5 minutes</option>
@@ -919,8 +876,8 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
-          <select id="tutorial-style" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
+          <select id="tutorial-style" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="classic">Classic (AfriVid)</option>
             <option value="cameroon_slide">Cameroon Slide</option>
             <option value="unite_slide">Unite Slide</option>
@@ -928,8 +885,8 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
-          <select id="tutorial-level" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
+          <select id="tutorial-level" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
             <option value="advanced">Advanced</option>
@@ -937,15 +894,15 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </div>
       </div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
           <button onclick="setTutorialMode('concept')" id="tmode-concept" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">📊 Concept Slides</button>
-          <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">🌐 Browser Demo</button>
+          <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">🌐 Browser Demo</button>
         </div>
       </div>
       <div id="tutorial-url-row" style="display:none;margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
-        <input id="tutorial-url" type="text" placeholder="e.g. https://docs.google.com" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
+        <input id="tutorial-url" type="text" placeholder="e.g. https://docs.google.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">🎓 Generate Tutorial Video</button>
       <div id="tutorial-status" style="display:none;">
@@ -954,22 +911,22 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 Generating Tutorial...</div>
             <div id="tutorial-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
-          <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
+          <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:6px;margin-bottom:0.75rem;">
             <div id="tutorial-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
           </div>
-          <div id="tutorial-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Starting...</div>
+          <div id="tutorial-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Starting...</div>
           <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem;margin-bottom:1rem;">
             <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">📧 We will email you when ready!</div>
-            <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
+            <div style="color:rgba(23,20,15,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
             <div id="tutorial-dashboard-btn" style="display:none;margin-top:0.75rem;">
               <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
-              <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">✅ Processing started — safe to leave</div>
+              <div style="color:rgba(23,20,15,0.4);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">✅ Processing started — safe to leave</div>
             </div>
           </div>
           <div id="tutorial-download" style="display:none;">
             <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">🎉 Tutorial ready!</div>
             <button id="tutorial-download-link" onclick="(async()=>{const btn=document.getElementById('tutorial-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Tutorial.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Tutorial';btn.disabled=false;})()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Tutorial</button>
-            <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-left:0.5rem;">▶ Upload to YouTube</button>
+            <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-left:0.5rem;">▶ Upload to YouTube</button>
           </div>
         </div>
       </div>
@@ -978,30 +935,30 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
 
   <!-- AD MAKER PANEL -->
   <div id="ad-maker-panel" style="display:none;max-width:900px;margin:0 auto;padding:0 1rem;">
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:1.5rem;margin-bottom:1rem;">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.5rem;margin-bottom:1rem;">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
         <div style="width:36px;height:36px;background:rgba(245,166,35,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">📱</div>
         <div style="font-weight:800;font-size:1rem;">AI Video Ad Maker</div>
       </div>
       <div style="margin-bottom:1rem;">
-        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS NAME *</label>
-        <input id="ad-business-name" type="text" placeholder="e.g. Mama Tomato Fresh Produce" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS NAME *</label>
+        <input id="ad-business-name" type="text" placeholder="e.g. Mama Tomato Fresh Produce" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="margin-bottom:1rem;">
-        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">DESCRIBE YOUR PRODUCT/SERVICE *</label>
-        <textarea id="ad-description" placeholder="e.g. We sell fresh farm tomatoes in Nairobi. Delivery within 2 hours. Ksh 200 per kg. Best quality direct from Limuru farms. Call 0722000000." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;height:100px;resize:vertical;"></textarea>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">DESCRIBE YOUR PRODUCT/SERVICE *</label>
+        <textarea id="ad-description" placeholder="e.g. We sell fresh farm tomatoes in Nairobi. Delivery within 2 hours. Ksh 200 per kg. Best quality direct from Limuru farms. Call 0722000000." style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;height:100px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
-        <input id="ad-url" type="text" placeholder="e.g. https://yourwebsite.com" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
+        <input id="ad-url" type="text" placeholder="e.g. https://yourwebsite.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
         <div style="display:flex;align-items:center;gap:1rem;">
           <input type="file" id="ad-logo-input" accept="image/*" onchange="previewAdLogo(this)" style="display:none;">
-          <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📷 Upload Logo</button>
+          <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">📷 Upload Logo</button>
           <div id="ad-logo-preview" style="display:none;align-items:center;gap:0.5rem;">
-            <img id="ad-logo-img" style="height:40px;border-radius:4px;object-fit:contain;background:rgba(255,255,255,0.1);padding:4px;">
+            <img id="ad-logo-img" style="height:40px;border-radius:4px;object-fit:contain;background:rgba(23,20,15,0.12);padding:4px;">
             <button onclick="clearAdLogo()" style="background:none;border:none;color:rgba(255,100,100,0.7);cursor:pointer;font-size:0.8rem;">✕ Remove</button>
           </div>
         </div>
@@ -1010,10 +967,10 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       <div id="ad-status" style="display:none;">
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:1rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
-            <div id="ad-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">Starting...</div>
+            <div id="ad-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;">Starting...</div>
             <div id="ad-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
-          <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:6px;">
+          <div style="background:rgba(23,20,15,0.04);border-radius:4px;height:6px;">
             <div id="ad-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
           </div>
           <div style="color:rgba(245,166,35,0.7);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">📧 We will email you when ready! You can close this tab safely.</div>
@@ -1023,7 +980,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <video id="ad-video" controls style="width:100%;border-radius:10px;margin-bottom:0.75rem;"></video>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <a id="ad-download" href="#" target="_blank" download style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;">⬇ Download</a>
-          <button onclick="uploadAdToYouTube()" class="btn" style="flex:1;background:#FF0000;border:none;color:#fff;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">▶ YouTube</button>
+          <button onclick="uploadAdToYouTube()" class="btn" style="flex:1;background:#FF0000;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">▶ YouTube</button>
         </div>
       </div>
     </div>
@@ -1330,7 +1287,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
           </div>
         </div>
 
-        <div class="btn-row" style="position:sticky;bottom:0;background:#111;padding:1rem 0;margin-top:auto;">
+        <div class="btn-row" style="position:sticky;bottom:0;background:#FBF7EF;padding:1rem 0;margin-top:auto;">
           <button class="btn btn-gold" id="btn-generate" onclick="handleGenerateScript()">
             ✨ Generate Script
           </button>
@@ -1535,31 +1492,6 @@ window.checkVideoLimit = async function() {
     showLogin('Sign in to create videos');
     return false;
   }
-
-  try { const freshSnap = await getDoc(doc(db, 'studio_users', currentUser.uid)); if (freshSnap.exists()) userProfile = freshSnap.data(); } catch(e) {}
-  const used = userProfile?.videosGenerated || 0;
-  const limit = userProfile?.betaLimit || BETA_LIMIT;
-  const plan = userProfile?.plan || 'beta';
-  const isPro = plan === 'pro';
-
-  // Check video count limit
-  if (!isPro && used >= limit) {
-    const customLimit = userProfile?.betaLimit;
-    showUpgradeModal('videos');
-    return false;
-  }
-
-  // Check duration limit for free users
-  if (!isPro) {
-    const durEl = document.getElementById('video-duration') || document.getElementById('video-duration-own');
-    const duration = parseInt(durEl ? durEl.value : 60);
-    const maxDur = userProfile?.maxDuration || BETA_MAX_DURATION;
-    if (duration > maxDur) {
-      showUpgradeModal('duration', duration, maxDur);
-      return false;
-    }
-  }
-
   return true;
 };
 
@@ -1582,24 +1514,6 @@ onAuthStateChanged(auth, async (user) => {
     const ref = doc(db, 'studio_users', user.uid);
     const snap = await getDoc(ref);
     userProfile = snap.exists() ? snap.data() : { videosGenerated: 0, plan: 'beta' };
-    const used = userProfile.videosGenerated || 0;
-    const limit = userProfile.betaLimit || BETA_LIMIT;
-    const remaining = Math.max(0, limit - used);
-    const isPro = userProfile.plan === 'pro';
-    const maxDur = userProfile.maxDuration || BETA_MAX_DURATION;
-    // Disable duration options beyond limit for free users
-    if (!isPro) {
-      document.querySelectorAll('#video-duration option, #video-duration-own option').forEach(opt => {
-        if (parseInt(opt.value) > maxDur) {
-          opt.disabled = true;
-          opt.textContent = opt.textContent.replace(' 🔒 Pro','') + ' 🔒 Pro';
-        }
-      });
-    }
-    const badge = document.getElementById('user-badge');
-    badge.style.display = 'block';
-    badge.textContent = `${remaining} videos left`;
-    badge.style.color = remaining <= 2 ? '#E63329' : remaining <= 5 ? '#F5A623' : '#74C69D';
   } else {
     document.getElementById('btn-signin').style.display = 'block';
     document.getElementById('user-badge').style.display = 'none';
@@ -1726,13 +1640,6 @@ window.handleStartRecording = function() {
 // RECORD VIDEO
 window._handleRecord = window.handleRecord = async function() {
   if (!currentUser) { showLogin('Please sign in to save to your Studio'); return; }
-  // Check limit
-  const used = userProfile?.videosGenerated || 0;
-  const limit = userProfile?.betaLimit || BETA_LIMIT;
-  if (!ADMIN_EMAILS.includes(currentUser.email) && used >= limit) {
-    alert(`You have reached your limit of ${limit} videos. Contact support to increase.`);
-    return;
-  }
   if (!scriptData) { alert('No script found. Go back and generate a script first.'); return; }
   // Hand off to recording engine from old index.html
   // Call the real video engine
@@ -6257,23 +6164,23 @@ window.convertAndDownloadMP4 = async function() {
 
 <!-- FEEDBACK MODAL -->
 <div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+  <div style="background:#FFFFFF;box-shadow:0 20px 60px rgba(0,0,0,0.35);border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
-      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
+      <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
+      <div style="color:rgba(23,20,15,0.5);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
       <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🐛 Bug</button>
       <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">✨ Feature</button>
       <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🔥 Praise</button>
       <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💬 General</button>
-      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
-      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
+      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
+      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
     </div>
     <input type="hidden" id="feedback-type" value="general">
     <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
-      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rate AfriVid:</span>
+      <span style="color:rgba(23,20,15,0.5);font-size:0.78rem;">Rate AfriVid:</span>
       <div id="star-rating" style="display:flex;gap:0.25rem;">
         <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
         <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
@@ -6283,12 +6190,12 @@ window.convertAndDownloadMP4 = async function() {
       </div>
     </div>
     <input type="hidden" id="feedback-rating" value="5">
-    <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
+    <textarea id="feedback-msg" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
     <div style="display:flex;gap:0.5rem;">
-      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
+      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.35);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
   </div>
 </div>
 
@@ -6348,105 +6255,6 @@ async function submitFeedback() {
 </script>
 
 <script src="afribrain.js"></script>
-<script src="limits.js"></script>
-
-<script>
-// AfriVid Limits UX — show countdown and usage progress
-window.showLimitsUX = async function() {
-  if (!window.currentUser) return;
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
-    if (!snap.exists()) return;
-    const data = snap.data();
-    if (data.plan === 'pro') return;
-
-    const now = new Date();
-    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
-    
-    // Get usage
-    const videoUsed = data[`${monthKey}_creator_video`] || data.videosGenerated || 0;
-    const aiUsed = data[`${monthKey}_aieditor_session`] || 0;
-    const transUsed = data[`${monthKey}_aieditor_translate`] || 0;
-    const videoMax = data.custom_creator_video_limit || 3;
-    const aiMax = 3;
-    const transMax = 3;
-
-    // Calculate reset date
-    const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    const daysLeft = Math.ceil((resetDate - now) / (1000 * 60 * 60 * 24));
-    const resetStr = resetDate.toLocaleDateString('en-US', {month:'long', day:'numeric'});
-
-    // Build UX panel
-    const panel = document.getElementById('limits-ux-panel');
-    if (!panel) return;
-
-    const barColor = (used, max) => used >= max ? '#E63329' : used >= max-1 ? '#F5A623' : '#74C69D';
-    const pct = (used, max) => Math.min(100, Math.round(used/max*100));
-
-    panel.style.display = 'block';
-    panel.innerHTML = `
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:1rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
-        </div>
-        
-        <div style="margin-bottom:0.6rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Video Creator</span>
-            <span style="font-size:0.75rem;color:${barColor(videoUsed,videoMax)};">${videoUsed}/${videoMax}</span>
-          </div>
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
-            <div style="height:100%;width:${pct(videoUsed,videoMax)}%;background:${barColor(videoUsed,videoMax)};border-radius:2px;transition:width 0.3s;"></div>
-          </div>
-        </div>
-
-        <div style="margin-bottom:0.6rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">AI Editor</span>
-            <span style="font-size:0.75rem;color:${barColor(aiUsed,aiMax)};">${aiUsed}/${aiMax}</span>
-          </div>
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
-            <div style="height:100%;width:${pct(aiUsed,aiMax)}%;background:${barColor(aiUsed,aiMax)};border-radius:2px;transition:width 0.3s;"></div>
-          </div>
-        </div>
-
-        <div style="margin-bottom:0.75rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Voice Translation</span>
-            <span style="font-size:0.75rem;color:${barColor(transUsed,transMax)};">${transUsed}/${transMax}</span>
-          </div>
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
-            <div style="height:100%;width:${pct(transUsed,transMax)}%;background:${barColor(transUsed,transMax)};border-radius:2px;transition:width 0.3s;"></div>
-          </div>
-        </div>
-
-        ${(videoUsed >= videoMax-1 || aiUsed >= aiMax-1) ? `
-        <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.6rem 0.75rem;display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:0.75rem;color:#F5A623;">Running low! Upgrade for unlimited access.</span>
-          <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.7rem;font-weight:900;text-decoration:none;white-space:nowrap;">Upgrade →</a>
-        </div>` : ''}
-      </div>
-    `;
-  } catch(e) {}
-};
-
-// Auto-load on pages that have the panel
-document.addEventListener('DOMContentLoaded', () => {
-  const check = setInterval(() => {
-    if (window.currentUser) {
-      clearInterval(check);
-      setTimeout(showLimitsUX, 2000);
-    }
-  }, 500);
-  setTimeout(() => clearInterval(check), 15000);
-});
-</script>
 <script src="chatbot.js"></script>
 <script>
 
@@ -6855,23 +6663,23 @@ function previewSlide(slide, i, t, topic) {
   <div style="display:flex;gap:1.5rem;align-items:flex-start;max-width:1100px;width:95%;padding:1rem;">
     <!-- LEFT: PREVIEW -->
     <div style="flex:1;">
-      <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.5rem;">PREVIEW (click slide to close)</div>
+      <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.5rem;">PREVIEW (click slide to close)</div>
       <div id="slide-preview-box" style="border-radius:10px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.8);cursor:pointer;" onclick="document.getElementById('slide-edit-overlay').remove()">
         ${buildSlideHTML(slide, i, t, topic)}
       </div>
       <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
-        <button onclick="slideEditApply(${i})" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✓ Apply Changes</button>
-        <button onclick="document.getElementById('slide-edit-overlay').remove()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✕ Close</button>
+        <button onclick="slideEditApply(${i})" style="flex:1;background:#F5A623;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✓ Apply Changes</button>
+        <button onclick="document.getElementById('slide-edit-overlay').remove()" style="background:rgba(23,20,15,0.1);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">✕ Close</button>
       </div>
     </div>
 
     <!-- RIGHT: EDIT PANEL -->
-    <div style="width:320px;background:#0D1117;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1rem;max-height:80vh;overflow-y:auto;">
+    <div style="width:320px;background:#FFFFFF;border:1px solid rgba(23,20,15,0.12);border-radius:12px;padding:1rem;max-height:80vh;overflow-y:auto;">
       <div style="color:#F5A623;font-family:monospace;font-size:0.7rem;letter-spacing:1px;margin-bottom:0.75rem;">EDIT SLIDE ${i+1}</div>
 
       <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TYPE</div>
-        <select id="edit-type" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;">
+        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TYPE</div>
+        <select id="edit-type" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;">
           <option value="intro" ${slide.type==='intro'?'selected':''}>Intro</option>
           <option value="content" ${slide.type==='content'?'selected':''}>Content</option>
           <option value="stat" ${slide.type==='stat'?'selected':''}>Statistic</option>
@@ -6881,37 +6689,37 @@ function previewSlide(slide, i, t, topic) {
       </div>
 
       <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TITLE</div>
-        <input id="edit-title" type="text" value="${(slide.title||'').replace(/"/g,'&quot;')}" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
+        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TITLE</div>
+        <input id="edit-title" type="text" value="${(slide.title||'').replace(/"/g,'&quot;')}" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
       </div>
 
       <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">SUBTITLE / TAGLINE</div>
-        <input id="edit-subtitle" type="text" value="${(slide.subtitle||'').replace(/"/g,'&quot;')}" placeholder="Optional subtitle" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
+        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">SUBTITLE / TAGLINE</div>
+        <input id="edit-subtitle" type="text" value="${(slide.subtitle||'').replace(/"/g,'&quot;')}" placeholder="Optional subtitle" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
       </div>
 
       <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">BULLET POINTS (one per line)</div>
-        <textarea id="edit-points" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:100px;resize:vertical;">${(slide.points||[]).join('')}</textarea>
+        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">BULLET POINTS (one per line)</div>
+        <textarea id="edit-points" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:100px;resize:vertical;">${(slide.points||[]).join('')}</textarea>
 
-        <div style="color:rgba(255,255,255,0.2);font-size:0.6rem;font-family:monospace;margin-top:2px;">Up to 5 points. Press Enter for new line.</div>
+        <div style="color:rgba(23,20,15,0.3);font-size:0.6rem;font-family:monospace;margin-top:2px;">Up to 5 points. Press Enter for new line.</div>
       </div>
 
       <div style="margin-bottom:0.75rem;" id="edit-stat-group">
-        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">STAT NUMBER (e.g. 85%)</div>
-        <input id="edit-stat" type="text" value="${(slide.stat||'').replace(/"/g,'&quot;')}" placeholder="e.g. 85%" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
-        <input id="edit-stat-label" type="text" value="${(slide.stat_label||'').replace(/"/g,'&quot;')}" placeholder="Stat description" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
+        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">STAT NUMBER (e.g. 85%)</div>
+        <input id="edit-stat" type="text" value="${(slide.stat||'').replace(/"/g,'&quot;')}" placeholder="e.g. 85%" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
+        <input id="edit-stat-label" type="text" value="${(slide.stat_label||'').replace(/"/g,'&quot;')}" placeholder="Stat description" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
       </div>
 
       <div style="margin-bottom:0.75rem;" id="edit-quote-group">
-        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">QUOTE TEXT</div>
-        <textarea id="edit-quote" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:70px;resize:vertical;">${slide.quote||''}</textarea>
-        <input id="edit-author" type="text" value="${(slide.author||'').replace(/"/g,'&quot;')}" placeholder="Author name" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
+        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">QUOTE TEXT</div>
+        <textarea id="edit-quote" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:70px;resize:vertical;">${slide.quote||''}</textarea>
+        <input id="edit-author" type="text" value="${(slide.author||'').replace(/"/g,'&quot;')}" placeholder="Author name" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
       </div>
 
       <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(255,255,255,0.4);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">ADD IMAGE (optional)</div>
-        <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:monospace;">
+        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">ADD IMAGE (optional)</div>
+        <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(23,20,15,0.18);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.7rem;color:rgba(23,20,15,0.5);font-family:monospace;">
           <span id="edit-img-name">Upload image for this slide</span>
           <input type="file" accept="image/*" style="display:none;" onchange="loadSlideImage(this, ${i})">
         </label>
@@ -7026,182 +6834,6 @@ if('serviceWorker' in navigator) {
 </script>
 
 <script>
-function showUpgradeForm() {
-  window.location.href = 'pricing.html#upgrade';
-}
-</script>
-
-
-<!-- GLOBAL UPGRADE MODAL -->
-<div id="global-upgrade-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)closeUpgradeModal()">
-  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
-      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
-    </div>
-    <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
-    </div>
-    <div id="gum-form">
-      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
-          <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
-          <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
-          <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select your country</option>
-            <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
-            <option>Uganda</option><option>Tanzania</option><option>Ghana</option>
-            <option>South Africa</option><option>Ethiopia</option><option>Other</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
-          <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select payment method</option>
-            <option value="mpesa">M-Pesa</option>
-            <option value="mtn">MTN Mobile Money</option>
-            <option value="airtel">Airtel Money</option>
-            <option value="card">Debit/Credit Card</option>
-            <option value="bank">Bank Transfer</option>
-          </select>
-        </div>
-        <div id="gum-phone-wrap" style="display:none;">
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
-          <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-      </div>
-      <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-        <span style="color:#74C69D;">⏱</span>
-        <span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">We respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</span>
-      </div>
-      <div style="display:flex;gap:0.5rem;">
-        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Request →</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-function showUpgradeModal(reason) {
-  const modal = document.getElementById('global-upgrade-modal');
-  if (!modal) return;
-  // Set reason text
-  const reasons = {
-    videos: 'You have used all your free videos this month.',
-    duration: 'Free videos are limited to 2 minutes.',
-    ai: 'AI editing is limited to 3 sessions/month on free plan.',
-    translation: 'Voice translation is a Pro feature.',
-    captions: 'You have used your free captions this week.',
-    chatbot: 'AI Chatbot is available for Pro users only.',
-    default: 'This feature requires a Pro account.'
-  };
-  const reasonEl = document.getElementById('gum-reason');
-  if (reasonEl) reasonEl.textContent = (reasons[reason] || reasons.default) + ' Upgrade to Pro — we respond within 1 hour.';
-  // Pre-fill email if logged in
-  if (window.currentUser) {
-    const emailEl = document.getElementById('gum-email');
-    const nameEl = document.getElementById('gum-name');
-    if (emailEl && !emailEl.value) emailEl.value = window.currentUser.email || '';
-    if (nameEl && !nameEl.value) nameEl.value = window.currentUser.displayName || '';
-  }
-  modal.style.display = 'flex';
-}
-
-function closeUpgradeModal() {
-  const modal = document.getElementById('global-upgrade-modal');
-  if (modal) modal.style.display = 'none';
-}
-
-async function submitGlobalUpgrade() {
-  const name = document.getElementById('gum-name')?.value?.trim();
-  const email = document.getElementById('gum-email')?.value?.trim();
-  const country = document.getElementById('gum-country')?.value;
-  const payment = document.getElementById('gum-payment')?.value;
-  const phone = document.getElementById('gum-phone')?.value?.trim();
-
-  if (!name || !email || !country || !payment) {
-    alert('Please fill all required fields');
-    return;
-  }
-
-  const btn = document.getElementById('gum-submit-btn');
-  if (btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
-
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-
-    await addDoc(collection(db, 'upgrade_requests'), {
-      name, email, country, payment, phone,
-      page: window.location.pathname,
-      userId: window.currentUser?.uid || 'anonymous',
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-
-    // Show success
-    document.getElementById('gum-form').innerHTML = `
-      <div style="text-align:center;padding:1rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
-        <div style="color:#74C69D;font-weight:900;font-size:1.1rem;margin-bottom:0.5rem;">Request Submitted!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">Check your email <strong style="color:#fff;">${email}</strong> — we'll respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</div>
-        <button onclick="closeUpgradeModal()" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Done</button>
-      </div>`;
-  } catch(e) {
-    if (btn) { btn.textContent = 'Send Request →'; btn.disabled = false; }
-    alert('Failed: ' + e.message);
-  }
-}
-</script>
-
-<script>
-window.loadCreatorUsage = async function() {
-  if (!window.currentUser) return;
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
-    if (!snap.exists()) return;
-    const data = snap.data();
-    if (data.plan === 'pro') {
-      const badge = document.getElementById('user-badge');
-      if (badge) badge.textContent = 'Pro — Unlimited ⚡';
-      return;
-    }
-    const now = new Date();
-    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
-    const used = data[`${monthKey}_creator_video`] || data.videosGenerated || 0;
-    const limit = data.custom_creator_video_limit || 3;
-    const left = Math.max(0, limit - used);
-    const badge = document.getElementById('user-badge');
-    if (badge) {
-      badge.textContent = `${left} video${left!==1?'s':''} left`;
-      badge.style.color = left === 0 ? '#E63329' : left === 1 ? '#F5A623' : '#74C69D';
-      badge.style.display = 'block';
-    }
-  } catch(e) {}
-};
-const _cUsageCheck = setInterval(() => {
-  if (window.currentUser) { clearInterval(_cUsageCheck); loadCreatorUsage(); }
-}, 500);
-setTimeout(() => clearInterval(_cUsageCheck), 10000);
-
 // ── AD MAKER ─────────────────────────────────
 window._adLogoBase64 = null;
 

@@ -111,86 +111,86 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
-.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+body{font-family:'Syne',sans-serif;background:#FBF7EF;color:#17140F;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(23,20,15,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(23,20,15,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,20,15,0.1);}
 .topbar-left{display:flex;align-items:center;gap:1rem;}
-.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
-.back-btn:hover{color:#F5A623;}
-.topbar-divider{width:1px;height:20px;background:rgba(255,255,255,0.1);}
-.topbar-title{font-size:1rem;font-weight:800;color:#fff;}
-.topbar-title span{color:#F5A623;}
-.user-badge{font-size:0.72rem;color:#74C69D;font-family:'Space Mono',monospace;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;}
-.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(23,20,15,0.6);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
+.back-btn:hover{color:#C4701E;}
+.topbar-divider{width:1px;height:20px;background:rgba(23,20,15,0.12);}
+.topbar-title{font-size:1rem;font-weight:800;color:#17140F;}
+.topbar-title span{color:#E08A2E;}
+.user-badge{font-size:0.72rem;color:#8B6F47;font-family:'Space Mono',monospace;background:rgba(139,111,71,0.1);border:1px solid rgba(139,111,71,0.25);padding:0.3rem 0.8rem;border-radius:20px;}
+.btn-signin{background:transparent;border:1px solid rgba(224,138,46,0.5);color:#C4701E;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
 .main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 2rem 6rem;}
 .page-header{margin-bottom:0;padding:0;}
-.page-label{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
-.page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#fff;margin-bottom:0.4rem;}
-.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.4);}
+.page-label{font-size:0.68rem;color:#C4701E;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
+.page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#17140F;margin-bottom:0.4rem;}
+.page-sub{font-size:0.88rem;color:rgba(23,20,15,0.5);}
 .design-layout{display:grid;grid-template-columns:260px 1fr;gap:1.25rem;align-items:start;}
 .sidebar-panel{display:flex;flex-direction:column;gap:1rem;}
 .canvas-panel{display:flex;flex-direction:column;gap:1rem;}
-.card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;}
-.control-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
-.ai-input{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.75rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;margin-bottom:0.75rem;box-sizing:border-box;resize:vertical;min-height:80px;}
-.ai-input:focus{border-color:rgba(245,166,35,0.4);}
+.card{background:#FFFFFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.5rem;}
+.control-label{font-size:0.65rem;color:#C4701E;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.ai-input{width:100%;background:#F3EDE0;border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;margin-bottom:0.75rem;box-sizing:border-box;resize:vertical;min-height:80px;}
+.ai-input:focus{border-color:rgba(224,138,46,0.5);}
 .btn{padding:0.75rem 1.25rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
-.btn-gold{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
-.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.3);}
-.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
-.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
-.btn-green{background:#2D8A5E;color:#fff;}
-.btn-green:hover{background:#40916C;}
+.btn-gold{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(224,138,46,0.35);}
+.btn-outline{background:transparent;border:1px solid rgba(23,20,15,0.15);color:rgba(23,20,15,0.65);}
+.btn-outline:hover{border-color:rgba(224,138,46,0.4);color:#C4701E;}
+.btn-green{background:#8B6F47;color:#fff;}
+.btn-green:hover{background:#75603D;}
 .btn:disabled{opacity:0.4;cursor:not-allowed;}
 .btn-full{width:100%;justify-content:center;}
 .btn-row{display:flex;gap:0.5rem;flex-wrap:wrap;}
 .template-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
-.template-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);padding:0.6rem 0.5rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;text-align:center;}
-.template-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
-.size-select{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;margin-bottom:0.5rem;}
-.type-select{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;margin-bottom:0.75rem;}
-.canvas-wrap{background:#1a1a1a;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:1rem;border:1px solid rgba(255,255,255,0.06);min-height:400px;position:relative;}
+.template-btn{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);color:rgba(23,20,15,0.65);padding:0.6rem 0.5rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;text-align:center;}
+.template-btn:hover{border-color:rgba(224,138,46,0.4);color:#C4701E;}
+.size-select{width:100%;background:#F3EDE0;border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;margin-bottom:0.5rem;}
+.type-select{width:100%;background:#F3EDE0;border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.65rem 0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.82rem;outline:none;margin-bottom:0.75rem;}
+.canvas-wrap{background:#F3EDE0;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:1rem;border:1px solid rgba(23,20,15,0.1);min-height:400px;position:relative;}
 .crop-overlay{position:absolute;inset:0;cursor:crosshair;z-index:10;display:none;}
-.crop-selection{position:absolute;border:2px solid #F5A623;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);pointer-events:none;z-index:11;}
+.crop-selection{position:absolute;border:2px solid #E08A2E;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);pointer-events:none;z-index:11;}
 .crop-ratio-btns{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;}
-.crop-ratio-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.35rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
-.crop-ratio-btn:hover,.crop-ratio-btn.active{border-color:rgba(245,166,35,0.4);color:#F5A623;background:rgba(245,166,35,0.08);}
+.crop-ratio-btn{background:#F3EDE0;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.65);padding:0.35rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.crop-ratio-btn:hover,.crop-ratio-btn.active{border-color:rgba(224,138,46,0.45);color:#C4701E;background:rgba(224,138,46,0.08);}
 #design-canvas{max-width:100%;max-height:600px;display:block;border-radius:4px;}
-.element-controls{background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:12px;padding:1rem;display:none;}
+.element-controls{background:#F3EDE0;border:1px solid rgba(224,138,46,0.25);border-radius:12px;padding:1rem;display:none;}
 .bg-colors{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;}
 .bg-swatch{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
-.bg-swatch:hover{transform:scale(1.1);border-color:rgba(255,255,255,0.3);}
-.design-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.75rem 1rem;font-family:'Space Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.4);max-height:80px;overflow-y:auto;line-height:1.9;}
+.bg-swatch:hover{transform:scale(1.1);border-color:rgba(23,20,15,0.3);}
+.design-log{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);border-radius:8px;padding:0.75rem 1rem;font-family:'Space Mono',monospace;font-size:0.7rem;color:rgba(23,20,15,0.5);max-height:80px;overflow-y:auto;line-height:1.9;}
 .log-line{display:block;}
-.log-line.success{color:#74C69D;}
+.log-line.success{color:#8B6F47;}
 .log-line.error{color:#E63329;}
-.log-line.info{color:#F5A623;}
-.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
+.log-line.info{color:#C4701E;}
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(15,12,9,0.82);backdrop-filter:blur(10px);padding:2rem;}
 .modal-overlay.active{display:flex;}
 .login-box{position:relative;width:100%;max-width:420px;}
 .login-header{text-align:center;margin-bottom:2rem;}
-.login-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 1rem;}
-.login-title{font-size:1.4rem;font-weight:800;color:#fff;}
-.login-title span{color:#F5A623;}
-.login-card{background:rgba(17,17,17,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;}
-.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.5rem;}
-.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
-.auth-tab.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
-.flabel{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
-.finput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:border-color 0.2s;}
-.finput:focus{border-color:rgba(245,166,35,0.5);}
-.btn-auth{width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;}
-.ferror{display:none;margin-top:0.85rem;padding:0.7rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.5rem;cursor:pointer;}
+.login-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#E08A2E,#C4701E);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#17140F;margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:#17140F;}
+.login-title span{color:#C4701E;}
+.login-card{background:#FFFFFF;border:1px solid rgba(23,20,15,0.1);border-radius:20px;padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.auth-tabs{display:flex;background:rgba(23,20,15,0.05);border-radius:10px;padding:3px;margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(23,20,15,0.45);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.auth-tab.active{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;}
+.flabel{font-size:0.72rem;color:rgba(23,20,15,0.45);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
+.finput{width:100%;background:rgba(23,20,15,0.03);border:1px solid rgba(23,20,15,0.14);color:#17140F;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:border-color 0.2s;}
+.finput:focus{border-color:rgba(224,138,46,0.6);}
+.btn-auth{width:100%;background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.ferror{display:none;margin-top:0.85rem;padding:0.7rem 1rem;background:rgba(200,45,35,0.08);border:1px solid rgba(200,45,35,0.3);border-radius:8px;font-size:0.8rem;color:#B23A2E;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.6);font-size:1.5rem;cursor:pointer;}
 @media(max-width:900px){
   .design-layout{grid-template-columns:1fr;}
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 6rem;}
 }
 
-.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,20,15,0.1);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
-.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
+.navbar-badge{font-size:0.6rem;background:rgba(224,138,46,0.12);border:1px solid rgba(224,138,46,0.35);color:#C4701E;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
 
@@ -394,49 +394,6 @@ body::after{
 </head>
 <body>
 
-<!-- UPGRADE BANNER - shows for free users only -->
-<div id="upgrade-banner" style="display:none;background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05));border-bottom:1px solid rgba(245,166,35,0.2);padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-  <div style="display:flex;align-items:center;gap:0.75rem;">
-    <span style="color:#F5A623;font-size:0.85rem;">⚡</span>
-    <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-family:'Syne',sans-serif;">You're on the <strong style="color:#fff;">Free Plan</strong> — <span id="banner-usage">3 videos left</span> this month</span>
-  </div>
-  <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.4rem 1.25rem;border-radius:20px;font-weight:900;text-decoration:none;font-size:0.78rem;font-family:'Syne',sans-serif;white-space:nowrap;">Upgrade to Pro $5/mo →</a>
-</div>
-<script>
-// Show banner for free users
-(function() {
-  function checkAndShowBanner() {
-    if (!window.currentUser) return;
-    setTimeout(async () => {
-      try {
-        const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-        const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-        const db = getFirestore(app);
-        const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
-        if (!snap.exists()) return;
-        const data = snap.data();
-        const plan = data.plan || 'beta';
-        if (plan === 'pro') return; // Hide for Pro users
-        const used = data.videosGenerated || 0;
-        const limit = data.betaLimit || 3;
-        const remaining = Math.max(0, limit - used);
-        const banner = document.getElementById('upgrade-banner');
-        const usage = document.getElementById('banner-usage');
-        if (banner) banner.style.display = 'flex';
-        if (usage) usage.textContent = `${remaining} video${remaining!==1?'s':''} left`;
-      } catch(e) {}
-    }, 2000);
-  }
-  document.addEventListener('DOMContentLoaded', () => {
-    const check = setInterval(() => {
-      if (window.currentUser) { clearInterval(check); checkAndShowBanner(); }
-    }, 500);
-    setTimeout(() => clearInterval(check), 10000);
-  });
-})();
-</script>
 <nav class="navbar">
   <a href="index.html" class="navbar-brand" style="text-decoration:none;">
     <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
@@ -837,7 +794,7 @@ body::after{
           <button class="btn btn-outline" style="flex:1;padding:0.6rem;" onclick="addShape('rect')">▭ Rect</button>
           <button class="btn btn-outline" style="flex:1;padding:0.6rem;" onclick="addShape('circle')">● Circle</button>
         </div>
-        <label style="display:block;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.6rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(245,166,35,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+        <label style="display:block;background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);color:rgba(23,20,15,0.65);padding:0.6rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(224,138,46,0.4)'" onmouseout="this.style.borderColor='rgba(23,20,15,0.1)'">
           🖼 Add Image
           <input type="file" accept="image/*" style="display:none;" onchange="addImageElement(event)">
         </label>
@@ -847,10 +804,10 @@ body::after{
       <div class="card element-controls" id="design-element-controls">
         <div class="control-label">SELECTED ELEMENT</div>
         <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;">
-          <label style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Color</label>
+          <label style="font-size:0.72rem;color:rgba(23,20,15,0.5);">Color</label>
           <input type="color" id="design-element-color" value="#ffffff" onchange="updateElement('color',this.value)" style="width:36px;height:28px;border:none;border-radius:4px;cursor:pointer;background:none;">
-          <label style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-left:0.5rem;">Size</label>
-          <input type="number" id="design-element-size" value="32" min="8" max="200" style="width:60px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.82rem;" onchange="updateElement('size',this.value)">
+          <label style="font-size:0.72rem;color:rgba(23,20,15,0.5);margin-left:0.5rem;">Size</label>
+          <input type="number" id="design-element-size" value="32" min="8" max="200" style="width:60px;background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);color:#17140F;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.82rem;" onchange="updateElement('size',this.value)">
         </div>
         <input type="hidden" id="design-element-font" value="Syne">
           <input type="hidden" id="design-element-weight" value="700">
@@ -896,7 +853,7 @@ body::after{
           <div class="crop-selection" id="crop-selection" style="display:none;"></div>
         </div>
         <!-- CROP CONTROLS -->
-        <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#1a1a1a;border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:0.85rem;">
+        <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#F3EDE0;border:1px solid rgba(224,138,46,0.25);border-radius:10px;padding:0.85rem;">
           <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.6rem;">CROP RATIO</div>
           <div class="crop-ratio-btns">
             <button class="crop-ratio-btn" onclick="setCropRatio('free')">Free</button>
@@ -953,7 +910,7 @@ body::after{
         <label class="flabel">PASSWORD</label>
         <input type="password" id="login-password" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-      </div>
+      </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="flabel">FULL NAME</label>
         <input type="text" id="signup-name" class="finput" placeholder="Your full name">
@@ -961,18 +918,17 @@ body::after{
         <input type="email" id="signup-email" class="finput" placeholder="you@example.com">
         <label class="flabel">PASSWORD</label>
         <input type="password" id="signup-password" class="finput" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
-          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#F5A623;flex-shrink:0;" required>
-          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#F5A623;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#F5A623;text-decoration:none;">Privacy Policy</a></label>
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
+          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#C4701E;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#C4701E;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
-          <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#74C69D;flex-shrink:0;" checked>
-          <label for="afribrain-consent">✅ Help build <span style="color:#74C69D;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#74C69D;text-decoration:none;">Learn more</a></label>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+          <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
+          <label for="afribrain-consent">✅ Help build <span style="color:#8B6F47;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#8B6F47;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-      </div>
-      <div class="ferror" id="login-error"></form>
-      </div>
+      </form>
+      <div class="ferror" id="login-error"></div>
     </div>
 
 <script>
@@ -2541,11 +2497,11 @@ function restoreDesignWork() {
 
     const banner = document.createElement('div');
     banner.id = 'design-restore-banner';
-    banner.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:999;background:#1a1a1a;border:1px solid rgba(245,166,35,0.4);border-radius:12px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem;font-family:Syne,sans-serif;font-size:0.82rem;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.4);';
+    banner.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:999;background:#FFFFFF;border:1px solid rgba(224,138,46,0.4);border-radius:12px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem;font-family:Syne,sans-serif;font-size:0.82rem;color:#17140F;box-shadow:0 4px 20px rgba(0,0,0,0.15);';
     banner.innerHTML = `
       <span>🎨 You have unsaved design work (${data.elements.length} elements)</span>
-      <button onclick="restoreDesignCanvas()" style="background:#F5A623;border:none;color:#050A14;padding:0.35rem 0.85rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Restore</button>
-      <button onclick="localStorage.removeItem('${DESIGN_SAVE_KEY}');document.getElementById('design-restore-banner').remove();" style="background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Discard</button>
+      <button onclick="restoreDesignCanvas()" style="background:#E08A2E;border:none;color:#17140F;padding:0.35rem 0.85rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Restore</button>
+      <button onclick="localStorage.removeItem('${DESIGN_SAVE_KEY}');document.getElementById('design-restore-banner').remove();" style="background:none;border:1px solid rgba(23,20,15,0.15);color:rgba(23,20,15,0.55);padding:0.35rem 0.75rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.78rem;">Discard</button>
     `;
     document.body.appendChild(banner);
   } catch(e) {
@@ -2742,7 +2698,6 @@ async function submitFeedback() {
 })();
 </script>
 
-<script src="limits.js"></script>
 <script src="chatbot.js"></script>
 <script>
 if('serviceWorker' in navigator) {
@@ -2752,139 +2707,7 @@ if('serviceWorker' in navigator) {
 }
 </script>
 
-<!-- GLOBAL UPGRADE MODAL -->
-<div id="global-upgrade-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)closeUpgradeModal()">
-  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
-      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
-    </div>
-    <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
-    </div>
-    <div id="gum-form">
-      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
-          <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
-          <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
-          <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select your country</option>
-            <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
-            <option>Uganda</option><option>Tanzania</option><option>Ghana</option>
-            <option>South Africa</option><option>Ethiopia</option><option>Other</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
-          <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select payment method</option>
-            <option value="mpesa">M-Pesa</option>
-            <option value="mtn">MTN Mobile Money</option>
-            <option value="airtel">Airtel Money</option>
-            <option value="card">Debit/Credit Card</option>
-            <option value="bank">Bank Transfer</option>
-          </select>
-        </div>
-        <div id="gum-phone-wrap" style="display:none;">
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
-          <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-      </div>
-      <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-        <span style="color:#74C69D;">⏱</span>
-        <span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">We respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</span>
-      </div>
-      <div style="display:flex;gap:0.5rem;">
-        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Request →</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-function showUpgradeModal(reason) {
-  const modal = document.getElementById('global-upgrade-modal');
-  if (!modal) return;
-  // Set reason text
-  const reasons = {
-    videos: 'You have used all your free videos this month.',
-    duration: 'Free videos are limited to 2 minutes.',
-    ai: 'AI editing is limited to 3 sessions/month on free plan.',
-    translation: 'Voice translation is a Pro feature.',
-    captions: 'You have used your free captions this week.',
-    chatbot: 'AI Chatbot is available for Pro users only.',
-    default: 'This feature requires a Pro account.'
-  };
-  const reasonEl = document.getElementById('gum-reason');
-  if (reasonEl) reasonEl.textContent = (reasons[reason] || reasons.default) + ' Upgrade to Pro — we respond within 1 hour.';
-  // Pre-fill email if logged in
-  if (window.currentUser) {
-    const emailEl = document.getElementById('gum-email');
-    const nameEl = document.getElementById('gum-name');
-    if (emailEl && !emailEl.value) emailEl.value = window.currentUser.email || '';
-    if (nameEl && !nameEl.value) nameEl.value = window.currentUser.displayName || '';
-  }
-  modal.style.display = 'flex';
-}
-
-function closeUpgradeModal() {
-  const modal = document.getElementById('global-upgrade-modal');
-  if (modal) modal.style.display = 'none';
-}
-
-async function submitGlobalUpgrade() {
-  const name = document.getElementById('gum-name')?.value?.trim();
-  const email = document.getElementById('gum-email')?.value?.trim();
-  const country = document.getElementById('gum-country')?.value;
-  const payment = document.getElementById('gum-payment')?.value;
-  const phone = document.getElementById('gum-phone')?.value?.trim();
-
-  if (!name || !email || !country || !payment) {
-    alert('Please fill all required fields');
-    return;
-  }
-
-  const btn = document.getElementById('gum-submit-btn');
-  if (btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
-
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-
-    await addDoc(collection(db, 'upgrade_requests'), {
-      name, email, country, payment, phone,
-      page: window.location.pathname,
-      userId: window.currentUser?.uid || 'anonymous',
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-
-    // Show success
-    document.getElementById('gum-form').innerHTML = `
-      <div style="text-align:center;padding:1rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
-        <div style="color:#74C69D;font-weight:900;font-size:1.1rem;margin-bottom:0.5rem;">Request Submitted!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">Check your email <strong style="color:#fff;">${email}</strong> — we'll respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</div>
-        <button onclick="closeUpgradeModal()" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Done</button>
-      </div>`;
-  } catch(e) {
-    if (btn) { btn.textContent = 'Send Request →'; btn.disabled = false; }
-    alert('Failed: ' + e.message);
-  }
-}
 
 window.downloadFlyer = async function(previewMode=false) {
   if (!window._lastFlyerBuild) { alert("Please build flyer first"); return; }
