@@ -7257,17 +7257,17 @@ async function generateAd() {
     const data = await res.json();
     if (!data.accepted) throw new Error('Not accepted');
 
-    // Poll
+    // Poll — show only what the backend actually reports. A previous version faked progress
+    // based on elapsed time and always displayed whichever was higher (real or fake), which
+    // meant a genuinely stalled or failed job still looked like it was climbing toward 95%
+    // instead of showing the real, stuck state.
     let done = false, attempts = 0;
-    const startTime = Date.now();
     const poll = setInterval(async () => {
       try {
         attempts++;
         const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
         const status = await st.json();
-        const elapsed = (Date.now() - startTime) / 1000;
-        const estimated = Math.min(5 + (elapsed / 180) * 90, 95);
-        const pct = Math.max(status.progress || 0, Math.floor(estimated));
+        const pct = status.progress || 0;
         document.getElementById('ad-bar').style.width = pct + '%';
         document.getElementById('ad-pct').textContent = pct + '%';
         document.getElementById('ad-stage').textContent = status.stage || 'Generating...';

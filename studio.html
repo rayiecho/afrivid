@@ -338,49 +338,6 @@ body::after{
 </head>
 <body>
 
-<!-- UPGRADE BANNER - shows for free users only -->
-<div id="upgrade-banner" style="display:none;background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05));border-bottom:1px solid rgba(245,166,35,0.2);padding:0.6rem 1.5rem;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-  <div style="display:flex;align-items:center;gap:0.75rem;">
-    <span style="color:#F5A623;font-size:0.85rem;">⚡</span>
-    <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-family:'Syne',sans-serif;">You're on the <strong style="color:#fff;">Free Plan</strong> — <span id="banner-usage">3 videos left</span> this month</span>
-  </div>
-  <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.4rem 1.25rem;border-radius:20px;font-weight:900;text-decoration:none;font-size:0.78rem;font-family:'Syne',sans-serif;white-space:nowrap;">Upgrade to Pro $5/mo →</a>
-</div>
-<script>
-// Show banner for free users
-(function() {
-  function checkAndShowBanner() {
-    if (!window.currentUser) return;
-    setTimeout(async () => {
-      try {
-        const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-        const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-        const db = getFirestore(app);
-        const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
-        if (!snap.exists()) return;
-        const data = snap.data();
-        const plan = data.plan || 'beta';
-        if (plan === 'pro') return; // Hide for Pro users
-        const used = data.videosGenerated || 0;
-        const limit = data.betaLimit || 3;
-        const remaining = Math.max(0, limit - used);
-        const banner = document.getElementById('upgrade-banner');
-        const usage = document.getElementById('banner-usage');
-        if (banner) banner.style.display = 'flex';
-        if (usage) usage.textContent = `${remaining} video${remaining!==1?'s':''} left`;
-      } catch(e) {}
-    }, 2000);
-  }
-  document.addEventListener('DOMContentLoaded', () => {
-    const check = setInterval(() => {
-      if (window.currentUser) { clearInterval(check); checkAndShowBanner(); }
-    }, 500);
-    setTimeout(() => clearInterval(check), 10000);
-  });
-})();
-</script>
 <nav class="navbar">
   <a href="index.html" class="navbar-brand" style="text-decoration:none;">
     <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
@@ -407,7 +364,6 @@ body::after{
   <div class="topbar-right">
     <div class="user-info" id="user-info" style="display:none;">
       <div class="user-name" id="user-name" onclick="openProfile()" title="View profile">Loading...</div>
-      <div class="user-plan" id="user-plan"></div>
     </div>
     <button class="btn-signin" id="btn-signin" onclick="showLogin()">Sign In</button>
     <button class="btn-signout" id="btn-signout" style="display:none;" onclick="signOut()">Sign Out</button>
@@ -417,20 +373,10 @@ body::after{
 <div class="main">
 
   <!-- PAGE HEADER -->
-<div id="verify-banner" style="display:none;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:var(--radius-md);padding:0.75rem 1.25rem;margin-bottom:1rem;font-size:0.82rem;align-items:center;justify-content:space-between;gap:1rem;">
-  <span>⚠ Your email is not verified. Some features may be limited. <a href="index.html" style="color:#F5A623;">Verify now →</a></span>
-  <button onclick="this.parentNode.style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:1rem;">✕</button>
-</div>
 <div class="page-header">
     <div class="page-label">STUDIO</div>
     <h1 class="page-title">My AfriVid Studio</h1>
-    <p class="page-sub" id="page-sub">Browse sample content or sign in to see your own creations.</p>
-  </div>
-
-  <!-- LOGIN BANNER (shown to guests) -->
-  <div class="login-banner" id="login-banner">
-    <div class="login-banner-text"><strong>Sign in</strong> to save your videos, photos and designs here — and access them anytime.</div>
-    <button class="btn-login-banner" onclick="showLogin()">Sign In Free →</button>
+    <p class="page-sub" id="page-sub">Sign in to see your videos and designs here.</p>
   </div>
 
   <!-- QUICK TOOL ACCESS -->
@@ -447,376 +393,18 @@ body::after{
 
   <!-- FILTER TABS -->
   <div class="filter-tabs">
-    <button class="filter-tab active" onclick="filterContent('all')">All</button>
-    <button class="filter-tab" onclick="filterContent('video')">Videos</button>
-    <button class="filter-tab" onclick="filterContent('photo')">Photos</button>
-    <button class="filter-tab" onclick="filterContent('design')">Designs</button>
-    <button class="filter-tab" onclick="filterContent('mine')">My Files</button>
+    <button class="filter-tab active" onclick="filterContent('video')">Videos Created</button>
+    <button class="filter-tab" onclick="filterContent('design')">Designs Created</button>
   </div>
 
   <!-- USER FILES SECTION -->
-  <div class="studio-section" id="my-files-section" style="display:none;">
+  <div class="studio-section" id="my-files-section">
     <div class="section-header">
-      <div class="section-label">MY FILES</div>
+      <div class="section-label" id="my-files-label">VIDEOS CREATED</div>
       <div class="section-count" id="my-files-count">0 items</div>
     </div>
     <div class="content-grid" id="my-files-grid"></div>
   </div>
-
-  <!-- SAMPLE VIDEOS -->
-  <div class="studio-section" id="sample-videos-section">
-    <div class="section-header">
-      <div class="section-label">VIDEO TEMPLATES</div>
-      <div class="section-count">16 items</div>
-    </div>
-    <div class="content-grid">
-      <div class="content-card" onclick="previewItem('video','What is Leadership?')">
-        <div class="card-thumb">
-          <div class="thumb-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div class="card-type-badge badge-sample">SAMPLE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">What is Leadership?</div>
-          <div class="card-meta">60s · Slides style · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
-            <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-card" onclick="previewItem('video','Climate Change in Africa')">
-        <div class="card-thumb">
-          <div class="thumb-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div class="card-type-badge badge-sample">SAMPLE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Climate Change in Africa</div>
-          <div class="card-meta">90s · Cinematic style · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
-            <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-card" onclick="previewItem('video','Financial Literacy 101')">
-        <div class="card-thumb">
-          <div class="thumb-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div class="card-type-badge badge-sample">SAMPLE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Financial Literacy 101</div>
-          <div class="card-meta">120s · Whiteboard style · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
-            <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-card" onclick="previewItem('video','Health Tips for Africans')">
-        <div class="card-thumb">
-          <div class="thumb-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div class="card-type-badge badge-sample">SAMPLE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Health Tips for Africans</div>
-          <div class="card-meta">90s · Photo background · Swahili</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
-            <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-card" onclick="previewItem('video','How to Start a Business')">
-        <div class="card-thumb">
-          <div class="thumb-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div class="card-type-badge badge-sample">SAMPLE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">How to Start a Business</div>
-          <div class="card-meta">120s · Slides style · French</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
-            <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-card" onclick="previewItem('video','Digital Skills for Youth')">
-        <div class="card-thumb">
-          <div class="thumb-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div class="card-type-badge badge-sample">SAMPLE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Digital Skills for Youth</div>
-          <div class="card-meta">90s · Cinematic style · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="event.stopPropagation();useTemplate(this.closest('.content-card').querySelector('.card-title').textContent)">Use Template</button>
-            <button class="card-btn" onclick="event.stopPropagation();">Preview</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#1A0A00,#3D1A00);">
-          <div class="thumb-icon">💒</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">African Wedding Invitation</div>
-          <div class="card-meta">60s · Cameroon Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('African Wedding Invitation Video')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#050A14,#0D2B1A);">
-          <div class="thumb-icon">🎓</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Graduation Announcement</div>
-          <div class="card-meta">60s · Unite Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('University Graduation Announcement and Achievement')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#030818,#0A1628);">
-          <div class="thumb-icon">⛪</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Church Event Promotion</div>
-          <div class="card-meta">90s · Advert Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('Church Crusade and Revival Event Promotion')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#0A0F1E,#1A2A0A);">
-          <div class="thumb-icon">🏪</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Business Grand Opening</div>
-          <div class="card-meta">60s · Advert Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('Business Grand Opening Promotion and Announcement')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#050A14,#1A0A2A);">
-          <div class="thumb-icon">📱</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Product Launch Video</div>
-          <div class="card-meta">90s · Cameroon Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('Product Launch and Marketing Video for African Market')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#0D2B1A,#0A0F1E);">
-          <div class="thumb-icon">🌍</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">NGO Impact Report</div>
-          <div class="card-meta">120s · Unite Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('NGO Community Impact Report and Annual Results Africa')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#1A0A00,#2A1A00);">
-          <div class="thumb-icon">📚</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">School Fee Notice</div>
-          <div class="card-meta">60s · Cameroon Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('School Fee Notice and Academic Term Information')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#0A1628,#050A14);">
-          <div class="thumb-icon">💰</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Investment & Savings Tips</div>
-          <div class="card-meta">90s · Unite Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('Investment and Savings Tips for Young Africans')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#1A0030,#3D0080);">
-          <div class="thumb-icon">🎂</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Birthday Celebration Video</div>
-          <div class="card-meta">60s · Advert Slide · English</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('Birthday Celebration and Wishes Video')">Use Template</button>
-          </div>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-thumb" style="background:linear-gradient(135deg,#003080,#001A40);">
-          <div class="thumb-icon">🏥</div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Health Awareness Campaign</div>
-          <div class="card-meta">90s · Cameroon Slide · Swahili</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="useTemplate('Health Awareness and Disease Prevention Campaign Africa')">Use Template</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SAMPLE DESIGNS -->
-  <div class="studio-section" id="sample-designs-section">
-    <div class="section-header">
-      <div class="section-label">SAMPLE DESIGNS</div>
-      <div class="section-count">4 items</div>
-    </div>
-    <div class="content-grid">
-
-      <!-- TEMPLATE 1: Tech Event Poster -->
-      <div class="content-card">
-        <div class="card-thumb design" style="background:#050A14;overflow:hidden;padding:0;position:relative;">
-          <div style="position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(245,166,35,0.15),transparent 60%);"></div>
-          <div style="padding:12px;height:100%;display:flex;flex-direction:column;justify-content:space-between;position:relative;">
-            <div>
-              <div style="font-size:0.45rem;color:#F5A623;font-family:monospace;letter-spacing:2px;margin-bottom:4px;">YOUNG AFRICANS NETWORK</div>
-              <div style="font-size:0.85rem;font-weight:900;color:#fff;line-height:1.1;margin-bottom:3px;">TECH<br>SUMMIT<br>2026</div>
-              <div style="height:2px;background:#F5A623;width:24px;margin-bottom:4px;"></div>
-              <div style="font-size:0.4rem;color:rgba(255,255,255,0.5);font-family:monospace;">SAT 20 JUNE · KIGALI</div>
-            </div>
-            <div style="display:flex;gap:4px;">
-              <div style="flex:1;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:3px;padding:3px;text-align:center;"><div style="font-size:0.35rem;color:#F5A623;font-family:monospace;">AI</div></div>
-              <div style="flex:1;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:3px;padding:3px;text-align:center;"><div style="font-size:0.35rem;color:#F5A623;font-family:monospace;">TECH</div></div>
-              <div style="flex:1;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:3px;padding:3px;text-align:center;"><div style="font-size:0.35rem;color:#F5A623;font-family:monospace;">YOUTH</div></div>
-            </div>
-          </div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Tech Event Poster</div>
-          <div class="card-meta">800x1000 · Dark theme</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="window.location.href='design.html'">Use Template</button>
-            <button class="card-btn" onclick="window.location.href='design.html'">Customize</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEMPLATE 2: Business Flyer -->
-      <div class="content-card">
-        <div class="card-thumb design" style="background:#F5F0E8;overflow:hidden;padding:0;position:relative;">
-          <div style="height:5px;background:linear-gradient(90deg,#F5A623,#E8950F);"></div>
-          <div style="padding:10px;height:calc(100% - 5px);display:flex;flex-direction:column;justify-content:space-between;">
-            <div>
-              <div style="font-size:0.4rem;color:#F5A623;font-family:monospace;letter-spacing:2px;margin-bottom:3px;">PROFESSIONAL FLYER</div>
-              <div style="font-size:0.75rem;font-weight:900;color:#050A14;line-height:1.1;margin-bottom:4px;">BUSINESS<br>WORKSHOP</div>
-              <div style="font-size:0.38rem;color:#666;margin-bottom:6px;line-height:1.4;">Learn skills to grow your business in the digital economy</div>
-              <div style="display:flex;gap:3px;margin-bottom:4px;">
-                <div style="background:#050A14;color:#F5A623;padding:2px 5px;border-radius:2px;font-size:0.35rem;font-family:monospace;">20 JUNE</div>
-                <div style="background:#050A14;color:#fff;padding:2px 5px;border-radius:2px;font-size:0.35rem;font-family:monospace;">KIGALI</div>
-              </div>
-            </div>
-            <div style="background:#F5A623;padding:4px 8px;border-radius:3px;text-align:center;">
-              <div style="font-size:0.4rem;font-weight:900;color:#050A14;font-family:monospace;">REGISTER NOW</div>
-            </div>
-          </div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Business Flyer</div>
-          <div class="card-meta">800x1000 · Light theme</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="window.location.href='design.html'">Use Template</button>
-            <button class="card-btn" onclick="window.location.href='design.html'">Customize</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEMPLATE 3: Youth Conference -->
-      <div class="content-card">
-        <div class="card-thumb design" style="background:linear-gradient(135deg,#0D2B1A,#050A14);overflow:hidden;padding:0;position:relative;">
-          <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(116,198,157,0.15);"></div>
-          <div style="padding:12px;height:100%;display:flex;flex-direction:column;justify-content:space-between;position:relative;">
-            <div>
-              <div style="display:inline-block;background:#74C69D;color:#050A14;font-size:0.35rem;font-weight:900;padding:2px 6px;border-radius:10px;font-family:monospace;margin-bottom:4px;">YOUTH SUMMIT</div>
-              <div style="font-size:0.8rem;font-weight:900;color:#fff;line-height:1.1;margin-bottom:3px;">AFRICA<br>RISING<br>2026</div>
-              <div style="font-size:0.38rem;color:#74C69D;font-family:monospace;margin-bottom:6px;">Empowering the next generation</div>
-            </div>
-            <div>
-              <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><div style="width:3px;height:3px;border-radius:50%;background:#F5A623;"></div><div style="font-size:0.35rem;color:rgba(255,255,255,0.6);font-family:monospace;">500+ ATTENDEES</div></div>
-              <div style="display:flex;align-items:center;gap:4px;"><div style="width:3px;height:3px;border-radius:50%;background:#74C69D;"></div><div style="font-size:0.35rem;color:rgba(255,255,255,0.6);font-family:monospace;">20 SPEAKERS</div></div>
-            </div>
-          </div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Youth Conference</div>
-          <div class="card-meta">800x1000 · Green theme</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="window.location.href='design.html'">Use Template</button>
-            <button class="card-btn" onclick="window.location.href='design.html'">Customize</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEMPLATE 4: Product Launch -->
-      <div class="content-card">
-        <div class="card-thumb design" style="background:#0a1628;overflow:hidden;padding:0;position:relative;">
-          <div style="height:3px;background:linear-gradient(90deg,#6399ff,#F5A623,#74C69D);"></div>
-          <div style="padding:12px;display:flex;flex-direction:column;gap:6px;position:relative;">
-            <div style="font-size:0.4rem;color:#6399ff;font-family:monospace;letter-spacing:2px;">NEW LAUNCH</div>
-            <div style="font-size:0.8rem;font-weight:900;color:#fff;line-height:1.1;">PRODUCT<br>LAUNCH</div>
-            <div style="font-size:0.38rem;color:rgba(255,255,255,0.5);line-height:1.4;font-family:monospace;">Introducing the future of African technology</div>
-            <div style="display:flex;gap:3px;margin-top:2px;">
-              <div style="flex:1;height:20px;background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.3);border-radius:3px;display:flex;align-items:center;justify-content:center;"><div style="font-size:0.3rem;color:#6399ff;font-family:monospace;">FEATURE 1</div></div>
-              <div style="flex:1;height:20px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:3px;display:flex;align-items:center;justify-content:center;"><div style="font-size:0.3rem;color:#F5A623;font-family:monospace;">FEATURE 2</div></div>
-            </div>
-            <div style="background:linear-gradient(90deg,#6399ff,#F5A623);padding:3px 8px;border-radius:3px;text-align:center;">
-              <div style="font-size:0.38rem;font-weight:900;color:#fff;font-family:monospace;">GET EARLY ACCESS</div>
-            </div>
-          </div>
-          <div class="card-type-badge badge-sample">TEMPLATE</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">Product Launch</div>
-          <div class="card-meta">800x1000 · Blue theme</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="window.location.href='design.html'">Use Template</button>
-            <button class="card-btn" onclick="window.location.href='design.html'">Customize</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
 </div>
 
 <!-- LOGIN MODAL -->
@@ -871,7 +459,6 @@ function showAuthTab(a,b){ if(window._showAuthTab) window._showAuthTab(a,b); els
 function doSignIn(){ if(window._doSignIn) window._doSignIn(); else if(window['doSignIn']) window['doSignIn'](); }
 function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['doSignUp']) window['doSignUp'](); }
 function filterContent(a,b){ if(window._filterContent) window._filterContent(a,b); else if(window['filterContent']) window['filterContent'](a,b); }
-function previewItem(a,b){ if(window._previewItem) window._previewItem(a,b); else if(window['previewItem']) window['previewItem'](a,b); }
 function signOut(){ if(window._signOut) window._signOut(); else if(window['signOut']) window['signOut'](); }
 
 function openProfile(){
@@ -885,7 +472,6 @@ function openProfile(){
 }
 function closeProfile(){ if(window._closeProfile) window._closeProfile(); }
 function saveProfileName(){ if(window._saveProfileName) window._saveProfileName(); }
-function requestUpgrade(){ if(window._requestUpgrade) window._requestUpgrade(); }
 </script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -914,45 +500,28 @@ let currentUser = null;
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   if (user) {
-    // Check email verified
-    if (!user.emailVerified) {
-      // Show verification warning banner
-      const banner = document.getElementById('verify-banner');
-      if(banner) banner.style.display = 'flex';
-    }
     // Show user info
     document.getElementById('user-info').style.display = 'block';
     document.getElementById('btn-signin').style.display = 'none';
     document.getElementById('btn-signout').style.display = 'block';
-    document.getElementById('login-banner').style.display = 'none';
-    document.getElementById('my-files-section').style.display = 'block';
     const name = user.displayName || user.email.split('@')[0];
     document.getElementById('user-name').textContent = name;
-    document.getElementById('page-sub').textContent = `Welcome back, ${name}. Your creations and sample content below.`;
+    document.getElementById('page-sub').textContent = `Welcome back, ${name}.`;
     // Load user files
     await loadUserFiles(user.uid);
-    // Real-time listener for user data
+    // Real-time listener for user data (keeps profile modal activity stats fresh)
     const ref = doc(db, 'studio_users', user.uid);
     onSnapshot(ref, (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        const used = data.videosGenerated || 0;
-        const limit = data.betaLimit || 3;
-        const plan = data.plan || 'beta';
-        const isPro = plan === 'pro';
-        document.getElementById('user-plan').textContent = isPro ? 'Pro — Unlimited' : `${Math.max(0,limit-used)} of ${limit} videos left`;
-        // Update profile if open
-        if(document.getElementById('profile-overlay')?.classList.contains('active')) {
-          if(window._openProfile) window._openProfile();
-        }
+      if (snap.exists() && document.getElementById('profile-overlay')?.classList.contains('active')) {
+        if(window._openProfile) window._openProfile();
       }
     });
   } else {
     document.getElementById('user-info').style.display = 'none';
     document.getElementById('btn-signin').style.display = 'block';
     document.getElementById('btn-signout').style.display = 'none';
-    document.getElementById('login-banner').style.display = 'flex';
-    document.getElementById('my-files-section').style.display = 'none';
+    document.getElementById('page-sub').textContent = 'Sign in to see your videos and designs here.';
+    loadUserFiles(null);
   }
 });
 
@@ -1013,9 +582,45 @@ function renderContentCard(docId, data, type, collectionName) {
   </div>`;
 }
 
-async function loadUserFiles(uid) {
+let studioTab = 'video';
+let cachedVideos = [];
+let cachedDesigns = [];
+
+function renderStudioTab() {
   const grid = document.getElementById('my-files-grid');
   const count = document.getElementById('my-files-count');
+  const label = document.getElementById('my-files-label');
+  const items = studioTab === 'video' ? cachedVideos : cachedDesigns;
+  label.textContent = studioTab === 'video' ? 'VIDEOS CREATED' : 'DESIGNS CREATED';
+  count.textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+
+  if (!currentUser) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <div class="empty-icon">${studioTab === 'video' ? '🎬' : '🎨'}</div>
+      <div class="empty-title">Sign in to see your ${studioTab === 'video' ? 'videos' : 'designs'}</div>
+      <div class="empty-sub">Your creations are saved to your account and shown here.</div>
+      <button class="empty-btn" onclick="showLogin()" style="border:none;cursor:pointer;">Sign In Free →</button>
+    </div>`;
+    return;
+  }
+
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <div class="empty-icon">${studioTab === 'video' ? '🎬' : '🎨'}</div>
+      <div class="empty-title">No ${studioTab === 'video' ? 'videos' : 'designs'} yet</div>
+      <div class="empty-sub">${studioTab === 'video' ? 'Create your first video' : 'Design something'} — it will appear here.</div>
+      <a href="${studioTab === 'video' ? 'create.html' : 'design.html'}" class="empty-btn">${studioTab === 'video' ? 'Create Your First Video →' : 'Start Designing →'}</a>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map(d => renderContentCard(d.id, d.data(), studioTab, studioTab === 'video' ? 'studio_videos' : 'studio_designs')).join('');
+}
+
+async function loadUserFiles(uid) {
+  const grid = document.getElementById('my-files-grid');
+  if (!uid) { cachedVideos = []; cachedDesigns = []; renderStudioTab(); return; }
+
   grid.innerHTML = Array.from({length:3}).map(() => `<div class="skeleton-card">
     <div class="skeleton-thumb"></div>
     <div class="skeleton-line"></div>
@@ -1023,30 +628,13 @@ async function loadUserFiles(uid) {
   </div>`).join('');
 
   try {
-    const [videos, photos, designs] = await Promise.all([
+    const [videos, designs] = await Promise.all([
       fetchOwnedDocs('studio_videos', uid),
-      fetchOwnedDocs('studio_photos', uid),
       fetchOwnedDocs('studio_designs', uid),
     ]);
-
-    const total = videos.length + photos.length + designs.length;
-    count.textContent = `${total} item${total !== 1 ? 's' : ''}`;
-
-    if (total === 0) {
-      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
-        <div class="empty-icon">🎬</div>
-        <div class="empty-title">No files yet</div>
-        <div class="empty-sub">Create your first video, edit a photo or design something — it will appear here.</div>
-        <a href="create.html" class="empty-btn">Create Your First Video →</a>
-      </div>`;
-      return;
-    }
-
-    const videoCards = videos.map(d => renderContentCard(d.id, d.data(), 'video', 'studio_videos'));
-    const photoCards = photos.map(d => renderContentCard(d.id, d.data(), 'photo', 'studio_photos'));
-    const designCards = designs.map(d => renderContentCard(d.id, d.data(), 'design', 'studio_designs'));
-
-    grid.innerHTML = [...videoCards, ...photoCards, ...designCards].join('');
+    cachedVideos = videos;
+    cachedDesigns = designs;
+    renderStudioTab();
   } catch(e) {
     console.error('Error loading files:', e);
     grid.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
@@ -1054,7 +642,7 @@ async function loadUserFiles(uid) {
 }
 
 window.deleteStudioItem = async function(collectionName, docId) {
-  const allowed = ['studio_videos', 'studio_photos', 'studio_designs'];
+  const allowed = ['studio_videos', 'studio_designs'];
   if (!allowed.includes(collectionName)) return;
   if (!confirm('Delete this item from Studio? This cannot be undone.')) return;
   try {
@@ -1114,45 +702,11 @@ window.doSignUp = async function() {
 window.signOut = async function() {
   await fbSignOut(auth);
 }
-// Sample sections (Video Templates / Design Templates) only ever hold one type each, so a
-// whole-section toggle is correct for them. My Files mixes all types in one grid, so it needs
-// per-card filtering instead — the old whole-section toggle is why selecting "Photos" used to
-// hide every section (there's no "sample photos" section) and show a blank page.
 window.filterContent = function(type) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   if (event && event.target) event.target.classList.add('active');
-  const videoSec = document.getElementById('sample-videos-section');
-  const designSec = document.getElementById('sample-designs-section');
-  const mySec = document.getElementById('my-files-section');
-
-  if (type === 'mine') {
-    videoSec.style.display = 'none';
-    designSec.style.display = 'none';
-    if (currentUser) { mySec.style.display = 'block'; filterCardsByType(mySec, 'all'); }
-    else showLogin();
-    return;
-  }
-
-  videoSec.style.display = (type === 'all' || type === 'video') ? 'block' : 'none';
-  designSec.style.display = (type === 'all' || type === 'design') ? 'block' : 'none';
-
-  if (currentUser) {
-    mySec.style.display = 'block';
-    filterCardsByType(mySec, type);
-  } else {
-    mySec.style.display = 'none';
-  }
-}
-
-function filterCardsByType(section, type) {
-  section.querySelectorAll('.content-card[data-item-type]').forEach(c => {
-    c.style.display = (type === 'all' || c.dataset.itemType === type) ? '' : 'none';
-  });
-}
-window.previewItem = function(type, title) {
-  if (type === 'video') useTemplate(title);
-  else if (type === 'photo') window.location.href = 'photo.html';
-  else if (type === 'design') window.location.href = 'design.html';
+  studioTab = type;
+  renderStudioTab();
 }
 
 // playStudioVideo / openDesignInEditor / openPhotoInEditor / downloadStudioItem are defined
@@ -1180,30 +734,11 @@ window._openProfile = async function() {
     const snap = await getDoc(doc(db,'studio_users',user.uid));
     if(snap.exists()) {
       const data = snap.data();
-      const plan = data.plan || 'beta';
-      const used = data.videosGenerated || 0;
-      const limit = data.betaLimit || 3;
       const joined = data.createdAt?.toDate?.()?.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) || '—';
-      document.getElementById('profile-videos').textContent = used;
+      document.getElementById('profile-videos').textContent = data.videosGenerated || 0;
       document.getElementById('profile-photos').textContent = data.photosEdited || 0;
       document.getElementById('profile-designs').textContent = data.designsCreated || 0;
       document.getElementById('profile-joined').textContent = joined;
-      if(plan === 'pro') {
-        document.getElementById('profile-plan-badge').className = 'plan-badge plan-pro';
-        document.getElementById('profile-plan-name').textContent = 'Pro';
-        document.getElementById('profile-beta-box').style.display = 'none';
-        document.getElementById('profile-pro-box').style.display = 'block';
-        document.getElementById('profile-remaining').textContent = 'Unlimited';
-        document.getElementById('profile-remaining').style.color = '#74C69D';
-      } else {
-        document.getElementById('profile-plan-badge').className = 'plan-badge plan-beta';
-        document.getElementById('profile-plan-name').textContent = 'Beta';
-        document.getElementById('profile-beta-box').style.display = 'block';
-        document.getElementById('profile-pro-box').style.display = 'none';
-        const remaining = Math.max(0, limit - used);
-        document.getElementById('profile-remaining').textContent = remaining + ' of ' + limit;
-        document.getElementById('profile-remaining').style.color = remaining > 3 ? '#F5A623' : '#E63329';
-      }
     }
   } catch(e) { console.error('Profile error:', e); }
 };
@@ -1233,10 +768,6 @@ window._saveProfileName = async function() {
   }
 };
 
-window._requestUpgrade = function() {
-  showUpgradeModal('videos');
-};
-
 </script>
 
 <!-- PROFILE MODAL -->
@@ -1251,26 +782,6 @@ window._requestUpgrade = function() {
     </div>
     <div class="profile-body">
 
-      <!-- PLAN -->
-      <div class="profile-section">
-        <div class="profile-section-title">CURRENT PLAN</div>
-        <div id="profile-plan-badge" class="plan-badge plan-beta">
-          <span class="plan-dot"></span>
-          <span id="profile-plan-name">Beta</span>
-        </div>
-        <div id="profile-beta-box" style="margin-top:0.75rem;">
-          <div class="upgrade-box">
-            <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:0.5rem;">Upgrade to Pro</div>
-            <div class="upgrade-price">$5<span>/month</span></div>
-            <div style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:0.4rem;margin-bottom:0.75rem;">Unlimited videos · All tools · Priority support</div>
-            <button style="width:100%;background:#74C69D;color:#000;border:none;padding:0.6rem;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;" onclick="showUpgradeModal('videos')">Upgrade to Pro →</button>
-          </div>
-        </div>
-        <div id="profile-pro-box" style="display:none;margin-top:0.75rem;">
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">✅ Full access · All features unlocked</div>
-        </div>
-      </div>
-
       <!-- STATS -->
       <div class="profile-section">
         <div class="profile-section-title">YOUR ACTIVITY</div>
@@ -1278,7 +789,6 @@ window._requestUpgrade = function() {
         <div class="stat-row"><span class="stat-row-label">Photos edited</span><span class="stat-row-value" id="profile-photos">0</span></div>
         <div class="stat-row"><span class="stat-row-label">Designs created</span><span class="stat-row-value" id="profile-designs">0</span></div>
         <div class="stat-row"><span class="stat-row-label">Member since</span><span class="stat-row-value" id="profile-joined">—</span></div>
-        <div class="stat-row"><span class="stat-row-label">Videos remaining</span><span class="stat-row-value" id="profile-remaining" style="color:#F5A623;">—</span></div>
       </div>
 
       <!-- EDIT NAME -->
@@ -1440,253 +950,12 @@ window._showToast = showToast;
     </div>
     © 2026 AfriVid Studio
 </div>
-<script src="limits.js"></script>
-
-<script>
-// AfriVid Limits UX — show countdown and usage progress
-window.showLimitsUX = async function() {
-  if (!window.currentUser) return;
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
-    if (!snap.exists()) return;
-    const data = snap.data();
-    if (data.plan === 'pro') return;
-
-    const now = new Date();
-    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
-    
-    // Get usage
-    const videoUsed = data[`${monthKey}_creator_video`] || data.videosGenerated || 0;
-    const aiUsed = data[`${monthKey}_aieditor_session`] || 0;
-    const transUsed = data[`${monthKey}_aieditor_translate`] || 0;
-    const videoMax = data.custom_creator_video_limit || 3;
-    const aiMax = 3;
-    const transMax = 3;
-
-    // Calculate reset date
-    const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    const daysLeft = Math.ceil((resetDate - now) / (1000 * 60 * 60 * 24));
-    const resetStr = resetDate.toLocaleDateString('en-US', {month:'long', day:'numeric'});
-
-    // Build UX panel
-    const panel = document.getElementById('limits-ux-panel');
-    if (!panel) return;
-
-    const barColor = (used, max) => used >= max ? '#E63329' : used >= max-1 ? '#F5A623' : '#74C69D';
-    const pct = (used, max) => Math.min(100, Math.round(used/max*100));
-
-    panel.style.display = 'block';
-    panel.innerHTML = `
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:1rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
-        </div>
-        
-        <div style="margin-bottom:0.6rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Video Creator</span>
-            <span style="font-size:0.75rem;color:${barColor(videoUsed,videoMax)};">${videoUsed}/${videoMax}</span>
-          </div>
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
-            <div style="height:100%;width:${pct(videoUsed,videoMax)}%;background:${barColor(videoUsed,videoMax)};border-radius:2px;transition:width 0.3s;"></div>
-          </div>
-        </div>
-
-        <div style="margin-bottom:0.6rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">AI Editor</span>
-            <span style="font-size:0.75rem;color:${barColor(aiUsed,aiMax)};">${aiUsed}/${aiMax}</span>
-          </div>
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
-            <div style="height:100%;width:${pct(aiUsed,aiMax)}%;background:${barColor(aiUsed,aiMax)};border-radius:2px;transition:width 0.3s;"></div>
-          </div>
-        </div>
-
-        <div style="margin-bottom:0.75rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Voice Translation</span>
-            <span style="font-size:0.75rem;color:${barColor(transUsed,transMax)};">${transUsed}/${transMax}</span>
-          </div>
-          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
-            <div style="height:100%;width:${pct(transUsed,transMax)}%;background:${barColor(transUsed,transMax)};border-radius:2px;transition:width 0.3s;"></div>
-          </div>
-        </div>
-
-        ${(videoUsed >= videoMax-1 || aiUsed >= aiMax-1) ? `
-        <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.6rem 0.75rem;display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:0.75rem;color:#F5A623;">Running low! Upgrade for unlimited access.</span>
-          <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.7rem;font-weight:900;text-decoration:none;white-space:nowrap;">Upgrade →</a>
-        </div>` : ''}
-      </div>
-    `;
-  } catch(e) {}
-};
-
-// Auto-load on pages that have the panel
-document.addEventListener('DOMContentLoaded', () => {
-  const check = setInterval(() => {
-    if (window.currentUser) {
-      clearInterval(check);
-      setTimeout(showLimitsUX, 2000);
-    }
-  }, 500);
-  setTimeout(() => clearInterval(check), 15000);
-});
-</script>
 <script src="chatbot.js"></script>
 <script>
 if('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
   });
-}
-</script>
-
-<script>
-function showUpgradeForm() {
-  showUpgradeModal('videos');
-}
-</script>
-
-
-<!-- GLOBAL UPGRADE MODAL -->
-<div id="global-upgrade-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)closeUpgradeModal()">
-  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
-      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
-    </div>
-    <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
-    </div>
-    <div id="gum-form">
-      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
-          <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
-          <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
-          <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select your country</option>
-            <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
-            <option>Uganda</option><option>Tanzania</option><option>Ghana</option>
-            <option>South Africa</option><option>Ethiopia</option><option>Other</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
-          <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select payment method</option>
-            <option value="mpesa">M-Pesa</option>
-            <option value="mtn">MTN Mobile Money</option>
-            <option value="airtel">Airtel Money</option>
-            <option value="card">Debit/Credit Card</option>
-            <option value="bank">Bank Transfer</option>
-          </select>
-        </div>
-        <div id="gum-phone-wrap" style="display:none;">
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
-          <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-      </div>
-      <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-        <span style="color:#74C69D;">⏱</span>
-        <span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">We respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</span>
-      </div>
-      <div style="display:flex;gap:0.5rem;">
-        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Request →</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-function showUpgradeModal(reason) {
-  const modal = document.getElementById('global-upgrade-modal');
-  if (!modal) return;
-  // Set reason text
-  const reasons = {
-    videos: 'You have used all your free videos this month.',
-    duration: 'Free videos are limited to 2 minutes.',
-    ai: 'AI editing is limited to 3 sessions/month on free plan.',
-    translation: 'Voice translation is a Pro feature.',
-    captions: 'You have used your free captions this week.',
-    chatbot: 'AI Chatbot is available for Pro users only.',
-    default: 'This feature requires a Pro account.'
-  };
-  const reasonEl = document.getElementById('gum-reason');
-  if (reasonEl) reasonEl.textContent = (reasons[reason] || reasons.default) + ' Upgrade to Pro — we respond within 1 hour.';
-  // Pre-fill email if logged in
-  if (window.currentUser) {
-    const emailEl = document.getElementById('gum-email');
-    const nameEl = document.getElementById('gum-name');
-    if (emailEl && !emailEl.value) emailEl.value = window.currentUser.email || '';
-    if (nameEl && !nameEl.value) nameEl.value = window.currentUser.displayName || '';
-  }
-  modal.style.display = 'flex';
-}
-
-function closeUpgradeModal() {
-  const modal = document.getElementById('global-upgrade-modal');
-  if (modal) modal.style.display = 'none';
-}
-
-async function submitGlobalUpgrade() {
-  const name = document.getElementById('gum-name')?.value?.trim();
-  const email = document.getElementById('gum-email')?.value?.trim();
-  const country = document.getElementById('gum-country')?.value;
-  const payment = document.getElementById('gum-payment')?.value;
-  const phone = document.getElementById('gum-phone')?.value?.trim();
-
-  if (!name || !email || !country || !payment) {
-    alert('Please fill all required fields');
-    return;
-  }
-
-  const btn = document.getElementById('gum-submit-btn');
-  if (btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
-
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-
-    await addDoc(collection(db, 'upgrade_requests'), {
-      name, email, country, payment, phone,
-      page: window.location.pathname,
-      userId: window.currentUser?.uid || 'anonymous',
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-
-    // Show success
-    document.getElementById('gum-form').innerHTML = `
-      <div style="text-align:center;padding:1rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
-        <div style="color:#74C69D;font-weight:900;font-size:1.1rem;margin-bottom:0.5rem;">Request Submitted!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">Check your email <strong style="color:#fff;">${email}</strong> — we'll respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</div>
-        <button onclick="closeUpgradeModal()" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Done</button>
-      </div>`;
-  } catch(e) {
-    if (btn) { btn.textContent = 'Send Request →'; btn.disabled = false; }
-    alert('Failed: ' + e.message);
-  }
 }
 </script>
 

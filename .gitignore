@@ -13,3 +13,4 @@ tts_server.py
 images/*.mp4
 images/*.jpg
 images/*.png
+!images/hero-team.jpg
