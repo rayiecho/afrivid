@@ -108,263 +108,203 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* ── DESIGN TOKENS ── same system as create.html, for consistency across the app.
+   Brand colors are fixed; radius scale / glow technique / gradient / motion are new. */
+:root{
+  --bg:#050A14;
+  --surface:#0D1524;
+  --surface-2:#141F35;
+  --border:rgba(255,255,255,0.08);
+  --border-gold:rgba(245,166,35,0.18);
+  --text:#F8F9FC;
+  --text-muted:rgba(248,249,252,0.6);
+  --text-faint:rgba(248,249,252,0.35);
+  --gold:#F5A623;
+  --gold-dark:#E8931A;
+  --green:#74C69D;
+  --red:#E63329;
+  --gradient-gold:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  --gradient-accent:linear-gradient(135deg,var(--gold),var(--green));
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:16px;
+  --radius-full:9999px;
+  --glow-gold:0 0 20px rgba(245,166,35,.35),0 0 60px rgba(245,166,35,.15);
+  --glow-green:0 0 20px rgba(116,198,157,.35),0 0 60px rgba(116,198,157,.15);
+  --transition:all 0.2s ease;
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;min-height:100vh;overflow-x:hidden;}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
 
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+
 /* TOPBAR */
-.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,10,20,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .topbar-left{display:flex;align-items:center;gap:1rem;}
-.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
-.back-btn:hover{color:#F5A623;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
+.back-btn:hover{color:var(--gold);}
 .back-btn svg{width:16px;height:16px;}
-.topbar-divider{width:1px;height:20px;background:rgba(255,255,255,0.1);}
-.topbar-title{font-size:1rem;font-weight:800;color:#fff;}
-.topbar-title span{color:#F5A623;}
+.topbar-divider{width:1px;height:20px;background:var(--border);}
+.topbar-title{font-size:1rem;font-weight:800;color:var(--text);}
+.topbar-title span{color:var(--gold);}
 .topbar-right{display:flex;align-items:center;gap:1rem;}
 .user-info{text-align:right;}
-.user-name{font-size:0.82rem;font-weight:700;color:#fff;}
-.user-plan{font-size:0.68rem;color:#74C69D;font-family:'Space Mono',monospace;}
-.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#F5A623;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
-.btn-signin:hover{background:rgba(245,166,35,0.08);}
-.btn-signout{background:none;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:0.4rem 0.9rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;}
-.btn-signout:hover{border-color:#E63329;color:#E63329;}
+.user-name{font-size:0.82rem;font-weight:700;color:var(--text);}
+.user-plan{font-size:0.68rem;color:var(--green);font-family:'Space Mono',monospace;}
+.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:var(--gold);padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signin:hover{box-shadow:var(--glow-gold);}
+.btn-signout{background:none;border:1px solid var(--border);color:var(--text-faint);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout:hover{border-color:var(--red);color:var(--red);}
 
 /* MAIN */
 .main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 2rem 4rem;}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:2.5rem;}
-.page-label{font-size:0.68rem;color:#74C69D;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
-.page-title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:#fff;margin-bottom:0.5rem;}
-.page-sub{font-size:0.9rem;color:rgba(255,255,255,0.4);}
+.page-label{font-size:0.68rem;color:var(--green);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
+.page-title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:var(--text);margin-bottom:0.5rem;}
+.page-sub{font-size:0.9rem;color:var(--text-faint);}
 
 /* FILTER TABS */
 .filter-tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
-.filter-tab{padding:0.5rem 1.1rem;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:rgba(255,255,255,0.4);font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
-.filter-tab.active{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:#F5A623;}
-.filter-tab:hover:not(.active){border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);}
+.filter-tab{padding:0.5rem 1.1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:var(--text-faint);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
+.filter-tab.active{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:var(--gold);box-shadow:var(--glow-gold);}
+.filter-tab:hover:not(.active){border-color:rgba(255,255,255,0.15);color:var(--text-muted);}
 
 /* SECTION */
-.studio-section{margin-bottom:3rem;}
+.studio-section{margin-bottom:3rem;animation:slideUp 0.3s ease both;}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
-.section-label{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;}
-.section-count{font-size:0.72rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;}
+.section-label{font-size:0.68rem;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:2px;}
+.section-count{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
 
 /* GRID */
 .content-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
-.content-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;}
-.content-card:hover{border-color:rgba(245,166,35,0.2);transform:translateY(-3px);box-shadow:0 16px 32px rgba(0,0,0,0.3);}
-.card-thumb{aspect-ratio:16/9;background:linear-gradient(135deg,#0D1F35,#0A1628);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.content-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);cursor:pointer;}
+.content-card:hover{border-color:rgba(245,166,35,0.25);transform:translateY(-3px);box-shadow:var(--glow-gold);}
+.card-thumb{aspect-ratio:16/9;background:linear-gradient(135deg,var(--surface-2),var(--bg));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
 .card-thumb.design{aspect-ratio:1/1;}
 .card-thumb.photo{aspect-ratio:4/3;}
 .thumb-icon{opacity:0.3;}
-.card-type-badge{position:absolute;top:8px;left:8px;font-size:0.6rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:4px;font-family:'Space Mono',monospace;letter-spacing:0.5px;}
-.badge-video{background:rgba(245,166,35,0.2);color:#F5A623;border:1px solid rgba(245,166,35,0.3);}
-.badge-photo{background:rgba(116,198,157,0.2);color:#74C69D;border:1px solid rgba(116,198,157,0.3);}
+.card-type-badge{position:absolute;top:8px;left:8px;font-size:0.6rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:var(--radius-sm);font-family:'Space Mono',monospace;letter-spacing:0.5px;}
+.badge-video{background:rgba(245,166,35,0.2);color:var(--gold);border:1px solid rgba(245,166,35,0.3);}
+.badge-photo{background:rgba(116,198,157,0.2);color:var(--green);border:1px solid rgba(116,198,157,0.3);}
 .badge-design{background:rgba(99,153,255,0.2);color:#6399ff;border:1px solid rgba(99,153,255,0.3);}
-.badge-sample{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);}
+.badge-sample{background:rgba(255,255,255,0.1);color:var(--text-muted);border:1px solid rgba(255,255,255,0.1);}
 .card-body{padding:1rem;}
-.card-title{font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-meta{font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;}
+.card-title{font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-meta{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
 .card-actions{display:flex;gap:0.5rem;margin-top:0.75rem;}
-.card-btn{flex:1;padding:0.5rem;border-radius:7px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:rgba(255,255,255,0.5);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
-.card-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
-.card-btn.primary{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.2);color:#F5A623;}
+.card-btn{flex:1;padding:0.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
+.card-btn:hover{border-color:rgba(245,166,35,0.3);color:var(--gold);}
+.card-btn.primary{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.2);color:var(--gold);}
 .card-btn.primary:hover{background:rgba(245,166,35,0.2);}
+.card-btn.danger:hover{border-color:rgba(230,51,41,0.4);color:var(--red);}
 
 /* EMPTY STATE */
-.empty-state{text-align:center;padding:4rem 2rem;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.08);border-radius:16px;}
+.empty-state{text-align:center;padding:4rem 2rem;background:rgba(255,255,255,0.02);border:1px dashed var(--border);border-radius:var(--radius-lg);}
 .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.4;}
-.empty-title{font-size:1rem;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:0.5rem;}
-.empty-sub{font-size:0.82rem;color:rgba(255,255,255,0.25);margin-bottom:1.5rem;}
-.empty-btn{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.75rem 1.5rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;text-decoration:none;display:inline-block;transition:all 0.2s;}
-.empty-btn:hover{background:rgba(245,166,35,0.2);}
+.empty-title{font-size:1rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;}
+.empty-sub{font-size:0.82rem;color:var(--text-faint);margin-bottom:1.5rem;}
+.empty-btn{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:var(--gold);padding:0.75rem 1.5rem;border-radius:var(--radius-md);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;text-decoration:none;display:inline-block;transition:var(--transition);}
+.empty-btn:hover{background:rgba(245,166,35,0.2);box-shadow:var(--glow-gold);}
+
+/* SKELETON (loading state) */
+.skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.skeleton-thumb{aspect-ratio:16/9;background:linear-gradient(90deg,var(--surface) 25%,var(--surface-2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+.skeleton-line{height:10px;background:var(--surface-2);border-radius:var(--radius-sm);margin:1rem 1rem 0;}
+.skeleton-line.short{width:40%;margin-top:0.6rem;margin-bottom:1rem;}
 
 /* LOGIN PROMPT BANNER */
-.login-banner{background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.2);border-radius:14px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
-.login-banner-text{font-size:0.88rem;color:rgba(255,255,255,0.7);}
-.login-banner-text strong{color:#F5A623;}
-.btn-login-banner{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.6rem 1.5rem;border-radius:8px;font-weight:800;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
+.login-banner{background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(116,198,157,0.05));border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+.login-banner-text{font-size:0.88rem;color:var(--text-muted);}
+.login-banner-text strong{color:var(--gold);}
+.btn-login-banner{background:var(--gradient-gold);color:var(--bg);border:none;padding:0.6rem 1.5rem;border-radius:var(--radius-sm);font-weight:800;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-login-banner:hover{box-shadow:var(--glow-gold);}
 
 /* LOGIN MODAL */
 .modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
 .modal-overlay.active{display:flex;}
-.login-box{position:relative;z-index:1;width:100%;max-width:420px;}
+.login-box{position:relative;z-index:1;width:100%;max-width:420px;animation:slideUp 0.3s ease both;}
 .login-header{text-align:center;margin-bottom:2rem;}
-.login-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 1rem;}
-.login-title{font-size:1.4rem;font-weight:800;color:#fff;}
-.login-title span{color:#F5A623;}
-.login-card{background:rgba(17,17,17,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;backdrop-filter:blur(20px);}
-.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.75rem;}
-.auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
-.auth-tab.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
-.form-label{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
-.form-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:border-color 0.2s;}
+.login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:var(--bg);margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:var(--text);}
+.login-title span{color:var(--gold);}
+.login-card{background:rgba(13,21,36,0.95);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;backdrop-filter:blur(20px);}
+.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
+.auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
+.form-label{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
+.form-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
 .form-input:focus{border-color:rgba(245,166,35,0.5);}
-.btn-auth{width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.9rem;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;}
-.login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.82rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-auth:hover{box-shadow:var(--glow-gold);}
+.login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:var(--text-faint);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
 
-/* TOOL QUICK ACCESS */
-.quick-tools{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:2.5rem;}
-.quick-tool{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;text-align:center;text-decoration:none;transition:all 0.2s;display:block;}
-.quick-tool:hover{border-color:rgba(245,166,35,0.25);background:rgba(245,166,35,0.05);transform:translateY(-2px);}
-.quick-tool-icon{width:36px;height:36px;border-radius:10px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 0.6rem;}
-.quick-tool-name{font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.7);}
+/* TOOL QUICK ACCESS — 2 tools right now (Create, Design) while others are paused */
+.quick-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;margin-bottom:2.5rem;max-width:420px;}
+.quick-tool{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;text-align:center;text-decoration:none;transition:var(--transition);display:block;}
+.quick-tool:hover{border-color:rgba(245,166,35,0.25);background:rgba(245,166,35,0.05);transform:translateY(-2px);box-shadow:var(--glow-gold);}
+.quick-tool-icon{width:36px;height:36px;border-radius:var(--radius-md);background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 0.6rem;}
+.quick-tool-name{font-size:0.78rem;font-weight:700;color:var(--text-muted);}
 
-/* RESPONSIVE */
+/* RESPONSIVE — page-specific, only classes/IDs that actually exist on this page */
 @media(max-width:768px){
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 5rem;}
   .content-grid{grid-template-columns:1fr 1fr;}
-  .quick-tools{grid-template-columns:repeat(4,1fr);}
+  .quick-tools{grid-template-columns:repeat(2,1fr);max-width:none;}
   .login-banner{flex-direction:column;text-align:center;}
+  .navbar-badge{display:none;}
+  .page-title{font-size:1.6rem;}
+  .login-box,.profile-modal{width:95%;max-width:420px;}
 }
 @media(max-width:480px){
   .content-grid{grid-template-columns:1fr;}
-  .quick-tools{grid-template-columns:repeat(2,1fr);}
 }
 
-.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,10,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
-.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
+.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:var(--gold);padding:0.2rem 0.6rem;border-radius:var(--radius-full);font-family:'Space Mono',monospace;letter-spacing:1px;}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
 
 /* PROFILE MODAL */
 .profile-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:none;align-items:center;justify-content:center;}
 .profile-overlay.active{display:flex;}
-.profile-modal{background:#0d1f35;border:1px solid rgba(255,255,255,0.08);border-radius:16px;width:420px;max-width:95vw;overflow:hidden;}
-.profile-header{background:linear-gradient(135deg,#0a1628,#0d2040);padding:1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid rgba(255,255,255,0.06);}
-.profile-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#000;flex-shrink:0;}
+.profile-modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:420px;max-width:95vw;overflow:hidden;animation:slideUp 0.3s ease both;}
+.profile-header{background:linear-gradient(135deg,var(--bg),var(--surface-2));padding:1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);}
+.profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:var(--bg);flex-shrink:0;}
 .profile-info{flex:1;}
 .profile-name{font-size:1rem;font-weight:700;}
-.profile-email{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;margin-top:0.2rem;}
+.profile-email{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;margin-top:0.2rem;}
 .profile-body{padding:1.25rem;}
 .profile-section{margin-bottom:1.25rem;}
-.profile-section-title{font-size:0.6rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
-.plan-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:8px;font-size:0.82rem;font-weight:700;}
-.plan-beta{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;}
-.plan-pro{background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;}
+.profile-section-title{font-size:0.6rem;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.plan-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:700;}
+.plan-beta{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--gold);}
+.plan-pro{background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:var(--green);}
 .plan-dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
 .stat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem;}
 .stat-row:last-child{border-bottom:none;}
-.stat-row-label{color:rgba(255,255,255,0.4);}
+.stat-row-label{color:var(--text-faint);}
 .stat-row-value{font-weight:600;font-family:'Space Mono',monospace;font-size:0.75rem;}
-.profile-input{width:100%;background:#1a2a3a;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.65rem 0.9rem;border-radius:8px;font-size:0.85rem;font-family:'Syne',sans-serif;outline:none;margin-top:0.4rem;}
+.profile-input{width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.65rem 0.9rem;border-radius:var(--radius-sm);font-size:0.85rem;font-family:'Syne',sans-serif;outline:none;margin-top:0.4rem;transition:var(--transition);}
 .profile-input:focus{border-color:rgba(245,166,35,0.4);}
-.profile-actions{display:flex;gap:0.75rem;padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.06);}
-.btn-profile-save{flex:1;background:#F5A623;color:#000;border:none;padding:0.65rem;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
-.btn-profile-close{background:transparent;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.65rem 1rem;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
-.btn-signout-profile{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.65rem 1rem;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
-.upgrade-box{background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:1rem;margin-top:0.75rem;}
-.upgrade-price{font-size:1.5rem;font-weight:800;color:#74C69D;}
-.upgrade-price span{font-size:0.75rem;color:rgba(255,255,255,0.4);font-weight:400;}
+.profile-actions{display:flex;gap:0.75rem;padding:1rem 1.25rem;border-top:1px solid var(--border);}
+.btn-profile-save{flex:1;background:var(--gold);color:var(--bg);border:none;padding:0.65rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-profile-save:hover{box-shadow:var(--glow-gold);}
+.btn-profile-close{background:transparent;border:1px solid var(--border);color:var(--text-faint);padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-signout-profile{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:var(--red);padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.upgrade-box{background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:var(--radius-md);padding:1rem;margin-top:0.75rem;}
+.upgrade-price{font-size:1.5rem;font-weight:800;color:var(--green);}
+.upgrade-price span{font-size:0.75rem;color:var(--text-faint);font-weight:400;}
 .user-name{cursor:pointer;}
-.user-name:hover{color:#F5A623;}
-
-/* ── COMPREHENSIVE MOBILE FIX ── */
-@media(max-width:768px){
-  /* Typography */
-  body{font-size:14px;}
-  
-  /* Navbar */
-  .navbar{padding:0.6rem 1rem;}
-  .navbar-badge{display:none;}
-  .topbar{padding:0.6rem 1rem;flex-wrap:wrap;gap:0.5rem;}
-  .topbar-title{font-size:0.85rem;}
-  
-  /* Layouts - stack everything */
-  .design-layout,
-  .editor-layout,
-  .photo-studio,
-  .photo-left,
-  .studio-layout{
-    grid-template-columns:1fr !important;
-    gap:0.75rem;
-  }
-  
-  /* Sidebar goes below canvas on mobile */
-  .sidebar-panel,
-  .studio-left,
-  .photo-left{
-    order:2;
-  }
-  
-  /* Canvas first on mobile */
-  .canvas-panel,
-  .photo-center,
-  .studio-center{
-    order:1;
-  }
-  
-  /* Cards */
-  .card{padding:1rem;}
-  
-  /* Buttons */
-  .btn{padding:0.6rem 1rem;font-size:0.8rem;}
-  .btn-row{flex-direction:column;gap:0.5rem;}
-  .btn-row .btn{width:100%;}
-  
-  /* Quick buttons wrap */
-  .photo-quick-btn{
-    padding:0.4rem 0.5rem;
-    font-size:0.68rem;
-  }
-  
-  /* Template grid */
-  .template-grid{grid-template-columns:1fr 1fr;}
-  
-  /* Content grid */
-  .content-grid{grid-template-columns:1fr 1fr !important;}
-  
-  /* Forms */
-  .form-grid{grid-template-columns:1fr;}
-  .form-group.full{grid-column:span 1;}
-  
-  /* Video canvas */
-  #video-canvas{max-height:280px !important;}
-  
-  /* Design canvas */
-  #design-canvas{max-height:350px !important;}
-  
-  /* Hide non-essential on mobile */
-  .topbar-divider{display:none;}
-  
-  /* Main padding */
-  .main{padding:1rem 0.75rem 5rem !important;}
-  
-  /* Modals full screen */
-  .modal-box,
-  .login-box{
-    width:95% !important;
-    max-width:100% !important;
-    margin:0.5rem;
-    padding:1.25rem !important;
-  }
-
-  /* Quick tools grid */
-  .quick-tools{grid-template-columns:repeat(2,1fr) !important;}
-  
-  /* Page header */
-  .page-title{font-size:1.6rem !important;}
-  .page-sub{font-size:0.8rem !important;}
-
-  /* Tool tabs wrap */
-  .photo-tool-tabs{flex-wrap:wrap;}
-  .photo-tool-tab{font-size:0.68rem;padding:0.35rem 0.6rem;}
-}
-
-@media(max-width:480px){
-  .content-grid{grid-template-columns:1fr !important;}
-  .quick-tools{grid-template-columns:repeat(2,1fr) !important;}
-  .template-grid{grid-template-columns:1fr 1fr;}
-  .page-title{font-size:1.3rem !important;}
-  #video-canvas{max-height:220px !important;}
-}
-
+.user-name:hover{color:var(--gold);}
 
 /* African background images */
 body::after{
@@ -399,7 +339,7 @@ body::after{
 <body>
 
 <!-- UPGRADE BANNER - shows for free users only -->
-<div id="upgrade-banner" style="display:none;background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05));border-bottom:1px solid rgba(245,166,35,0.2);padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+<div id="upgrade-banner" style="display:none;background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05));border-bottom:1px solid rgba(245,166,35,0.2);padding:0.6rem 1.5rem;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
   <div style="display:flex;align-items:center;gap:0.75rem;">
     <span style="color:#F5A623;font-size:0.85rem;">⚡</span>
     <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-family:'Syne',sans-serif;">You're on the <strong style="color:#fff;">Free Plan</strong> — <span id="banner-usage">3 videos left</span> this month</span>
@@ -477,10 +417,7 @@ body::after{
 <div class="main">
 
   <!-- PAGE HEADER -->
-</a>
-    <a href="index.html" style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
-  </div>
-<div id="verify-banner" style="display:none;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:10px;padding:0.75rem 1.25rem;margin-bottom:1rem;font-size:0.82rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+<div id="verify-banner" style="display:none;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:var(--radius-md);padding:0.75rem 1.25rem;margin-bottom:1rem;font-size:0.82rem;align-items:center;justify-content:space-between;gap:1rem;">
   <span>⚠ Your email is not verified. Some features may be limited. <a href="index.html" style="color:#F5A623;">Verify now →</a></span>
   <button onclick="this.parentNode.style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:1rem;">✕</button>
 </div>
@@ -523,7 +460,6 @@ body::after{
       <div class="section-label">MY FILES</div>
       <div class="section-count" id="my-files-count">0 items</div>
     </div>
-    <div id="library-grid" style="display:none;"></div>
     <div class="content-grid" id="my-files-grid"></div>
   </div>
 
@@ -531,7 +467,7 @@ body::after{
   <div class="studio-section" id="sample-videos-section">
     <div class="section-header">
       <div class="section-label">VIDEO TEMPLATES</div>
-      <div class="section-count">6 items</div>
+      <div class="section-count">16 items</div>
     </div>
     <div class="content-grid">
       <div class="content-card" onclick="previewItem('video','What is Leadership?')">
@@ -937,9 +873,6 @@ function doSignUp(){ if(window._doSignUp) window._doSignUp(); else if(window['do
 function filterContent(a,b){ if(window._filterContent) window._filterContent(a,b); else if(window['filterContent']) window['filterContent'](a,b); }
 function previewItem(a,b){ if(window._previewItem) window._previewItem(a,b); else if(window['previewItem']) window['previewItem'](a,b); }
 function signOut(){ if(window._signOut) window._signOut(); else if(window['signOut']) window['signOut'](); }
-function sendLibraryToEditor(a,b){ if(window._sendLibraryToEditor) window._sendLibraryToEditor(a,b); else if(window['sendLibraryToEditor']) window['sendLibraryToEditor'](a,b); }
-function downloadFromLibrary(a,b){ if(window._downloadFromLibrary) window._downloadFromLibrary(a,b); else if(window['downloadFromLibrary']) window['downloadFromLibrary'](a,b); }
-function deleteFromLibrary(a,b){ if(window._deleteFromLibrary) window._deleteFromLibrary(a,b); else if(window['deleteFromLibrary']) window['deleteFromLibrary'](a,b); }
 
 function openProfile(){
   var overlay = document.getElementById('profile-overlay');
@@ -985,7 +918,7 @@ onAuthStateChanged(auth, async (user) => {
     if (!user.emailVerified) {
       // Show verification warning banner
       const banner = document.getElementById('verify-banner');
-      if(banner) banner.style.display = 'block';
+      if(banner) banner.style.display = 'flex';
     }
     // Show user info
     document.getElementById('user-info').style.display = 'block';
@@ -1023,18 +956,80 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+// Fetches a collection matching either `userId` or `uid` as the owner field — different
+// pages in the app write different field names for the same purpose, so querying only one
+// silently hid some users' real content. Merges and dedupes by doc id.
+async function fetchOwnedDocs(collectionName, uid) {
+  const [byUserId, byUid] = await Promise.all([
+    getDocs(query(collection(db, collectionName), where('userId','==',uid), orderBy('createdAt','desc'))).catch(() => ({docs:[]})),
+    getDocs(query(collection(db, collectionName), where('uid','==',uid), orderBy('createdAt','desc'))).catch(() => ({docs:[]})),
+  ]);
+  const seen = new Map();
+  [...byUserId.docs, ...byUid.docs].forEach(d => seen.set(d.id, d));
+  return [...seen.values()];
+}
+
+function renderContentCard(docId, data, type, collectionName) {
+  const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
+  const title = data.title || (type === 'video' ? 'Untitled Video' : type === 'photo' ? 'Edited Photo' : 'Design');
+  const icons = {
+    video: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+    photo: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#74C69D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+    design: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6399ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+  };
+  const thumbClass = type === 'photo' ? 'card-thumb photo' : type === 'design' ? 'card-thumb design' : 'card-thumb';
+  const thumbUrl = data.thumbnail || data.dataURL || '';
+  const thumbStyle = thumbUrl ? `background-image:url('${thumbUrl}');background-size:cover;background-position:center;` : '';
+
+  let mainAction, thumbClick = '';
+  if (type === 'video') {
+    const src = data.videoUrl || data.dataURL || '';
+    thumbClick = src ? `playStudioVideo('${docId}','${title.replace(/'/g,"\\'")}','${data.videoUrl||''}','${data.dataURL||''}')` : '';
+    mainAction = `<button class="card-btn primary" onclick="playStudioVideo('${docId}','${title.replace(/'/g,"\\'")}','${data.videoUrl||''}','${data.dataURL||''}')">▶ Play</button>
+      <button class="card-btn" onclick="useTemplate('${title.replace(/'/g,"\\'")}')">Recreate</button>
+      <button class="card-btn" onclick="downloadStudioItem('${src}','${title.replace(/'/g,"\\'")}','video')">⬇</button>`;
+  } else if (type === 'photo') {
+    thumbClick = data.dataURL ? `viewPhoto('${docId}')` : '';
+    mainAction = `<button class="card-btn primary" onclick="openPhotoInEditor('${docId}','${data.dataURL||''}')">✏ Edit</button>
+      <button class="card-btn" onclick="downloadStudioItem('${data.dataURL||''}','${title.replace(/'/g,"\\'")}','photo')">⬇</button>`;
+  } else {
+    mainAction = `<button class="card-btn primary" onclick="openDesignInEditor('${docId}','${data.dataURL||''}')">✏ Edit</button>
+      <button class="card-btn" onclick="downloadStudioItem('${data.dataURL||''}','${title.replace(/'/g,"\\'")}','png')">⬇</button>`;
+  }
+
+  return `<div class="content-card" data-item-type="${type}">
+    <div class="${thumbClass}" style="${thumbStyle}" ${thumbClick ? `onclick="${thumbClick}"` : ''}>
+      ${!thumbUrl ? `<div class="thumb-icon">${icons[type]}</div>` : (type === 'video' ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);"><svg width="40" height="40" viewBox="0 0 24 24" fill="white" opacity="0.8"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>' : '')}
+      <div class="card-type-badge badge-${type}">${type.toUpperCase()}</div>
+    </div>
+    <div class="card-body">
+      <div class="card-title">${title}</div>
+      <div class="card-meta">${type === 'video' && data.duration ? data.duration+'s · ' : ''}${date}</div>
+      <div class="card-actions">
+        ${mainAction}
+        <button class="card-btn danger" onclick="deleteStudioItem('${collectionName}','${docId}')" title="Delete">🗑</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 async function loadUserFiles(uid) {
+  const grid = document.getElementById('my-files-grid');
+  const count = document.getElementById('my-files-count');
+  grid.innerHTML = Array.from({length:3}).map(() => `<div class="skeleton-card">
+    <div class="skeleton-thumb"></div>
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line short"></div>
+  </div>`).join('');
+
   try {
-    // Load all three collections in parallel
-    const [videoSnap, photoSnap, designSnap] = await Promise.all([
-      getDocs(query(collection(db, 'studio_videos'), where('userId','==',uid), orderBy('createdAt','desc'))),
-      getDocs(query(collection(db, 'studio_photos'), where('userId','==',uid), orderBy('createdAt','desc'))),
-      getDocs(query(collection(db, 'studio_designs'), where('userId','==',uid), orderBy('createdAt','desc')))
+    const [videos, photos, designs] = await Promise.all([
+      fetchOwnedDocs('studio_videos', uid),
+      fetchOwnedDocs('studio_photos', uid),
+      fetchOwnedDocs('studio_designs', uid),
     ]);
 
-    const grid = document.getElementById('my-files-grid');
-    const count = document.getElementById('my-files-count');
-    const total = videoSnap.size + photoSnap.size + designSnap.size;
+    const total = videos.length + photos.length + designs.length;
     count.textContent = `${total} item${total !== 1 ? 's' : ''}`;
 
     if (total === 0) {
@@ -1047,71 +1042,28 @@ async function loadUserFiles(uid) {
       return;
     }
 
-    // Render videos
-    const videoCards = videoSnap.docs.map(d => {
-      const data = d.data();
-      const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
-      return `<div class="content-card">
-        <div class="card-thumb" style="${data.thumbnail ? 'background-image:url('+data.thumbnail+');background-size:cover;background-position:center;' : ''}" onclick="${data.videoUrl||data.dataURL ? 'playStudioVideo(\''+d.id+'\',\''+( data.title||'Video')+'\'  ,\''+( data.videoUrl||'')+'\'  ,\''+( data.dataURL||'')+'\')' : ''}">
-          ${!data.thumbnail ? '<div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>' : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);"><svg width="40" height="40" viewBox="0 0 24 24" fill="white" opacity="0.8"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'}
-          <div class="card-type-badge badge-video">VIDEO</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">${data.title || 'Untitled Video'}</div>
-          <div class="card-meta">${data.duration ? data.duration+'s · ' : ''}${date}</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="playStudioVideo('${d.id}','${data.title || 'Untitled Video'}','${data.videoUrl || ''}','${data.dataURL || ''}')">▶ Play</button>
-            <button class="card-btn" onclick="useTemplate('${data.title || ''}')">Recreate</button>
-            <button class="card-btn" onclick="downloadStudioItem('${data.videoUrl || data.dataURL || ''}','${data.title || 'video'}','video')">⬇</button>
-          </div>
-        </div>
-      </div>`;
-    });
-
-    // Render photos
-    const photoCards = photoSnap.docs.map(d => {
-      const data = d.data();
-      const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
-      return `<div class="content-card">
-        <div class="card-thumb photo" style="${data.thumbnail||data.dataURL ? 'background-image:url('+(data.thumbnail||data.dataURL)+');background-size:cover;background-position:center;cursor:pointer;' : ''}" onclick="${data.dataURL?'viewPhoto(\''+data.id+'\')':''}">
-          ${!data.dataURL ? '<div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#74C69D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>' : ''}
-          <div class="card-type-badge badge-photo">PHOTO</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">${data.title || 'Edited Photo'}</div>
-          <div class="card-meta">${date}</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="openPhotoInEditor('${d.id}','${data.dataURL || ''}')">✏ Edit</button>
-            <button class="card-btn" onclick="downloadStudioItem('${data.dataURL || ''}','${data.title || 'photo'}','photo')">⬇</button>
-          </div>
-        </div>
-      </div>`;
-    });
-
-    // Render designs
-    const designCards = designSnap.docs.map(d => {
-      const data = d.data();
-      const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
-      return `<div class="content-card">
-        <div class="card-thumb design">
-          <div class="thumb-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6399ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
-          <div class="card-type-badge badge-design">DESIGN</div>
-        </div>
-        <div class="card-body">
-          <div class="card-title">${data.title || 'Design'}</div>
-          <div class="card-meta">${date}</div>
-          <div class="card-actions">
-            <button class="card-btn primary" onclick="openDesignInEditor('${d.id}','${data.dataURL || ''}')">✏ Edit</button>
-            <button class="card-btn" onclick="downloadStudioItem('${data.dataURL || ''}','${data.title || 'design'}','png')">⬇</button>
-          </div>
-        </div>
-      </div>`;
-    });
+    const videoCards = videos.map(d => renderContentCard(d.id, d.data(), 'video', 'studio_videos'));
+    const photoCards = photos.map(d => renderContentCard(d.id, d.data(), 'photo', 'studio_photos'));
+    const designCards = designs.map(d => renderContentCard(d.id, d.data(), 'design', 'studio_designs'));
 
     grid.innerHTML = [...videoCards, ...photoCards, ...designCards].join('');
   } catch(e) {
     console.error('Error loading files:', e);
-    document.getElementById('my-files-grid').innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
+    grid.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
+  }
+}
+
+window.deleteStudioItem = async function(collectionName, docId) {
+  const allowed = ['studio_videos', 'studio_photos', 'studio_designs'];
+  if (!allowed.includes(collectionName)) return;
+  if (!confirm('Delete this item from Studio? This cannot be undone.')) return;
+  try {
+    await deleteDoc(doc(db, collectionName, docId));
+    if (window._showToast) window._showToast('✅ Deleted');
+    if (currentUser) await loadUserFiles(currentUser.uid);
+  } catch(e) {
+    if (window._showToast) window._showToast('[!] Delete failed: ' + e.message, 'error');
+    else alert('Delete failed: ' + e.message);
   }
 }
 
@@ -1162,17 +1114,40 @@ window.doSignUp = async function() {
 window.signOut = async function() {
   await fbSignOut(auth);
 }
+// Sample sections (Video Templates / Design Templates) only ever hold one type each, so a
+// whole-section toggle is correct for them. My Files mixes all types in one grid, so it needs
+// per-card filtering instead — the old whole-section toggle is why selecting "Photos" used to
+// hide every section (there's no "sample photos" section) and show a blank page.
 window.filterContent = function(type) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
   const videoSec = document.getElementById('sample-videos-section');
   const designSec = document.getElementById('sample-designs-section');
   const mySec = document.getElementById('my-files-section');
-  if (type === 'all') { videoSec.style.display='block'; designSec.style.display='block'; if(currentUser) mySec.style.display='block'; }
-  else if (type === 'video') { videoSec.style.display='block'; designSec.style.display='none'; mySec.style.display='none'; }
-  else if (type === 'design') { videoSec.style.display='none'; designSec.style.display='block'; mySec.style.display='none'; }
-  else if (type === 'photo') { videoSec.style.display='none'; designSec.style.display='none'; mySec.style.display='none'; }
-  else if (type === 'mine') { videoSec.style.display='none'; designSec.style.display='none'; if(currentUser) mySec.style.display='block'; else showLogin(); }
+
+  if (type === 'mine') {
+    videoSec.style.display = 'none';
+    designSec.style.display = 'none';
+    if (currentUser) { mySec.style.display = 'block'; filterCardsByType(mySec, 'all'); }
+    else showLogin();
+    return;
+  }
+
+  videoSec.style.display = (type === 'all' || type === 'video') ? 'block' : 'none';
+  designSec.style.display = (type === 'all' || type === 'design') ? 'block' : 'none';
+
+  if (currentUser) {
+    mySec.style.display = 'block';
+    filterCardsByType(mySec, type);
+  } else {
+    mySec.style.display = 'none';
+  }
+}
+
+function filterCardsByType(section, type) {
+  section.querySelectorAll('.content-card[data-item-type]').forEach(c => {
+    c.style.display = (type === 'all' || c.dataset.itemType === type) ? '' : 'none';
+  });
 }
 window.previewItem = function(type, title) {
   if (type === 'video') useTemplate(title);
@@ -1180,165 +1155,11 @@ window.previewItem = function(type, title) {
   else if (type === 'design') window.location.href = 'design.html';
 }
 
-// Play video in modal
-window.playStudioVideo = function(id, title, videoUrl, dataURL) {
-  const src = videoUrl || dataURL || '';
-  if (!src) { alert('Video file not available. Try recreating it.'); return; }
-  
-  const modal = document.createElement('div');
-  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;';
-  modal.innerHTML = `
-    <div style="max-width:800px;width:100%;background:#0D1117;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <span style="color:#fff;font-weight:700;font-family:Syne,sans-serif;font-size:0.9rem;">${title}</span>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
-      </div>
-      <video src="${src}" controls style="width:100%;max-height:70vh;background:#000;" autoplay></video>
-      <div style="padding:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;">
-        <button onclick="downloadStudioItem('${src}','${title}','video')" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
-        <button onclick="useTemplate('${title}')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">🔄 Recreate</button>
-      </div>
-    </div>`;
-  document.body.appendChild(modal);
-}
-
-// Open design in editor
-window.openDesignInEditor = function(id, dataURL) {
-  if (dataURL) {
-    localStorage.setItem('afrivid_design_from_studio', JSON.stringify({
-      dataURL: dataURL,
-      timestamp: Date.now()
-    }));
-  }
-  window.location.href = 'design.html';
-}
-
-// Open photo in editor
-window.openPhotoInEditor = function(id, dataURL) {
-  if (dataURL) {
-    localStorage.setItem('afrivid_photo_work', JSON.stringify({
-      dataURL: dataURL,
-      timestamp: Date.now(),
-      fromStudio: true
-    }));
-  }
-  window.location.href = 'photo.html';
-}
-
-// Download any studio item
-window.downloadStudioItem = function(src, title, type) {
-  if (!src) { alert('File not available for download'); return; }
-  const a = document.createElement('a');
-  a.href = src;
-  const ext = type === 'video' ? 'mp4' : type === 'photo' ? 'jpg' : 'png';
-  a.download = (title || 'afrivid-export') + '.' + ext;
-  a.click();
-}
-
-
-// ---- LIBRARY FUNCTIONS ----
-function saveToLibrary(blob, title, duration) {
-  const reader = new FileReader();
-  reader.onload = function() {
-    const entry = {
-      id: Date.now(),
-      title: title,
-      duration: duration,
-      date: new Date().toLocaleDateString(),
-      size: (blob.size / 1024 / 1024).toFixed(1) + 'MB',
-      data: reader.result
-    };
-    videoLibrary.unshift(entry);
-    if (videoLibrary.length > 20) videoLibrary = videoLibrary.slice(0, 20);
-    try { localStorage.setItem('afrivid-library', JSON.stringify(videoLibrary)); } catch(e) {}
-    renderLibrary();
-  };
-  reader.readAsDataURL(blob);
-}
-
-function renderLibrary() {
-  const grid = document.getElementById('library-grid');
-  if (!grid) return;
-
-  // Reload from storage
-  try { videoLibrary = JSON.parse(localStorage.getItem('afrivid-library') || '[]'); } catch(e) {}
-
-  if (!videoLibrary.length) {
-    grid.innerHTML = `<div style="text-align:center;color:var(--muted);padding:4rem;grid-column:span 3;">
-      <div style="font-size:3rem;margin-bottom:1rem;">[books]</div>
-      <div style="font-family:var(--font-mono);font-size:0.82rem;">// Your library is empty</div>
-      <div style="font-size:0.78rem;margin-top:0.5rem;color:rgba(255,255,255,0.2);">Generated videos, designs and edited videos will appear here</div>
-    </div>`;
-    return;
-  }
-
-  const typeColors = { video: '#F5A623', design: '#74C69D', enhanced: '#9B8AE1' };
-  const typeLabels = { video: '[vid] Video', design: '[art] Design', enhanced: '[fix] Enhanced' };
-
-  grid.innerHTML = videoLibrary.map(v => `
-    <div style="background:var(--navy3);border:1px solid var(--border2);border-radius:14px;overflow:hidden;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-      
-      <!-- Preview -->
-      <div style="height:140px;background:var(--navy2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-        ${v.type === 'design' ? 
-          `<img src="${v.data}" style="width:100%;height:100%;object-fit:cover;">` :
-          `<video src="${v.data}" style="width:100%;height:100%;object-fit:cover;" muted></video>`
-        }
-        <div style="position:absolute;top:8px;left:8px;background:${typeColors[v.type]||'#F5A623'};color:#050A14;font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:50px;font-family:var(--font-mono);">${typeLabels[v.type]||'[vid] Video'}</div>
-        ${v.type !== 'design' ? `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;font-size:0.65rem;padding:2px 6px;border-radius:4px;font-family:var(--font-mono);">${v.duration ? v.duration+'s' : ''}</div>` : ''}
-      </div>
-
-      <!-- Info -->
-      <div style="padding:0.85rem;">
-        <div style="font-size:0.85rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.title}</div>
-        <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${v.date} · ${v.size}</div>
-        <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
-          <button onclick="downloadFromLibrary(${v.id})" style="flex:1;background:var(--gold);color:var(--navy);border:none;padding:0.5rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:var(--font-display);">Download</button>
-          ${v.type !== 'design' ? `<button onclick="sendLibraryToEditor(${v.id})" style="background:rgba(116,198,157,0.15);color:#74C69D;border:1px solid rgba(116,198,157,0.3);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.75rem;cursor:pointer;">Edit</button>` : ''}
-          <button onclick="deleteFromLibrary(${v.id})" style="background:rgba(230,51,41,0.1);color:var(--red);border:1px solid rgba(230,51,41,0.3);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.75rem;cursor:pointer;">[del]</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function sendLibraryToEditor(id) {
-  const entry = videoLibrary.find(v => v.id === id);
-  if (!entry) return;
-  fetch(entry.data)
-    .then(r => r.blob())
-    .then(blob => {
-      const url = URL.createObjectURL(blob);
-      switchTab('enhance');
-      setTimeout(() => {
-        const video = document.getElementById('original-video');
-        const enhancer = document.getElementById('enhancer-editor');
-        const uploadCard = document.getElementById('enhancer-upload-card');
-        if (video && enhancer && uploadCard) {
-          video.src = url;
-          video.load();
-          document.getElementById('enhance-filename').textContent = entry.title;
-          enhancer.style.display = 'block';
-          uploadCard.style.display = 'none';
-        }
-      }, 300);
-    });
-}
-
-function downloadFromLibrary(id) {
-  const entry = videoLibrary.find(v => v.id === id);
-  if (!entry) return;
-  const a = document.createElement('a');
-  a.href = entry.data;
-  a.download = `AfriVid-${entry.title.replace(/[^a-z0-9]/gi,'-')}.webm`;
-  a.click();
-}
-
-function deleteFromLibrary(id) {
-  videoLibrary = videoLibrary.filter(v => v.id !== id);
-  try { localStorage.setItem('afrivid-library', JSON.stringify(videoLibrary)); } catch(e) {}
-  renderLibrary();
-}
+// playStudioVideo / openDesignInEditor / openPhotoInEditor / downloadStudioItem are defined
+// once, below, in the plain (non-module) script — kept there since they don't need Firestore
+// access. (This file used to define each of them twice, here and again below; the second copy
+// silently won since it loaded later. Removed the dead first copies and the ~100-line unused
+// "library" block that referenced variables and page elements that don't exist on this page.)
 
 document.getElementById('login-modal').addEventListener('click', function(e) {
   if (e.target === this) hideLogin();
@@ -1591,27 +1412,18 @@ window.downloadStudioItem = function(src, title, type) {
   document.body.removeChild(a);
 }
 
-// Delete item from studio
-// Firestore Security Rules are the real enforcement (only the owner's uid or admin can delete) —
-// this allowlist just avoids handing an arbitrary collection name to deleteDoc from the client.
-const STUDIO_CONTENT_COLLECTIONS = ['studio_videos', 'studio_photos', 'studio_designs'];
-window.deleteStudioItem = function(collection, id) {
-  if (!STUDIO_CONTENT_COLLECTIONS.includes(collection)) return;
-  if (!confirm('Delete this item from Studio?')) return;
-  if (window.db && window.deleteDoc && window.doc) {
-    deleteDoc(doc(db, collection, id))
-      .then(() => { showToast('✅ Deleted'); loadMyFiles(); })
-      .catch(e => showToast('[!] Delete failed: ' + e.message, 'error'));
-  }
-}
+// deleteStudioItem itself is defined in the module script above, where db/doc/deleteDoc are
+// already in real scope — this file's other window.deleteDoc/window.doc pattern never
+// actually existed, which is why the old version of this function silently did nothing.
 
 function showToast(msg, type) {
   const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:' + (type==='error'?'#E63329':'#74C69D') + ';color:#050A14;padding:0.65rem 1.25rem;border-radius:10px;font-weight:800;font-size:0.82rem;z-index:9999;font-family:Syne,sans-serif;';
+  t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:' + (type==='error'?'var(--red)':'var(--green)') + ';color:var(--bg);padding:0.65rem 1.25rem;border-radius:var(--radius-md);font-weight:800;font-size:0.82rem;z-index:9999;font-family:Syne,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.4);';
   t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3000);
 }
+window._showToast = showToast;
 </script>
 
 <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.15);font-size:0.7rem;font-family:'Space Mono',monospace;">
