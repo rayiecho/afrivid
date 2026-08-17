@@ -1,0 +1,2638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- AfriVid Error Logger -->
+<script>
+(function() {
+  const _logs = [];
+  const _maxLogs = 100;
+  window.addEventListener('error', function(e) {
+    const entry = {type:'ERROR',message:e.message,file:e.filename?e.filename.split('/').pop():'unknown',line:e.lineno,col:e.colno,time:new Date().toISOString()};
+    _logs.unshift(entry);
+    if(_logs.length>_maxLogs)_logs.pop();
+    console.error(`[AfriVid ERROR] ${entry.message} (${entry.file}:${entry.line})`);
+    if(window._afrivid_log_ui)window._afrivid_log_ui(entry);
+  });
+  window.addEventListener('unhandledrejection', function(e) {
+    const entry = {type:'PROMISE',message:e.reason?.message||String(e.reason),file:'async',line:0,time:new Date().toISOString()};
+    _logs.unshift(entry);
+    if(_logs.length>_maxLogs)_logs.pop();
+    console.error(`[AfriVid PROMISE] ${entry.message}`);
+    if(window._afrivid_log_ui)window._afrivid_log_ui(entry);
+  });
+  const _origFetch = window.fetch;
+  window.fetch = async function(...args) {
+    const url = typeof args[0]==='string'?args[0]:args[0]?.url||'unknown';
+    const shortUrl = url.length>60?url.slice(0,60)+'...':url;
+    try {
+      const res = await _origFetch(...args);
+      if(!res.ok){const entry={type:'FETCH',message:`HTTP ${res.status} → ${shortUrl}`,file:'fetch',line:0,time:new Date().toISOString()};_logs.unshift(entry);if(_logs.length>_maxLogs)_logs.pop();console.warn(`[AfriVid FETCH] ${entry.message}`);if(window._afrivid_log_ui)window._afrivid_log_ui(entry);}
+      return res;
+    } catch(e) {
+      const entry={type:'FETCH',message:`FAILED → ${shortUrl}: ${e.message}`,file:'fetch',line:0,time:new Date().toISOString()};
+      _logs.unshift(entry);if(_logs.length>_maxLogs)_logs.pop();
+      console.error(`[AfriVid FETCH ERROR] ${entry.message}`);
+      if(window._afrivid_log_ui)window._afrivid_log_ui(entry);
+      throw e;
+    }
+  };
+  window._afrivid_errors = _logs;
+  window._afrivid_show_errors = function() {
+    console.group('AfriVid Error Log');
+    _logs.forEach(l=>console.log(`[${l.type}] ${l.time} - ${l.message}`));
+    console.groupEnd();
+    return _logs;
+  };
+  console.log('[AfriVid] Error logger initialized ✅');
+})();
+</script>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid AI Editor — AI-Powered Video Editing for Africa</title>
+<meta name="description" content="Drop your video. AI does the rest. Trim, translate, remove silences, generate viral clips and more.">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#F5A623">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AfriVid">
+  <link rel="apple-touch-icon" href="/images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#F5A623;--green:#74C69D;--red:#E63329;--blue:#6399ff;
+  --bg:#050A14;--navy:#0D1117;--navy2:#0D1F35;--navy3:#1a1a2e;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --muted:rgba(255,255,255,0.4);--font:'Syne',sans-serif;--mono:'Space Mono',monospace;
+}
+body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(5,10,20,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
+.topbar-logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;}
+.topbar-logo img{width:32px;height:32px;border-radius:8px;}
+.topbar-logo span{font-weight:900;font-size:1rem;color:#fff;}
+.topbar-logo span em{color:var(--gold);font-style:normal;}
+.topbar-right{display:flex;align-items:center;gap:0.75rem;}
+.user-badge{font-size:0.72rem;color:var(--green);font-family:var(--mono);background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;}
+.back-btn{color:var(--muted);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s;}
+.back-btn:hover{color:#fff;}
+
+/* HERO */
+.hero{text-align:center;padding:2rem 1.5rem 1rem;}
+.hero-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:3px;margin-bottom:0.75rem;}
+.hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;margin-bottom:0.75rem;line-height:1.1;}
+.hero-title em{color:var(--gold);font-style:normal;}
+.hero-sub{color:var(--muted);font-size:0.95rem;max-width:500px;margin:0 auto;}
+
+/* DROP ZONE */
+.drop-zone{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
+.drop-area{border:2px dashed rgba(245,166,35,0.3);border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(245,166,35,0.02);position:relative;}
+.drop-area:hover,.drop-area.dragover{border-color:var(--gold);background:rgba(245,166,35,0.05);}
+.drop-icon{font-size:2.5rem;margin-bottom:0.75rem;}
+.drop-title{font-weight:800;font-size:1.1rem;margin-bottom:0.4rem;}
+.drop-sub{color:var(--muted);font-size:0.82rem;}
+.drop-input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+/* VIDEO PREVIEW */
+#video-preview-area{max-width:700px;margin:0 auto 2rem;padding:0 1.5rem;display:none;}
+.video-wrap{position:relative;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+#ai-video{width:100%;max-height:400px;display:block;}
+.video-info{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:var(--navy);border-top:1px solid var(--border);}
+.video-name{font-size:0.82rem;color:var(--muted);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.video-duration{font-size:0.82rem;color:var(--gold);font-family:var(--mono);}
+.change-video-btn{background:none;border:1px solid var(--border2);color:var(--muted);padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--font);}
+.change-video-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
+
+/* AI PROMPT */
+.prompt-area{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
+.prompt-wrap{display:flex;gap:0.5rem;}
+.prompt-input{flex:1;background:var(--navy);border:1px solid var(--border2);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-family:var(--font);font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+.prompt-input:focus{border-color:rgba(245,166,35,0.4);}
+.prompt-btn{background:var(--gold);border:none;color:#050A14;padding:0.85rem 1.5rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all 0.2s;}
+.prompt-btn:hover{background:#e09520;}
+.prompt-examples{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem;}
+.example-chip{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;font-family:var(--font);}
+.example-chip:hover{color:#fff;border-color:var(--border2);}
+
+/* FEATURES GRID */
+.features-section{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
+.features-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:2px;margin-bottom:0.75rem;}
+.features-grid{display:flex;gap:0.5rem;overflow-x:auto;padding-bottom:0.5rem;scrollbar-width:none;}
+.features-grid::-webkit-scrollbar{display:none;}
+.feature-card{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.85rem;cursor:pointer;transition:all 0.2s;position:relative;display:flex;align-items:center;gap:0.5rem;white-space:nowrap;flex-shrink:0;}
+.feature-card:hover{border-color:rgba(245,166,35,0.3);background:var(--navy2);}
+.feature-card.active{border-color:var(--gold);background:rgba(245,166,35,0.05);}
+.feature-card.loading{pointer-events:none;opacity:0.7;}
+.feature-icon{font-size:1rem;}
+.feature-name{font-weight:700;font-size:0.82rem;}
+.feature-desc{display:none;}
+.feature-badge{font-size:0.55rem;font-family:var(--mono);padding:0.1rem 0.3rem;border-radius:3px;font-weight:700;margin-left:0.25rem;}
+.badge-new{background:rgba(116,198,157,0.2);color:var(--green);}
+.badge-pro{background:rgba(245,166,35,0.15);color:var(--gold);}
+
+/* SUB PANELS */
+.sub-panel{max-width:700px;margin:0 auto 0.75rem;padding:0 1.5rem;display:none;}
+.sub-panel.active{display:block;}
+.sub-panel-inner{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+.sub-title{font-weight:800;font-size:0.85rem;margin-bottom:0.6rem;color:var(--gold);}
+.btn-row{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.btn{padding:0.6rem 1.1rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-gold{background:var(--gold);color:#050A14;}
+.btn-gold:hover{background:#e09520;}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--muted);}
+.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:var(--gold);}
+.btn-green{background:var(--green);color:#050A14;}
+.form-input{width:100%;background:#111;border:1px solid var(--border2);color:#fff;padding:0.6rem 0.75rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;outline:none;margin-bottom:0.5rem;}
+
+/* LOG */
+.ai-log{background:#0d0d0d;border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);max-height:100px;overflow-y:auto;line-height:1.9;margin-top:0.75rem;}
+
+/* RESULT BANNER */
+.result-banner{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:9999;background:var(--navy2);border:1px solid rgba(116,198,157,0.4);border-radius:14px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:var(--font);min-width:320px;max-width:90vw;}
+
+/* LOGIN */
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;display:none;align-items:center;justify-content:center;}
+.login-overlay.active{display:flex;}
+.login-box{background:var(--navy);border:1px solid var(--border2);border-radius:16px;padding:2rem;width:90%;max-width:380px;}
+
+@media(max-width:600px){
+  .hero{padding:2rem 1rem 1.5rem;}
+  .features-grid{grid-template-columns:repeat(2,1fr);}
+  .prompt-wrap{flex-direction:column;}
+  .prompt-btn{width:100%;}
+}
+</style>
+  <meta property="og:image" content="https://afrivid.studio/images/logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:image" content="https://afrivid.studio/images/logo.png">
+  <meta property="twitter:title" content="AfriVid Studio — Africa's First AI Video Creation Platform">
+  <meta property="twitter:description" content="Create professional videos in minutes with AI. Built for Africa.">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="AfriVid Studio">
+<meta property="og:url" content="https://afrivid.studio/aieditor.html">
+<meta name="twitter:site" content="@afrividstudio">
+<meta name="twitter:creator" content="@afrividstudio">
+<link rel="canonical" href="https://afrivid.studio/aieditor.html">
+</head>
+<body>
+
+<!-- UPGRADE BANNER - shows for free users only -->
+<div id="upgrade-banner" style="display:none;background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05));border-bottom:1px solid rgba(245,166,35,0.2);padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <span style="color:#F5A623;font-size:0.85rem;">⚡</span>
+    <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-family:'Syne',sans-serif;">You're on the <strong style="color:#fff;">Free Plan</strong> — <span id="banner-usage">3 videos left</span> this month</span>
+  </div>
+  <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.4rem 1.25rem;border-radius:20px;font-weight:900;text-decoration:none;font-size:0.78rem;font-family:'Syne',sans-serif;white-space:nowrap;">Upgrade to Pro $5/mo →</a>
+</div>
+<script>
+// Show banner for free users
+(function() {
+  function checkAndShowBanner() {
+    if (!window.currentUser) return;
+    setTimeout(async () => {
+      try {
+        const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+        const db = getFirestore(app);
+        const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const plan = data.plan || 'beta';
+        if (plan === 'pro') return; // Hide for Pro users
+        const used = data.videosGenerated || 0;
+        const limit = data.betaLimit || 3;
+        const remaining = Math.max(0, limit - used);
+        const banner = document.getElementById('upgrade-banner');
+        const usage = document.getElementById('banner-usage');
+        if (banner) banner.style.display = 'flex';
+        if (usage) usage.textContent = `${remaining} video${remaining!==1?'s':''} left`;
+      } catch(e) {}
+    }, 2000);
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const check = setInterval(() => {
+      if (window.currentUser) { clearInterval(check); checkAndShowBanner(); }
+    }, 500);
+    setTimeout(() => clearInterval(check), 10000);
+  });
+})();
+</script>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:1rem;">
+  <a href="index.html" class="back-btn">← Home</a>
+  <a href="index.html" class="back-btn">Dashboard</a>
+  </div>
+  <a href="index.html" class="topbar-logo">
+    <img src="images/logo.png" alt="AfriVid" onerror="this.style.display='none'">
+    <span>Afri<em>Vid</em> AI Editor</span>
+  </a>
+  <div class="topbar-right">
+    <span id="ai-usage-badge" style="display:none;font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.8rem;border-radius:20px;"></span>
+    <span class="user-badge" id="user-badge" style="display:none;" onclick="window.location.href='studio.html?profile=1'">Loading...</span>
+    <button class="btn btn-outline" id="btn-signin" onclick="showLogin()" style="font-size:0.78rem;padding:0.4rem 0.9rem;">Sign In</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">✦ AFRIVID AI EDITOR</div>
+  <h1 class="hero-title">Drop your video.<br><em>AI does the rest.</em></h1>
+  <p class="hero-sub">Trim, translate, remove silences, find viral clips and more — powered by AI, built for Africa.</p>
+</div>
+
+<!-- DROP ZONE -->
+<div class="drop-zone">
+  <div class="drop-area" id="drop-area" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+    <div class="drop-icon">🎬</div>
+    <div class="drop-title">Drop your video here</div>
+    <div class="drop-sub">MP4, WebM, MOV — up to 500MB</div>
+    <input type="file" class="drop-input" id="video-input" accept="video/*" onchange="handleVideoUpload(event)">
+  </div>
+</div>
+
+<!-- VIDEO PREVIEW -->
+<div id="video-preview-area">
+  <div class="video-wrap">
+    <video id="ai-video" controls></video>
+  </div>
+  <div class="video-info">
+    <span class="video-name" id="video-name">—</span>
+    <span class="video-duration" id="video-duration">—</span>
+    <button class="change-video-btn" onclick="document.getElementById('video-input').click()">Change Video</button>
+  </div>
+</div>
+
+
+
+<!-- CROP OVERLAY TOOL -->
+<div id="crop-tool" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+      <div style="color:#F5A623;font-weight:900;font-size:0.85rem;font-family:'Syne',sans-serif;">✂ Draw Crop Area</div>
+      <div style="display:flex;gap:0.5rem;">
+        <button onclick="applyCropSelection()" style="background:#F5A623;border:none;color:#050A14;padding:0.4rem 1rem;border-radius:6px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Apply Crop</button>
+        <button onclick="cancelCrop()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Cancel</button>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Click and drag on the video to select the area to keep</div>
+    <div style="position:relative;display:inline-block;width:100%;">
+      <canvas id="crop-canvas" style="width:100%;cursor:crosshair;border-radius:8px;display:block;"></canvas>
+      <div id="crop-selection-box" style="display:none;position:absolute;border:2px solid #F5A623;background:rgba(245,166,35,0.1);pointer-events:none;"></div>
+    </div>
+    <div id="crop-coords" style="color:rgba(255,255,255,0.3);font-size:0.7rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
+  </div>
+</div>
+<!-- PHASE 2 STATUS -->
+<div id="phase2-status" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+      <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">🎬 AfriVid Cloud Processing</div>
+      <div id="phase2-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
+      <div id="phase2-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
+    </div>
+    <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Uploading...</div>
+    <div id="phase2-timer" style="display:none;color:#F5A623;font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">⏱ Time elapsed: <span id="phase2-countdown">calculating...</span></div>
+    <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
+      <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being processed!</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when ready.</div>
+      <div id="phase2-dashboard-btn" style="display:none;margin-top:0.75rem;display:none;gap:0.5rem;flex-wrap:wrap;">
+        <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
+        <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
+      </div>
+    </div>
+    <div id="phase2-action-btns" style="display:none;gap:0.5rem;flex-wrap:wrap;">
+      <a href="index.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
+      <a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Dashboard</a>
+      <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
+    </div>
+    <div id="phase2-download" style="display:none;margin-top:1rem;">
+      <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button id="phase2-download-link" data-url="" onclick="(async()=>{const btn=document.getElementById('phase2-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download='AfriVid-Edited.mp4';a.click();window.URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Processed Video';btn.disabled=false;})()" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</button>
+        <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">▶ Upload to YouTube</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- AI PROMPT -->
+<!-- PHASE 2 SERVER PROCESSING BANNER -->
+<div id="phase2-banner" style="display:none;max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;">
+  <div style="background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(116,198,157,0.05));border:1px solid rgba(245,166,35,0.3);border-radius:12px;padding:1rem 1.25rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+      <span style="font-size:1.25rem;">🚀</span>
+      <div>
+        <div style="color:#F5A623;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Long video detected!</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">Your video is over 5 minutes</div>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin-bottom:1rem;line-height:1.5;">
+      <strong style="color:#F5A623;">HOW TO USE:</strong> (1) Type instruction below (2) Click Apply (3) Click Process on Server. Our server will email you when done.
+    </div>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;">
+        📝 Your instruction: <span id="phase2-prompt-preview" style="color:#F5A623;font-weight:700;"></span>
+      </div>
+      <button onclick="uploadToServer()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⚡ Process on Server</button>
+      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
+    </div>
+  </div>
+</div>
+
+<div class="prompt-area">
+  <div class="prompt-wrap">
+    <input class="prompt-input" id="ai-prompt" placeholder="Tell AI what to do... e.g. Remove first 10 seconds and keep the best 60 seconds">
+    <button class="prompt-btn" id="apply-btn" onclick="applyPrompt()" disabled style="opacity:0.4;cursor:not-allowed;">Upload video first</button>
+  </div>
+  <div class="prompt-examples">
+    <span class="example-chip" onclick="setPrompt(this)">Remove first 30 seconds</span>
+    <span class="example-chip" onclick="setPrompt(this)">Keep only the best 60 seconds</span>
+    <span class="example-chip" onclick="setPrompt(this)">Remove silences</span>
+    <span class="example-chip" onclick="setPrompt(this)">Make it TikTok ready</span>
+    <span class="example-chip" onclick="setPrompt(this)">Keep from 0:30 to 2:00</span>
+    <span class="example-chip" onclick="setPrompt(this)">Remove the intro and outro</span>
+    <div id="main-log" style="display:none;margin-top:0.75rem;background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 1rem;font-family:'Space Mono',monospace;font-size:0.75rem;color:#F5A623;"></div>
+</div>
+</div>
+
+<!-- FEATURES GRID -->
+<div class="features-section">
+  <div class="features-label">⚡ QUICK TOOLS</div>
+  <div class="features-grid">
+
+    <div class="feature-card" onclick="togglePanel('viral')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🚀</div>
+      <div class="feature-name">Viral Clips</div>
+      <div class="feature-desc">AI finds your best moments and scores them for TikTok, Reels & Shorts</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('highlight')">
+      <div class="feature-icon">✂</div>
+      <div class="feature-name">Highlight Reel</div>
+      <div class="feature-desc">Get a 30s, 60s or 90s highlight reel automatically</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('translate')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🌍</div>
+      <div class="feature-name">Voice Translation</div>
+      <div class="feature-desc">Translate to Swahili, French, Yoruba, Hausa & more</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('silence')">
+      <div class="feature-icon">✂</div>
+      <div class="feature-name">Remove Silences</div>
+      <div class="feature-desc">Detect and cut silent parts automatically</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('music')">
+      <div class="feature-icon">🎵</div>
+      <div class="feature-name">Background Music</div>
+      <div class="feature-desc">Add African beats, upbeat or calm music with auto-duck</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('captions')">
+      <div class="feature-icon">💬</div>
+      <div class="feature-name">Auto Captions</div>
+      <div class="feature-desc">Whisper transcription with karaoke word highlighting</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('noise')">
+      <div class="feature-icon">🔇</div>
+      <div class="feature-name">Noise Removal</div>
+      <div class="feature-desc">Remove background noise and enhance voice clarity</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('thumbnail')">
+      <div class="feature-icon">🖼</div>
+      <div class="feature-name">Thumbnail</div>
+      <div class="feature-desc">Extract the best frame with branding overlay</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('brand')">
+      <div class="feature-badge badge-pro">PRO</div>
+      <div class="feature-icon">🏷</div>
+      <div class="feature-name">Brand Kit</div>
+      <div class="feature-desc">Add your logo, colors and watermark to every video</div>
+    </div>
+    <div class="feature-card" onclick="togglePanel('speed')">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-name">Speed Control</div>
+      <div class="feature-desc">Slow motion, fast forward or custom speed</div>
+    </div>
+    <div class="feature-card" onclick="togglePanel('aspect')">
+      <div class="feature-icon">📐</div>
+      <div class="feature-name">Aspect Ratio</div>
+      <div class="feature-desc">Convert to TikTok 9:16, YouTube 16:9 or Square 1:1</div>
+    </div>
+    <div class="feature-card" onclick="togglePanel('bgremove')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🎭</div>
+      <div class="feature-name">BG Remover</div>
+      <div class="feature-desc">Remove or blur your video background automatically</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUB PANELS -->
+<!-- SPEED PANEL -->
+<div class="sub-panel" id="panel-speed">
+  <div class="sub-panel-inner">
+    <div class="sub-title">⚡ Speed Control</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Choose a speed or set a custom value.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <button class="btn btn-gold" onclick="runFeature('speed',0.5)">🐢 0.5x Slow Mo</button>
+      <button class="btn btn-gold" onclick="runFeature('speed',0.75)">🚶 0.75x</button>
+      <button class="btn btn-gold" onclick="runFeature('speed',1.5)">🏃 1.5x Fast</button>
+      <button class="btn btn-gold" onclick="runFeature('speed',2)">🚀 2x Super Fast</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Custom:</span>
+      <input type="number" id="speed-custom" min="0.25" max="4" step="0.25" value="1.5" style="width:70px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.3rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.82rem;">
+      <button class="btn btn-gold" onclick="runFeature('speed',parseFloat(document.getElementById('speed-custom').value)||1.5)">Apply</button>
+    </div>
+    <div class="ai-log" id="log-speed"></div>
+  </div>
+</div>
+<!-- ASPECT RATIO PANEL -->
+<div class="sub-panel" id="panel-aspect">
+  <div class="sub-panel-inner">
+    <div class="sub-title">📐 Aspect Ratio Converter</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Convert your video for different platforms.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="runFeature('aspect','9:16')">📱 9:16 TikTok / Reels</button>
+      <button class="btn btn-gold" onclick="runFeature('aspect','16:9')">🖥 16:9 YouTube</button>
+      <button class="btn btn-gold" onclick="runFeature('aspect','1:1')">⬛ 1:1 Square</button>
+    </div>
+    <div class="ai-log" id="log-aspect"></div>
+  </div>
+</div>
+<!-- BG REMOVER PANEL -->
+<div class="sub-panel" id="panel-bgremove">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🎭 Background Remover</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">AI removes your background. Works best with clear subject and good lighting.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+      <button class="btn btn-gold" onclick="runFeature('bgremove','blur')">🌫 Blur</button>
+      <button class="btn btn-gold" onclick="runFeature('bgremove','black')">⬛ Black</button>
+      <button class="btn btn-gold" onclick="runFeature('bgremove','white')">⬜ White</button>
+      <button class="btn btn-gold" onclick="runFeature('bgremove','green')">💚 Green Screen</button>
+    </div>
+    <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;">⚠ Browser processing — works on short clips. Pro users get server-quality removal.</div>
+    <div class="ai-log" id="log-bgremove"></div>
+  </div>
+</div>
+<div class="sub-panel" id="panel-viral">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🚀 Viral Clips Generator</div>
+    
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="runFeature('viral',3)">3 Clips</button>
+      <button class="btn btn-outline" onclick="runFeature('viral',5)">5 Clips</button>
+      <button class="btn btn-outline" onclick="runFeature('viral',10)">10 Clips</button>
+    </div>
+    <div class="ai-log" id="log-viral"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-highlight">
+  <div class="sub-panel-inner">
+    <div class="sub-title">✂ Highlight Reel</div>
+    
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="runFeature('highlight',30)">30 seconds</button>
+      <button class="btn btn-gold" onclick="runFeature('highlight',60)">60 seconds</button>
+      <button class="btn btn-gold" onclick="runFeature('highlight',90)">90 seconds</button>
+    </div>
+    <div class="ai-log" id="log-highlight"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-translate">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🌍 Voice Translation</div>
+    
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="runFeature('translate','sw')">🇰🇪 Swahili</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','fr')">🇫🇷 French</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','yo')">🇳🇬 Yoruba</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','ha')">🇳🇬 Hausa</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','am')">🇪🇹 Amharic</button>
+      <button class="btn btn-outline" onclick="runFeature('translate','pt')">🇦🇴 Portuguese</button>
+    </div>
+    <div class="ai-log" id="log-translate"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-silence">
+  <div class="sub-panel-inner">
+    <div class="sub-title">✂ Remove Silences</div>
+    
+    <button class="btn btn-gold" onclick="runFeature('silence')">✂ Remove Silences Now</button>
+    <div class="ai-log" id="log-silence"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-music">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🎵 Background Music</div>
+    
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="runFeature('music','auto')">✦ Auto Detect</button>
+      <button class="btn btn-outline" onclick="runFeature('music','inspirational')">🥁 African Beats</button>
+      <button class="btn btn-outline" onclick="runFeature('music','upbeat')">⚡ Upbeat</button>
+      <button class="btn btn-outline" onclick="runFeature('music','calm')">🌊 Calm</button>
+      <button class="btn btn-outline" onclick="runFeature('music','church')">✝ Church</button>
+      <button class="btn btn-outline" style="color:var(--red);border-color:rgba(230,51,41,0.3);" onclick="stopMusic()">⏹ Stop</button>
+    </div>
+    <div class="ai-log" id="log-music"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-captions">
+  <div class="sub-panel-inner">
+    <div class="sub-title">💬 Auto Captions</div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:0.75rem;">
+      <button class="btn btn-outline" id="cap-classic" onclick="setCaptionStyleAI('classic')">Classic</button>
+      <button class="btn btn-outline" id="cap-bold" onclick="setCaptionStyleAI('bold')">Bold</button>
+      <button class="btn btn-outline" id="cap-minimal" onclick="setCaptionStyleAI('minimal')">Minimal</button>
+      <button class="btn btn-outline" id="cap-tiktok" onclick="setCaptionStyleAI('tiktok')">TikTok</button>
+    </div>
+    <button class="btn btn-gold" style="width:100%;" onclick="runFeature('captions')">✦ Generate Captions</button>
+    <div class="ai-log" id="log-captions"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-noise">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🔇 Noise Removal</div>
+    
+    <button class="btn btn-gold" onclick="showCropTool()">
+            <span class="tool-icon">✂</span>
+            <span class="tool-name">Crop</span>
+          </button>
+          <button class="tool-btn" onclick="runFeature('noise')">🔇 Remove Noise Now</button>
+    <div class="ai-log" id="log-noise"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-thumbnail">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🖼 Thumbnail Generator</div>
+    
+    <button class="btn btn-gold" onclick="runFeature('thumbnail')">🖼 Generate Thumbnail</button>
+    <div class="ai-log" id="log-thumbnail"></div>
+    <div id="thumb-result" style="margin-top:0.75rem;"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-brand">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🏷 Brand Kit</div>
+    <input class="form-input" id="brand-name" placeholder="Your brand name e.g. AfriVid Studio">
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;">
+      <input type="color" id="brand-color" value="#F5A623" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer;">
+      <label style="flex:1;background:#111;border:1px solid var(--border2);color:var(--muted);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font);">
+        📁 Upload Logo <input type="file" accept="image/*" onchange="loadBrandLogoAI(this)" style="display:none;">
+      </label>
+      <img id="brand-logo-preview" style="display:none;width:36px;height:36px;border-radius:6px;object-fit:contain;">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="saveBrandKitAI()">💾 Save Kit</button>
+      <button class="btn btn-outline" onclick="applyBrandWatermarkAI()">✦ Apply Watermark</button>
+    </div>
+    <div class="ai-log" id="log-brand"></div>
+  </div>
+</div>
+
+<div style="height:2rem;"></div>
+
+<!-- LOGIN MODAL -->
+<div class="login-overlay" id="login-modal" onclick="if(event.target===this)hideLogin()">
+  <div class="login-box">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 0.75rem;">A</div>
+      <div style="font-size:1.2rem;font-weight:900;">Sign in to AfriVid</div>
+      <div style="color:var(--muted);font-size:0.82rem;margin-top:0.3rem;">Continue to AI Editor</div>
+    </div>
+    <input id="login-email" type="email" placeholder="Email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:0.75rem;">
+    <input id="login-password" type="password" placeholder="Password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:1rem;">
+    <button onclick="doSignIn()" style="width:100%;background:var(--gold);border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:var(--font);font-size:0.95rem;">Sign In</button>
+    <div id="login-error" style="color:var(--red);font-size:0.78rem;margin-top:0.5rem;text-align:center;"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+window.db = db;
+
+onAuthStateChanged(auth, user => {
+  window.currentUser = user;
+  const badge = document.getElementById('user-badge');
+  const signinBtn = document.getElementById('btn-signin');
+  if (user) {
+    badge.style.display = 'block';
+    badge.textContent = user.displayName || user.email.split('@')[0];
+    if(signinBtn) signinBtn.style.display = 'none';
+  } else {
+    badge.style.display = 'none';
+    if(signinBtn) signinBtn.style.display = 'block';
+  }
+});
+
+window.doSignIn = async function() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    hideLogin();
+  } catch(e) {
+    if(err) err.textContent = e.message;
+  }
+};
+
+window.showLogin = function(msg) { document.getElementById('login-modal').classList.add('active'); };
+window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); };
+</script>
+
+<script>
+// ── CORE STATE ──
+let currentVideoFile = null;
+let currentClips = [];
+let currentCaptionStyle = 'classic';
+let bgMusicCtx = null;
+let bgMusicGain = null;
+let brandKit = JSON.parse(localStorage.getItem('afrivid_brand_kit') || '{}');
+
+// ── VIDEO HANDLING ──
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-area').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) loadVideo(file);
+}
+
+function handleVideoUpload(e) {
+  const file = e.target.files[0];
+  if (file) loadVideo(file);
+}
+
+function loadVideo(file) {
+  currentVideoFile = file;
+  window.currentVideoFile = file;
+  const url = URL.createObjectURL(file);
+  const video = document.getElementById('ai-video');
+  // Show loading state on button
+  const btn = document.getElementById('apply-btn');
+  if(btn) { btn.disabled=true; btn.style.opacity='0.6'; btn.textContent='[..] Loading...'; btn.style.background='rgba(255,255,255,0.1)'; btn.style.color='#fff'; }
+  video.src = url;
+  video.load();
+  video.preload = 'auto';
+  // Force duration by seeking to end
+  video.addEventListener('loadedmetadata', () => {
+    if (!video.duration || !isFinite(video.duration)) {
+      video.currentTime = 1e101; // Seek to end forces duration
+    }
+  }, {once:true});
+  video.addEventListener('timeupdate', () => {
+    if (video.duration && isFinite(video.duration)) {
+      document.getElementById('video-duration').textContent = formatTime(video.duration);
+      video.currentTime = 0;
+      const btn = document.getElementById('apply-btn');
+      if(btn && btn.textContent.includes('Loading')) {
+        btn.disabled=false; btn.style.opacity='1'; 
+        btn.textContent='✦ Apply'; btn.style.background='';
+        btn.style.color='';
+      }
+    }
+  }, {once:true});
+  video.onloadedmetadata = () => {
+    // Reject videos over 5 minutes
+    // Long video — show server processing banner instead of rejecting
+    if (video.duration > 300) {
+      window._currentVideoFile = file;
+    }
+    document.getElementById('video-duration').textContent = formatTime(video.duration);
+    // Enable apply button
+    const btn = document.getElementById('apply-btn');
+    if(btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; btn.textContent = '✦ Apply'; }
+    // Also update when duration becomes available
+    if (!video.duration || video.duration === 0) {
+      video.addEventListener('durationchange', () => {
+        document.getElementById('video-duration').textContent = formatTime(video.duration);
+      }, {once: true});
+    }
+    document.getElementById('drop-zone') && (document.querySelector('.drop-zone').style.display = 'none');
+    document.getElementById('video-preview-area').style.display = 'block';
+    addLog('all', `[ok] Loaded: ${file.name} (${formatTime(video.duration)})`);
+  window.currentVideoFile = file;
+  // Check if Phase 2 server processing is recommended
+  video.addEventListener('loadedmetadata', () => {
+  }, {once: true});
+  // Show estimated processing time
+  setTimeout(() => {
+    const dur = video.duration || 0;
+    const estSecs = Math.round(dur * 0.3); // ~30% of video duration
+    const estMin = Math.floor(estSecs / 60);
+    const estSec = estSecs % 60;
+    const estStr = estMin > 0 ? `${estMin}m ${estSec}s` : `${estSec}s`;
+    const sizeStr = (file.size / 1024 / 1024).toFixed(1);
+    addLog('all', `[i] Estimated processing time: ~${estStr} | File size: ${sizeStr}MB`);
+    if (dur > 300 && !window._phase2Mode) addLog('all', '[!] Large video detected. Processing may take several minutes. Keep this tab open.');
+  }, 500);
+    video.addEventListener('durationchange', () => {
+      if(video.duration && isFinite(video.duration)) {
+        document.getElementById('video-duration').textContent = formatTime(video.duration);
+        addLog('all', `[ok] Duration confirmed: ${formatTime(video.duration)}`);
+      }
+    });
+  };
+}
+
+function formatTime(s) {
+  if (!s || isNaN(s) || !isFinite(s)) return '0:00';
+  const m = Math.floor(s/60);
+  return m + ':' + String(Math.floor(s%60)).padStart(2,'0');
+}
+
+// ── PANEL TOGGLE ──
+function togglePanel(name) {
+  const panel = document.getElementById('panel-' + name);
+  const isActive = panel.classList.contains('active');
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.feature-card').forEach(c => c.classList.remove('active'));
+  if (!isActive) {
+    panel.classList.add('active');
+    panel.previousElementSibling && panel.previousElementSibling.classList.add('active');
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+
+// ── PROMPT ──
+function setPrompt(el) {
+  document.getElementById('ai-prompt').value = el.textContent;
+}
+
+async function applyPrompt() {
+  console.log('[Apply] clicked - file:', !!currentVideoFile, 'user:', !!window.currentUser);
+  if (!currentVideoFile) { alert('Upload a video first'); return; }
+  if (!window.currentUser) { showLogin(); return; }
+  console.log('[Apply] passing checks...');
+  if (!await checkAfriVidLimit('aieditor_session')) return;
+  const instructions = document.getElementById('ai-prompt').value.trim();
+  if (!instructions) { alert('Type your instructions first'); return; }
+
+  // ── VIDEO LENGTH CHECK — route long videos to server ──
+  const _vid = document.getElementById('ai-video');
+  if (_vid && _vid.duration > 300) {
+    window._currentVideoFile = currentVideoFile;
+    window._pendingPrompt = instructions;
+    const banner = document.getElementById('phase2-banner');
+    const msg = document.getElementById('phase2-duration-msg');
+    const mins = Math.floor(_vid.duration / 60);
+    const secs = Math.floor(_vid.duration % 60);
+    if (msg) msg.textContent = `Your video is ${mins}m ${secs}s — routing to AfriVid Cloud`;
+    if (banner) banner.style.display = "block";
+    const preview = document.getElementById("phase2-prompt-preview");
+    if (preview) preview.textContent = instructions || "No instruction set";
+    return;
+  }
+
+  // Short video — browser processing
+  const _dur = _vid?.duration || 0;
+  const _est = (_dur > 0 && isFinite(_dur)) ? Math.max(5, Math.round(_dur * 0.15)) : 30;
+  const _estStr = _est > 60 ? `~${Math.round(_est/60)}m` : `~${_est}s`;
+  showProcessingOverlay(`AfriVid AI is editing your video (Est: ${_estStr})`, [
+    {label: 'Analyzing instructions', status: 'active'},
+    {label: 'Processing video', status: 'pending'},
+    {label: 'Applying changes', status: 'pending'},
+    {label: 'Preparing download', status: 'pending'},
+  ]);
+  const btn = document.getElementById('apply-btn');
+  if(btn) { btn.disabled=true; btn.textContent='[..] Applying...'; btn.style.background='rgba(245,166,35,0.3)'; }
+  addLog('all', '[~] Processing: ' + instructions);
+  await runAIEdit(instructions);
+  if(btn) { btn.disabled=false; btn.textContent='✦ Apply'; btn.style.background=''; }
+  hideProcessingOverlay();
+}
+// ── LOG ──
+function addLog(panel, msg) {
+  const color = msg.startsWith('[ok]') ? '#74C69D' : msg.startsWith('[x]') ? '#E63329' : '#F5A623';
+  // Always show in main log
+  const mainLog = document.getElementById('main-log');
+  if (mainLog) { mainLog.style.display='block'; mainLog.innerHTML=`<span style="color:${color}">${msg}</span>`; }
+  if (panel === 'all') {
+    document.querySelectorAll('.ai-log').forEach(l => {
+      l.innerHTML = `<span style="color:${color}">${msg}</span>`;
+    });
+  } else {
+    const log = document.getElementById('log-' + panel);
+    if (log) log.innerHTML = `<span style="color:${color}">${msg}</span>`;
+  }
+}
+
+// ── RUN FEATURE ──
+async function runFeature(type, param) {
+  if (!currentVideoFile) { alert('Upload a video first'); return; }
+  if (!window.currentUser) { showLogin('Sign in to use AI features'); return; }
+  // Check limit based on feature type
+  const limitKey = ['translate'].includes(type) ? 'aieditor_translate' : ['captions'].includes(type) ? 'aieditor_captions' : 'aieditor_session';
+  if (!await checkAfriVidLimit(limitKey)) return;
+
+  const video = document.getElementById('ai-video');
+
+  // Show processing overlay
+  const featureLabels = {
+    viral: 'Finding viral clips',
+    highlight: 'Creating highlight reel',
+    translate: 'Translating video',
+    silence: 'Removing silences',
+    music: 'Adding background music',
+    captions: 'Generating captions',
+    noise: 'Removing background noise',
+    thumbnail: 'Generating thumbnail',
+  };
+  showProcessingOverlay(`AfriVid AI: ${featureLabels[type]||'Processing'}`, [
+    {label: 'Analyzing video', status: 'active'},
+    {label: featureLabels[type]||'Processing', status: 'pending'},
+    {label: 'Finalizing output', status: 'pending'},
+  ]);
+
+  switch(type) {
+    case 'viral': await doViralClips(param || 5); break;
+    case 'highlight': await doHighlightReel(param || 60); break;
+    case 'translate': await doTranslate(param || 'sw'); break;
+    case 'silence': await doRemoveSilences(); break;
+    case 'music': await doAddMusic(param || 'inspirational'); break;
+    case 'captions': await doCaptions(); break;
+    case 'noise': await doNoiseRemoval(); break;
+    case 'thumbnail': await doThumbnail(); break;
+    case 'speed': await doSpeedChange(param || 1.5); break;
+    case 'aspect': await doAspectRatio(param || '9:16'); break;
+    case 'bgremove': await doBgRemove(param || 'blur'); break;
+  }
+}
+
+async function doSpeedChange(factor) {
+  const video = document.getElementById('ai-video');
+  if (!video || !currentVideoFile) { addLog('speed','[x] Upload a video first'); return; }
+  addLog('speed', `[~] Applying ${factor}x speed...`);
+  showProcessingOverlay(`Speed: ${factor}x`, [{label:'Applying speed change',status:'active'},{label:'Exporting',status:'pending'}]);
+  updateProcessingProgress(10, `Setting speed to ${factor}x...`, 0);
+  video.playbackRate = factor;
+  updateProcessingProgress(40, 'Exporting video...', 1);
+  await exportClips([{start:0, end:video.duration}], `AfriVid-${factor}x`);
+  video.playbackRate = 1;
+  updateProcessingProgress(100, 'Done!', 2);
+  addLog('speed', `[ok] ${factor}x speed applied!`);
+  hideProcessingOverlay();
+}
+
+async function doAspectRatio(ratio) {
+  const video = document.getElementById('ai-video');
+  if (!video || !currentVideoFile) { addLog('aspect','[x] Upload a video first'); return; }
+  addLog('aspect', `[~] Converting to ${ratio}...`);
+  showProcessingOverlay(`Converting to ${ratio}`, [{label:'Setting aspect ratio',status:'active'},{label:'Exporting',status:'pending'}]);
+  updateProcessingProgress(10, `Converting to ${ratio}...`, 0);
+  window._exportAspect = ratio;
+  updateProcessingProgress(40, 'Exporting video...', 1);
+  await exportClips([{start:0, end:video.duration}], `AfriVid-${ratio.replace(':','x')}`);
+  window._exportAspect = null;
+  updateProcessingProgress(100, 'Done!', 2);
+  addLog('aspect', `[ok] Converted to ${ratio}!`);
+  hideProcessingOverlay();
+}
+
+async function doBgRemove(bgType) {
+  const video = document.getElementById('ai-video');
+  if (!video || !currentVideoFile) { addLog('bgremove','[x] Upload a video first'); return; }
+  addLog('bgremove', `[~] Loading background remover...`);
+  showProcessingOverlay('Background Remover', [
+    {label:'Loading AI model',status:'active'},
+    {label:'Processing frames',status:'pending'},
+    {label:'Exporting',status:'pending'}
+  ]);
+  updateProcessingProgress(5, 'Loading MediaPipe model...', 0);
+
+  try {
+    // Load MediaPipe selfie segmentation
+    if (!window._mpSegmentation) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    updateProcessingProgress(20, 'Model loaded! Processing video...', 1);
+    addLog('bgremove', '[~] Processing frames with AI...');
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext('2d');
+
+    // Background color/blur setup
+    const bgColors = { black:'#000000', white:'#ffffff', green:'#00ff00' };
+
+    const segmentation = new SelfieSegmentation({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`});
+    segmentation.setOptions({ modelSelection: 1 });
+
+    segmentation.onResults(results => {
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Draw background
+      if (bgType === 'blur') {
+        ctx.filter = 'blur(15px)';
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        ctx.filter = 'none';
+      } else {
+        ctx.fillStyle = bgColors[bgType] || '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      // Draw person only
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'destination-over';
+      if (bgType === 'blur') {
+        ctx.filter = 'blur(15px)';
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        ctx.filter = 'none';
+      } else {
+        ctx.fillStyle = bgColors[bgType] || '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    });
+
+    // Record output
+    const stream = canvas.captureStream(25);
+    const recorder = new MediaRecorder(stream, {mimeType:'video/webm'});
+    const chunks = [];
+    recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+    recorder.start(100);
+
+    updateProcessingProgress(30, 'Processing frames...', 1);
+    video.currentTime = 0;
+    await new Promise(r => video.addEventListener('seeked', r, {once:true}));
+    await video.play();
+
+    let lastPct = 30;
+    await new Promise(resolve => {
+      const process = async () => {
+        if (video.ended || video.paused) { resolve(); return; }
+        await segmentation.send({image: video});
+        const pct = Math.round(30 + (video.currentTime / video.duration) * 60);
+        if (pct > lastPct) {
+          updateProcessingProgress(pct, `Processing frame ${Math.round(video.currentTime)}s / ${Math.round(video.duration)}s`, 1);
+          lastPct = pct;
+        }
+        requestAnimationFrame(process);
+      };
+      requestAnimationFrame(process);
+      video.addEventListener('ended', resolve, {once:true});
+      setTimeout(resolve, (video.duration + 5) * 1000);
+    });
+
+    video.pause();
+    await new Promise(r => { recorder.onstop = r; recorder.stop(); });
+
+    updateProcessingProgress(95, 'Exporting...', 2);
+    const blob = new Blob(chunks, {type:'video/webm'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `AfriVid-BgRemoved-${bgType}.webm`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+    updateProcessingProgress(100, 'Done!', 2);
+    addLog('bgremove', '[ok] Background removed! Check your downloads.');
+    hideProcessingOverlay();
+
+  } catch(e) {
+    addLog('bgremove', '[x] Failed: ' + e.message);
+    hideProcessingOverlay();
+    console.error('[BgRemove]', e);
+  }
+}
+
+// ── AUDIO HELPER ──
+async function extractWAV() {
+  const ab = await currentVideoFile.arrayBuffer();
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const decoded = await audioCtx.decodeAudioData(ab.slice(0));
+  const numSamples = decoded.length;
+  const sampleRate = decoded.sampleRate;
+  const ch = decoded.getChannelData(0);
+  const buf = new ArrayBuffer(44 + numSamples * 2);
+  const view = new DataView(buf);
+  const ws = (o,s) => { for(let i=0;i<s.length;i++) view.setUint8(o+i,s.charCodeAt(i)); };
+  ws(0,'RIFF'); view.setUint32(4,36+numSamples*2,true);
+  ws(8,'WAVE'); ws(12,'fmt '); view.setUint32(16,16,true);
+  view.setUint16(20,1,true); view.setUint16(22,1,true);
+  view.setUint32(24,sampleRate,true); view.setUint32(28,sampleRate*2,true);
+  view.setUint16(32,2,true); view.setUint16(34,16,true);
+  ws(36,'data'); view.setUint32(40,numSamples*2,true);
+  let off=44;
+  for(let i=0;i<numSamples;i++,off+=2){
+    const s=Math.max(-1,Math.min(1,ch[i]));
+    view.setInt16(off,s<0?s*0x8000:s*0x7FFF,true);
+  }
+  audioCtx.close();
+  return new Blob([buf],{type:'audio/wav'});
+}
+
+async function transcribe() {
+  addLog('all', '[~] Transcribing audio...');
+  const wavBlob = await extractWAV();
+  const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/transcribe', {
+    method:'POST', headers:{'Content-Type':'audio/wav'}, body: wavBlob
+  });
+  if (!res.ok) return '';
+  const d = await res.json();
+  const transcriptText = d.text || '';
+  if (transcriptText && window.saveToAfriBrain) {
+    window.saveToAfriBrain({text: transcriptText, language: 'en', source: 'aieditor', type: 'transcript'});
+  }
+  return transcriptText;
+}
+
+async function claudeAsk(prompt, maxTokens) {
+  const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens: maxTokens || 1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const d = await res.json();
+  return d.content[0].text.trim();
+}
+
+// ── EXPORT ──
+async function exportClips(clips, filename) {
+  addLog('all', `[~] Exporting ${clips.length} clip(s)...`);
+  const video = document.getElementById('ai-video');
+
+  // Wait for video metadata
+  if (!video.duration || video.readyState < 2) {
+    addLog('all', '[~] Waiting for video to load...');
+    await new Promise(r => {
+      if (video.readyState >= 2) { r(); return; }
+      video.addEventListener('canplay', r, {once:true});
+    });
+  }
+
+  if (!video.videoWidth || !video.duration || !isFinite(video.duration)) {
+    addLog('all', '[x] Video not ready. Please wait a moment and try again.');
+    return;
+  }
+
+  // Force video interaction to unlock autoplay policy
+  try { await video.play(); video.pause(); } catch(e) {}
+  video.muted = false;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth || 1280;
+  canvas.height = video.videoHeight || 720;
+  const ctx = canvas.getContext('2d');
+  const stream = canvas.captureStream(25);
+
+  // Setup audio
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const dest = audioCtx.createMediaStreamDestination();
+    if (!window._videoAudioCtx) {
+      window._videoAudioCtx = audioCtx;
+      window._videoAudioSource = audioCtx.createMediaElementSource(video);
+    }
+    window._videoAudioSource.connect(dest);
+    window._videoAudioSource.connect(window._videoAudioCtx.destination);
+    stream.addTrack(dest.stream.getTracks()[0]);
+  } catch(e) {
+    console.log('[Export] Audio:', e.message);
+  }
+
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+    ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+  const recorder = new MediaRecorder(stream, {mimeType, videoBitsPerSecond: 2500000});
+  const chunks = [];
+  recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
+  recorder.start(100);
+
+  addLog('all', `[~] Processing ${clips.length} clips...`);
+  for (const clip of clips) {
+    const clipStart = Math.max(0, clip.start);
+    const clipEnd = Math.min(video.duration, clip.end);
+    addLog('all', `[~] Clip: ${clipStart.toFixed(1)}s → ${clipEnd.toFixed(1)}s`);
+    if (clipEnd <= clipStart) { addLog('all', '[x] Invalid clip skipped'); continue; }
+
+    video.currentTime = clipStart;
+    await new Promise(r => video.addEventListener('seeked', r, {once:true}));
+
+    await new Promise(resolve => {
+      video.play();
+      let animId;
+      function frame() {
+        if (!video.paused && video.currentTime < clipEnd) {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          animId = requestAnimationFrame(frame);
+        } else {
+          video.pause();
+          cancelAnimationFrame(animId);
+          resolve();
+        }
+      }
+      animId = requestAnimationFrame(frame);
+      // Safety timeout
+      setTimeout(() => { video.pause(); cancelAnimationFrame(animId); resolve(); }, (clipEnd - clipStart + 2) * 1000);
+    });
+  }
+
+  // Stop recorder and wait for data
+  await new Promise(r => {
+    recorder.onstop = r;
+    recorder.stop();
+  });
+
+  const blob = new Blob(chunks, {type: 'video/webm'});
+  const sizeMB = (blob.size / 1024 / 1024).toFixed(1);
+
+  if (blob.size < 1000) {
+    addLog('all', '[x] Export failed - no video data captured. Try playing the video first.');
+    return;
+  }
+
+  addLog('all', `[ok] Export complete! ${sizeMB}MB`);
+  hideProcessingOverlay();
+  // Send email notification
+  if (window.currentUser?.email) {
+    try {
+      const videoName = window.currentVideoFile?.name || 'your video';
+      await fetch('https://afrivid-tts.afrividstudio.workers.dev/send-email', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          from: 'AfriVid Studio <support@afrivid.studio>',
+          to: [window.currentUser.email],
+          subject: 'Your AfriVid edit is ready! 🎬',
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
+              <h1 style="color:#F5A623;">Your video is ready! 🎬</h1>
+              <p style="color:rgba(255,255,255,0.8);">AfriVid AI has finished processing <strong>${videoName}</strong>.</p>
+              <p style="color:rgba(255,255,255,0.6);">Your edited video has been downloaded automatically. Check your downloads folder.</p>
+              <a href="https://afrivid.studio/aieditor.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Edit Another Video →</a>
+              <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:2rem;">AfriVid Studio · afrivid.studio</p>
+            </div>
+          `
+        })
+      });
+    } catch(e) {}
+  }
+  // Auto-trigger download
+  const _url = URL.createObjectURL(blob);
+  const _a = document.createElement('a');
+  _a.href = _url;
+  _a.download = (filename || 'AfriVid-Edit') + '.webm';
+  document.body.appendChild(_a);
+  _a.click();
+  document.body.removeChild(_a);
+  // Update apply button
+  const _btn = document.getElementById('apply-btn');
+  if(_btn) {
+    _btn.style.background='#74C69D';
+    _btn.style.color='#050A14';
+    _btn.textContent='✅ Downloaded!';
+    setTimeout(()=>{ _btn.style.background=''; _btn.style.color=''; _btn.textContent='✦ Apply'; }, 3000);
+  }
+}
+
+function showResultBanner(msg, blob, filename) {
+  document.querySelectorAll('.result-banner').forEach(b => b.remove());
+  // Update apply button to download state
+  const btn = document.getElementById('apply-btn');
+  const url = URL.createObjectURL(blob);
+  if(btn) {
+    btn.disabled = false;
+    btn.style.background = '#74C69D';
+    btn.style.color = '#050A14';
+    btn.textContent = '⬇ Download';
+    btn.onclick = () => { const a=document.createElement('a');a.href=url;a.download=(filename||'AfriVid')+'.webm';a.click(); btn.textContent='✦ Apply';btn.style.background='';btn.style.color='';btn.onclick=applyPrompt; };
+    return;
+  }
+  const banner = document.createElement('div');
+  banner.className = 'result-banner';
+  banner.innerHTML = `
+    <div style="flex:1;">
+      <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">${msg}</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:0.2rem;">Ready to download</div>
+    </div>
+    <button onclick="const a=document.createElement('a');a.href='${url}';a.download='${filename}.webm';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+  `;
+  document.body.appendChild(banner);
+}
+
+// ── AI FEATURES ──
+async function runAIEdit(instructions) {
+  addLog('all', '[~] Analyzing your instructions with AI...');
+  const video = document.getElementById('ai-video');
+  const totalSecs = Math.round(video.duration);
+  addLog('all', `[~] Video: ${totalSecs}s long`);
+
+  // Step 1 — parse instructions into action plan
+  updateProcessingProgress(5, 'Analyzing instructions...', 0);
+  let plan;
+  try {
+    const raw = await claudeAsk(`You are an AI video editor. Video is ${totalSecs}s long. User said: "${instructions}". Return ONLY valid JSON: {"summary":"what you will do","actions":[]} where action types are: trim (needs start,end in seconds), speed (needs factor: 0.5=slowmo 2=fast), silence, highlight (needs duration:60), noise, caption, aspect (needs ratio: 9:16 or 16:9 or 1:1), music (needs mood: inspirational/calm/upbeat), thumbnail. Only include actions the user asked for.`, 800);
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON found');
+    plan = JSON.parse(match[0]);
+  } catch(e) {
+    addLog('all', '[!] Falling back to basic trim...');
+    plan = { summary: 'Basic AI edit', actions: [{ type: 'trim_ai', instructions }] };
+  }
+
+  addLog('all', `[~] Plan: ${plan.summary}`);
+  updateProcessingProgress(15, plan.summary, 1);
+
+  // Step 2 — execute actions with progress updates
+  const total = plan.actions.length;
+  for (let i = 0; i < total; i++) {
+    const action = plan.actions[i];
+    const pct = Math.round(15 + ((i / total) * 75));
+    updateProcessingProgress(pct, `Step ${i+1}/${total}: ${action.type}...`, i + 1);
+
+    switch(action.type) {
+      case 'trim':
+        addLog('all', `[~] Trimming ${action.start}s to ${action.end}s`);
+        updateProcessingProgress(pct, `Trimming ${action.start}s → ${action.end}s`, i+1);
+        await exportClips([{ start: action.start, end: action.end }], 'AfriVid-Trim');
+        break;
+      case 'trim_ai':
+        updateProcessingProgress(pct, 'AI finding best clips...', i+1);
+        const trimRaw = await claudeAsk(`Video is ${totalSecs}s. Instructions: "${action.instructions}". Return ONLY JSON clips: [{"start":0,"end":30}]`, 500);
+        const trimMatch = trimRaw.match(/\[[\s\S]*\]/);
+        if (!trimMatch) throw new Error('No clips');
+        const clips = JSON.parse(trimMatch[0]).map(c => ({ start: Math.max(0,c.start), end: Math.min(video.duration,c.end) }));
+        updateProcessingProgress(pct+5, `Exporting ${clips.length} clip(s)...`, i+1);
+        await exportClips(clips, 'AfriVid-AI-Edit');
+        break;
+      case 'speed':
+        updateProcessingProgress(pct, `Applying ${action.factor}x speed...`, i+1);
+        video.playbackRate = action.factor || 1.5;
+        await exportClips([{ start: 0, end: video.duration }], `AfriVid-${action.factor}x`);
+        video.playbackRate = 1;
+        break;
+      case 'silence':
+        updateProcessingProgress(pct, 'Detecting silent parts...', i+1);
+        await doRemoveSilences();
+        break;
+      case 'highlight':
+        updateProcessingProgress(pct, `Building ${action.duration||60}s highlight reel...`, i+1);
+        await doHighlightReel(action.duration || 60);
+        break;
+      case 'noise':
+        updateProcessingProgress(pct, 'Filtering background noise...', i+1);
+        await doNoiseRemoval();
+        break;
+      case 'caption':
+        updateProcessingProgress(pct, 'Transcribing and generating captions...', i+1);
+        await doCaptions();
+        break;
+      case 'aspect':
+        updateProcessingProgress(pct, `Converting to ${action.ratio}...`, i+1);
+        window._exportAspect = action.ratio;
+        await exportClips([{ start: 0, end: video.duration }], `AfriVid-${action.ratio.replace(':','x')}`);
+        window._exportAspect = null;
+        break;
+      case 'music':
+        updateProcessingProgress(pct, `Adding ${action.mood||'inspirational'} music...`, i+1);
+        await doAddMusic(action.mood || 'inspirational');
+        break;
+      case 'thumbnail':
+        updateProcessingProgress(pct, 'Extracting best frame...', i+1);
+        await doThumbnail();
+        break;
+      default:
+        addLog('all', `[!] Unknown action: ${action.type}`);
+    }
+  }
+  updateProcessingProgress(100, '✅ All edits complete!', total + 1);
+  addLog('all', '[ok] All edits complete!');
+}
+
+async function doViralClips(count) {
+  if (!await checkAfriVidLimit('aieditor_session')) return;
+  const video = document.getElementById('ai-video');
+  // Wait for real duration
+  let duration = video.duration;
+  if (!duration || !isFinite(duration) || duration === 0) {
+    addLog('viral', '[~] Loading video duration...');
+    await new Promise(r => {
+      const check = setInterval(() => {
+        if (video.duration && isFinite(video.duration) && video.duration > 0) {
+          clearInterval(check); r();
+        }
+      }, 500);
+      setTimeout(() => { clearInterval(check); r(); }, 10000);
+    });
+    duration = video.duration || 60;
+  }
+  addLog('viral', '[~] Transcribing...');
+  let transcript = '';
+  try { transcript = await transcribe(); } catch(e) {}
+  addLog('viral', '[~] Finding viral moments...');
+  try {
+    const text = await claudeAsk(`Find ${count} viral clips from this ${Math.round(duration)}s video. ${transcript ? 'Transcript: "'+transcript.slice(0,1500)+'"' : ''} Return ONLY JSON: [{"start":0,"end":30,"title":"Hook","score":85,"format":"tiktok","reason":"Strong opening"}]`, 1500);
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('No clips');
+    const clips = JSON.parse(match[0]);
+    addLog('viral', `[ok] Found ${clips.length} viral clips!`);
+    showViralClipsUI(clips);
+  } catch(e) { addLog('viral', '[x] ' + e.message); }
+}
+
+function showViralClipsUI(clips) {
+  document.querySelectorAll('.result-banner').forEach(b => b.remove());
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#0D1117;border:1px solid rgba(245,166,35,0.3);border-radius:16px;padding:1.5rem;width:90%;max-width:520px;max-height:80vh;overflow-y:auto;font-family:Syne,sans-serif;box-shadow:0 16px 64px rgba(0,0,0,0.8);';
+  const sc = s => s>=80?'#74C69D':s>=60?'#F5A623':'#fff';
+  const fi = f => f==='tiktok'?'🎵':f==='reels'?'📸':'▶';
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="color:#F5A623;font-weight:900;">✦ ${clips.length} Viral Clips</div>
+      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    ${clips.map((c,i) => `
+      <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+          <div style="flex:1;">
+            <div style="color:#fff;font-weight:700;font-size:0.88rem;">${fi(c.format)} ${c.title||'Clip '+(i+1)}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${c.reason||''}</div>
+          </div>
+          <div style="text-align:right;margin-left:1rem;">
+            <div style="color:${sc(c.score)};font-weight:900;font-size:1.1rem;">${c.score||'--'}</div>
+            <div style="color:rgba(255,255,255,0.3);font-size:0.6rem;">SCORE</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:Space Mono,monospace;">${formatTime(c.start)} → ${formatTime(c.end)} · ${Math.round(c.end-c.start)}s</div>
+          <div style="display:flex;gap:0.4rem;">
+            <button onclick="document.getElementById('ai-video').currentTime=${c.start};document.getElementById('ai-video').play();setTimeout(()=>document.getElementById('ai-video').pause(),${(c.end-c.start)*1000})" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:Syne,sans-serif;">▶</button>
+            <button onclick="exportClips([{start:${c.start},end:${c.end}}],'${(c.title||'clip').replace(/'/g,'')}')" style="background:#F5A623;border:none;color:#050A14;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇</button>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+  document.body.appendChild(panel);
+}
+
+async function doHighlightReel(duration) {
+  if (!await checkAfriVidLimit('aieditor_session')) return;
+  addLog('highlight', '[~] Transcribing...');
+  const video = document.getElementById('ai-video');
+  let transcript = '';
+  try { transcript = await transcribe(); } catch(e) {}
+  addLog('highlight', '[~] Finding best moments...');
+  try {
+    const text = await claudeAsk(`Find best ${duration}s highlight from ${Math.round(video.duration)}s video. ${transcript ? 'Transcript: "'+transcript.slice(0,1500)+'"':''} Return ONLY JSON clips totaling ~${duration}s: [{"start":10,"end":40,"title":"Key moment"}]`, 800);
+    const match = text.match(/\[[\s\S]*\]/);
+    if(!match) throw new Error('No clips');
+    const clips = JSON.parse(match[0]).map(c=>({start:Math.max(0,c.start),end:Math.min(video.duration,c.end)}));
+    const total = clips.reduce((s,c)=>s+(c.end-c.start),0);
+    addLog('highlight', `[ok] ${clips.length} clips, ${Math.round(total)}s — exporting...`);
+    await exportClips(clips, `AfriVid-Highlight-${duration}s`);
+  } catch(e) { addLog('highlight', '[x] ' + e.message); }
+}
+
+async function doTranslate(lang) {
+  if (!await checkAfriVidLimit('aieditor_translate')) return;
+  const langNames = {'sw':'Swahili','fr':'French','yo':'Yoruba','ha':'Hausa','am':'Amharic','pt':'Portuguese'};
+  const langName = langNames[lang] || lang;
+  addLog('translate', `[~] Transcribing for ${langName} translation...`);
+  try {
+    const transcript = await transcribe();
+    if (!transcript) throw new Error('No speech detected');
+    addLog('translate', '[~] Translating...');
+    const translated = await claudeAsk(`Translate to ${langName}. Return ONLY translated text:\n"${transcript}"`, 2000);
+    addLog('translate', '[~] Generating voice...');
+    const ttsRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/tts', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({text:translated, voice:lang})
+    });
+    if(!ttsRes.ok) throw new Error('Voice generation failed');
+    const ttsBlob = await ttsRes.blob();
+    const ttsUrl = URL.createObjectURL(ttsBlob);
+    addLog('translate', `[ok] ${langName} translation ready!`);
+    document.querySelectorAll('.result-banner').forEach(b=>b.remove());
+    
+    // Sync translated audio with video
+    const ttsAudio = new Audio(ttsUrl);
+    const video = document.getElementById('ai-video');
+    
+    function playSynced() {
+      video.muted = true;
+      video.currentTime = 0;
+      ttsAudio.currentTime = 0;
+      video.play();
+      ttsAudio.play();
+      video.addEventListener('pause', () => ttsAudio.pause(), {once:true});
+      video.addEventListener('ended', () => { ttsAudio.pause(); video.muted=false; }, {once:true});
+    }
+    
+    const banner = document.createElement('div');
+    banner.className = 'result-banner';
+    banner.innerHTML = `
+      <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
+      <button id="play-translated-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play Synced</button>
+      <button id="export-translated-btn" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Video</button>
+      <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio Only</button>
+      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+    `;
+    document.body.appendChild(banner);
+    document.getElementById('play-translated-btn').onclick = playSynced;
+    
+    // Export translated video - record video with translated audio
+    document.getElementById('export-translated-btn').onclick = async function() {
+      const btn = this;
+      btn.textContent = '[..] Exporting...';
+      btn.disabled = true;
+      try {
+        const video = document.getElementById('ai-video');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 1280;
+        canvas.height = video.videoHeight || 720;
+        const ctx = canvas.getContext('2d');
+        const stream = canvas.captureStream(25);
+        
+        // Use translated audio
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const dest = audioCtx.createMediaStreamDestination();
+        const ttsSource = audioCtx.createMediaElementSource(ttsAudio);
+        ttsSource.connect(dest);
+        ttsSource.connect(audioCtx.destination);
+        stream.addTrack(dest.stream.getTracks()[0]);
+        
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+        const recorder = new MediaRecorder(stream, {mimeType, videoBitsPerSecond: 4000000, audioBitsPerSecond: 192000});
+        const chunks = [];
+        recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+        recorder.start(100);
+        
+        video.muted = true;
+        video.currentTime = 0;
+        ttsAudio.currentTime = 0;
+        video.play();
+        ttsAudio.play();
+        
+        // Render frames
+        const renderFrame = () => {
+          if (video.ended || video.paused) return;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          requestAnimationFrame(renderFrame);
+        };
+        requestAnimationFrame(renderFrame);
+        
+        await new Promise(r => {
+          ttsAudio.addEventListener('ended', r, {once:true});
+          video.addEventListener('ended', r, {once:true});
+          setTimeout(r, (video.duration + 2) * 1000);
+        });
+        
+        video.pause(); video.muted = false;
+        await new Promise(r => { recorder.onstop=r; recorder.stop(); });
+        audioCtx.close();
+        
+        const blob = new Blob(chunks, {type:'video/webm'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'AfriVid-' + '${langName}' + '-dubbed.webm';
+        a.click();
+        btn.textContent = '✅ Downloaded!';
+        setTimeout(()=>{ btn.textContent='⬇ Download Video'; btn.disabled=false; }, 3000);
+      } catch(e) {
+        btn.textContent = '⬇ Download Video';
+        btn.disabled = false;
+        alert('Export failed: ' + e.message);
+      }
+    };
+  } catch(e) { addLog('translate', '[x] ' + e.message); }
+}
+
+async function doRemoveSilences() {
+  addLog('silence', '[~] Detecting silences...');
+  const video = document.getElementById('ai-video');
+  try {
+    const ab = await currentVideoFile.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const decoded = await audioCtx.decodeAudioData(ab.slice(0));
+    const ch = decoded.getChannelData(0);
+    const sampleRate = decoded.sampleRate;
+    const chunkSize = Math.floor(sampleRate * 0.1);
+    const threshold = 0.02;
+    const minSilence = 0.5;
+    let segments = [], inSilence = false, silStart = 0, lastEnd = 0;
+    for (let i = 0; i < ch.length; i += chunkSize) {
+      const chunk = ch.slice(i, i+chunkSize);
+      const rms = Math.sqrt(chunk.reduce((s,v)=>s+v*v,0)/chunk.length);
+      const t = i/sampleRate;
+      if (rms < threshold) { if(!inSilence){inSilence=true;silStart=t;} }
+      else { if(inSilence){ if(t-silStart>minSilence&&lastEnd<silStart){segments.push({start:lastEnd,end:silStart});lastEnd=t;} inSilence=false; } }
+    }
+    if (lastEnd < decoded.duration-0.5) segments.push({start:lastEnd,end:decoded.duration});
+    audioCtx.close();
+    if(!segments.length) throw new Error('No silences detected');
+    const removed = decoded.duration - segments.reduce((s,c)=>s+(c.end-c.start),0);
+    addLog('silence', `[ok] Removing ${removed.toFixed(1)}s of silence — exporting...`);
+    await exportClips(segments, 'AfriVid-No-Silence');
+  } catch(e) { addLog('silence', '[x] ' + e.message); }
+}
+
+async function doAddMusic(type) {
+  const video = document.getElementById('ai-video');
+  if (bgMusicCtx) { bgMusicCtx.close(); bgMusicCtx = null; }
+  bgMusicCtx = new (window.AudioContext || window.webkitAudioContext)();
+  bgMusicGain = bgMusicCtx.createGain();
+  bgMusicGain.gain.value = 0.15;
+  bgMusicGain.connect(bgMusicCtx.destination);
+  const duration = video.duration + 2;
+  const dest = bgMusicGain;
+  if (type==='inspirational'||type==='auto') {
+    const bpm=80,beat=60/bpm;
+    for(let t=bgMusicCtx.currentTime;t<bgMusicCtx.currentTime+duration;t+=beat){
+      const k=bgMusicCtx.createOscillator(),kg=bgMusicCtx.createGain();
+      k.frequency.setValueAtTime(120,t);k.frequency.exponentialRampToValueAtTime(40,t+0.1);
+      kg.gain.setValueAtTime(0.3,t);kg.gain.exponentialRampToValueAtTime(0.001,t+0.15);
+      k.connect(kg);kg.connect(dest);k.start(t);k.stop(t+0.15);
+    }
+    const d=bgMusicCtx.createOscillator(),dg=bgMusicCtx.createGain();
+    d.type='sine';d.frequency.value=55;dg.gain.value=0.06;
+    d.connect(dg);dg.connect(dest);d.start(bgMusicCtx.currentTime);d.stop(bgMusicCtx.currentTime+duration);
+  } else if(type==='upbeat'){
+    const bpm=120,beat=60/bpm;
+    for(let t=bgMusicCtx.currentTime;t<bgMusicCtx.currentTime+duration;t+=beat){
+      const k=bgMusicCtx.createOscillator(),kg=bgMusicCtx.createGain();
+      k.frequency.setValueAtTime(150,t);k.frequency.exponentialRampToValueAtTime(50,t+0.08);
+      kg.gain.setValueAtTime(0.4,t);kg.gain.exponentialRampToValueAtTime(0.001,t+0.1);
+      k.connect(kg);kg.connect(dest);k.start(t);k.stop(t+0.1);
+    }
+  } else if(type==='calm'){
+    [220,277,330].forEach(f=>{const o=bgMusicCtx.createOscillator(),g=bgMusicCtx.createGain();o.type='sine';o.frequency.value=f;g.gain.value=0.04;o.connect(g);g.connect(dest);o.start(bgMusicCtx.currentTime);o.stop(bgMusicCtx.currentTime+duration);});
+  } else if(type==='church'){
+    [130,196,261,392].forEach((f,i)=>{const o=bgMusicCtx.createOscillator(),g=bgMusicCtx.createGain();o.type='sine';o.frequency.value=f;g.gain.value=0.03;o.connect(g);g.connect(dest);o.start(bgMusicCtx.currentTime+i*0.1);o.stop(bgMusicCtx.currentTime+duration);});
+  }
+  video.addEventListener('play',()=>{if(bgMusicCtx&&bgMusicGain){bgMusicGain.gain.setTargetAtTime(0.05,bgMusicCtx.currentTime,0.3);bgMusicCtx.resume();}});
+  video.addEventListener('pause',()=>{if(bgMusicCtx&&bgMusicGain)bgMusicGain.gain.setTargetAtTime(0.15,bgMusicCtx.currentTime,0.3);});
+  video.currentTime=0; video.play(); bgMusicCtx.resume();
+  addLog('music', `[ok] ${type} music playing with auto-duck!`);
+}
+
+function stopMusic() { if(bgMusicCtx){bgMusicCtx.close();bgMusicCtx=null;} addLog('music','[ok] Music stopped'); }
+
+async function doCaptions() {
+  if (!await checkAfriVidLimit('aieditor_captions')) return;
+  addLog('captions', '[~] Transcribing...');
+  try {
+    const text = await transcribe();
+    if (!text) throw new Error('No speech detected');
+    addLog('captions', '[ok] Captions ready — play video to see them');
+    startKaraokeCaptions(text);
+  } catch(e) { addLog('captions', '[x] ' + e.message); }
+}
+
+function setCaptionStyleAI(style) {
+  currentCaptionStyle = style;
+  document.querySelectorAll('[id^="cap-"]').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('cap-'+style);
+  if(btn) btn.style.borderColor = '#F5A623';
+}
+
+function startKaraokeCaptions(text) {
+  const video = document.getElementById('ai-video');
+  let overlay = document.getElementById('caption-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'caption-overlay';
+    overlay.style.cssText = 'position:absolute;bottom:40px;left:0;right:0;text-align:center;pointer-events:none;z-index:10;padding:0 1rem;';
+    document.querySelector('.video-wrap').appendChild(overlay);
+  }
+  const words = text.split(' ');
+  const wps = words.length / (video.duration || 60);
+  video.addEventListener('timeupdate', () => {
+    const wi = Math.floor(video.currentTime * wps);
+    const cs = 8, start = Math.floor(wi/cs)*cs;
+    const chunk = words.slice(start, start+cs);
+    const active = wi - start;
+    const cs2 = currentCaptionStyle;
+    let bg='rgba(0,0,0,0.75)',color='#fff',fs='1rem',fw='700';
+    if(cs2==='bold'){fs='1.2rem';fw='900';bg='rgba(0,0,0,0.9)';}
+    else if(cs2==='minimal'){bg='transparent';}
+    else if(cs2==='tiktok'){bg='transparent';color='#fffc00';fs='1.3rem';fw='900';}
+    overlay.innerHTML = chunk.length ? `<span style="background:${bg};color:${color};font-size:${fs};font-weight:${fw};padding:0.4rem 0.85rem;border-radius:6px;font-family:Syne,sans-serif;display:inline-block;">${chunk.map((w,i)=>i===active?`<span style="color:#F5A623;font-weight:900;">${w}</span>`:w).join(' ')}</span>` : '';
+  });
+  video.addEventListener('ended', ()=>{ overlay.innerHTML=''; });
+}
+
+async function doNoiseRemoval() {
+  addLog('noise', '[~] Processing audio filters...');
+  try {
+    const ab = await currentVideoFile.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const decoded = await audioCtx.decodeAudioData(ab.slice(0));
+    const offCtx = new OfflineAudioContext(decoded.numberOfChannels, decoded.length, decoded.sampleRate);
+    const src = offCtx.createBufferSource(); src.buffer = decoded;
+    const hp = offCtx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=80;
+    const lp = offCtx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=8000;
+    const comp = offCtx.createDynamicsCompressor();
+    comp.threshold.value=-24; comp.ratio.value=12; comp.attack.value=0.003; comp.release.value=0.25;
+    src.connect(hp); hp.connect(lp); lp.connect(comp); comp.connect(offCtx.destination);
+    src.start(0);
+    const clean = await offCtx.startRendering();
+    audioCtx.close();
+    const ns=clean.length,sr=clean.sampleRate,ch=clean.getChannelData(0);
+    const buf=new ArrayBuffer(44+ns*2),view=new DataView(buf);
+    const ws=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i));};
+    ws(0,'RIFF');view.setUint32(4,36+ns*2,true);ws(8,'WAVE');ws(12,'fmt ');view.setUint32(16,16,true);
+    view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,sr,true);view.setUint32(28,sr*2,true);
+    view.setUint16(32,2,true);view.setUint16(34,16,true);ws(36,'data');view.setUint32(40,ns*2,true);
+    let off=44;for(let i=0;i<ns;i++,off+=2){const s=Math.max(-1,Math.min(1,ch[i]));view.setInt16(off,s<0?s*0x8000:s*0x7FFF,true);}
+    const cleanBlob=new Blob([buf],{type:'audio/wav'});
+    const cleanUrl=URL.createObjectURL(cleanBlob);
+    addLog('noise','[ok] Noise removed! Playing clean audio...');
+    const video=document.getElementById('ai-video');
+    video.muted=true; video.currentTime=0;
+    const cleanAudio=new Audio(cleanUrl); video.play(); cleanAudio.play();
+    video.addEventListener('ended',()=>{cleanAudio.pause();video.muted=false;},{once:true});
+    showResultBanner('✅ Noise Removed!', cleanBlob, 'AfriVid-Clean-Audio');
+  } catch(e) { addLog('noise','[x] '+e.message); }
+}
+
+async function doThumbnail() {
+  addLog('thumbnail', '[~] Extracting best frame...');
+  const video = document.getElementById('ai-video');
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth||1280; canvas.height = video.videoHeight||720;
+    const ctx = canvas.getContext('2d');
+    if (!video.duration || !isFinite(video.duration)) {
+    await new Promise(r => video.addEventListener('loadedmetadata', r, {once:true}));
+  }
+  const timestamps = [0.2,0.35,0.5].map(t=>t*video.duration);
+    let best=null,bestBr=0;
+    for(const ts of timestamps){
+      video.currentTime=ts;
+      await new Promise(r=>video.addEventListener('seeked',r,{once:true}));
+      ctx.drawImage(video,0,0,canvas.width,canvas.height);
+      const id=ctx.getImageData(0,0,canvas.width,canvas.height);
+      let br=0; for(let i=0;i<id.data.length;i+=4) br+=(id.data[i]+id.data[i+1]+id.data[i+2])/3;
+      br/=(id.data.length/4);
+      if(br>bestBr){bestBr=br;best=canvas.toDataURL('image/jpeg',0.9);}
+    }
+    if(!best) throw new Error('Frame extraction failed');
+    const img=new Image(); img.onload=function(){
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      const grad=ctx.createLinearGradient(0,canvas.height*0.6,0,canvas.height);
+      grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(1,'rgba(0,0,0,0.8)');
+      ctx.fillStyle=grad; ctx.fillRect(0,0,canvas.width,canvas.height);
+      const title=currentVideoFile?.name?.replace(/\.[^.]+$/,'')||'AfriVid Video';
+      ctx.fillStyle='#fff'; ctx.font=`bold ${Math.round(canvas.width*0.05)}px Syne,sans-serif`;
+      ctx.fillText(title.slice(0,40),canvas.width*0.05,canvas.height*0.88);
+      ctx.fillStyle='#F5A623'; ctx.font=`${Math.round(canvas.width*0.025)}px Space Mono,monospace`;
+      ctx.fillText('afrivid.studio',canvas.width*0.05,canvas.height*0.95);
+      const thumbUrl=canvas.toDataURL('image/jpeg',0.92);
+      const result=document.getElementById('thumb-result');
+      if(result) result.innerHTML=`<img src="${thumbUrl}" style="width:100%;border-radius:8px;margin-bottom:0.75rem;"><button onclick="const a=document.createElement('a');a.href='${thumbUrl}';a.download='thumbnail.jpg';a.click();" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.5rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Thumbnail</button>`;
+      addLog('thumbnail','[ok] Thumbnail ready!');
+    }; img.src=best;
+  } catch(e) { addLog('thumbnail','[x] '+e.message); }
+}
+
+// ── BRAND KIT ──
+function loadBrandLogoAI(input) {
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    window._brandLogoDataURL=e.target.result;
+    const p=document.getElementById('brand-logo-preview');
+    if(p){p.src=e.target.result;p.style.display='block';}
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveBrandKitAI() {
+  brandKit={name:document.getElementById('brand-name')?.value||'',color:document.getElementById('brand-color')?.value||'#F5A623',logo:window._brandLogoDataURL||null,savedAt:Date.now()};
+  localStorage.setItem('afrivid_brand_kit',JSON.stringify(brandKit));
+  addLog('brand','[ok] Brand kit saved!');
+}
+
+function applyBrandWatermarkAI() {
+  window._applyBrandWatermark=true;
+  addLog('brand','[ok] Brand watermark will be applied on export');
+}
+
+// Load saved brand kit
+(function(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('afrivid_brand_kit')||'{}');
+    if(saved.name){const n=document.getElementById('brand-name');if(n)n.value=saved.name;}
+    if(saved.color){const c=document.getElementById('brand-color');if(c)c.value=saved.color;}
+    if(saved.logo){window._brandLogoDataURL=saved.logo;const p=document.getElementById('brand-logo-preview');if(p){p.src=saved.logo;p.style.display='block';}}
+  }catch(e){}
+})();
+
+// Error logging
+window.addEventListener('error', e => console.error('[AIEditor]', e.message));
+
+// ── USAGE LIMITS ──
+async function checkLimit(feature) {
+  if (!window.currentUser) { showLogin('Sign in to use this feature'); return false; }
+  try {
+    const {doc, getDoc, updateDoc, increment, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const ref = doc(window.db, 'studio_users', window.currentUser.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return true;
+    const data = snap.data();
+    const plan = data.plan || 'beta';
+    if (plan === 'pro') return true; // Pro users unlimited
+
+    const now = new Date();
+    const monthKey = `usage_${now.getFullYear()}_${now.getMonth()}`;
+    const weekKey = `usage_week_${Math.floor(now.getTime()/(7*24*60*60*1000))}`;
+    const usage = data[monthKey] || {};
+    const weekUsage = data[weekKey] || {};
+
+    const limits = {
+      ai_editor: { key: monthKey, field: 'ai_editor', max: 3, period: 'month' },
+      translation: { key: monthKey, field: 'translation', max: 3, period: 'month' },
+      captions: { key: weekKey, field: 'captions', max: 3, period: 'week' }
+    };
+
+    const limit = limits[feature];
+    if (!limit) return true;
+
+    const currentUsage = feature === 'captions' ? (weekUsage[limit.field] || 0) : (usage[limit.field] || 0);
+
+    if (currentUsage >= limit.max) {
+      showUpgradeModal(feature);
+      return false;
+    }
+
+    // Increment usage
+    const updateData = {};
+    if (feature === 'captions') {
+      updateData[`${weekKey}.captions`] = increment(1);
+    } else {
+      updateData[`${monthKey}.${limit.field}`] = increment(1);
+    }
+    await updateDoc(ref, updateData);
+    return true;
+  } catch(e) {
+    console.log('[Limit] Check failed:', e.message);
+    return true; // Fail open
+  }
+}
+
+
+
+function resetPassword() {
+  const email = document.getElementById('signin-email')?.value || document.getElementById('login-email')?.value || '';
+  const emailToReset = email.trim() || prompt('Enter your email address:');
+  if (!emailToReset) return;
+  import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js').then(({sendPasswordResetEmail, getAuth}) => {
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, emailToReset)
+      .then(() => alert('✅ Password reset email sent to ' + emailToReset + '. Check your inbox.'))
+      .catch(e => alert('Error: ' + e.message));
+  });
+}
+
+</script>
+
+<!-- FEEDBACK MODAL -->
+<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
+      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
+      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🐛 Bug</button>
+      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">✨ Feature</button>
+      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🔥 Praise</button>
+      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💬 General</button>
+      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
+      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
+    </div>
+    <input type="hidden" id="feedback-type" value="general">
+    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
+      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rate AfriVid:</span>
+      <div id="star-rating" style="display:flex;gap:0.25rem;">
+        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
+        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;">⭐</span>
+      </div>
+    </div>
+    <input type="hidden" id="feedback-rating" value="5">
+    <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
+    </div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
+  </div>
+</div>
+
+<script>
+function setFeedbackType(type, btn) {
+  document.getElementById('feedback-type').value = type;
+  document.querySelectorAll('.fb-type-btn').forEach(b => { b.style.opacity='0.5'; });
+  btn.style.opacity = '1';
+}
+function setRating(val) {
+  document.getElementById('feedback-rating').value = val;
+  document.querySelectorAll('#star-rating span').forEach((s,i) => { s.style.opacity = i < val ? '1' : '0.3'; });
+}
+async function submitFeedback() {
+  const msg = document.getElementById('feedback-msg')?.value?.trim() || '';
+  const type = document.getElementById('feedback-type')?.value || 'general';
+  const rating = parseInt(document.getElementById('feedback-rating')?.value || '5');
+  if (!msg) { alert('Please write your feedback'); return; }
+  const btn = document.getElementById('feedback-submit-btn');
+  if(btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
+  try {
+    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    if (!window.db) {
+      const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+      const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+      window.db = getFirestore(app);
+    }
+    await addDoc(collection(window.db, 'feedback'), {
+      type, message: msg, rating,
+      userId: window.currentUser?.uid || 'anonymous',
+      userEmail: window.currentUser?.email || 'anonymous',
+      page: window.location.pathname,
+      createdAt: serverTimestamp(),
+      status: 'unread'
+    });
+    document.getElementById('feedback-msg').value = '';
+    document.getElementById('feedback-modal').style.display = 'none';
+    if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
+    alert('✅ Thank you for your feedback!');
+  } catch(e) {
+    if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
+    alert('Failed: ' + e.message);
+  }
+}
+// FAB button
+(function(){
+  const fab = document.createElement('button');
+  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
+  fab.innerHTML = '💬 Feedback';
+  fab.onclick = () => {
+    const modal = document.getElementById('feedback-modal');
+    if(modal) { modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; }
+  };
+  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(fab));
+})();
+</script>
+
+<script src="afribrain.js"></script>
+<script src="limits.js"></script>
+
+<script>
+// AfriVid Limits UX — show countdown and usage progress
+window.showLimitsUX = async function() {
+  if (!window.currentUser) return;
+  try {
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.plan === 'pro') return;
+
+    const now = new Date();
+    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
+    
+    // Get usage
+    const videoUsed = data[`${monthKey}_creator_video`] || data.videosGenerated || 0;
+    const aiUsed = data[`${monthKey}_aieditor_session`] || 0;
+    const transUsed = data[`${monthKey}_aieditor_translate`] || 0;
+    const videoMax = data.custom_creator_video_limit || 3;
+    const aiMax = 3;
+    const transMax = 3;
+
+    // Calculate reset date
+    const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const daysLeft = Math.ceil((resetDate - now) / (1000 * 60 * 60 * 24));
+    const resetStr = resetDate.toLocaleDateString('en-US', {month:'long', day:'numeric'});
+
+    // Build UX panel
+    const panel = document.getElementById('limits-ux-panel');
+    if (!panel) return;
+
+    const barColor = (used, max) => used >= max ? '#E63329' : used >= max-1 ? '#F5A623' : '#74C69D';
+    const pct = (used, max) => Math.min(100, Math.round(used/max*100));
+
+    panel.style.display = 'block';
+    panel.innerHTML = `
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
+        </div>
+        
+        <div style="margin-bottom:0.6rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Video Creator</span>
+            <span style="font-size:0.75rem;color:${barColor(videoUsed,videoMax)};">${videoUsed}/${videoMax}</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
+            <div style="height:100%;width:${pct(videoUsed,videoMax)}%;background:${barColor(videoUsed,videoMax)};border-radius:2px;transition:width 0.3s;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.6rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">AI Editor</span>
+            <span style="font-size:0.75rem;color:${barColor(aiUsed,aiMax)};">${aiUsed}/${aiMax}</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
+            <div style="height:100%;width:${pct(aiUsed,aiMax)}%;background:${barColor(aiUsed,aiMax)};border-radius:2px;transition:width 0.3s;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Voice Translation</span>
+            <span style="font-size:0.75rem;color:${barColor(transUsed,transMax)};">${transUsed}/${transMax}</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
+            <div style="height:100%;width:${pct(transUsed,transMax)}%;background:${barColor(transUsed,transMax)};border-radius:2px;transition:width 0.3s;"></div>
+          </div>
+        </div>
+
+        ${(videoUsed >= videoMax-1 || aiUsed >= aiMax-1) ? `
+        <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.6rem 0.75rem;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.75rem;color:#F5A623;">Running low! Upgrade for unlimited access.</span>
+          <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.7rem;font-weight:900;text-decoration:none;white-space:nowrap;">Upgrade →</a>
+        </div>` : ''}
+      </div>
+    `;
+  } catch(e) {}
+};
+
+// Auto-load on pages that have the panel
+document.addEventListener('DOMContentLoaded', () => {
+  const check = setInterval(() => {
+    if (window.currentUser) {
+      clearInterval(check);
+      setTimeout(showLimitsUX, 2000);
+    }
+  }, 500);
+  setTimeout(() => clearInterval(check), 15000);
+});
+</script>
+<script src="chatbot.js"></script>
+<script>
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
+  });
+}
+</script>
+
+<script>
+function showUpgradeForm() {
+  window.location.href = 'pricing.html#upgrade';
+}
+</script>
+
+
+<!-- GLOBAL UPGRADE MODAL -->
+<div id="global-upgrade-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)closeUpgradeModal()">
+  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
+      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
+      <div id="gum-reason" style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
+    </div>
+    <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
+    </div>
+    <div id="gum-form">
+      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
+        <div>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
+          <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
+          <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
+          <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
+            <option value="">Select your country</option>
+            <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
+            <option>Uganda</option><option>Tanzania</option><option>Ghana</option>
+            <option>South Africa</option><option>Ethiopia</option><option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
+          <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
+            <option value="">Select payment method</option>
+            <option value="mpesa">M-Pesa</option>
+            <option value="mtn">MTN Mobile Money</option>
+            <option value="airtel">Airtel Money</option>
+            <option value="card">Debit/Credit Card</option>
+            <option value="bank">Bank Transfer</option>
+          </select>
+        </div>
+        <div id="gum-phone-wrap" style="display:none;">
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
+          <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+        </div>
+      </div>
+      <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+        <span style="color:#74C69D;">⏱</span>
+        <span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">We respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</span>
+      </div>
+      <div style="display:flex;gap:0.5rem;">
+        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Request →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showUpgradeModal(reason) {
+  const modal = document.getElementById('global-upgrade-modal');
+  if (!modal) return;
+  // Set reason text
+  const reasons = {
+    videos: 'You have used all your free videos this month.',
+    duration: 'Free videos are limited to 2 minutes.',
+    ai: 'AI editing is limited to 3 sessions/month on free plan.',
+    translation: 'Voice translation is a Pro feature.',
+    captions: 'You have used your free captions this week.',
+    chatbot: 'AI Chatbot is available for Pro users only.',
+    default: 'This feature requires a Pro account.'
+  };
+  const reasonEl = document.getElementById('gum-reason');
+  if (reasonEl) reasonEl.textContent = (reasons[reason] || reasons.default) + ' Upgrade to Pro — we respond within 1 hour.';
+  // Pre-fill email if logged in
+  if (window.currentUser) {
+    const emailEl = document.getElementById('gum-email');
+    const nameEl = document.getElementById('gum-name');
+    if (emailEl && !emailEl.value) emailEl.value = window.currentUser.email || '';
+    if (nameEl && !nameEl.value) nameEl.value = window.currentUser.displayName || '';
+  }
+  modal.style.display = 'flex';
+}
+
+function closeUpgradeModal() {
+  const modal = document.getElementById('global-upgrade-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function submitGlobalUpgrade() {
+  const name = document.getElementById('gum-name')?.value?.trim();
+  const email = document.getElementById('gum-email')?.value?.trim();
+  const country = document.getElementById('gum-country')?.value;
+  const payment = document.getElementById('gum-payment')?.value;
+  const phone = document.getElementById('gum-phone')?.value?.trim();
+
+  if (!name || !email || !country || !payment) {
+    alert('Please fill all required fields');
+    return;
+  }
+
+  const btn = document.getElementById('gum-submit-btn');
+  if (btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
+
+  try {
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const db = getFirestore(app);
+
+    await addDoc(collection(db, 'upgrade_requests'), {
+      name, email, country, payment, phone,
+      page: window.location.pathname,
+      userId: window.currentUser?.uid || 'anonymous',
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+
+    // Show success
+    document.getElementById('gum-form').innerHTML = `
+      <div style="text-align:center;padding:1rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+        <div style="color:#74C69D;font-weight:900;font-size:1.1rem;margin-bottom:0.5rem;">Request Submitted!</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">Check your email <strong style="color:#fff;">${email}</strong> — we'll respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</div>
+        <button onclick="closeUpgradeModal()" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Done</button>
+      </div>`;
+  } catch(e) {
+    if (btn) { btn.textContent = 'Send Request →'; btn.disabled = false; }
+    alert('Failed: ' + e.message);
+  }
+}
+</script>
+
+<script>
+// Show AI Editor usage in topbar
+async function loadAIEditorUsage() {
+  if (!window.currentUser) return;
+  try {
+    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.plan === 'pro') {
+      const badge = document.getElementById('ai-usage-badge');
+      if (badge) { badge.textContent = 'Pro — Unlimited'; badge.style.color = '#F5A623'; badge.style.display = 'inline-block'; }
+      return;
+    }
+    const now = new Date();
+    const monthKey = `lim_${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
+    const aiUsed = data[`${monthKey}_aieditor_session`] || 0;
+    const transUsed = data[`${monthKey}_aieditor_translate`] || 0;
+    const aiLeft = Math.max(0, 3 - aiUsed);
+    const transLeft = Math.max(0, 3 - transUsed);
+    const badge = document.getElementById('ai-usage-badge');
+    if (badge) {
+      badge.style.display = 'inline-block';
+      badge.textContent = `${aiLeft} AI · ${transLeft} Trans left`;
+      badge.style.color = aiLeft === 0 ? '#E63329' : aiLeft === 1 ? '#F5A623' : 'rgba(255,255,255,0.4)';
+    }
+  } catch(e) {}
+}
+
+// Load after auth
+const _usageCheck = setInterval(() => {
+  if (window.currentUser) { clearInterval(_usageCheck); loadAIEditorUsage(); }
+}, 500);
+setTimeout(() => clearInterval(_usageCheck), 10000);
+</script>
+
+<!-- PROCESSING OVERLAY -->
+<div id="processing-overlay" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(5,10,20,0.95);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="width:90%;max-width:500px;text-align:center;">
+    <!-- Animated logo -->
+    <div style="font-size:3rem;margin-bottom:1rem;animation:pulse 1.5s ease-in-out infinite;">🎬</div>
+    <div style="color:#F5A623;font-weight:900;font-size:1.3rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;" id="proc-title">Processing your video...</div>
+    <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;font-family:'Space Mono',monospace;margin-bottom:2rem;" id="proc-stage">Initializing...</div>
+    
+    <!-- Progress bar -->
+    <div style="background:rgba(255,255,255,0.08);border-radius:10px;height:8px;margin-bottom:0.75rem;overflow:hidden;">
+      <div id="proc-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:10px;transition:width 0.5s ease;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:2rem;">
+      <span id="proc-pct" style="font-size:0.75rem;color:#F5A623;font-family:'Space Mono',monospace;">0%</span>
+      <span id="proc-time" style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;"></span>
+    </div>
+
+    <!-- Steps -->
+    <div id="proc-steps" style="text-align:left;background:rgba(255,255,255,0.03);border-radius:12px;padding:1rem;">
+    </div>
+
+    <div style="margin-top:1.5rem;color:rgba(255,255,255,0.25);font-size:0.75rem;font-family:'Space Mono',monospace;">
+      You can keep this tab open or close it — we'll notify you when done.
+    </div>
+    <button onclick="hideProcessingOverlay();location.reload();" style="margin-top:1rem;background:rgba(230,51,41,0.15);border:1px solid rgba(230,51,41,0.3);color:#E63329;padding:0.5rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Cancel Processing</button>
+  </div>
+</div>
+
+<style>
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+</style>
+
+<script>
+let _procStartTime = null;
+let _procSteps = [];
+
+window.showProcessingOverlay = function(title, steps) {
+  _procStartTime = Date.now();
+  _procSteps = steps || [];
+  const overlay = document.getElementById('processing-overlay');
+  if (overlay) overlay.style.display = 'flex';
+  document.getElementById('proc-title').textContent = title || 'Processing your video...';
+  updateProcSteps();
+  updateProcTime();
+};
+
+window.hideProcessingOverlay = function() {
+  const overlay = document.getElementById('processing-overlay');
+  if (overlay) overlay.style.display = 'none';
+};
+
+window.updateProcessingProgress = function(pct, stage, stepIndex) {
+  document.getElementById('proc-bar').style.width = pct + '%';
+  document.getElementById('proc-pct').textContent = pct + '%';
+  document.getElementById('proc-stage').textContent = stage || '';
+  if (stepIndex !== undefined) {
+    _procSteps = _procSteps.map((s, i) => ({
+      ...s,
+      status: i < stepIndex ? 'done' : i === stepIndex ? 'active' : 'pending'
+    }));
+    updateProcSteps();
+  }
+};
+
+function updateProcSteps() {
+  const el = document.getElementById('proc-steps');
+  if (!el || !_procSteps.length) return;
+  el.innerHTML = _procSteps.map(s => `
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <span style="font-size:1rem;">${s.status==='done'?'✅':s.status==='active'?'⏳':'○'}</span>
+      <span style="font-size:0.82rem;color:${s.status==='done'?'#74C69D':s.status==='active'?'#F5A623':'rgba(255,255,255,0.3)'};font-family:'Space Mono',monospace;">${s.label}</span>
+    </div>
+  `).join('');
+}
+
+function updateProcTime() {
+  if (!_procStartTime) return;
+  const elapsed = Math.floor((Date.now() - _procStartTime) / 1000);
+  const el = document.getElementById('proc-time');
+  if (el) el.textContent = `${elapsed}s elapsed`;
+  setTimeout(updateProcTime, 1000);
+}
+</script>
+
+<script>
+// ── PHASE 2 SERVER PROCESSING ──
+
+// ── PHASE 2 SERVER PROCESSING ──
+window._phase2JobId = null;
+window._phase2PollInterval = null;
+
+function checkPhase2(file, duration) {
+  if (duration > 300) {
+    window._currentVideoFile = file;
+    const banner = document.getElementById('phase2-banner');
+    const msg = document.getElementById('phase2-duration-msg');
+    if (banner) banner.style.display = "block";
+    const preview = document.getElementById("phase2-prompt-preview");
+    if (preview) preview.textContent = instructions || "No instruction set";
+    if (msg) {
+      const mins = Math.floor(duration/60);
+      const secs = Math.floor(duration%60);
+      msg.textContent = `Your video is ${mins}m ${secs}s — server processing recommended`;
+    }
+  }
+}
+
+window.uploadToServer = async function() {
+  const file = window._currentVideoFile || window.currentVideoFile;
+  if (!file) { alert('No video file found'); return; }
+  const user = window.currentUser;
+  if (!user) { alert('Please sign in first'); return; }
+  console.log("[Phase2] Prompt:", window._pendingPrompt);
+  const prompt = window._pendingPrompt || document.getElementById('ai-prompt')?.value?.trim() || '';
+  document.getElementById('phase2-banner').style.display = 'none';
+  document.getElementById('phase2-status').style.display = 'block';
+  document.getElementById('phase2-stage').textContent = 'Uploading video to AfriVid Cloud...';
+  // Start timer immediately
+  const _vid = document.getElementById('ai-video');
+  const _vidDur = _vid ? _vid.duration : 300;
+  let _elapsed = 0;
+  const _timerEl = document.getElementById('phase2-timer');
+  const _countdownEl = document.getElementById('phase2-countdown');
+  if (_timerEl) _timerEl.style.display = 'block';
+  window._phase2Timer = setInterval(() => {
+    _elapsed++;
+    const mins = Math.floor(_elapsed / 60);
+    const secs = _elapsed % 60;
+    if (_countdownEl) _countdownEl.textContent = mins > 0 ? `${mins}m ${secs}s elapsed` : `${secs}s elapsed`;
+  }, 1000);
+  const emailEl = document.getElementById('phase2-user-email');
+  if (emailEl && user.email) emailEl.textContent = user.email;
+    // Step 1 — get presigned URL from Worker
+  try {
+    // Get presigned URL then upload directly to R2
+    document.getElementById('phase2-stage').textContent = 'Preparing upload...';
+    // Send raw prompt to server — Claude on server handles all parsing
+    const actions = prompt ? ['prompt_driven'] : ['remove_silence'];
+    const trimStart = 0, trimEnd = null;
+
+    // Step 1: Get presigned URL from Fly.io
+    const signRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/presign-upload', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({filename: file.name, contentType: file.type || 'video/mp4'})
+    });
+    const signData = await signRes.json();
+    if (signData.error) throw new Error(signData.error);
+    const { job_id, presigned_url, public_url } = signData;
+    window._phase2JobId = job_id;
+
+    // Step 2: Upload directly to R2 using presigned URL
+    document.getElementById('phase2-stage').textContent = 'Uploading video...';
+    document.getElementById('phase2-bar').style.width = '5%';
+    const uploadRes = await fetch(presigned_url, {
+      method: 'PUT',
+      headers: {'Content-Type': file.type || 'video/mp4'},
+      body: file
+    });
+    if (!uploadRes.ok) throw new Error('Upload failed: ' + uploadRes.status);
+    document.getElementById('phase2-bar').style.width = '30%';
+    document.getElementById('phase2-pct').textContent = '30%';
+
+    // Step 3: Notify Fly.io to start processing
+    document.getElementById('phase2-stage').textContent = 'Starting processing...';
+    try {
+      const processRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/process', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          job_id, input_url: public_url,
+          actions: [], user_email: user.email,
+          user_id: user.uid, prompt
+        })
+      });
+      const processData = await processRes.json();
+      console.log('[Phase2] Process response:', processData);
+      await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({job_id, status: 'processing', progress: 35, stage: 'Video uploaded! Processing in Johannesburg...'})
+      });
+      // Job submitted — safe to navigate away now
+      const dashBtn = document.getElementById('phase2-dashboard-btn');
+      if (dashBtn) { dashBtn.style.display = 'flex'; }
+      const actionBtns = document.getElementById('phase2-action-btns');
+      if (actionBtns) { actionBtns.style.display = 'flex'; }
+    } catch(processErr) {
+      console.error('[Phase2] Failed to notify server:', processErr);
+      // Retry once
+      await new Promise(r => setTimeout(r, 3000));
+      await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/process', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          job_id, input_url: public_url,
+          actions: [], user_email: user.email,
+          user_id: user.uid, prompt
+        })
+      });
+    }
+
+
+
+    document.getElementById('phase2-stage').textContent = 'Video uploaded! AfriVid Cloud is processing...';
+    document.getElementById('phase2-bar').style.width = '10%';
+    document.getElementById('phase2-pct').textContent = '10%';
+        window._phase2PollInterval = setInterval(pollJobStatus, 5000);
+  } catch(e) {
+    document.getElementById('phase2-stage').textContent = 'Upload failed: ' + e.message;
+    console.error('[Phase2]', e);
+  }
+};
+
+async function pollJobStatus() {
+  if (!window._phase2JobId) return;
+  try {
+    const res = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${window._phase2JobId}`);
+    const data = await res.json();
+    const bar = document.getElementById('phase2-bar');
+    const pct = document.getElementById('phase2-pct');
+    const stage = document.getElementById('phase2-stage');
+    if (bar) bar.style.width = (data.progress || 0) + '%';
+    if (pct) pct.textContent = (data.progress || 0) + '%';
+    if (stage) stage.textContent = data.stage || 'Processing...';
+    if (data.status === 'completed' && data.output_url) {
+      clearInterval(window._phase2PollInterval);
+      clearInterval(window._phase2Timer);
+      const timerEl = document.getElementById('phase2-timer');
+      if (timerEl) timerEl.style.display = 'none';
+      const dl = document.getElementById('phase2-download');
+      const dlLink = document.getElementById('phase2-download-link');
+      if (dl) dl.style.display = 'block';
+      if (dlLink) { dlLink.dataset.url = data.output_url; window._serverVideoUrl = data.output_url; window._scriptData = { title: window._currentVideoFile?.name || 'AfriVid Edited Video', description: 'Edited with AfriVid Studio' }; }
+      if (bar) bar.style.width = '100%';
+      if (pct) pct.textContent = '100%';
+      if (stage) stage.textContent = '✅ Processing complete!';
+      // Save to Firestore studio
+      try {
+        const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const _db = getFirestore();
+        const _user = window.currentUser || firebase.auth().currentUser;
+        if (_user) {
+          await addDoc(collection(_db, 'studio_videos'), {
+            uid: _user.uid,
+            title: window._currentVideoFile?.name || 'Edited Video',
+            duration: 0,
+            videoUrl: data.output_url,
+            thumbnail: data.thumbnail_url || '',
+            createdAt: serverTimestamp(),
+            source: 'aieditor'
+          });
+          console.log('[Studio] Edited video saved to Firestore');
+        }
+      } catch(e) { console.log('[Studio] Save failed:', e); }
+    }
+    if (data.status === 'failed') {
+      clearInterval(window._phase2PollInterval);
+      if (stage) stage.textContent = '❌ Processing failed.';
+    }
+  } catch(e) { console.log('Poll error:', e); }
+}
+
+// CROP TOOL
+window._cropData = { x:0, y:0, w:0, h:0, isDragging:false, startX:0, startY:0 };
+
+window.showCropTool = function() {
+  const video = document.getElementById('ai-video');
+  if (!video || !video.src) { alert('Upload a video first'); return; }
+  const tool = document.getElementById('crop-tool');
+  const canvas = document.getElementById('crop-canvas');
+  if (!tool || !canvas) return;
+  tool.style.display = 'block';
+  tool.scrollIntoView({behavior:'smooth'});
+  canvas.width = video.videoWidth || 854;
+  canvas.height = video.videoHeight || 480;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  canvas.onmousedown = startCropDrag;
+  canvas.onmousemove = updateCropDrag;
+  canvas.onmouseup = endCropDrag;
+  canvas.ontouchstart = function(e){ e.preventDefault(); startCropDrag(e.touches[0]); };
+  canvas.ontouchmove = function(e){ e.preventDefault(); updateCropDrag(e.touches[0]); };
+  canvas.ontouchend = function(e){ endCropDrag(e.changedTouches[0]); };
+};
+
+function getCanvasPos(e, canvas) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (e.clientX - rect.left) * (canvas.width / rect.width),
+    y: (e.clientY - rect.top) * (canvas.height / rect.height)
+  };
+}
+
+function startCropDrag(e) {
+  const canvas = document.getElementById('crop-canvas');
+  const pos = getCanvasPos(e, canvas);
+  window._cropData.isDragging = true;
+  window._cropData.startX = pos.x;
+  window._cropData.startY = pos.y;
+  window._cropData.x = pos.x;
+  window._cropData.y = pos.y;
+  window._cropData.w = 0;
+  window._cropData.h = 0;
+}
+
+function updateCropDrag(e) {
+  if (!window._cropData.isDragging) return;
+  const canvas = document.getElementById('crop-canvas');
+  const pos = getCanvasPos(e, canvas);
+  window._cropData.x = Math.min(pos.x, window._cropData.startX);
+  window._cropData.y = Math.min(pos.y, window._cropData.startY);
+  window._cropData.w = Math.abs(pos.x - window._cropData.startX);
+  window._cropData.h = Math.abs(pos.y - window._cropData.startY);
+  const box = document.getElementById('crop-selection-box');
+  const rect = canvas.getBoundingClientRect();
+  const sx = rect.width / canvas.width;
+  const sy = rect.height / canvas.height;
+  if (box) {
+    box.style.display = 'block';
+    box.style.left = (window._cropData.x * sx) + 'px';
+    box.style.top = (window._cropData.y * sy) + 'px';
+    box.style.width = (window._cropData.w * sx) + 'px';
+    box.style.height = (window._cropData.h * sy) + 'px';
+  }
+  const coords = document.getElementById('crop-coords');
+  if (coords) coords.textContent = 'x=' + Math.round(window._cropData.x) + ' y=' + Math.round(window._cropData.y) + ' w=' + Math.round(window._cropData.w) + ' h=' + Math.round(window._cropData.h);
+}
+
+function endCropDrag(e) {
+  window._cropData.isDragging = false;
+}
+
+window.applyCropSelection = async function() {
+  const d = window._cropData;
+  if (!d.w || !d.h) { alert('Draw a crop area first'); return; }
+  const video = document.getElementById('ai-video');
+  if (!video) { alert('No video loaded'); return; }
+  document.getElementById('crop-tool').style.display = 'none';
+  addLog('all', '[~] Applying crop in browser...');
+  // Store crop data for export
+  window._exportCrop = { x: Math.round(d.x), y: Math.round(d.y), w: Math.round(d.w), h: Math.round(d.h) };
+  await exportClips([{start: 0, end: video.duration}], 'AfriVid-Cropped');
+  window._exportCrop = null;
+  addLog('all', '[ok] Crop applied!');
+};
+
+window.cancelCrop = function() {
+  document.getElementById('crop-tool').style.display = 'none';
+  document.getElementById('crop-selection-box').style.display = 'none';
+};
+
+</script>
+
+<script>
+function uploadToYouTube(){
+  if(!window._serverVideoUrl) { alert('Please process a video first, then click Upload to YouTube.'); return; }
+  const title = window._scriptData?.title || window._currentVideoFile?.name || 'AfriVid Edited Video';
+  const description = window._scriptData?.description || 'Edited with AfriVid Studio — afrivid.studio';
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: '957196729758-e50mss0sujt5jo70matst27mbc3kiapb.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/youtube.upload',
+    callback: async (tokenResponse) => {
+      if(tokenResponse.error){ alert('Google sign-in failed: ' + tokenResponse.error); return; }
+      await doYouTubeUpload(tokenResponse.access_token, title, description);
+    }
+  });
+  client.requestAccessToken();
+}
+window.doYouTubeUpload = async function(accessToken, title, description) {
+  const btn = document.querySelector('[onclick="uploadToYouTube()"]');
+  if(btn) { btn.textContent = '↑ Uploading...'; btn.disabled = true; }
+  try {
+    const proxyUrl = 'https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url=' + encodeURIComponent(window._serverVideoUrl);
+    const r = await fetch(proxyUrl);
+    const blob = await r.blob();
+    const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json', 'X-Upload-Content-Type': 'video/mp4', 'X-Upload-Content-Length': blob.size },
+      body: JSON.stringify({ snippet: { title, description: description + '\n\nCreated with AfriVid Studio — afrivid.studio', tags: ['AfriVid','Africa','Video Editor','AfriVid Studio'], categoryId: '27' }, status: { privacyStatus: 'public' } })
+    });
+    if(!initRes.ok) { const err = await initRes.json(); throw new Error(err.error?.message || 'Upload init failed'); }
+    const uploadUrl = initRes.headers.get('Location');
+    const uploadRes = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': 'video/mp4', 'Content-Length': blob.size }, body: blob });
+    if(!uploadRes.ok) { const err = await uploadRes.json(); throw new Error(err.error?.message || 'Upload failed'); }
+    const videoData = await uploadRes.json();
+    if(btn) { btn.textContent = '✅ Uploaded!'; btn.disabled = false; }
+    setTimeout(() => { if(btn) btn.textContent = '▶ Upload to YouTube'; }, 3000);
+    if(confirm('✅ Video uploaded to YouTube!\n\nVideo ID: ' + videoData.id + '\n\nOpen your video now?')) {
+      window.open('https://www.youtube.com/watch?v=' + videoData.id, '_blank');
+    }
+  } catch(e) {
+    console.error('YouTube upload error:', e);
+    if(btn) { btn.textContent = '▶ Upload to YouTube'; btn.disabled = false; }
+    alert('Upload failed: ' + e.message);
+  }
+};
+</script>
+</body>
+</html>
