@@ -128,6 +128,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#17140F;margin-bottom:0.4rem;}
 .page-sub{font-size:0.88rem;color:rgba(23,20,15,0.5);}
 .design-layout{display:grid;grid-template-columns:260px 1fr;gap:1.25rem;align-items:start;}
+.design-layout.canvas-hidden{grid-template-columns:1fr;}
+.design-layout.canvas-hidden .sidebar-panel{max-width:640px;margin:0 auto;width:100%;}
+.dstabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+.dstab{padding:0.6rem 1rem;border-radius:10px;border:1px solid rgba(23,20,15,0.12);background:#FFFFFF;color:rgba(23,20,15,0.6);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.dstab:hover:not(.active){border-color:rgba(224,138,46,0.4);color:#C4701E;}
+.dstab.active{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border-color:transparent;box-shadow:0 6px 16px rgba(224,138,46,0.3);}
 .sidebar-panel{display:flex;flex-direction:column;gap:1rem;}
 .canvas-panel{display:flex;flex-direction:column;gap:1rem;}
 .card{background:#FFFFFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.5rem;}
@@ -434,18 +440,18 @@ body::after{
     <!-- SIDEBAR -->
     <div class="sidebar-panel">
 
-      <!-- AI GENERATE -->
-      <div class="card">
-        <div class="control-label">AI GENERATE</div>
-        <select class="type-select" id="design-type">
+      <!-- TOOL TABS -->
+      <div class="dstabs" id="design-type-tabs">
+        <button class="dstab active" data-type="flyer" onclick="selectDesignType('flyer', true)">Flyer</button>
+        <button class="dstab" data-type="pro_poster" onclick="selectDesignType('pro_poster', true)">Poster</button>
+        <button class="dstab" data-type="pro_banner" onclick="selectDesignType('pro_banner', true)">Banner</button>
+        <button class="dstab" data-type="pro_logo" onclick="selectDesignType('pro_logo', true)">Logo</button>
+        <button class="dstab" data-type="product_poster" onclick="selectDesignType('product_poster', true)">Product Poster</button>
+        <button class="dstab" data-type="canvas" onclick="selectDesignType('canvas', true)">Canvas Editor</button>
+      </div>
 
-          <option value="flyer">Professional Flyer</option>
-          <option value="pro_poster">Professional Poster</option>
-          <option value="pro_banner">Professional Banner</option>
-          <option value="pro_logo">Professional Logo</option>
-          <option value="product_poster">Product / App Poster</option>
-        </select>
-        
+      <!-- AI GENERATE -->
+      <div class="card" id="ai-generate-card">
         <!-- Image upload for reference -->
 
         <!-- FLYER BUILDER -->
@@ -737,10 +743,6 @@ body::after{
         <div style="margin-top:0.5rem;font-size:0.68rem;color:rgba(23,20,15,0.35);font-family:'Space Mono',monospace;text-align:center;" id="design-status"></div>
       </div>
 
-      <!-- CANVAS EDIT TOGGLE -->
-      <button onclick="const p=document.getElementById('canvas-edit-panel');const a=document.getElementById('canvas-edit-arrow');const open=p.style.display==='none';p.style.display=open?'block':'none';a.textContent=open?'▾':'▸';" style="width:100%;background:#FFFFFF;border:1px solid rgba(23,20,15,0.1);color:#C4701E;font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:800;letter-spacing:1px;padding:0.75rem 1rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-radius:16px;">
-        Canvas Edit <span id="canvas-edit-arrow">▸</span>
-      </button>
       <div id="canvas-edit-panel" style="display:none;">
 
       <!-- TEMPLATES -->
@@ -828,7 +830,7 @@ body::after{
     </div>
 
     <!-- CANVAS AREA -->
-    <div class="canvas-panel">
+    <div class="canvas-panel" id="canvas-panel" style="display:none;">
       <div class="card" style="padding:1rem;">
         <div class="canvas-wrap" id="canvas-wrap">
           
@@ -2958,39 +2960,47 @@ window._drawFlyerOnCanvas = function(ctx, W, H, d, cb) {
 // FLYER BUILDER FUNCTIONS
 if (!window._flyerData) window._flyerData = { logo: null, photo: null, theme: 'dark' };
 
-function syncDesignTypePanel(scrollIntoView) {
-  const sel = document.getElementById('design-type');
-  if (!sel) return;
-  const gb = document.getElementById('design-generate-btn');
-  const aiPrompt = document.getElementById('design-ai-prompt');
-  const refBox = document.getElementById('design-ref-images');
-  // Hide all builder panels
+window.selectDesignType = function(type, scrollIntoView) {
+  // Tab highlight
+  document.querySelectorAll('.dstab').forEach(t => t.classList.toggle('active', t.dataset.type === type));
+
+  const layout = document.querySelector('.design-layout');
+  const aiCard = document.getElementById('ai-generate-card');
+  const canvasEditPanel = document.getElementById('canvas-edit-panel');
+  const canvasPanel = document.getElementById('canvas-panel');
+
+  if (type === 'canvas') {
+    // Raw canvas editor: the Professional AI builders render their own preview in a modal and
+    // never touch this canvas, so it only needs to be visible for someone actually using it —
+    // keeping it up otherwise was just permanent clutter next to whichever builder was active.
+    if (aiCard) aiCard.style.display = 'none';
+    if (canvasEditPanel) canvasEditPanel.style.display = 'block';
+    if (canvasPanel) canvasPanel.style.display = 'block';
+    if (layout) layout.classList.remove('canvas-hidden');
+    return;
+  }
+
+  if (aiCard) aiCard.style.display = 'block';
+  if (canvasEditPanel) canvasEditPanel.style.display = 'none';
+  if (canvasPanel) canvasPanel.style.display = 'none';
+  if (layout) layout.classList.add('canvas-hidden');
+
+  // Hide all builder panels, then show the one matching this type
   ['flyer','poster','banner','logo','product_poster'].forEach(t => {
     const p = document.getElementById(t+'-builder-panel');
     if (p) p.style.display = 'none';
   });
-  const v = sel.value;
-  const panelId = v.replace('pro_','') + '-builder-panel';
+  const panelId = type.replace('pro_','') + '-builder-panel';
   const builderPanel = document.getElementById(panelId);
   if (builderPanel) {
     builderPanel.style.display = 'block';
-    if (gb) gb.style.display = 'none';
-    if (aiPrompt) aiPrompt.style.display = 'none';
-    if (refBox) refBox.closest('div').style.display = 'none';
     if (scrollIntoView) setTimeout(() => builderPanel.scrollIntoView({behavior:'smooth', block:'start'}), 100);
-  } else {
-    if (gb) gb.style.display = 'block';
-    if (aiPrompt) aiPrompt.style.display = 'block';
-    if (refBox) refBox.closest('div').style.display = 'block';
   }
-}
+};
 document.addEventListener('DOMContentLoaded', () => {
-  const sel = document.getElementById('design-type');
-  if (sel) sel.addEventListener('change', () => syncDesignTypePanel(true));
-  // The select's default option ('flyer') never fires a 'change' event on page load, so the
-  // matching builder panel — and the fields inside it — stayed invisible until the user
-  // manually reselected the dropdown. Sync it once up front to match whatever's selected.
-  syncDesignTypePanel(false);
+  // Defaults to the 'flyer' tab, already marked active in the HTML — sync everything else
+  // (panel visibility, canvas hidden, layout width) to match on first load.
+  selectDesignType('flyer', false);
 });
 
 window.loadFlyerImage = function(type, input) {
