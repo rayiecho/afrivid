@@ -584,6 +584,7 @@ let currentUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
+  window.currentUser = user;
   if (user) {
     // Show user info
     document.getElementById('user-info').style.display = 'block';

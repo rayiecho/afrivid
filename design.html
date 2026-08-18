@@ -1025,6 +1025,7 @@ let W = 800, H = 800;
 
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
+  window.currentUser = user;
   if (user) {
     document.getElementById('btn-signin').style.display = 'none';
     const badge = document.getElementById('user-badge');
