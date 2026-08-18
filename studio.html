@@ -111,17 +111,17 @@
 /* ── DESIGN TOKENS ── same system as create.html, for consistency across the app.
    Brand colors are fixed; radius scale / glow technique / gradient / motion are new. */
 :root{
-  --bg:#050A14;
-  --surface:#0D1524;
-  --surface-2:#141F35;
-  --border:rgba(255,255,255,0.08);
-  --border-gold:rgba(245,166,35,0.18);
-  --text:#F8F9FC;
-  --text-muted:rgba(248,249,252,0.6);
-  --text-faint:rgba(248,249,252,0.35);
-  --gold:#F5A623;
-  --gold-dark:#E8931A;
-  --green:#74C69D;
+  --bg:#FBF7EF;
+  --surface:#FFFFFF;
+  --surface-2:#F3EDE0;
+  --border:rgba(23,20,15,0.1);
+  --border-gold:rgba(224,138,46,0.3);
+  --text:#17140F;
+  --text-muted:rgba(23,20,15,0.62);
+  --text-faint:rgba(23,20,15,0.4);
+  --gold:#E08A2E;
+  --gold-dark:#C4701E;
+  --green:#8B6F47;
   --red:#E63329;
   --gradient-gold:linear-gradient(135deg,var(--gold),var(--gold-dark));
   --gradient-accent:linear-gradient(135deg,var(--gold),var(--green));
@@ -129,21 +129,21 @@
   --radius-md:10px;
   --radius-lg:16px;
   --radius-full:9999px;
-  --glow-gold:0 0 20px rgba(245,166,35,.35),0 0 60px rgba(245,166,35,.15);
-  --glow-green:0 0 20px rgba(116,198,157,.35),0 0 60px rgba(116,198,157,.15);
+  --glow-gold:0 0 20px rgba(224,138,46,.35),0 0 60px rgba(224,138,46,.15);
+  --glow-green:0 0 20px rgba(139,111,71,.3),0 0 60px rgba(139,111,71,.12);
   --transition:all 0.2s ease;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(23,20,15,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(23,20,15,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
 
 @keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
 @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
 
 /* TOPBAR */
-.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,10,20,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .topbar-left{display:flex;align-items:center;gap:1rem;}
 .back-btn{display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
 .back-btn:hover{color:var(--gold);}
@@ -173,7 +173,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .filter-tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
 .filter-tab{padding:0.5rem 1.1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:var(--text-faint);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
 .filter-tab.active{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:var(--gold);box-shadow:var(--glow-gold);}
-.filter-tab:hover:not(.active){border-color:rgba(255,255,255,0.15);color:var(--text-muted);}
+.filter-tab:hover:not(.active){border-color:rgba(23,20,15,0.18);color:var(--text-muted);}
 
 /* SECTION */
 .studio-section{margin-bottom:3rem;animation:slideUp 0.3s ease both;}
@@ -182,7 +182,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .section-count{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
 
 /* GRID */
-.content-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.content-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1.25rem;}
 .content-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);cursor:pointer;}
 .content-card:hover{border-color:rgba(245,166,35,0.25);transform:translateY(-3px);box-shadow:var(--glow-gold);}
 .card-thumb{aspect-ratio:16/9;background:linear-gradient(135deg,var(--surface-2),var(--bg));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
@@ -193,7 +193,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .badge-video{background:rgba(245,166,35,0.2);color:var(--gold);border:1px solid rgba(245,166,35,0.3);}
 .badge-photo{background:rgba(116,198,157,0.2);color:var(--green);border:1px solid rgba(116,198,157,0.3);}
 .badge-design{background:rgba(99,153,255,0.2);color:#6399ff;border:1px solid rgba(99,153,255,0.3);}
-.badge-sample{background:rgba(255,255,255,0.1);color:var(--text-muted);border:1px solid rgba(255,255,255,0.1);}
+.badge-sample{background:rgba(23,20,15,0.12);color:var(--text-muted);border:1px solid rgba(23,20,15,0.12);}
 .card-body{padding:1rem;}
 .card-title{font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card-meta{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
@@ -205,7 +205,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .card-btn.danger:hover{border-color:rgba(230,51,41,0.4);color:var(--red);}
 
 /* EMPTY STATE */
-.empty-state{text-align:center;padding:4rem 2rem;background:rgba(255,255,255,0.02);border:1px dashed var(--border);border-radius:var(--radius-lg);}
+.empty-state{text-align:center;padding:4rem 2rem;background:rgba(23,20,15,0.03);border:1px dashed var(--border);border-radius:var(--radius-lg);}
 .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.4;}
 .empty-title{font-size:1rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;}
 .empty-sub{font-size:0.82rem;color:var(--text-faint);margin-bottom:1.5rem;}
@@ -233,12 +233,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:var(--bg);margin:0 auto 1rem;}
 .login-title{font-size:1.4rem;font-weight:800;color:var(--text);}
 .login-title span{color:var(--gold);}
-.login-card{background:rgba(13,21,36,0.95);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;backdrop-filter:blur(20px);}
-.auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
+.login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.auth-tabs{display:flex;background:rgba(23,20,15,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
 .auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
 .form-label{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
-.form-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
+.form-input{width:100%;background:rgba(23,20,15,0.04);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
 .form-input:focus{border-color:rgba(245,166,35,0.5);}
 .btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-auth:hover{box-shadow:var(--glow-gold);}
@@ -252,7 +252,39 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .quick-tool-icon{width:36px;height:36px;border-radius:var(--radius-md);background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 0.6rem;}
 .quick-tool-name{font-size:0.78rem;font-weight:700;color:var(--text-muted);}
 
+/* STUDIO LAYOUT — left sidebar + content */
+.studio-layout{display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;}
+.studio-sidebar{position:sticky;top:6rem;display:flex;flex-direction:column;gap:1.5rem;}
+.studio-nav{display:flex;flex-direction:column;gap:0.35rem;}
+.studio-nav-link{padding:0.7rem 1rem;border-radius:var(--radius-sm);color:var(--text-muted);font-weight:700;font-size:0.85rem;text-decoration:none;font-family:'Syne',sans-serif;transition:var(--transition);white-space:nowrap;}
+.studio-nav-link:hover:not(.active){background:rgba(245,166,35,0.08);color:var(--gold);}
+.studio-nav-link.active{background:var(--gradient-gold);color:var(--bg);box-shadow:var(--glow-gold);}
+.btn-signout-sidebar{width:100%;background:none;border:1px solid var(--border);color:var(--text-faint);padding:0.65rem;border-radius:var(--radius-sm);font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout-sidebar:hover{border-color:var(--red);color:var(--red);}
+
+/* STAT CARDS */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;}
+.stat-card-value{font-size:1.7rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
+.stat-card-label{font-size:0.66rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:0.35rem;}
+
+/* MAIN GRID: file list + side panels */
+.studio-main-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;}
+.side-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem;}
+.side-panel-title{font-size:0.66rem;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.9rem;}
+.side-panel-action{display:block;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);color:var(--gold);padding:0.7rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.82rem;text-decoration:none;margin-bottom:0.6rem;transition:var(--transition);}
+.side-panel-action:last-child{margin-bottom:0;}
+.side-panel-action:hover{background:rgba(245,166,35,0.15);box-shadow:var(--glow-gold);}
+
 /* RESPONSIVE — page-specific, only classes/IDs that actually exist on this page */
+@media(max-width:900px){
+  .studio-layout{grid-template-columns:1fr;gap:1rem;}
+  .studio-sidebar{position:static;flex-direction:row;flex-wrap:wrap;gap:0.75rem;}
+  .studio-nav{flex-direction:row;flex-wrap:wrap;}
+  .btn-signout-sidebar{width:auto;}
+  .studio-main-grid{grid-template-columns:1fr;}
+  .stat-cards{grid-template-columns:repeat(2,1fr);}
+}
 @media(max-width:768px){
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 5rem;}
@@ -265,9 +297,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 }
 @media(max-width:480px){
   .content-grid{grid-template-columns:1fr;}
+  .stat-cards{grid-template-columns:1fr 1fr;}
 }
 
-.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,10,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
 .navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:var(--gold);padding:0.2rem 0.6rem;border-radius:var(--radius-full);font-family:'Space Mono',monospace;letter-spacing:1px;}
 .btn-nav-tool{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.35);color:var(--gold);padding:0.5rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.8rem;font-family:'Syne',sans-serif;transition:var(--transition);}
@@ -291,7 +324,7 @@ body{padding-top:70px;}
 .plan-beta{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--gold);}
 .plan-pro{background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:var(--green);}
 .plan-dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
-.stat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem;}
+.stat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(23,20,15,0.04);font-size:0.82rem;}
 .stat-row:last-child{border-bottom:none;}
 .stat-row-label{color:var(--text-faint);}
 .stat-row-value{font-weight:600;font-family:'Space Mono',monospace;font-size:0.75rem;}
@@ -324,7 +357,7 @@ body::after{
 
 </style>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#F5A623">
+  <meta name="theme-color" content="#E08A2E">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AfriVid">
@@ -376,39 +409,84 @@ body::after{
 </div>
 
 <div class="main">
+  <div class="studio-layout">
 
-  <!-- PAGE HEADER -->
-<div class="page-header">
-    <div class="page-label">STUDIO</div>
-    <h1 class="page-title">My AfriVid Studio</h1>
-    <p class="page-sub" id="page-sub">Sign in to see your videos and designs here.</p>
-  </div>
+    <!-- SIDEBAR -->
+    <aside class="studio-sidebar">
+      <nav class="studio-nav">
+        <a href="studio.html" class="studio-nav-link active">My Studio</a>
+        <a href="create.html" class="studio-nav-link">Create Video</a>
+        <a href="design.html" class="studio-nav-link">Design Studio</a>
+        <a href="index.html" class="studio-nav-link">Home</a>
+      </nav>
+      <button class="btn-signout-sidebar" id="sidebar-signout" style="display:none;" onclick="signOut()">Sign Out</button>
+    </aside>
 
-  <!-- QUICK TOOL ACCESS -->
-  <div class="quick-tools">
-    <a href="create.html" class="quick-tool">
-      <div class="quick-tool-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-      <div class="quick-tool-name">Create</div>
-    </a>
-    <a href="design.html" class="quick-tool">
-      <div class="quick-tool-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
-      <div class="quick-tool-name">Design</div>
-    </a>
-  </div>
+    <!-- CONTENT -->
+    <div class="studio-content">
 
-  <!-- FILTER TABS -->
-  <div class="filter-tabs">
-    <button class="filter-tab active" onclick="filterContent('video')">Videos Created</button>
-    <button class="filter-tab" onclick="filterContent('design')">Designs Created</button>
-  </div>
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div class="page-label">STUDIO</div>
+        <h1 class="page-title" id="page-title">My AfriVid Studio</h1>
+        <p class="page-sub" id="page-sub">Sign in to see your videos and designs here.</p>
+      </div>
 
-  <!-- USER FILES SECTION -->
-  <div class="studio-section" id="my-files-section">
-    <div class="section-header">
-      <div class="section-label" id="my-files-label">VIDEOS CREATED</div>
-      <div class="section-count" id="my-files-count">0 items</div>
+      <!-- STAT CARDS -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card-value" id="stat-videos">0</div>
+          <div class="stat-card-label">VIDEOS CREATED</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="stat-designs">0</div>
+          <div class="stat-card-label">DESIGNS CREATED</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="stat-total">0</div>
+          <div class="stat-card-label">TOTAL CREATIONS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="stat-plan">Beta</div>
+          <div class="stat-card-label">PLAN</div>
+        </div>
+      </div>
+
+      <div class="studio-main-grid">
+        <!-- MAIN LIST -->
+        <div class="studio-main-col">
+          <!-- FILTER TABS -->
+          <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterContent('video')">Videos Created</button>
+            <button class="filter-tab" onclick="filterContent('design')">Designs Created</button>
+          </div>
+
+          <!-- USER FILES SECTION -->
+          <div class="studio-section" id="my-files-section">
+            <div class="section-header">
+              <div class="section-label" id="my-files-label">VIDEOS CREATED</div>
+              <div class="section-count" id="my-files-count">0 items</div>
+            </div>
+            <div class="content-grid" id="my-files-grid"></div>
+          </div>
+        </div>
+
+        <!-- SIDE PANELS -->
+        <div class="studio-side-col">
+          <div class="side-panel">
+            <div class="side-panel-title">QUICK ACTIONS</div>
+            <a href="create.html" class="side-panel-action">+ New Video</a>
+            <a href="design.html" class="side-panel-action">+ New Design</a>
+          </div>
+          <div class="side-panel">
+            <div class="side-panel-title">ACCOUNT</div>
+            <div class="stat-row"><span class="stat-row-label">Email</span><span class="stat-row-value" id="side-email">—</span></div>
+            <div class="stat-row"><span class="stat-row-label">Member Since</span><span class="stat-row-value" id="side-joined">—</span></div>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div class="content-grid" id="my-files-grid"></div>
   </div>
 </div>
 
@@ -431,8 +509,8 @@ body::after{
         <label class="form-label">PASSWORD</label>
         <input type="password" id="login-password" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
-      </div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.45);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#E08A2E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+      </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="form-label">FULL NAME</label>
         <input type="text" id="signup-name" class="form-input" placeholder="Your full name">
@@ -440,20 +518,22 @@ body::after{
         <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
-          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#F5A623;flex-shrink:0;" required>
-          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#F5A623;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#F5A623;text-decoration:none;">Privacy Policy</a></label>
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
+          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#E08A2E;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#E08A2E;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
-          <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#74C69D;flex-shrink:0;" checked>
-          <label for="afribrain-consent">Help build <span style="color:#74C69D;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#74C69D;text-decoration:none;">Learn more</a></label>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+          <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
+          <label for="afribrain-consent">Help build <span style="color:#8B6F47;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#8B6F47;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
-      </div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.45);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#E08A2E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+      </form>
       <div class="login-error" id="login-error">
       </div>
     </div>
+  </div>
+</div>
 
 
 <script>
@@ -509,11 +589,24 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('user-info').style.display = 'block';
     document.getElementById('btn-signin').style.display = 'none';
     document.getElementById('btn-signout').style.display = 'block';
+    document.getElementById('sidebar-signout').style.display = 'block';
     const name = user.displayName || user.email.split('@')[0];
     document.getElementById('user-name').textContent = name;
-    document.getElementById('page-sub').textContent = `Welcome back, ${name}.`;
+    document.getElementById('page-title').textContent = `Hello, ${name}`;
+    document.getElementById('page-sub').textContent = `Welcome back — here's what's happening in your studio.`;
+    document.getElementById('side-email').textContent = user.email;
     // Load user files
     await loadUserFiles(user.uid);
+    // Account panel: plan + member-since
+    try {
+      const snap = await getDoc(doc(db, 'studio_users', user.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        document.getElementById('stat-plan').textContent = (data.plan || 'beta').charAt(0).toUpperCase() + (data.plan || 'beta').slice(1);
+        const joined = data.createdAt?.toDate?.()?.toLocaleDateString('en-US',{year:'numeric',month:'short'}) || '—';
+        document.getElementById('side-joined').textContent = joined;
+      }
+    } catch(e) { console.error('Account panel error:', e); }
     // Real-time listener for user data (keeps profile modal activity stats fresh)
     const ref = doc(db, 'studio_users', user.uid);
     onSnapshot(ref, (snap) => {
@@ -525,7 +618,12 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('user-info').style.display = 'none';
     document.getElementById('btn-signin').style.display = 'block';
     document.getElementById('btn-signout').style.display = 'none';
+    document.getElementById('sidebar-signout').style.display = 'none';
+    document.getElementById('page-title').textContent = 'My AfriVid Studio';
     document.getElementById('page-sub').textContent = 'Sign in to see your videos and designs here.';
+    document.getElementById('side-email').textContent = '—';
+    document.getElementById('side-joined').textContent = '—';
+    document.getElementById('stat-plan').textContent = '—';
     loadUserFiles(null);
   }
 });
@@ -547,8 +645,8 @@ function renderContentCard(docId, data, type, collectionName) {
   const date = data.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently';
   const title = data.title || (type === 'video' ? 'Untitled Video' : type === 'photo' ? 'Edited Photo' : 'Design');
   const icons = {
-    video: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
-    photo: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#74C69D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+    video: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E08A2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+    photo: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8B6F47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
     design: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6399ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
   };
   const thumbClass = type === 'photo' ? 'card-thumb photo' : type === 'design' ? 'card-thumb design' : 'card-thumb';
@@ -591,6 +689,12 @@ let studioTab = 'video';
 let cachedVideos = [];
 let cachedDesigns = [];
 
+function updateStatCards() {
+  document.getElementById('stat-videos').textContent = cachedVideos.length;
+  document.getElementById('stat-designs').textContent = cachedDesigns.length;
+  document.getElementById('stat-total').textContent = cachedVideos.length + cachedDesigns.length;
+}
+
 function renderStudioTab() {
   const grid = document.getElementById('my-files-grid');
   const count = document.getElementById('my-files-count');
@@ -598,6 +702,7 @@ function renderStudioTab() {
   const items = studioTab === 'video' ? cachedVideos : cachedDesigns;
   label.textContent = studioTab === 'video' ? 'VIDEOS CREATED' : 'DESIGNS CREATED';
   count.textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+  updateStatCards();
 
   if (!currentUser) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
@@ -642,7 +747,7 @@ async function loadUserFiles(uid) {
     renderStudioTab();
   } catch(e) {
     console.error('Error loading files:', e);
-    grid.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
+    grid.innerHTML = `<div style="color:rgba(23,20,15,0.4);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
   }
 }
 
@@ -815,28 +920,28 @@ window._saveProfileName = async function() {
 
 <!-- Video Info Modal -->
 <div id="video-info-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.9);align-items:center;justify-content:center;">
-  <div style="background:#111;border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.08);width:90%;max-width:480px;">
+  <div style="background:#111;border-radius:16px;padding:1.5rem;border:1px solid rgba(23,20,15,0.1);width:90%;max-width:480px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <h3 id="vinfo-title" style="color:#F5A623;font-weight:800;font-size:1rem;"></h3>
-      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;"></button>
+      <h3 id="vinfo-title" style="color:#E08A2E;font-weight:800;font-size:1rem;"></h3>
+      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:none;border:none;color:#17140F;font-size:1.2rem;cursor:pointer;"></button>
     </div>
-    <div style="background:#1a1a1a;border-radius:12px;padding:1rem;margin-bottom:1rem;">
+    <div style="background:#F3EDE0;border-radius:12px;padding:1rem;margin-bottom:1rem;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
         <div>
-          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DATE</div>
-          <div id="vinfo-date" style="color:#fff;font-size:0.85rem;font-weight:600;"></div>
+          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DATE</div>
+          <div id="vinfo-date" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DURATION</div>
-          <div id="vinfo-duration" style="color:#fff;font-size:0.85rem;font-weight:600;"></div>
+          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DURATION</div>
+          <div id="vinfo-duration" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">SIZE</div>
-          <div id="vinfo-size" style="color:#fff;font-size:0.85rem;font-weight:600;"></div>
+          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">SIZE</div>
+          <div id="vinfo-size" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">STATUS</div>
-          <div style="color:#74C69D;font-size:0.85rem;font-weight:600;">Saved</div>
+          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">STATUS</div>
+          <div style="color:#8B6F47;font-size:0.85rem;font-weight:600;">Saved</div>
         </div>
       </div>
     </div>
@@ -844,8 +949,8 @@ window._saveProfileName = async function() {
       <video id="vinfo-video" controls style="width:100%;border-radius:8px;max-height:240px;"></video>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-      <button id="vinfo-recreate-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:8px;font-weight:800;cursor:pointer;">Recreate Video</button>
-      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:8px;font-weight:600;cursor:pointer;">Close</button>
+      <button id="vinfo-recreate-btn" style="background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:8px;font-weight:800;cursor:pointer;">Recreate Video</button>
+      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:#F3EDE0;border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-weight:600;cursor:pointer;">Close</button>
     </div>
   </div>
 </div>
@@ -874,16 +979,16 @@ window.playStudioVideo = function(id, title, videoUrl, dataURL) {
   const modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;';
   modal.innerHTML = `
-    <div style="max-width:860px;width:100%;background:#0D1117;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <span style="color:#fff;font-weight:700;font-family:Syne,sans-serif;">${title}</span>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;"></button>
+    <div style="max-width:860px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid rgba(23,20,15,0.1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(23,20,15,0.08);">
+        <span style="color:#17140F;font-weight:700;font-family:Syne,sans-serif;">${title}</span>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(23,20,15,0.5);font-size:1.4rem;cursor:pointer;"></button>
       </div>
       <video src="${src}" controls autoplay style="width:100%;max-height:70vh;background:#000;display:block;"></video>
       <div style="padding:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
-        <button onclick="downloadStudioItem('${src}','${title}','video')" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">Download</button>
-        <button onclick="useTemplate('${title}')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Recreate</button>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Close</button>
+        <button onclick="downloadStudioItem('${src}','${title}','video')" style="background:#E08A2E;border:none;color:#17140F;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">Download</button>
+        <button onclick="useTemplate('${title}')" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Recreate</button>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.5);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Close</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
@@ -942,17 +1047,17 @@ function showToast(msg, type) {
 window._showToast = showToast;
 </script>
 
-<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.15);font-size:0.7rem;font-family:'Space Mono',monospace;">
-  <a href="admin.html" style="color:rgba(255,255,255,0.04);text-decoration:none;user-select:none;">·</a>     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Facebook</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Instagram</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">TikTok</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Twitter</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">YouTube</a>
+<div style="text-align:center;padding:2rem;color:rgba(23,20,15,0.18);font-size:0.7rem;font-family:'Space Mono',monospace;">
+  <a href="admin.html" style="color:rgba(23,20,15,0.04);text-decoration:none;user-select:none;">·</a>     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
+      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Facebook</a>
+      <span style="color:rgba(23,20,15,0.12);">·</span>
+      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Instagram</a>
+      <span style="color:rgba(23,20,15,0.12);">·</span>
+      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">TikTok</a>
+      <span style="color:rgba(23,20,15,0.12);">·</span>
+      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Twitter</a>
+      <span style="color:rgba(23,20,15,0.12);">·</span>
+      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">YouTube</a>
     </div>
     © 2026 AfriVid Studio
 </div>
@@ -969,13 +1074,13 @@ if('serviceWorker' in navigator) {
 <div id="video-player-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;" onclick="if(event.target===this)closeVideoPlayer()">
   <div style="width:90%;max-width:800px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <div id="vp-title" style="color:#fff;font-weight:800;font-size:1rem;font-family:'Syne',sans-serif;"></div>
-      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.5rem;cursor:pointer;"></button>
+      <div id="vp-title" style="color:#17140F;font-weight:800;font-size:1rem;font-family:'Syne',sans-serif;"></div>
+      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(23,20,15,0.6);font-size:1.5rem;cursor:pointer;"></button>
     </div>
     <video id="vp-video" controls style="width:100%;border-radius:12px;background:#000;max-height:70vh;"></video>
     <div style="display:flex;gap:0.75rem;margin-top:1rem;">
-      <a id="vp-download" download style="background:#F5A623;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">Download</a>
-      <button onclick="closeVideoPlayer()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;">Close</button>
+      <a id="vp-download" download style="background:#E08A2E;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">Download</a>
+      <button onclick="closeVideoPlayer()" style="background:rgba(23,20,15,0.12);border:none;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;">Close</button>
     </div>
   </div>
 </div>
@@ -1004,13 +1109,13 @@ function closeVideoPlayer() {
 <div id="photo-viewer-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;" onclick="if(event.target===this)closePhotoViewer()">
   <div style="width:90%;max-width:700px;text-align:center;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <div style="color:#fff;font-weight:800;font-family:'Syne',sans-serif;">Edited Photo</div>
-      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.5rem;cursor:pointer;"></button>
+      <div style="color:#17140F;font-weight:800;font-family:'Syne',sans-serif;">Edited Photo</div>
+      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(23,20,15,0.6);font-size:1.5rem;cursor:pointer;"></button>
     </div>
     <img id="pv-image" style="max-width:100%;max-height:70vh;border-radius:12px;object-fit:contain;">
     <div style="display:flex;gap:0.75rem;margin-top:1rem;justify-content:center;">
-      <a id="pv-download" download="AfriVid-Photo.jpg" style="background:#F5A623;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">Download</a>
-      <button onclick="closePhotoViewer()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;">Close</button>
+      <a id="pv-download" download="AfriVid-Photo.jpg" style="background:#E08A2E;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.85rem;">Download</a>
+      <button onclick="closePhotoViewer()" style="background:rgba(23,20,15,0.12);border:none;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;">Close</button>
     </div>
   </div>
 </div>
@@ -1042,7 +1147,7 @@ function copyShareLink(url) {
   navigator.clipboard.writeText(url).then(() => {
     // Show toast
     const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#74C69D;color:#050A14;padding:0.75rem 1.5rem;border-radius:10px;font-weight:800;font-size:0.85rem;z-index:9999;font-family:Syne,sans-serif;';
+    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#8B6F47;color:#17140F;padding:0.75rem 1.5rem;border-radius:10px;font-weight:800;font-size:0.85rem;z-index:9999;font-family:Syne,sans-serif;';
     toast.textContent = 'Link copied to clipboard!';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
@@ -1098,7 +1203,7 @@ window.submitFeedback = async function() {
 document.addEventListener('DOMContentLoaded', () => {
   const fab = document.createElement('button');
   fab.id = 'feedback-fab';
-  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
+  fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#E08A2E;border:none;color:#17140F;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
   fab.innerHTML = 'Feedback';
   fab.title = 'Send Feedback';
   fab.onclick = () => {
@@ -1111,23 +1216,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- FEEDBACK MODAL -->
 <div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+  <div style="background:#FFFFFF;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;"></div>
-      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa</div>
+      <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
+      <div style="color:rgba(23,20,15,0.5);font-size:0.8rem;">Help us build a better AfriVid for Africa</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
       <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Bug</button>
       <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Feature</button>
-      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Praise</button>
-      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">General</button>
-      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Complaint</button>
-      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Idea</button>
+      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#8B6F47;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Praise</button>
+      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#E08A2E;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">General</button>
+      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Complaint</button>
+      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">Idea</button>
     </div>
     <input type="hidden" id="feedback-type" value="general">
     <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
-      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rate AfriVid:</span>
+      <span style="color:rgba(23,20,15,0.5);font-size:0.78rem;">Rate AfriVid:</span>
       <div id="star-rating" style="display:flex;gap:0.25rem;">
         <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
         <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;"></span>
@@ -1137,11 +1242,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
     <input type="hidden" id="feedback-rating" value="5">
-    <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
+    <textarea id="feedback-msg" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
     <div style="display:flex;gap:0.5rem;">
-      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
+      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.6);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.32);font-size:0.7rem;">Your feedback goes directly to the AfriVid team</div>
   </div>
 </div>
