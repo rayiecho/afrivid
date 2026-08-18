@@ -170,26 +170,17 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
       return;
     }
 
-    // Check Pro access for API calls
+    // window.currentUser is undefined until the page's Firebase auth listener fires once —
+    // clicking a suggestion chip right after page load could otherwise misread "not yet
+    // loaded" as "signed out". Give it a moment to settle before deciding.
+    for (let i = 0; i < 20 && window.currentUser === undefined; i++) {
+      await new Promise(r => setTimeout(r, 100));
+    }
     if (!window.currentUser) {
       addMessage("Sign in to use the AfriVid AI assistant. Create a free account at afrivid.studio! 🌍", 'bot');
       return;
     }
     const isPro = await checkProAccess();
-    if (!isPro) {
-      addMessage("The AI assistant is available for Pro users. Upgrade to Pro for $5/month to get unlimited AI assistance, unlimited videos and more! Visit the pricing page to upgrade. 🚀", 'bot');
-      return;
-    }
-    chatHistory.push({role:'user', content: msg});
-
-    // Add user message
-    addMessage(msg, 'user');
-    // Check Pro access for API calls
-    if (!window.currentUser) {
-      addMessage("Sign in to use the AfriVid AI assistant. Create a free account at afrivid.studio! 🌍", 'bot');
-      return;
-    }
-    isPro = await checkProAccess();
     if (!isPro) {
       addMessage("The AI assistant is available for Pro users. Upgrade to Pro for $5/month to get unlimited AI assistance, unlimited videos and more! Visit the pricing page to upgrade. 🚀", 'bot');
       return;
