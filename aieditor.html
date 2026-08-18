@@ -1116,9 +1116,6 @@ async function transcribe() {
   if (!res.ok) return '';
   const d = await res.json();
   const transcriptText = d.text || '';
-  if (transcriptText && window.saveToAfriBrain) {
-    window.saveToAfriBrain({text: transcriptText, language: 'en', source: 'aieditor', type: 'transcript'});
-  }
   return transcriptText;
 }
 
@@ -2024,7 +2021,6 @@ async function submitFeedback() {
 })();
 </script>
 
-<script src="afribrain.js"></script>
 <script src="limits.js"></script>
 
 <script>

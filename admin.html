@@ -291,9 +291,15 @@ window._feedbackLoaded = false;
       <div class="page active" id="page-overview">
         <!-- AfriBrain Stats -->
         <div style="margin-bottom:1.5rem;">
-          <div style="font-size:0.65rem;color:#74C69D;font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.75rem;">AFRIBRAIN DATA COLLECTION</div>
-          <div id="afribrain-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+            <div style="font-size:0.65rem;color:#74C69D;font-family:var(--font-mono);letter-spacing:2px;">AFRIBRAIN DATA COLLECTION</div>
+            <button onclick="toggleAfriBrainEntries()" id="afribrain-entries-toggle" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.4rem 0.85rem;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-mono);">View Entries</button>
+          </div>
+          <div id="afribrain-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
             <div class="stat-card"><div class="stat-value" style="color:#74C69D">...</div><div class="stat-label">ENTRIES</div></div>
+          </div>
+          <div id="afribrain-entries-wrap" style="display:none;">
+            <div id="afribrain-entries-list" style="max-height:500px;overflow-y:auto;"></div>
           </div>
         </div>
         <div class="page-title">Overview</div>
@@ -1520,6 +1526,39 @@ updateClock();
     `;
   } catch(e) {}
 };
+
+window.toggleAfriBrainEntries = async function() {
+  const wrap = document.getElementById('afribrain-entries-wrap');
+  const btn = document.getElementById('afribrain-entries-toggle');
+  const opening = wrap.style.display === 'none';
+  wrap.style.display = opening ? 'block' : 'none';
+  btn.textContent = opening ? 'Hide Entries' : 'View Entries';
+  if (opening) await window.loadAfriBrainEntries();
+};
+
+window.loadAfriBrainEntries = async function() {
+  const list = document.getElementById('afribrain-entries-list');
+  list.innerHTML = '<div style="color:var(--muted);font-size:0.8rem;font-family:var(--font-mono);padding:1rem;">[..] Loading...</div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'afribrain_data'), orderBy('created_at', 'desc'), limit(200)));
+    const items = snap.docs.map(d => d.data());
+    list.innerHTML = items.length ? items.map(item => `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;">
+        <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.4rem;flex-wrap:wrap;">
+          <span style="background:rgba(116,198,157,0.1);color:#74C69D;padding:0.15rem 0.5rem;border-radius:4px;font-size:0.68rem;font-family:var(--font-mono);">${(item.source||'?').toUpperCase()}</span>
+          <span style="background:rgba(245,166,35,0.1);color:#F5A623;padding:0.15rem 0.5rem;border-radius:4px;font-size:0.68rem;font-family:var(--font-mono);">${(item.type||'?').toUpperCase()}</span>
+          <span style="color:var(--muted);font-size:0.7rem;font-family:var(--font-mono);">${item.language||'en'} · ${item.word_count||0} words</span>
+          <span style="color:var(--muted);font-size:0.68rem;margin-left:auto;font-family:var(--font-mono);">${item.created_at?.toDate?.()?.toLocaleString()||'—'}</span>
+        </div>
+        ${item.topic ? `<div style="color:var(--white);font-size:0.8rem;font-weight:700;margin-bottom:0.3rem;">${item.topic}</div>` : ''}
+        <div style="color:var(--muted);font-size:0.82rem;line-height:1.5;white-space:pre-wrap;">${item.text||''}</div>
+      </div>
+    `).join('') : '<div style="color:var(--muted);text-align:center;padding:2rem;">No entries yet</div>';
+  } catch(e) {
+    list.innerHTML = `<div style="color:#E63329;font-family:var(--font-mono);padding:1rem;">[x] ${e.message}</div>`;
+  }
+};
+
 window.loadFeedback = async function() {
     const list = document.getElementById('fb-list');
     const stats = document.getElementById('fb-stats');

@@ -2717,6 +2717,7 @@ async function submitFeedback() {
 </script>
 
 <script src="chatbot.js"></script>
+<script src="afribrain.js"></script>
 <script>
 if('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -3060,6 +3061,9 @@ Return ONLY the JSON.` }] })
     const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
     set('logo-org', d.org);
     set('logo-tagline', d.tagline);
+    if (window.saveToAfriBrain && d.tagline) {
+      window.saveToAfriBrain({text: d.tagline, source: 'design', type: 'logo', topic: d.org || ''});
+    }
     btn.textContent = 'Done!';
     setTimeout(() => { btn.textContent = 'AI Fill'; btn.disabled = false; }, 2000);
     const editFields = document.getElementById('logo-edit-fields');
@@ -3110,6 +3114,10 @@ Return ONLY the JSON.` }] })
     set('banner-headline', d.headline);
     set('banner-tagline', d.tagline);
     set('banner-cta', d.cta);
+    if (window.saveToAfriBrain) {
+      const fullText = [d.headline, d.tagline, d.cta].filter(Boolean).join('. ');
+      window.saveToAfriBrain({text: fullText, source: 'design', type: 'banner', topic: d.headline || ''});
+    }
     btn.textContent = 'Done!';
     setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
     const editFields = document.getElementById('banner-edit-fields');
@@ -3203,6 +3211,10 @@ Return ONLY the JSON.` }]
     set('poster-cta', d.cta);
     set('poster-instagram', d.instagram);
     set('poster-whatsapp', d.whatsapp);
+    if (window.saveToAfriBrain) {
+      const fullText = [d.headline, d.tagline, d.description, d.h1, d.h2, d.h3].filter(Boolean).join('. ');
+      window.saveToAfriBrain({text: fullText, source: 'design', type: 'poster', topic: d.headline || ''});
+    }
     btn.textContent = 'Done!';
     setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
     const editFields = document.getElementById('poster-edit-fields');
@@ -3358,6 +3370,10 @@ Return ONLY the JSON, no explanation.` }]
     set('flyer-learn3', d.learn3);
     set('flyer-instagram', d.instagram);
     set('flyer-whatsapp', d.whatsapp);
+    if (window.saveToAfriBrain) {
+      const fullText = [d.title, d.tagline, d.bio, d.description, d.learn1, d.learn2, d.learn3, d.h1, d.h2, d.h3].filter(Boolean).join('. ');
+      window.saveToAfriBrain({text: fullText, source: 'design', type: 'flyer', topic: d.title || ''});
+    }
     btn.textContent = 'Done!';
     setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
     // Filled values only land in the hidden Edit Fields inputs — with nothing else on screen
@@ -3932,6 +3948,11 @@ window.aiFillProductPoster = async function() {
     }
     if (d.cta) document.getElementById('pp-cta').value = d.cta;
     if (d.website) document.getElementById('pp-website').value = d.website;
+    if (window.saveToAfriBrain) {
+      const features = [1,2,3,4,5,6].map(n => d['f'+n+'_name']).filter(Boolean);
+      const fullText = [d.headline, d.tagline, ...features].filter(Boolean).join('. ');
+      window.saveToAfriBrain({text: fullText, source: 'design', type: 'product_poster', topic: d.name || ''});
+    }
     document.getElementById('pp-edit-fields').style.display = 'block';
     const ppEditBtn = document.getElementById('pp-edit-toggle-btn');
     if (ppEditBtn) ppEditBtn.textContent = '▲ Hide Fields';
