@@ -886,6 +886,9 @@ async function loadOverview() {
     // Balance from Firestore
     await loadFinanceSummary();
 
+    // AfriBrain data collection stats
+    if (window.loadAfriBrainStats) await window.loadAfriBrainStats();
+
     // Recent users
     const recentUsers = [];
     usersSnap.forEach(d => recentUsers.push({id:d.id,...d.data()}));

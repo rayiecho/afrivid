@@ -4,9 +4,10 @@
 
 window.saveToAfriBrain = async function(data) {
   try {
-    // Check consent
+    // Check consent — require an explicit, checked consent box on the current page. No box
+    // present means no evidence of consent here, so this must not silently proceed.
     const consentEl = document.getElementById('afribrain-consent');
-    if (consentEl && !consentEl.checked) return;
+    if (!consentEl || !consentEl.checked) return;
     
     // Check if user is logged in
     if (!window.currentUser) return;
