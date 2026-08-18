@@ -122,7 +122,8 @@ body{font-family:'Syne',sans-serif;background:#FBF7EF;color:#17140F;overflow-x:h
 body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(23,20,15,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(23,20,15,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
 
 /* NAVBAR */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,20,15,0.1);}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,20,15,0.1);transition:box-shadow 0.3s,border-color 0.3s;}
+.navbar.scrolled{border-bottom-color:rgba(23,20,15,0.14);box-shadow:0 4px 24px rgba(23,20,15,0.06);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
 .navbar-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#E08A2E,#C4701E);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#17140F;}
 .navbar-title{font-size:1.05rem;font-weight:800;color:#17140F;}
@@ -157,23 +158,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 /* TOOL CARDS — the main dashboard */
 .tools-section{position:relative;z-index:1;padding:5rem 2rem;max-width:1100px;margin:0 auto;}
-.section-label{font-size:0.72rem;letter-spacing:3px;color:#F5A623;font-family:'Space Mono',monospace;margin-bottom:0.75rem;text-align:center;}
-.section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#fff;text-align:center;margin-bottom:0.75rem;}
-.section-sub{font-size:0.95rem;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:3rem;}
+.section-label{font-size:0.72rem;letter-spacing:3px;color:#C4701E;font-family:'Space Mono',monospace;margin-bottom:0.75rem;text-align:center;font-weight:700;}
+.section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#17140F;text-align:center;margin-bottom:0.75rem;}
+.section-sub{font-size:0.95rem;color:rgba(23,20,15,0.5);text-align:center;margin-bottom:3rem;max-width:520px;margin-left:auto;margin-right:auto;}
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;}
-.tool-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;position:relative;overflow:hidden;}
-.tool-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,166,35,0.06),transparent);opacity:0;transition:opacity 0.3s;}
-.tool-card:hover{border-color:rgba(245,166,35,0.25);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.3);}
+.tool-card{background:#FFFFFF;border:1px solid rgba(23,20,15,0.08);border-radius:20px;padding:2rem;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;position:relative;overflow:hidden;}
+.tool-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(224,138,46,0.06),transparent);opacity:0;transition:opacity 0.3s;}
+.tool-card:hover{border-color:rgba(224,138,46,0.3);transform:translateY(-4px);box-shadow:0 20px 40px rgba(23,20,15,0.1);}
 .tool-card:hover::before{opacity:1;}
-.tool-card-icon{width:52px;height:52px;border-radius:14px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;}
-.tool-card-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
-.tool-card-title{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:0.5rem;}
-.tool-card-desc{font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:1.25rem;}
-.tool-card-action{font-size:0.8rem;font-weight:700;color:#F5A623;font-family:'Space Mono',monospace;display:flex;align-items:center;gap:0.5rem;}
-.tool-card.featured{background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(116,198,157,0.05));border-color:rgba(245,166,35,0.2);}
-.tool-card.studio{background:linear-gradient(135deg,rgba(116,198,157,0.08),rgba(45,138,94,0.05));border-color:rgba(116,198,157,0.2);}
-.tool-card.studio .tool-card-icon{background:rgba(116,198,157,0.1);border-color:rgba(116,198,157,0.2);}
-.tool-card.studio .tool-card-label,.tool-card.studio .tool-card-action{color:#74C69D;}
+.tool-card-icon{width:52px;height:52px;border-radius:14px;background:rgba(224,138,46,0.1);border:1px solid rgba(224,138,46,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;}
+.tool-card-label{font-size:0.65rem;color:#C4701E;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;font-weight:700;}
+.tool-card-title{font-size:1.2rem;font-weight:800;color:#17140F;margin-bottom:0.5rem;}
+.tool-card-desc{font-size:0.82rem;color:rgba(23,20,15,0.55);line-height:1.7;margin-bottom:1.25rem;}
+.tool-card-action{font-size:0.8rem;font-weight:700;color:#C4701E;font-family:'Space Mono',monospace;display:flex;align-items:center;gap:0.5rem;}
+.tool-card.featured{background:linear-gradient(135deg,rgba(224,138,46,0.06),rgba(139,111,71,0.04));border-color:rgba(224,138,46,0.2);}
+.tool-card.studio{background:linear-gradient(135deg,rgba(139,111,71,0.08),rgba(139,111,71,0.03));border-color:rgba(139,111,71,0.2);}
+.tool-card.studio .tool-card-icon{background:rgba(139,111,71,0.12);border-color:rgba(139,111,71,0.25);}
+.tool-card.studio .tool-card-label,.tool-card.studio .tool-card-action{color:#8B6F47;}
 
 /* STATS */
 .stats-section{position:relative;z-index:1;max-width:900px;margin:4rem auto 2rem;padding:0 2rem;}
@@ -190,16 +191,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* HOW IT WORKS */
 .how-section{position:relative;z-index:1;max-width:1000px;margin:0 auto 5rem;padding:0 2rem;}
 .steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;position:relative;}
-.steps-grid::before{content:'';position:absolute;top:40px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,#F5A623,#74C69D);opacity:0.2;}
+.steps-grid::before{content:'';position:absolute;top:40px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,#E08A2E,#8B6F47);opacity:0.3;}
 .step-item{text-align:center;position:relative;z-index:1;}
 .step-circle{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.8rem;font-weight:900;}
-.step-circle.gold{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;box-shadow:0 8px 30px rgba(245,166,35,0.3);}
-.step-circle.outline-gold{background:rgba(13,31,53,0.8);border:2px solid #F5A623;color:#F5A623;}
-.step-circle.outline-green{background:rgba(13,31,53,0.8);border:2px solid #74C69D;color:#74C69D;}
-.step-tag{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
-.step-tag.green{color:#74C69D;}
-.step-title{font-weight:700;color:#fff;font-size:0.95rem;margin-bottom:0.5rem;}
-.step-desc{font-size:0.8rem;color:rgba(255,255,255,0.4);line-height:1.7;}
+.step-circle.gold{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#FBF7EF;box-shadow:0 8px 30px rgba(224,138,46,0.3);}
+.step-circle.outline-gold{background:#FFFFFF;border:2px solid #E08A2E;color:#C4701E;}
+.step-circle.outline-green{background:#FFFFFF;border:2px solid #8B6F47;color:#8B6F47;}
+.step-circle.filled-green{background:linear-gradient(135deg,#8B6F47,#6B5537);color:#FBF7EF;box-shadow:0 8px 30px rgba(139,111,71,0.3);}
+.step-tag{font-size:0.68rem;color:#C4701E;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;font-weight:700;}
+.step-tag.green{color:#8B6F47;}
+.step-title{font-weight:700;color:#17140F;font-size:0.95rem;margin-bottom:0.5rem;}
+.step-desc{font-size:0.8rem;color:rgba(23,20,15,0.5);line-height:1.7;}
 
 /* FEATURES */
 .features-section{position:relative;z-index:1;max-width:1100px;margin:0 auto 5rem;padding:0 2rem;}
@@ -209,6 +211,28 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .feature-icon{margin-bottom:1rem;}
 .feature-title{font-weight:700;color:#fff;margin-bottom:0.5rem;}
 .feature-desc{font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;}
+
+/* FAQ */
+.faq-section{position:relative;z-index:1;max-width:800px;margin:0 auto 5rem;padding:0 2rem;}
+.faq-item{background:#FFFFFF;border:1px solid rgba(23,20,15,0.08);border-radius:14px;margin-bottom:0.85rem;overflow:hidden;transition:border-color 0.2s;}
+.faq-item.open{border-color:rgba(224,138,46,0.3);}
+.faq-question{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.15rem 1.5rem;cursor:pointer;font-weight:700;color:#17140F;font-size:0.95rem;}
+.faq-icon{flex-shrink:0;width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:#C4701E;transition:transform 0.25s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.3s ease;}
+.faq-answer-inner{padding:0 1.5rem 1.25rem;color:rgba(23,20,15,0.6);font-size:0.88rem;line-height:1.7;}
+
+/* SCROLL-REVEAL — lightweight IntersectionObserver-driven equivalent of
+   AOS's fade-up/fade-left/fade-right/zoom-in, once-only. See reveal.js. */
+.reveal{opacity:0;transition:opacity 0.7s cubic-bezier(0.4,0,0.2,1),transform 0.7s cubic-bezier(0.4,0,0.2,1);}
+.reveal-up{transform:translateY(28px);}
+.reveal-left{transform:translateX(-32px);}
+.reveal-right{transform:translateX(32px);}
+.reveal-zoom{transform:scale(0.92);}
+.reveal.revealed{opacity:1;transform:none;}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none;}
+}
 
 /* PRICING */
 .pricing-section{position:relative;z-index:1;max-width:700px;margin:0 auto 5rem;padding:0 2rem;text-align:center;}
@@ -268,7 +292,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .hero{height:70vh;min-height:420px;}
   .hero-title{font-size:1.9rem;margin-bottom:0.9rem;}
   .hero-sub{font-size:0.92rem;}
-  .tools-section,.how-section,.features-section,.pricing-section,.stats-section{padding-left:1.25rem;padding-right:1.25rem;}
+  .tools-section,.how-section,.features-section,.pricing-section,.stats-section,.faq-section{padding-left:1.25rem;padding-right:1.25rem;}
+  .faq-question{padding:1rem 1.15rem;font-size:0.88rem;}
+  .faq-answer-inner{padding:0 1.15rem 1.1rem;font-size:0.84rem;}
   .tools-grid{grid-template-columns:1fr;}
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .steps-grid{grid-template-columns:1fr 1fr;}
@@ -593,6 +619,90 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   </div>
 </section>
 
+<!-- SERVICES -->
+<section class="tools-section">
+  <div class="section-label reveal reveal-up">WHAT YOU CAN CREATE</div>
+  <h2 class="section-title reveal reveal-up">Every Tool You Need, In One Place</h2>
+  <p class="section-sub reveal reveal-up">From a single idea to a finished video, design or presentation — AfriVid Studio handles every step with AI.</p>
+  <div class="tools-grid">
+    <a href="create.html" class="tool-card featured reveal reveal-zoom" style="transition-delay:0ms;">
+      <div class="tool-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E08A2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+      <div class="tool-card-label">VIDEO</div>
+      <div class="tool-card-title">Video Creator</div>
+      <div class="tool-card-desc">Type a topic and AfriVid writes the script, generates voice, builds slides and exports a complete MP4 — in any of 6 African languages.</div>
+      <div class="tool-card-action">Start Creating →</div>
+    </a>
+    <a href="aieditor.html" class="tool-card reveal reveal-zoom" style="transition-delay:60ms;">
+      <div class="tool-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E08A2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <div class="tool-card-label">EDIT</div>
+      <div class="tool-card-title">AI Video Editor</div>
+      <div class="tool-card-desc">Upload footage and let AI cut viral clips, remove silences, add captions and translate the voiceover to a new language.</div>
+      <div class="tool-card-action">Try the Editor →</div>
+    </a>
+    <a href="design.html" class="tool-card studio reveal reveal-zoom" style="transition-delay:120ms;">
+      <div class="tool-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B6F47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+      <div class="tool-card-label">DESIGN</div>
+      <div class="tool-card-title">Design Studio</div>
+      <div class="tool-card-desc">AI-fill flyers, posters, banners and logos from a short description — professional graphics without a design background.</div>
+      <div class="tool-card-action">Start Designing →</div>
+    </a>
+    <a href="photo.html" class="tool-card reveal reveal-zoom" style="transition-delay:0ms;">
+      <div class="tool-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E08A2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+      <div class="tool-card-label">PHOTO</div>
+      <div class="tool-card-title">Photo Editor</div>
+      <div class="tool-card-desc">Background removal, African flag overlays and one-click AI enhancement for portraits and product shots.</div>
+      <div class="tool-card-action">Edit a Photo →</div>
+    </a>
+    <a href="create.html" class="tool-card reveal reveal-zoom" style="transition-delay:60ms;">
+      <div class="tool-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E08A2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+      <div class="tool-card-label">SLIDES</div>
+      <div class="tool-card-title">Slides Generator</div>
+      <div class="tool-card-desc">Turn any topic into a professional slide deck — download as images or a ready-to-present PDF.</div>
+      <div class="tool-card-action">Generate Slides →</div>
+    </a>
+    <a href="create.html" class="tool-card studio reveal reveal-zoom" style="transition-delay:120ms;">
+      <div class="tool-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B6F47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="tool-card-label">TEACH</div>
+      <div class="tool-card-title">Tutorial Maker</div>
+      <div class="tool-card-desc">Explain any concept as narrated slides, or record a live walkthrough of any website automatically.</div>
+      <div class="tool-card-action">Make a Tutorial →</div>
+    </a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="section-label reveal reveal-up">THE PROCESS</div>
+  <h2 class="section-title reveal reveal-up">From Idea to Finished Video</h2>
+  <p class="section-sub reveal reveal-up">No editing experience needed — just describe what you want.</p>
+  <div class="steps-grid">
+    <div class="step-item reveal reveal-up" style="transition-delay:0ms;">
+      <div class="step-circle gold">1</div>
+      <div class="step-tag">STEP ONE</div>
+      <div class="step-title">Describe Your Idea</div>
+      <div class="step-desc">Type a topic, product or message — in English or an African language.</div>
+    </div>
+    <div class="step-item reveal reveal-up" style="transition-delay:100ms;">
+      <div class="step-circle outline-gold">2</div>
+      <div class="step-tag">STEP TWO</div>
+      <div class="step-title">AI Builds It</div>
+      <div class="step-desc">AfriVid writes the script, generates voice and assembles the visuals automatically.</div>
+    </div>
+    <div class="step-item reveal reveal-up" style="transition-delay:200ms;">
+      <div class="step-circle outline-green">3</div>
+      <div class="step-tag green">STEP THREE</div>
+      <div class="step-title">Customize</div>
+      <div class="step-desc">Fine-tune the script, style, language and visuals until it feels right.</div>
+    </div>
+    <div class="step-item reveal reveal-up" style="transition-delay:300ms;">
+      <div class="step-circle filled-green">✓</div>
+      <div class="step-tag green">STEP FOUR</div>
+      <div class="step-title">Download &amp; Share</div>
+      <div class="step-desc">Export your finished video or design, or upload straight to YouTube.</div>
+    </div>
+  </div>
+</section>
+
 <!-- STATS + CTA -->
 <div class="stats-section">
   <div class="stats-grid">
@@ -606,6 +716,49 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <a href="design.html" class="stats-cta-btn">Design Studio</a>
   </div>
 </div>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="section-label reveal reveal-up">GOT QUESTIONS?</div>
+  <h2 class="section-title reveal reveal-up">Frequently Asked Questions</h2>
+  <div style="margin-top:2.5rem;">
+    <div class="faq-item reveal reveal-up" style="transition-delay:0ms;">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        What is AfriVid Studio?
+        <span class="faq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer"><div class="faq-answer-inner">AfriVid Studio is Africa's first AI video creation platform. It allows anyone to create professional videos, edit footage, translate voice to African languages, generate slides and design graphics — all from a browser, free.</div></div>
+    </div>
+    <div class="faq-item reveal reveal-up" style="transition-delay:50ms;">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        Is AfriVid Studio free?
+        <span class="faq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes. AfriVid Studio is free during beta. The free plan includes 3 AI videos per month, AI editor sessions, voice translation and unlimited photo and design tools. Pro plan is $5/month.</div></div>
+    </div>
+    <div class="faq-item reveal reveal-up" style="transition-delay:100ms;">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        What languages does AfriVid support?
+        <span class="faq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer"><div class="faq-answer-inner">AfriVid Studio supports 6 African languages: Swahili, Yoruba, Hausa, French, Arabic and Portuguese. You can create and dub videos in these languages natively.</div></div>
+    </div>
+    <div class="faq-item reveal reveal-up" style="transition-delay:150ms;">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        How do I create a video with AfriVid?
+        <span class="faq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer"><div class="faq-answer-inner">Type your topic, choose a video style and language, then click Generate. AfriVid writes the script, generates voice, builds slides and exports a complete MP4 video automatically.</div></div>
+    </div>
+    <div class="faq-item reveal reveal-up" style="transition-delay:200ms;">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        Can I upload to YouTube directly from AfriVid?
+        <span class="faq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </div>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes. AfriVid Studio has a one-click YouTube upload feature. After generating your video, click Upload to YouTube, sign in with your Google account and the video uploads directly to your channel.</div></div>
+    </div>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer class="footer-modern">
@@ -994,6 +1147,53 @@ if('serviceWorker' in navigator) {
   }, { passive: true });
   update();
 })();
+</script>
+
+<script>
+// Navbar gains a subtle shadow once the page has scrolled past the hero's top edge.
+(function() {
+  const navbar = document.querySelector('.navbar');
+  if (!navbar) return;
+  const onScroll = () => navbar.classList.toggle('scrolled', window.scrollY > 20);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+// Scroll-reveal — fades/slides/zooms .reveal elements in once as they enter the viewport,
+// then stops watching them (matches AOS's { once: true } behavior) so it's a one-time
+// entrance, not something that replays every time you scroll past a section.
+(function() {
+  const targets = document.querySelectorAll('.reveal');
+  if (!targets.length) return;
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(el => el.classList.add('revealed'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  targets.forEach(el => observer.observe(el));
+})();
+
+// FAQ accordion — only one answer open at a time.
+window.toggleFaq = function(questionEl) {
+  const item = questionEl.closest('.faq-item');
+  const answer = item.querySelector('.faq-answer');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(openItem => {
+    openItem.classList.remove('open');
+    openItem.querySelector('.faq-answer').style.maxHeight = null;
+  });
+  if (!wasOpen) {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+};
 </script>
 </body>
 </html>
