@@ -127,14 +127,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .page-label{font-size:0.68rem;color:#C4701E;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
 .page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#17140F;margin-bottom:0.4rem;}
 .page-sub{font-size:0.88rem;color:rgba(23,20,15,0.5);}
-.design-layout{display:grid;grid-template-columns:260px 1fr;gap:1.25rem;align-items:start;}
-.design-layout.canvas-hidden{grid-template-columns:1fr;}
-.design-layout.canvas-hidden .sidebar-panel{max-width:640px;margin:0 auto;width:100%;}
-.dstabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;}
-.dstab{padding:0.6rem 1rem;border-radius:10px;border:1px solid rgba(23,20,15,0.12);background:#FFFFFF;color:rgba(23,20,15,0.6);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.design-layout{display:grid;grid-template-columns:170px 260px 1fr;gap:1.25rem;align-items:start;}
+.design-layout.canvas-hidden{grid-template-columns:170px 1fr;}
+.dstabs{display:flex;flex-direction:column;gap:0.5rem;position:sticky;top:1rem;}
+.dstab{width:100%;text-align:left;padding:0.7rem 1rem;border-radius:10px;border:1px solid rgba(23,20,15,0.12);background:#FFFFFF;color:rgba(23,20,15,0.6);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .dstab:hover:not(.active){border-color:rgba(224,138,46,0.4);color:#C4701E;}
 .dstab.active{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border-color:transparent;box-shadow:0 6px 16px rgba(224,138,46,0.3);}
-.sidebar-panel{display:flex;flex-direction:column;gap:1rem;}
+.sidebar-panel{display:flex;flex-direction:column;gap:1rem;width:100%;}
 .canvas-panel{display:flex;flex-direction:column;gap:1rem;}
 .card{background:#FFFFFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.5rem;}
 .control-label{font-size:0.65rem;color:#C4701E;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
@@ -190,6 +189,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.6);font-size:1.5rem;cursor:pointer;}
 @media(max-width:900px){
   .design-layout{grid-template-columns:1fr;}
+  .design-layout.canvas-hidden{grid-template-columns:1fr;}
+  .dstabs{flex-direction:row;flex-wrap:wrap;position:static;}
+  .dstab{width:auto;text-align:center;}
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 6rem;}
 }
@@ -437,18 +439,18 @@ body::after{
 
   <div class="design-layout">
 
+    <!-- TOOL TABS -->
+    <div class="dstabs" id="design-type-tabs">
+      <button class="dstab active" data-type="flyer" onclick="selectDesignType('flyer', true)">Flyer</button>
+      <button class="dstab" data-type="pro_poster" onclick="selectDesignType('pro_poster', true)">Poster</button>
+      <button class="dstab" data-type="pro_banner" onclick="selectDesignType('pro_banner', true)">Banner</button>
+      <button class="dstab" data-type="pro_logo" onclick="selectDesignType('pro_logo', true)">Logo</button>
+      <button class="dstab" data-type="product_poster" onclick="selectDesignType('product_poster', true)">Product Poster</button>
+      <button class="dstab" data-type="canvas" onclick="selectDesignType('canvas', true)">Canvas Editor</button>
+    </div>
+
     <!-- SIDEBAR -->
     <div class="sidebar-panel">
-
-      <!-- TOOL TABS -->
-      <div class="dstabs" id="design-type-tabs">
-        <button class="dstab active" data-type="flyer" onclick="selectDesignType('flyer', true)">Flyer</button>
-        <button class="dstab" data-type="pro_poster" onclick="selectDesignType('pro_poster', true)">Poster</button>
-        <button class="dstab" data-type="pro_banner" onclick="selectDesignType('pro_banner', true)">Banner</button>
-        <button class="dstab" data-type="pro_logo" onclick="selectDesignType('pro_logo', true)">Logo</button>
-        <button class="dstab" data-type="product_poster" onclick="selectDesignType('product_poster', true)">Product Poster</button>
-        <button class="dstab" data-type="canvas" onclick="selectDesignType('canvas', true)">Canvas Editor</button>
-      </div>
 
       <!-- AI GENERATE -->
       <div class="card" id="ai-generate-card">
@@ -506,7 +508,7 @@ body::after{
 
           <!-- BUILD + EDIT -->
           <button onclick="previewFlyer()" style="width:100%;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Flyer</button>
-          <button onclick="document.getElementById('flyer-edit-fields').style.display=document.getElementById('flyer-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('flyer-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button id="flyer-edit-toggle-btn" onclick="document.getElementById('flyer-edit-fields').style.display=document.getElementById('flyer-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('flyer-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
           <button onclick="downloadFlyer()" id="flyer-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #8B6F47;color:#8B6F47;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Flyer</button>
 
           <!-- HIDDEN EDIT FIELDS -->
@@ -585,7 +587,7 @@ body::after{
 
           <!-- BUILD + EDIT -->
           <button onclick="previewPoster()" style="width:100%;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Poster</button>
-          <button onclick="document.getElementById('poster-edit-fields').style.display=document.getElementById('poster-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('poster-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button id="poster-edit-toggle-btn" onclick="document.getElementById('poster-edit-fields').style.display=document.getElementById('poster-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('poster-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
           <button onclick="downloadPoster()" id="poster-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #8B6F47;color:#8B6F47;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Poster</button>
 
           <!-- HIDDEN EDIT FIELDS -->
@@ -632,7 +634,7 @@ body::after{
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;"><button onclick="setBannerBg('solid',this)" style="background:#050A14;border:2px solid #E08A2E;border-radius:6px;height:28px;cursor:pointer;color:#E08A2E;font-size:0.6rem;font-family:'Space Mono',monospace;">SOLID</button><button onclick="setBannerBg('dots',this)" style="background:radial-gradient(circle,rgba(245,166,35,0.15) 1px,#050A14 1px) center/16px 16px;border:1px solid rgba(23,20,15,0.25);border-radius:6px;height:28px;cursor:pointer;color:rgba(23,20,15,0.6);font-size:0.6rem;font-family:'Space Mono',monospace;">DOTS</button><button onclick="setBannerBg('grid',this)" style="background:linear-gradient(rgba(245,166,35,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.08) 1px,transparent 1px);background-size:16px 16px;background-color:#17140F;border:1px solid rgba(23,20,15,0.25);border-radius:6px;height:28px;cursor:pointer;color:rgba(23,20,15,0.6);font-size:0.6rem;font-family:'Space Mono',monospace;">GRID</button><button onclick="setBannerBg('gradient',this)" style="background:linear-gradient(135deg,#1a3a2a,#050A14);border:1px solid rgba(23,20,15,0.25);border-radius:6px;height:28px;cursor:pointer;color:rgba(23,20,15,0.6);font-size:0.6rem;font-family:'Space Mono',monospace;">GRAD</button></div>
           </div>
           <button onclick="previewBanner()" style="width:100%;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Banner</button>
-          <button onclick="document.getElementById('banner-edit-fields').style.display=document.getElementById('banner-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('banner-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button id="banner-edit-toggle-btn" onclick="document.getElementById('banner-edit-fields').style.display=document.getElementById('banner-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('banner-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
           <button onclick="buildBanner()" id="banner-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #8B6F47;color:#8B6F47;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Banner</button>
           <div id="banner-edit-fields" style="display:none;margin-top:0.5rem;">
             <div style="font-size:0.65rem;color:rgba(23,20,15,0.4);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
@@ -675,7 +677,7 @@ body::after{
 
           <!-- BUILD + EDIT -->
           <button onclick="previewLogo()" style="width:100%;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Logo</button>
-          <button onclick="document.getElementById('logo-edit-fields').style.display=document.getElementById('logo-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('logo-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button id="logo-edit-toggle-btn" onclick="document.getElementById('logo-edit-fields').style.display=document.getElementById('logo-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('logo-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
           <button onclick="buildLogo()" id="logo-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #8B6F47;color:#8B6F47;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Logo</button>
           <div id="logo-edit-fields" style="display:none;margin-top:0.5rem;">
             <div style="font-size:0.65rem;color:rgba(23,20,15,0.4);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
@@ -719,7 +721,7 @@ body::after{
             </div>
           </div>
           <button onclick="previewProductPoster()" style="width:100%;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.9rem;margin-bottom:0.4rem;">Preview Poster</button>
-          <button onclick="document.getElementById('pp-edit-fields').style.display=document.getElementById('pp-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('pp-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
+          <button id="pp-edit-toggle-btn" onclick="document.getElementById('pp-edit-fields').style.display=document.getElementById('pp-edit-fields').style.display==='none'?'block':'none';this.textContent=document.getElementById('pp-edit-fields').style.display==='block'?'▲ Hide Fields':'Edit Fields'" style="width:100%;background:transparent;border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.6);padding:0.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;font-size:0.7rem;margin-bottom:0.4rem;">Edit Fields</button>
           <button onclick="buildProductPoster(false,true)" id="pp-download-btn" style="display:none;width:100%;background:rgba(116,198,157,0.1);border:1px solid #8B6F47;color:#8B6F47;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-bottom:0.4rem;">Download Poster</button>
           <div id="pp-edit-fields" style="display:none;margin-top:0.5rem;">
             <div style="font-size:0.65rem;color:rgba(23,20,15,0.4);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">EDIT FIELDS</div>
@@ -3054,6 +3056,13 @@ Return ONLY the JSON.` }] })
     set('logo-tagline', d.tagline);
     btn.textContent = 'Done!';
     setTimeout(() => { btn.textContent = 'AI Fill'; btn.disabled = false; }, 2000);
+    const editFields = document.getElementById('logo-edit-fields');
+    const editBtn = document.getElementById('logo-edit-toggle-btn');
+    if (editFields && editFields.style.display === 'none') {
+      editFields.style.display = 'block';
+      if (editBtn) editBtn.textContent = '▲ Hide Fields';
+    }
+    if (editFields) setTimeout(() => editFields.scrollIntoView({behavior:'smooth', block:'start'}), 100);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
     btn.textContent = 'AI Fill'; btn.disabled = false;
@@ -3097,6 +3106,13 @@ Return ONLY the JSON.` }] })
     set('banner-cta', d.cta);
     btn.textContent = 'Done!';
     setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
+    const editFields = document.getElementById('banner-edit-fields');
+    const editBtn = document.getElementById('banner-edit-toggle-btn');
+    if (editFields && editFields.style.display === 'none') {
+      editFields.style.display = 'block';
+      if (editBtn) editBtn.textContent = '▲ Hide Fields';
+    }
+    if (editFields) setTimeout(() => editFields.scrollIntoView({behavior:'smooth', block:'start'}), 100);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
     btn.textContent = 'AI Fill All Fields'; btn.disabled = false;
@@ -3183,6 +3199,13 @@ Return ONLY the JSON.` }]
     set('poster-whatsapp', d.whatsapp);
     btn.textContent = 'Done!';
     setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
+    const editFields = document.getElementById('poster-edit-fields');
+    const editBtn = document.getElementById('poster-edit-toggle-btn');
+    if (editFields && editFields.style.display === 'none') {
+      editFields.style.display = 'block';
+      if (editBtn) editBtn.textContent = '▲ Hide Fields';
+    }
+    if (editFields) setTimeout(() => editFields.scrollIntoView({behavior:'smooth', block:'start'}), 100);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
     btn.textContent = 'AI Fill All Fields'; btn.disabled = false;
@@ -3330,10 +3353,19 @@ Return ONLY the JSON, no explanation.` }]
     set('flyer-instagram', d.instagram);
     set('flyer-whatsapp', d.whatsapp);
     btn.textContent = 'Done!';
-    setTimeout(() => { btn.textContent = 'Fill'; btn.disabled = false; }, 2000);
+    setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
+    // Filled values only land in the hidden Edit Fields inputs — with nothing else on screen
+    // changing, a successful fill looked identical to a silent failure. Show the result.
+    const editFields = document.getElementById('flyer-edit-fields');
+    const editBtn = document.getElementById('flyer-edit-toggle-btn');
+    if (editFields && editFields.style.display === 'none') {
+      editFields.style.display = 'block';
+      if (editBtn) editBtn.textContent = '▲ Hide Fields';
+    }
+    if (editFields) setTimeout(() => editFields.scrollIntoView({behavior:'smooth', block:'start'}), 100);
   } catch(e) {
     alert('AI Fill failed: ' + e.message);
-    btn.textContent = 'Fill'; btn.disabled = false;
+    btn.textContent = 'AI Fill All Fields'; btn.disabled = false;
   }
 };
 window.setFlyerBg = function(bg, btn) {
@@ -3895,6 +3927,8 @@ window.aiFillProductPoster = async function() {
     if (d.cta) document.getElementById('pp-cta').value = d.cta;
     if (d.website) document.getElementById('pp-website').value = d.website;
     document.getElementById('pp-edit-fields').style.display = 'block';
+    const ppEditBtn = document.getElementById('pp-edit-toggle-btn');
+    if (ppEditBtn) ppEditBtn.textContent = '▲ Hide Fields';
     btn.textContent = 'Filled!';
     setTimeout(() => { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; }, 2000);
   } catch(e) { btn.textContent = 'AI Fill All Fields'; btn.disabled = false; alert('AI fill failed: ' + e.message); }
