@@ -199,6 +199,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,20,15,0.1);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
 .navbar-badge{font-size:0.6rem;background:rgba(224,138,46,0.12);border:1px solid rgba(224,138,46,0.35);color:#C4701E;padding:0.2rem 0.6rem;border-radius:50px;font-family:'Space Mono',monospace;letter-spacing:1px;}
+.btn-nav-tool{background:rgba(224,138,46,0.1);border:1px solid rgba(224,138,46,0.35);color:#C4701E;padding:0.5rem 1rem;border-radius:8px;font-weight:700;font-size:0.8rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.btn-nav-tool:hover{background:#E08A2E;color:#17140F;border-color:#E08A2E;}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
 
@@ -407,8 +409,11 @@ body::after{
     <img src="images/logo.png" alt="AfriVid Studio" style="height:40px;width:auto;object-fit:contain;">
     <div class="navbar-badge">AfriVid Studio</div>
   </a>
-  <div class="navbar-actions">
-    <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+  <div class="navbar-actions" style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+    <a href="index.html" class="btn-nav-tool" style="text-decoration:none;">Home</a>
+    <a href="create.html" class="btn-nav-tool" style="text-decoration:none;">Create Video</a>
+    <a href="design.html" class="btn-nav-tool" style="text-decoration:none;">Design Studio</a>
+    <a href="studio.html" class="btn-nav-tool" style="text-decoration:none;">My Studio</a>
   </div>
 </nav>
 
