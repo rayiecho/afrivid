@@ -619,6 +619,7 @@ window.generateOnServer = async function() {
     const topic = document.getElementById('video-topic')?.value || 'AfriVid Video';
     const style = document.getElementById('video-visual-style')?.value || 'classic';
     const language = document.getElementById('video-language')?.value || 'en';
+    const voice = document.getElementById('voice-select')?.value || 'asteria';
     const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-video', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -637,6 +638,7 @@ window.generateOnServer = async function() {
         user_id: user.uid,
         style: style,
         language: language,
+        voice: voice,
         title: topic
       })
     });
@@ -812,7 +814,6 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
   <!-- MODE SWITCHER -->
   <div class="dstabs" id="mode-tabs">
     <button id="mode-video-tab" onclick="switchCreateMode('video')" class="dstab active">Video Creator</button>
-    <button id="mode-slides-tab" onclick="switchCreateMode('slides')" class="dstab">Slides Generator</button>
     <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" class="dstab">Tutorial Maker</button>
     <button id="mode-ad-tab" onclick="switchCreateMode('ad')" class="dstab">Ad Maker</button>
   </div>
@@ -1170,17 +1171,8 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <div class="form-group">
               <label class="form-label">VOICE</label>
               <select id="voice-select" class="form-select">
-                <optgroup label="Female">
-                  <option value="asteria">Asteria — Warm</option>
-                  <option value="athena">Athena — Clear</option>
-                  <option value="hera">Hera — Bold</option>
-                  <option value="luna">Luna — Soft</option>
-                </optgroup>
-                <optgroup label="Male">
-                  <option value="helios">Helios — Deep</option>
-                  <option value="orion">Orion — Strong</option>
-                  <option value="zeus">Zeus — Powerful</option>
-                </optgroup>
+                <option value="asteria">Woman</option>
+                <option value="helios">Man</option>
               </select>
             </div>
 
@@ -6491,17 +6483,14 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
   }
 };
 
-// ── SLIDES GENERATOR ──
 window.switchCreateMode = function(mode) {
   const panels = {
     video: document.getElementById('panel-1'),
-    slides: document.getElementById('slides-generator-panel'),
     tutorial: document.getElementById('tutorial-maker-panel'),
     ad: document.getElementById('ad-maker-panel'),
   };
   const tabs = {
     video: document.getElementById('mode-video-tab'),
-    slides: document.getElementById('mode-slides-tab'),
     tutorial: document.getElementById('mode-tutorial-tab'),
     ad: document.getElementById('mode-ad-tab'),
   };
