@@ -653,7 +653,9 @@ window.generateOnServer = async function() {
     let pollAttempts = 0;
     let lastProgress = -1;
     let stalledSince = Date.now();
-    window._serverGenPoll = setInterval(async () => {
+    const onVisible = () => { if (document.visibilityState === 'visible') checkServerGenStatus(); };
+    document.addEventListener('visibilitychange', onVisible);
+    async function checkServerGenStatus() {
       try {
         pollAttempts++;
         const r = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${window._serverGenJobId}`);
@@ -672,18 +674,21 @@ window.generateOnServer = async function() {
         // a genuinely-still-working job gets misreported as dead.
         if (d.status !== 'completed' && d.status !== 'failed' && stalledMinutes > 15) {
           clearInterval(window._serverGenPoll);
+          document.removeEventListener('visibilitychange', onVisible);
           document.getElementById('server-gen-stage').textContent = 'Stalled — no progress for 15+ minutes. This job likely died on our end; please try again.';
           if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
           return;
         }
         if (pollAttempts > 720) {
           clearInterval(window._serverGenPoll);
+          document.removeEventListener('visibilitychange', onVisible);
           document.getElementById('server-gen-stage').textContent = 'Taking much longer than usual — please try again.';
           if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
           return;
         }
         if (d.status === 'completed' && d.output_url) {
           clearInterval(window._serverGenPoll);
+          document.removeEventListener('visibilitychange', onVisible);
           document.getElementById('server-gen-download').style.display = 'block';
           document.getElementById('server-gen-link').dataset.url = d.output_url;
           document.getElementById('server-gen-bar').style.width = '100%';
@@ -719,10 +724,13 @@ window.generateOnServer = async function() {
         }
         if (d.status === 'failed') {
           clearInterval(window._serverGenPoll);
+          document.removeEventListener('visibilitychange', onVisible);
           document.getElementById('server-gen-stage').textContent = 'Generation failed.';
         }
       } catch(e) { console.log('Poll error:', e); }
-    }, 5000);
+    }
+    checkServerGenStatus();
+    window._serverGenPoll = setInterval(checkServerGenStatus, 5000);
   } catch(e) {
     document.getElementById('server-gen-stage').textContent = 'Failed: ' + e.message;
     if (btn) { btn.disabled = false; btn.textContent = 'Generate Video'; }
@@ -6344,7 +6352,9 @@ window.generateTutorial = async function() {
       if (rd.error) throw new Error(rd.error);
       bar.style.width = '30%'; pct.textContent = '30%';
       stage.textContent = 'Browser recording in progress...';
-      window._tutorialPoll = setInterval(async () => {
+      const onVisibleBdem = () => { if (document.visibilityState === 'visible') checkBrowserDemoStatus(); };
+      document.addEventListener('visibilitychange', onVisibleBdem);
+      async function checkBrowserDemoStatus() {
         try {
           const s = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${jobId}`);
           const sd = await s.json();
@@ -6353,6 +6363,7 @@ window.generateTutorial = async function() {
           stage.textContent = sd.stage || 'Recording...';
           if (sd.status === 'completed' && sd.output_url) {
             clearInterval(window._tutorialPoll);
+            document.removeEventListener('visibilitychange', onVisibleBdem);
             bar.style.width = '100%'; pct.textContent = '100%';
             window._serverVideoUrl = sd.output_url;
             window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
@@ -6364,11 +6375,14 @@ window.generateTutorial = async function() {
           }
           if (sd.status === 'failed') {
             clearInterval(window._tutorialPoll);
+            document.removeEventListener('visibilitychange', onVisibleBdem);
             stage.textContent = 'Failed. Try again.';
             btn.textContent = 'Generate Tutorial Video'; btn.disabled = false;
           }
         } catch(e) {}
-      }, 5000);
+      }
+      checkBrowserDemoStatus();
+      window._tutorialPoll = setInterval(checkBrowserDemoStatus, 5000);
     } catch(e) {
       stage.textContent = 'Error: ' + e.message;
       btn.textContent = 'Generate Tutorial Video'; btn.disabled = false;
@@ -6439,7 +6453,9 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
     stage.textContent = 'Processing tutorial video...';
 
     // Step 3: Poll for completion
-    window._tutorialPoll = setInterval(async () => {
+    const onVisibleTut = () => { if (document.visibilityState === 'visible') checkTutorialConceptStatus(); };
+    document.addEventListener('visibilitychange', onVisibleTut);
+    async function checkTutorialConceptStatus() {
       try {
         const s = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${jobId}`);
         const sd = await s.json();
@@ -6448,6 +6464,7 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
         stage.textContent = sd.stage || 'Processing...';
         if (sd.status === 'completed' && sd.output_url) {
           clearInterval(window._tutorialPoll);
+          document.removeEventListener('visibilitychange', onVisibleTut);
           bar.style.width = '100%'; pct.textContent = '100%';
           stage.textContent = 'Tutorial ready!';
           const tdb2 = document.getElementById('tutorial-dashboard-btn');
@@ -6461,12 +6478,15 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
         }
         if (sd.status === 'failed') {
           clearInterval(window._tutorialPoll);
+          document.removeEventListener('visibilitychange', onVisibleTut);
           stage.textContent = 'Generation failed. Please try again.';
           btn.textContent = 'Generate Tutorial Video';
           btn.disabled = false;
         }
       } catch(e) { console.log('Poll error:', e); }
-    }, 5000);
+    }
+    checkTutorialConceptStatus();
+    window._tutorialPoll = setInterval(checkTutorialConceptStatus, 5000);
 
   } catch(e) {
     stage.textContent = 'Error: ' + e.message;
@@ -6924,7 +6944,9 @@ async function generateAd() {
     // meant a genuinely stalled or failed job still looked like it was climbing toward 95%
     // instead of showing the real, stuck state.
     let attempts = 0, lastProgress = -1, stalledSince = Date.now();
-    const poll = setInterval(async () => {
+    const onVisibleAd = () => { if (document.visibilityState === 'visible') checkAdStatus(); };
+    document.addEventListener('visibilitychange', onVisibleAd);
+    async function checkAdStatus() {
       try {
         attempts++;
         const st = await fetch('https://afrivid-tts.afrividstudio.workers.dev/job-status/' + jobId);
@@ -6935,6 +6957,7 @@ async function generateAd() {
         document.getElementById('ad-stage').textContent = status.stage || 'Generating...';
         if (status.status === 'completed') {
           clearInterval(poll);
+          document.removeEventListener('visibilitychange', onVisibleAd);
           document.getElementById('ad-bar').style.width = '100%';
           document.getElementById('ad-pct').textContent = '100%';
           document.getElementById('ad-video').src = status.output_url;
@@ -6946,6 +6969,7 @@ async function generateAd() {
           btn.disabled = false;
         } else if (status.status === 'failed') {
           clearInterval(poll);
+          document.removeEventListener('visibilitychange', onVisibleAd);
           document.getElementById('ad-stage').textContent = '' + (status.stage || 'Failed');
           btn.textContent = 'Generate Video Ad';
           btn.disabled = false;
@@ -6957,13 +6981,20 @@ async function generateAd() {
         const stalledMinutes = (Date.now() - stalledSince) / 60000;
         if (status.status !== 'completed' && status.status !== 'failed' && stalledMinutes > 15) {
           clearInterval(poll);
+          document.removeEventListener('visibilitychange', onVisibleAd);
           document.getElementById('ad-stage').textContent = 'Stalled — no progress for 15+ minutes. Please try again.';
           btn.disabled = false; btn.textContent = 'Generate Video Ad';
           return;
         }
-        if (attempts > 720) { clearInterval(poll); btn.disabled = false; btn.textContent = 'Generate Video Ad'; }
+        if (attempts > 720) {
+          clearInterval(poll);
+          document.removeEventListener('visibilitychange', onVisibleAd);
+          btn.disabled = false; btn.textContent = 'Generate Video Ad';
+        }
       } catch(e) {}
-    }, 5000);
+    }
+    checkAdStatus();
+    const poll = setInterval(checkAdStatus, 5000);
   } catch(e) {
     document.getElementById('ad-stage').textContent = '' + e.message;
     btn.textContent = 'Generate Video Ad';
