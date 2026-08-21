@@ -814,6 +814,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
   <!-- MODE SWITCHER -->
   <div class="dstabs" id="mode-tabs">
     <button id="mode-video-tab" onclick="switchCreateMode('video')" class="dstab active">Video Creator</button>
+    <button id="mode-slides-tab" onclick="switchCreateMode('slides')" class="dstab">Slides Generator</button>
     <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" class="dstab">Tutorial Maker</button>
     <button id="mode-ad-tab" onclick="switchCreateMode('ad')" class="dstab">Ad Maker</button>
   </div>
@@ -1156,15 +1157,6 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
               <label class="form-label">SLIDE THEME</label>
               <select id="video-visual-style" class="form-select">
                 <option value="classic">Classic (AfriVid)</option>
-                <option value="slides_light">Light</option>
-                <option value="slides_dark">Dark</option>
-                <option value="cameroon_slide">Cameroon Slide</option>
-                <option value="advert_slide">Advert Slide</option>
-                <option value="unite_slide">Unite Slide</option>
-                <option value="whiteboard">Whiteboard</option>
-                <option value="cinematic">Cinematic</option>
-                <option value="photobg">Photo BG</option>
-                <option value="splitflow">Split Flow (New)</option>
               </select>
             </div>
 
@@ -6486,11 +6478,13 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
 window.switchCreateMode = function(mode) {
   const panels = {
     video: document.getElementById('panel-1'),
+    slides: document.getElementById('slides-generator-panel'),
     tutorial: document.getElementById('tutorial-maker-panel'),
     ad: document.getElementById('ad-maker-panel'),
   };
   const tabs = {
     video: document.getElementById('mode-video-tab'),
+    slides: document.getElementById('mode-slides-tab'),
     tutorial: document.getElementById('mode-tutorial-tab'),
     ad: document.getElementById('mode-ad-tab'),
   };
