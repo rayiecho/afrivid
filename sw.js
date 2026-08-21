@@ -1,4 +1,4 @@
-const CACHE = 'afrivid-v8';
+const CACHE = 'afrivid-v9';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/images/logo.png'
@@ -20,10 +20,15 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch — HTML always from network, assets from cache
+// Fetch — HTML always from network, same-origin static assets cache-first, everything else
+// (any cross-origin API call — job-status polling, TTS, ai-generate, Firebase, etc.) always
+// goes straight to the network. This used to cache-first EVERY non-HTML request, which meant
+// the very first /job-status/{id} poll got cached and every poll after that — for the rest of
+// that job — replayed the same stale response instead of ever checking again, making a job
+// that finished in seconds look "stuck" for however long the user kept watching.
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  
+
   // Always fetch HTML fresh from network
   if (e.request.destination === 'document' || url.pathname.endsWith('.html') || url.pathname === '/') {
     e.respondWith(
@@ -31,8 +36,14 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  
-  // For other assets — cache first, network fallback
+
+  // Cross-origin requests (APIs, polling, Firebase, etc.) — never cache, always network.
+  if (url.origin !== self.location.origin) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
+
+  // Same-origin static assets — cache first, network fallback
   e.respondWith(
     caches.match(e.request).then(cached => {
       return cached || fetch(e.request).then(response => {
