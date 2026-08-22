@@ -917,7 +917,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
         <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
         <div>
           <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
           <select id="tutorial-duration" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
@@ -943,6 +943,16 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
             <option value="advanced">Advanced</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
+          <select id="tutorial-language" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="English">English</option>
+            <option value="French">French</option>
+            <option value="Swahili">Swahili</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Portuguese">Portuguese</option>
           </select>
         </div>
       </div>
@@ -1004,6 +1014,16 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       <div style="margin-bottom:1.25rem;">
         <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
         <input id="ad-url" type="text" placeholder="e.g. https://yourwebsite.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">LANGUAGE</label>
+        <select id="ad-language" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
+          <option value="English">English</option>
+          <option value="French">French</option>
+          <option value="Swahili">Swahili</option>
+          <option value="Arabic">Arabic</option>
+          <option value="Portuguese">Portuguese</option>
+        </select>
       </div>
       <div style="margin-bottom:1.25rem;">
         <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
@@ -6326,6 +6346,7 @@ window.generateTutorial = async function() {
   const duration = parseInt(document.getElementById('tutorial-duration')?.value || '10');
   const style = document.getElementById('tutorial-style')?.value || 'classic';
   const level = document.getElementById('tutorial-level')?.value || 'beginner';
+  const tutorialLanguage = document.getElementById('tutorial-language')?.value || 'English';
   const user = window.currentUser;
   if (!user) { alert('Please sign in first'); return; }
 
@@ -6408,7 +6429,7 @@ window.generateTutorial = async function() {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001', max_tokens: 6000,
-        messages: [{role:'user', content:`Create a ${duration}-minute ${level} tutorial on "${topic}" in English.
+        messages: [{role:'user', content:`Create a ${duration}-minute ${level} tutorial on "${topic}" in ${tutorialLanguage}. Every "voiceover" field must be written in ${tutorialLanguage}.
 Generate exactly ${sceneCount} scenes as a JSON array:
 [
   {"title":"Scene Title","type":"title","voiceover":"narrator script 40-60 words","duration":${Math.round(duration*60/sceneCount)}},
@@ -6441,7 +6462,7 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         job_id: jobId, scenes, style,
-        language: 'en', title: topic,
+        language: tutorialLanguage, title: topic,
         user_email: user.email, user_id: user.uid,
         tutorial: true, level, duration
       })
@@ -6905,6 +6926,7 @@ async function generateAd() {
   const businessName = document.getElementById('ad-business-name').value.trim();
   const description = document.getElementById('ad-description').value.trim();
   const adUrl = document.getElementById('ad-url').value.trim();
+  const adLanguage = document.getElementById('ad-language')?.value || 'English';
 
   if (!businessName || !description) {
     alert('Please enter your business name and description');
@@ -6932,6 +6954,7 @@ async function generateAd() {
         business_name: businessName,
         description: description,
         url: adUrl,
+        language: adLanguage,
         logo_base64: window._adLogoBase64 || null,
         user_email: window.currentUser.email
       })
