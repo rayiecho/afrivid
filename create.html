@@ -1032,7 +1032,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       <div id="ad-result" style="display:none;margin-top:1rem;">
         <video id="ad-video" controls style="width:100%;border-radius:10px;margin-bottom:0.75rem;"></video>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <a id="ad-download" href="#" target="_blank" download style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;">Download</a>
+          <a id="ad-download" href="#" style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;cursor:pointer;">Download</a>
           <button onclick="uploadAdToYouTube()" class="btn" style="flex:1;background:#FF0000;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">▶ YouTube</button>
         </div>
       </div>
@@ -6961,7 +6961,22 @@ async function generateAd() {
           document.getElementById('ad-bar').style.width = '100%';
           document.getElementById('ad-pct').textContent = '100%';
           document.getElementById('ad-video').src = status.output_url;
-          document.getElementById('ad-download').href = status.output_url;
+          const adDlBtn = document.getElementById('ad-download');
+          adDlBtn.onclick = async (ev) => {
+            ev.preventDefault();
+            adDlBtn.textContent = 'Downloading...';
+            try {
+              const pu = 'https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url=' + encodeURIComponent(status.output_url);
+              const r = await fetch(pu);
+              const b = await r.blob();
+              const a = document.createElement('a');
+              a.href = URL.createObjectURL(b);
+              a.download = (businessName || 'AfriVid-Ad') + '.mp4';
+              a.click();
+              URL.revokeObjectURL(a.href);
+            } catch(e) { alert('Download failed: ' + e.message); }
+            adDlBtn.textContent = 'Download';
+          };
           document.getElementById('ad-result').style.display = 'block';
           window._serverVideoUrl = status.output_url;
           window._scriptData = { title: businessName + ' — Video Ad', description: description };
