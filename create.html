@@ -628,6 +628,7 @@ window.generateOnServer = async function() {
         scenes: scenes.map(s => ({
           title: s.title || s.heading || 'Scene',
           voiceover: s.voiceover || s.narration || s.text || s.script || '',
+          caption: s.caption || '',
           duration: s.duration || 10,
           points: s.points || [],
           type: s.type || 'content',
@@ -1641,11 +1642,12 @@ Return ONLY valid JSON:
   "title": "video title",
   "duration": ${duration},
   "scenes": [
-    {"scene": 1, "title": "Scene title", "type": "content", "text": "Narration text that is long enough to fill the scene duration at 2.5 words per second", "duration": ${Math.floor(duration/sceneCount)}, "points": ["optional bullet points instead of a text paragraph"]}
+    {"scene": 1, "title": "Scene title", "type": "content", "text": "Narration text that is long enough to fill the scene duration at 2.5 words per second", "caption": "one short on-screen line, 10-15 words, summarizing this scene", "duration": ${Math.floor(duration/sceneCount)}, "points": ["optional bullet points instead of a caption"]}
   ]
 }
 Each scene's "type" is one of: title(first scene only), content(regular explanation — use this for almost everything), code(ONLY if "${topic}" is actually code-related AND this specific scene is showing real code, with a "code" field containing the snippet and a "language" field), summary(last scene only).
 CRITICAL: If "${topic}" is not code-related, do not use "code" type for any scene — use "content" for every scene in between the title and summary.
+CRITICAL: "text" is spoken narration only, never shown on screen — it can be a full paragraph. Any "content" scene without "points" MUST also include a separate "caption" field: a short 10-15 word on-screen highlight, NOT a copy or truncation of "text". Never put the full narration into "caption".
 Create exactly ${sceneCount} scenes. Each scene must have AT LEAST ${Math.floor((duration/sceneCount)*2.5)} words in the text field. Total scene durations must equal ${duration} seconds. Return ONLY the JSON.`
         }]
       })
@@ -6456,12 +6458,13 @@ Generate exactly ${sceneCount} scenes as a JSON array using this shape:
 [
   {"title":"Scene Title","type":"title","voiceover":"narrator script 40-60 words","duration":${Math.round(duration*60/sceneCount)}},
   {"title":"Table of Contents","type":"toc","voiceover":"narrator script","points":["Topic 1","Topic 2","Topic 3"],"duration":${Math.round(duration*60/sceneCount)}},
-  {"title":"Section Title","type":"content","voiceover":"narrator script 40-60 words","points":["point 1","point 2","point 3"],"duration":${Math.round(duration*60/sceneCount)}},
+  {"title":"Section Title","type":"content","voiceover":"narrator script 40-60 words","caption":"one short on-screen line, 10-15 words, summarizing this scene","duration":${Math.round(duration*60/sceneCount)}},
   ...more scenes...
   {"title":"Summary","type":"summary","voiceover":"narrator script","points":["key takeaway 1","key takeaway 2"],"duration":${Math.round(duration*60/sceneCount)}}
 ]
 Types: title(first), toc(second), content(regular explanation), code(ONLY if the topic is actually about programming/software AND this specific scene is showing real code — omit entirely otherwise), summary(last).
 CRITICAL: If "${topic}" is not code-related, do not include any "code" type scenes at all — use "content" for every explanatory scene instead.
+CRITICAL: "voiceover" is spoken narration only, never shown on screen — it can be a full paragraph. Any "content" scene without "points" MUST also include a separate "caption" field: a short 10-15 word on-screen highlight, NOT a copy or truncation of the voiceover. Never put the full voiceover text into "caption".
 CRITICAL: Each voiceover must be EXACTLY ${Math.round(duration*60/sceneCount*2.5)} words. Count carefully.
 Make voiceover natural and educational. Return ONLY valid JSON array.`}]
       })
