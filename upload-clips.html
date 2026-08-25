@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Character Clips — AfriVid Studio</title>
+<style>
+  :root {
+    --bg: #FBF7EF;
+    --surface: #FFFFFF;
+    --border: rgba(23,20,15,0.12);
+    --text: #17140F;
+    --muted: rgba(23,20,15,0.6);
+    --gold: #E08A2E;
+    --gold-dark: #C4701E;
+    --red: #E63329;
+    --green: #2E9E5B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px 20px 80px;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 800; margin: 0 0 6px; }
+  p.sub { color: var(--muted); margin: 0 0 32px; font-size: 15px; line-height: 1.5; }
+  .dropzone {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .dropzone.drag { border-color: var(--gold); background: rgba(224,138,46,0.06); }
+  .dropzone svg { margin-bottom: 12px; }
+  .dropzone .label { font-weight: 700; font-size: 15px; }
+  .dropzone .hint { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  input[type=file] { display: none; }
+  .list { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .item .name { flex: 1; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item .status { font-size: 13px; color: var(--muted); flex-shrink: 0; }
+  .item .status.done { color: var(--green); font-weight: 700; }
+  .item .status.error { color: var(--red); font-weight: 700; }
+  .item .bar-track { width: 60px; height: 5px; border-radius: 3px; background: var(--border); overflow: hidden; flex-shrink: 0; }
+  .item .bar-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.2s; }
+  .footer-note {
+    margin-top: 28px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Upload Character Clips</h1>
+  <p class="sub">Drop the video clips you generated here. Each one uploads straight to AfriVid's storage — no need to send them any other way.</p>
+
+  <div class="dropzone" id="dropzone">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E08A2E" stroke-width="2"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+    <div class="label">Click to choose files, or drag them here</div>
+    <div class="hint">Multiple video files supported</div>
+  </div>
+  <input type="file" id="fileInput" accept="video/*" multiple>
+
+  <div class="list" id="list"></div>
+
+  <div class="footer-note">Uploaded clips are picked up from storage directly — nothing more to do after this page shows "Done".</div>
+</div>
+
+<script>
+const PROCESSOR_URL = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const list = document.getElementById('list');
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(uploadFile);
+}
+
+async function uploadFile(file) {
+  const row = document.createElement('div');
+  row.className = 'item';
+  row.innerHTML = `
+    <div class="name">${file.name}</div>
+    <div class="bar-track"><div class="bar-fill"></div></div>
+    <div class="status">Preparing…</div>
+  `;
+  list.prepend(row);
+  const bar = row.querySelector('.bar-fill');
+  const status = row.querySelector('.status');
+
+  try {
+    // Same presign -> direct-to-R2 PUT flow already used by the AI Video
+    // Editor upload (aieditor.html) -- proven working path, no new backend
+    // endpoint needed. Filenames get a character-clips_ prefix so they're
+    // easy to pick out later from everything else stored under input/.
+    const signRes = await fetch(`${PROCESSOR_URL}/presign-upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filename: `character-clips_${file.name}`,
+        contentType: file.type || 'video/mp4',
+      }),
+    });
+    const signData = await signRes.json();
+    if (signData.error) throw new Error(signData.error);
+    const { presigned_url } = signData;
+
+    status.textContent = 'Uploading…';
+    bar.style.width = '20%';
+
+    const uploadRes = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', presigned_url);
+      xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const pct = 20 + Math.round((e.loaded / e.total) * 78);
+          bar.style.width = pct + '%';
+        }
+      };
+      xhr.onload = () => resolve(xhr);
+      xhr.onerror = () => reject(new Error('Network error during upload'));
+      xhr.send(file);
+    });
+
+    if (uploadRes.status < 200 || uploadRes.status >= 300) {
+      throw new Error('Upload failed: ' + uploadRes.status);
+    }
+
+    bar.style.width = '100%';
+    status.textContent = 'Done';
+    status.classList.add('done');
+  } catch (err) {
+    status.textContent = 'Failed';
+    status.classList.add('error');
+    console.error('Upload error:', err);
+  }
+}
+</script>
+</body>
+</html>
