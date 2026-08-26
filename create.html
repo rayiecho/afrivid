@@ -1642,12 +1642,13 @@ Return ONLY valid JSON:
   "title": "video title",
   "duration": ${duration},
   "scenes": [
-    {"scene": 1, "title": "Scene title", "type": "content", "text": "Narration text that is long enough to fill the scene duration at 2.5 words per second", "caption": "one short on-screen line, 10-15 words, summarizing this scene", "duration": ${Math.floor(duration/sceneCount)}, "points": ["optional bullet points instead of a caption"]}
+    {"scene": 1, "title": "Scene title", "type": "content", "text": "Narration text that is long enough to fill the scene duration at 2.5 words per second", "caption": "one short on-screen line, 10-15 words, summarizing this scene", "duration": ${Math.floor(duration/sceneCount)}, "points": [{"text": "optional bullet point instead of a caption", "icon": "growth"}]}
   ]
 }
 Each scene's "type" is one of: title(first scene only), content(regular explanation — use this for almost everything), code(ONLY if "${topic}" is actually code-related AND this specific scene is showing real code, with a "code" field containing the snippet and a "language" field), summary(last scene only).
 CRITICAL: If "${topic}" is not code-related, do not use "code" type for any scene — use "content" for every scene in between the title and summary.
 CRITICAL: "text" is spoken narration only, never shown on screen — it can be a full paragraph. Any "content" scene without "points" MUST also include a separate "caption" field: a short 10-15 word on-screen highlight, NOT a copy or truncation of "text". Never put the full narration into "caption".
+CRITICAL: If a "content" scene uses "points" instead of a caption, each point must be an object {"text": "...", "icon": "..."} — never a plain string. Pick "icon" from EXACTLY this list, whichever best matches that point's meaning: idea, time, growth, money, security, speed, communication, target, warning, check, people, learning, tools, global, health, document, star.
 Create exactly ${sceneCount} scenes. Each scene must have AT LEAST ${Math.floor((duration/sceneCount)*2.5)} words in the text field. Total scene durations must equal ${duration} seconds. Return ONLY the JSON.`
         }]
       })
@@ -6459,12 +6460,14 @@ Generate exactly ${sceneCount} scenes as a JSON array using this shape:
   {"title":"Scene Title","type":"title","voiceover":"narrator script 40-60 words","duration":${Math.round(duration*60/sceneCount)}},
   {"title":"Table of Contents","type":"toc","voiceover":"narrator script","points":["Topic 1","Topic 2","Topic 3"],"duration":${Math.round(duration*60/sceneCount)}},
   {"title":"Section Title","type":"content","voiceover":"narrator script 40-60 words","caption":"one short on-screen line, 10-15 words, summarizing this scene","duration":${Math.round(duration*60/sceneCount)}},
+  {"title":"Another Section","type":"content","voiceover":"narrator script 40-60 words","points":[{"text":"a short bullet point","icon":"growth"},{"text":"another short bullet point","icon":"time"}],"duration":${Math.round(duration*60/sceneCount)}},
   ...more scenes...
   {"title":"Summary","type":"summary","voiceover":"narrator script","points":["key takeaway 1","key takeaway 2"],"duration":${Math.round(duration*60/sceneCount)}}
 ]
 Types: title(first), toc(second), content(regular explanation), code(ONLY if the topic is actually about programming/software AND this specific scene is showing real code — omit entirely otherwise), summary(last).
 CRITICAL: If "${topic}" is not code-related, do not include any "code" type scenes at all — use "content" for every explanatory scene instead.
 CRITICAL: "voiceover" is spoken narration only, never shown on screen — it can be a full paragraph. Any "content" scene without "points" MUST also include a separate "caption" field: a short 10-15 word on-screen highlight, NOT a copy or truncation of the voiceover. Never put the full voiceover text into "caption".
+CRITICAL: If a "content" scene uses "points" instead of a caption, each point must be an object {"text": "...", "icon": "..."} — never a plain string. Pick "icon" from EXACTLY this list, whichever best matches that point's meaning: idea, time, growth, money, security, speed, communication, target, warning, check, people, learning, tools, global, health, document, star. (Points for "toc" and "summary" scenes stay plain strings, not objects.)
 CRITICAL: Each voiceover must be EXACTLY ${Math.round(duration*60/sceneCount*2.5)} words. Count carefully.
 Make voiceover natural and educational. Return ONLY valid JSON array.`}]
       })
@@ -6737,7 +6740,7 @@ function buildSlideHTML(slide, i, t, topic) {
         <div style="min-width:16px;height:16px;border-radius:3px;background:${t.accent};display:flex;align-items:center;justify-content:center;margin-top:1px;">
           <span style="color:#050A14;font-size:7px;font-weight:900;font-family:monospace;">${icons[j]}</span>
         </div>
-        <div style="color:${t.sub};font-size:10px;line-height:1.5;">${p}</div>
+        <div style="color:${t.sub};font-size:10px;line-height:1.5;">${(p && typeof p === 'object') ? p.text : p}</div>
       </div>`).join('')}
     </div>
     ${footer}
@@ -6792,7 +6795,7 @@ function previewSlide(slide, i, t, topic) {
 
       <div style="margin-bottom:0.75rem;">
         <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">BULLET POINTS (one per line)</div>
-        <textarea id="edit-points" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:100px;resize:vertical;">${(slide.points||[]).join('')}</textarea>
+        <textarea id="edit-points" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:100px;resize:vertical;">${(slide.points||[]).map(p=>(p && typeof p === 'object') ? p.text : p).join('')}</textarea>
 
         <div style="color:rgba(23,20,15,0.3);font-size:0.6rem;font-family:monospace;margin-top:2px;">Up to 5 points. Press Enter for new line.</div>
       </div>
