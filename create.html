@@ -1649,7 +1649,8 @@ Return ONLY valid JSON:
   "scenes": [
     {"scene": 1, "title": "Scene title", "type": "content", "text": "Narration text that is long enough to fill the scene duration at 2.5 words per second", "caption": "one short on-screen line, 10-15 words, summarizing this scene", "duration": ${Math.floor(duration/sceneCount)}, "points": [{"text": "optional bullet point instead of a caption", "icon": "growth"}]},
     {"scene": 2, "title": "Impact", "type": "stat", "text": "narration explaining this figure", "value": "85%", "label": "a short phrase explaining what this number means", "icon": "growth", "duration": ${Math.floor(duration/sceneCount)}},
-    {"scene": 3, "title": "How It Works", "type": "content", "text": "narration", "layout": "flow", "points": [{"text": "Step one"}, {"text": "Step two"}, {"text": "Step three"}], "duration": ${Math.floor(duration/sceneCount)}}
+    {"scene": 3, "title": "How It Works", "type": "content", "text": "narration", "layout": "flow", "points": [{"text": "Step one"}, {"text": "Step two"}, {"text": "Step three"}], "duration": ${Math.floor(duration/sceneCount)}},
+    {"scene": 4, "title": "Example Code", "type": "code", "text": "narration explaining this code", "code": "the actual code snippet, with real newlines", "language": "python", "output": "the EXACT real output of running this code", "duration": ${Math.floor(duration/sceneCount)}}
   ]
 }
 Each scene's "type" is one of: title(first scene only), content(regular explanation — use this for almost everything), code(ONLY if "${topic}" is actually code-related AND this specific scene is showing real code, with a "code" field containing the snippet, a "language" field, and an "output" field with the EXACT correct printed result of actually running that code — work it out precisely, never guess or invent a plausible-looking wrong answer), stat(use ONLY when the topic naturally has one striking number/statistic worth dwelling on — needs "value" like "85%" or "3x" or "10,000+", plus a short "label"), summary(last scene only).
@@ -6472,6 +6473,7 @@ Generate exactly ${sceneCount} scenes as a JSON array using this shape:
   {"title":"Another Section","type":"content","voiceover":"narrator script 40-60 words","points":[{"text":"a short bullet point","icon":"growth"},{"text":"another short bullet point","icon":"time"}],"duration":${Math.round(duration*60/sceneCount)}},
   {"title":"Impact","type":"stat","voiceover":"narrator script explaining this figure","value":"85%","label":"a short phrase explaining what this number means","icon":"growth","duration":${Math.round(duration*60/sceneCount)}},
   {"title":"How It Works","type":"content","voiceover":"narrator script 40-60 words","layout":"flow","points":[{"text":"Step one"},{"text":"Step two"},{"text":"Step three"}],"duration":${Math.round(duration*60/sceneCount)}},
+  {"title":"Example Code","type":"code","voiceover":"narrator script explaining this code","code":"the actual code snippet, with real newlines","language":"python","output":"the EXACT real output of running this code","duration":${Math.round(duration*60/sceneCount)}},
   ...more scenes...
   {"title":"Summary","type":"summary","voiceover":"narrator script","points":["key takeaway 1","key takeaway 2"],"duration":${Math.round(duration*60/sceneCount)}}
 ]
