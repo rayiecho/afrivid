@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Character Video — Test</title>
+<style>
+  :root {
+    --bg: #FBF7EF;
+    --surface: #FFFFFF;
+    --border: rgba(23,20,15,0.12);
+    --text: #17140F;
+    --muted: rgba(23,20,15,0.6);
+    --gold: #E08A2E;
+    --gold-dark: #C4701E;
+    --red: #E63329;
+    --green: #2E9E5B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px 20px 80px;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 800; margin: 0 0 6px; }
+  p.sub { color: var(--muted); margin: 0 0 32px; font-size: 15px; line-height: 1.5; }
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    background: rgba(224,138,46,0.12);
+    border: 1px solid rgba(224,138,46,0.3);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--muted); }
+  input[type=text], select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 18px;
+    font-family: inherit;
+  }
+  button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: var(--gold);
+    color: var(--text);
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.6; cursor: default; }
+  .status-box {
+    margin-top: 24px;
+    display: none;
+  }
+  .status-box.show { display: block; }
+  .bar-track { width: 100%; height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; margin-bottom: 10px; }
+  .bar-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.4s; }
+  .stage-text { font-size: 14px; color: var(--muted); text-align: center; }
+  .stage-text.error { color: var(--red); font-weight: 700; }
+  .result {
+    margin-top: 24px;
+    display: none;
+  }
+  .result.show { display: block; }
+  video { width: 100%; border-radius: 12px; background: #000; }
+  .result-link {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    word-break: break-all;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge">Experimental — separate test pipeline</div>
+  <h1>Real Character Video</h1>
+  <p class="sub">Type a topic, pick a length, and get a real video generated from the real character clips — not the SVG mascot, not Tutorial Maker or Create Video.</p>
+
+  <div class="card">
+    <label for="topic">Topic</label>
+    <input type="text" id="topic" placeholder="e.g. How to stay focused while studying">
+
+    <label for="duration">Length</label>
+    <select id="duration">
+      <option value="0.5">30 seconds</option>
+      <option value="1" selected>1 minute</option>
+      <option value="1.5">1.5 minutes</option>
+      <option value="2">2 minutes</option>
+    </select>
+
+    <button id="generateBtn" onclick="generate()">Generate Video</button>
+  </div>
+
+  <div class="status-box" id="statusBox">
+    <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+    <div class="stage-text" id="stageText">Starting…</div>
+  </div>
+
+  <div class="result" id="result">
+    <video id="resultVideo" controls></video>
+    <a class="result-link" id="resultLink" href="#" target="_blank"></a>
+  </div>
+</div>
+
+<script>
+const PROCESSOR_URL = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+const JOB_STATUS_URL = 'https://afrivid-tts.afrividstudio.workers.dev/job-status';
+
+let polling = null;
+
+async function generate() {
+  const topic = document.getElementById('topic').value.trim();
+  if (!topic) { alert('Enter a topic first.'); return; }
+  const duration = document.getElementById('duration').value;
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = 'Starting…';
+
+  document.getElementById('statusBox').classList.add('show');
+  document.getElementById('result').classList.remove('show');
+  setStatus(2, 'Sending request…', false);
+
+  const jobId = `rcv_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+
+  try {
+    const res = await fetch(`${PROCESSOR_URL}/generate-real-character-video`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ job_id: jobId, topic, duration_minutes: parseFloat(duration) }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    pollStatus(jobId);
+  } catch (err) {
+    setStatus(0, 'Failed: ' + err.message, true);
+    btn.disabled = false;
+    btn.textContent = 'Generate Video';
+  }
+}
+
+function pollStatus(jobId) {
+  if (polling) clearInterval(polling);
+  polling = setInterval(async () => {
+    try {
+      const res = await fetch(`${JOB_STATUS_URL}/${jobId}`);
+      const data = await res.json();
+      setStatus(data.progress || 0, data.stage || data.status, data.status === 'failed');
+
+      if (data.status === 'completed') {
+        clearInterval(polling);
+        showResult(data.output_url);
+      } else if (data.status === 'failed') {
+        clearInterval(polling);
+        const btn = document.getElementById('generateBtn');
+        btn.disabled = false;
+        btn.textContent = 'Generate Video';
+      }
+    } catch (err) {
+      console.error('Poll error:', err);
+    }
+  }, 4000);
+}
+
+function setStatus(pct, text, isError) {
+  document.getElementById('barFill').style.width = pct + '%';
+  const stageEl = document.getElementById('stageText');
+  stageEl.textContent = text;
+  stageEl.classList.toggle('error', !!isError);
+}
+
+function showResult(url) {
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = false;
+  btn.textContent = 'Generate Another';
+
+  const video = document.getElementById('resultVideo');
+  video.src = url;
+  const link = document.getElementById('resultLink');
+  link.href = url;
+  link.textContent = url;
+  document.getElementById('result').classList.add('show');
+}
+</script>
+</body>
+</html>
