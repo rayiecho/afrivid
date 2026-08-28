@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="description" content="Generate clean branded images for your business, or stunning living images with subtle motion for your website homepage.">
+<meta property="og:title" content="AfriVid Studio — Image Generator | Africa">
+<meta property="og:description" content="Generate clean branded images for your business, or stunning living images with subtle motion for your website homepage.">
+<meta property="og:url" content="https://afrivid.studio">
+<meta property="og:image" content="https://afrivid.studio/images/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid Studio — Image Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF7EF;
+  --surface:#FFFFFF;
+  --surface-2:#F3EDE0;
+  --border:rgba(23,20,15,0.1);
+  --text:#17140F;
+  --text-muted:rgba(23,20,15,0.62);
+  --text-faint:rgba(23,20,15,0.4);
+  --gold:#E08A2E;
+  --gold-dark:#C4701E;
+  --green:#8B6F47;
+  --red:#E63329;
+  --gradient-gold:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:16px;
+  --glow-gold:0 0 20px rgba(224,138,46,.35),0 0 60px rgba(224,138,46,.15);
+  --transition:all 0.2s ease;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(23,20,15,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(23,20,15,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.back-btn{display:flex;align-items:center;gap:0.4rem;color:var(--text-muted);text-decoration:none;font-size:0.85rem;font-weight:600;transition:var(--transition);}
+.back-btn:hover{color:var(--gold);}
+.back-btn svg{width:18px;height:18px;}
+.topbar-divider{width:1px;height:20px;background:var(--border);}
+.topbar-title{font-size:1rem;font-weight:800;color:var(--text);}
+.topbar-title span{color:var(--gold);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.user-name{font-size:0.82rem;font-weight:700;color:var(--text);cursor:pointer;}
+.btn-signin{background:transparent;border:1px solid rgba(224,138,46,0.4);color:var(--gold);padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signin:hover{box-shadow:var(--glow-gold);}
+.btn-signout{background:none;border:1px solid var(--border);color:var(--text-faint);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout:hover{border-color:var(--red);color:var(--red);}
+
+.main{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.page-title{font-size:1.9rem;font-weight:800;margin-bottom:0.4rem;}
+.page-sub{color:var(--text-muted);font-size:0.95rem;margin-bottom:2rem;}
+
+.tool-tabs{display:flex;gap:0.6rem;background:var(--surface-2);padding:5px;border-radius:var(--radius-md);margin-bottom:2rem;max-width:460px;}
+.tool-tab{flex:1;padding:0.75rem;background:transparent;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.85rem;color:var(--text-muted);cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.tool-tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(23,20,15,0.08);}
+
+.panel{display:none;animation:slideUp 0.3s ease both;}
+.panel.active{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+@media (max-width:800px){.panel.active{grid-template-columns:1fr;}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;}
+.card-title{font-size:0.95rem;font-weight:800;margin-bottom:1.25rem;}
+.form-label{font-size:0.7rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;margin-top:1rem;}
+.form-label:first-child{margin-top:0;}
+.form-input,.form-textarea{width:100%;background:rgba(23,20,15,0.04);border:1px solid var(--border);color:var(--text);padding:0.75rem 0.9rem;border-radius:var(--radius-md);font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;transition:var(--transition);}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.5;}
+.form-input:focus,.form-textarea:focus{border-color:rgba(224,138,46,0.5);}
+.form-hint{font-size:0.75rem;color:var(--text-faint);margin-top:0.35rem;}
+.file-row{display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;}
+.file-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);padding:0.55rem 1rem;border-radius:var(--radius-sm);font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;}
+.file-btn:hover{border-color:rgba(224,138,46,0.4);color:var(--gold);}
+.file-name{font-size:0.78rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
+
+.btn-generate{width:100%;margin-top:1.5rem;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-generate:hover{box-shadow:var(--glow-gold);}
+.btn-generate:disabled{opacity:0.6;cursor:not-allowed;box-shadow:none;}
+
+.result-card{display:flex;flex-direction:column;}
+.result-frame{flex:1;background:var(--surface-2);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:220px;position:relative;}
+.result-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.result-placeholder{color:var(--text-faint);font-size:0.85rem;text-align:center;padding:2rem;font-family:'Space Mono',monospace;}
+.spinner{width:32px;height:32px;border:3px solid rgba(224,138,46,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+.result-status{margin-top:0.6rem;font-size:0.8rem;color:var(--text-muted);text-align:center;font-family:'Space Mono',monospace;min-height:1.2em;}
+.result-status.error{color:var(--red);}
+.btn-download{margin-top:1rem;text-align:center;display:block;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.7rem;border-radius:var(--radius-md);font-weight:700;font-size:0.85rem;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:none;transition:var(--transition);}
+.btn-download:hover{border-color:rgba(224,138,46,0.4);color:var(--gold);}
+.btn-download[disabled]{display:none;}
+
+/* LOGIN MODAL — same system as studio.html */
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
+.modal-overlay.active{display:flex;}
+.login-box{position:relative;z-index:1;width:100%;max-width:420px;animation:slideUp 0.3s ease both;}
+.login-header{text-align:center;margin-bottom:2rem;}
+.login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:var(--bg);margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:var(--text);}
+.login-title span{color:var(--gold);}
+.login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.auth-tabs{display:flex;background:rgba(23,20,15,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
+.auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
+.btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-auth:hover{box-shadow:var(--glow-gold);}
+.login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#c0392b;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:var(--text-faint);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Home
+    </a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">AfriVid <span>Studio</span></div>
+  </div>
+  <div class="topbar-right">
+    <div class="user-name" id="user-name" style="display:none;" onclick="location.href='studio.html?profile=1'"></div>
+    <button class="btn-signin" id="btn-signin" onclick="showLogin()">Sign In</button>
+    <button class="btn-signout" id="btn-signout" style="display:none;" onclick="signOut()">Sign Out</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-title">Image Generator</div>
+  <div class="page-sub">Generate a clean branded image for your business, or a stunning living image with subtle motion for your website.</div>
+
+  <div class="tool-tabs">
+    <button class="tool-tab active" id="tab-brand-btn" onclick="switchImgTab('brand')">Brand Image</button>
+    <button class="tool-tab" id="tab-motion-btn" onclick="switchImgTab('motion')">Motion Image</button>
+  </div>
+
+  <!-- BRAND IMAGE -->
+  <div class="panel active" id="panel-brand">
+    <div class="card">
+      <div class="card-title">Brand Image</div>
+      <div class="form-label">BUSINESS NAME</div>
+      <input type="text" id="brand-business" class="form-input" placeholder="e.g. Amara Coffee Co.">
+      <div class="form-label">TAGLINE (OPTIONAL)</div>
+      <input type="text" id="brand-tagline" class="form-input" placeholder="e.g. Freshly roasted, every morning">
+      <div class="form-label">DESCRIBE THE IMAGE</div>
+      <textarea id="brand-prompt" class="form-textarea" placeholder="e.g. A steaming cup of coffee on a rustic wooden table, warm morning light"></textarea>
+      <div class="form-label">LOGO (OPTIONAL)</div>
+      <div class="file-row">
+        <button class="file-btn" onclick="document.getElementById('brand-logo-input').click()">Choose File</button>
+        <span class="file-name" id="brand-logo-name">No file chosen</span>
+      </div>
+      <input type="file" id="brand-logo-input" accept="image/*" style="display:none;" onchange="onBrandLogoChange(event)">
+      <button class="btn-generate" id="brand-generate-btn" onclick="generateBrandImage()">Generate Brand Image</button>
+    </div>
+    <div class="card result-card">
+      <div class="card-title">Result</div>
+      <div class="result-frame" id="brand-result-frame">
+        <div class="result-placeholder">Your branded image will appear here</div>
+      </div>
+      <div class="result-status" id="brand-result-status"></div>
+      <a class="btn-download" id="brand-download-btn" disabled onclick="downloadImage(this.dataset.url,'brand-image.jpg');return false;">Download Image</a>
+    </div>
+  </div>
+
+  <!-- MOTION IMAGE -->
+  <div class="panel" id="panel-motion">
+    <div class="card">
+      <div class="card-title">Motion Image</div>
+      <div class="form-label">DESCRIBE THE IMAGE</div>
+      <textarea id="motion-prompt" class="form-textarea" placeholder="e.g. A vibrant African market at golden hour, people and colorful fabric"></textarea>
+      <div class="form-hint">A short, seamlessly looping living image — a slow zoom and gentle rotation. Great for a website homepage hero.</div>
+      <button class="btn-generate" id="motion-generate-btn" onclick="generateMotionImage()">Generate Motion Image</button>
+    </div>
+    <div class="card result-card">
+      <div class="card-title">Result</div>
+      <div class="result-frame" id="motion-result-frame">
+        <div class="result-placeholder">Your living image will appear here</div>
+      </div>
+      <div class="result-status" id="motion-result-status"></div>
+      <a class="btn-download" id="motion-download-btn" disabled onclick="downloadImage(this.dataset.url,'motion-image.apng');return false;">Download Image</a>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="login-box">
+    <button class="modal-close" onclick="hideLogin()">✕</button>
+    <div class="login-header">
+      <div class="login-icon">A</div>
+      <div class="login-title">AfriVid <span>Studio</span></div>
+    </div>
+    <div class="login-card">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
+        <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
+      </div>
+      <form id="form-signin" onsubmit="doSignIn();return false;" style="display:none;">
+        <div class="form-label">EMAIL</div>
+        <input type="email" id="login-email" class="form-input" placeholder="you@example.com">
+        <div class="form-label">PASSWORD</div>
+        <input type="password" id="login-password" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
+        <button class="btn-auth" style="margin-top:1.25rem;" onclick="doSignIn()">Sign In →</button>
+      </form>
+      <form id="form-signup" onsubmit="doSignUp();return false;">
+        <div class="form-label">FULL NAME</div>
+        <input type="text" id="signup-name" class="form-input" placeholder="Your full name">
+        <div class="form-label">EMAIL</div>
+        <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
+        <div class="form-label">PASSWORD</div>
+        <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.9rem 0 0.5rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
+          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#E08A2E;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#E08A2E;text-decoration:none;">Privacy Policy</a></label>
+        </div>
+        <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
+      </form>
+      <div class="login-error" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, (user) => {
+  window.currentUser = user;
+  if (user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    document.getElementById('btn-signout').style.display = 'block';
+    const nameEl = document.getElementById('user-name');
+    nameEl.style.display = 'block';
+    nameEl.textContent = user.displayName || user.email.split('@')[0];
+  } else {
+    document.getElementById('btn-signin').style.display = 'block';
+    document.getElementById('btn-signout').style.display = 'none';
+    document.getElementById('user-name').style.display = 'none';
+  }
+});
+
+window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); }
+window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); }
+window.showAuthTab = function(tab) {
+  document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+}
+window.doSignIn = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    hideLogin();
+  } catch (e) {
+    err.style.display = 'block';
+    err.textContent = '[!] ' + e.message.replace('Firebase: ', '');
+  }
+}
+window.doSignUp = async function() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const err = document.getElementById('login-error');
+  if (!name || !email || !password) { err.style.display = 'block'; err.textContent = '[!] Fill all fields'; return; }
+  if (password.length < 6) { err.style.display = 'block'; err.textContent = '[!] Password min 6 characters'; return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
+    await sendEmailVerification(cred.user);
+    await setDoc(doc(db, 'studio_users', cred.user.uid), { name, email, joinedAt: serverTimestamp(), plan: 'beta' });
+    hideLogin();
+  } catch (e) {
+    err.style.display = 'block';
+    err.textContent = '[!] ' + e.message.replace('Firebase: ', '');
+  }
+}
+window.signOut = async function() { await fbSignOut(auth); }
+
+document.getElementById('login-modal').addEventListener('click', function(e) {
+  if (e.target === this) hideLogin();
+});
+</script>
+
+<script src="limits.js"></script>
+<script>
+const IMAGE_API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+const DOWNLOAD_PROXY = 'https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url=';
+
+function switchImgTab(tab) {
+  document.getElementById('tab-brand-btn').classList.toggle('active', tab === 'brand');
+  document.getElementById('tab-motion-btn').classList.toggle('active', tab === 'motion');
+  document.getElementById('panel-brand').classList.toggle('active', tab === 'brand');
+  document.getElementById('panel-motion').classList.toggle('active', tab === 'motion');
+}
+
+let brandLogoBase64 = null;
+function onBrandLogoChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('brand-logo-name').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = () => { brandLogoBase64 = reader.result; };
+  reader.readAsDataURL(file);
+}
+
+function setResultLoading(kind) {
+  document.getElementById(`${kind}-result-frame`).innerHTML = '<div class="spinner"></div>';
+  document.getElementById(`${kind}-result-status`).className = 'result-status';
+  document.getElementById(`${kind}-result-status`).textContent = 'Generating — this can take up to a minute...';
+  document.getElementById(`${kind}-download-btn`).removeAttribute('data-url');
+  document.getElementById(`${kind}-download-btn`).disabled = true;
+}
+function setResultError(kind, message) {
+  document.getElementById(`${kind}-result-frame`).innerHTML = '<div class="result-placeholder">Generation failed</div>';
+  const status = document.getElementById(`${kind}-result-status`);
+  status.className = 'result-status error';
+  status.textContent = message;
+}
+function setResultImage(kind, url) {
+  document.getElementById(`${kind}-result-frame`).innerHTML = `<img src="${url}" alt="Generated image">`;
+  document.getElementById(`${kind}-result-status`).className = 'result-status';
+  document.getElementById(`${kind}-result-status`).textContent = 'Done';
+  const btn = document.getElementById(`${kind}-download-btn`);
+  btn.dataset.url = url;
+  btn.disabled = false;
+}
+
+window.downloadImage = async function(url, filename) {
+  if (!url) return;
+  try {
+    const res = await fetch(DOWNLOAD_PROXY + encodeURIComponent(url));
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch (e) {
+    alert('Download failed: ' + e.message);
+  }
+}
+
+window.generateBrandImage = async function() {
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_brand'))) return;
+  const prompt = document.getElementById('brand-prompt').value.trim();
+  const business = document.getElementById('brand-business').value.trim();
+  if (!prompt) { alert('Please describe the image you want.'); return; }
+  if (!business) { alert('Please enter your business name.'); return; }
+  const btn = document.getElementById('brand-generate-btn');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  setResultLoading('brand');
+  try {
+    const res = await fetch(`${IMAGE_API}/generate-brand-image`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt,
+        business_name: business,
+        tagline: document.getElementById('brand-tagline').value.trim(),
+        logo_base64: brandLogoBase64,
+      }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    setResultImage('brand', data.url);
+  } catch (e) {
+    setResultError('brand', e.message || 'Something went wrong');
+  }
+  btn.disabled = false; btn.textContent = 'Generate Brand Image';
+}
+
+window.generateMotionImage = async function() {
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_motion'))) return;
+  const prompt = document.getElementById('motion-prompt').value.trim();
+  if (!prompt) { alert('Please describe the image you want.'); return; }
+  const btn = document.getElementById('motion-generate-btn');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  setResultLoading('motion');
+  try {
+    const res = await fetch(`${IMAGE_API}/generate-motion-image`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    setResultImage('motion', data.url);
+  } catch (e) {
+    setResultError('motion', e.message || 'Something went wrong');
+  }
+  btn.disabled = false; btn.textContent = 'Generate Motion Image';
+}
+</script>
+
+</body>
+</html>

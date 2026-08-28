@@ -11,6 +11,8 @@ window.AFRIVID_LIMITS = {
   editor_combine:     { max: 3, period: 'month', field: 'editor_combine' },
   editor_youtube:     { max: 3, period: 'month', field: 'editor_youtube' },
   editor_noise:       { max: 3, period: 'month', field: 'editor_noise' },
+  image_brand:        { max: 10, period: 'month', field: 'image_brand' },
+  image_motion:       { max: 10, period: 'month', field: 'image_motion' },
 };
 
 function _getMonthKey() {
