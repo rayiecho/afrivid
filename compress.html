@@ -5,14 +5,14 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" href="/images/logo.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<meta name="description" content="Generate clean branded images for your business, or stunning living images with subtle motion for your website homepage.">
-<meta property="og:title" content="AfriVid Studio — Image Generator | Africa">
-<meta property="og:description" content="Generate clean branded images for your business, or stunning living images with subtle motion for your website homepage.">
+<meta name="description" content="Compress your videos to a fraction of the size without losing quality — no third-party tools needed.">
+<meta property="og:title" content="AfriVid Studio — Video Compressor | Africa">
+<meta property="og:description" content="Compress your videos to a fraction of the size without losing quality — no third-party tools needed.">
 <meta property="og:url" content="https://afrivid.studio">
 <meta property="og:image" content="https://afrivid.studio/images/logo.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AfriVid Studio — Image Generator</title>
+<title>AfriVid Studio — Video Compressor</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -57,47 +57,50 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-signout{background:none;border:1px solid var(--border);color:var(--text-faint);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-signout:hover{border-color:var(--red);color:var(--red);}
 
-.main{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.main{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
 .page-title{font-size:1.9rem;font-weight:800;margin-bottom:0.4rem;}
 .page-sub{color:var(--text-muted);font-size:0.95rem;margin-bottom:2rem;}
 
-.tool-tabs{display:flex;gap:0.6rem;background:var(--surface-2);padding:5px;border-radius:var(--radius-md);margin-bottom:2rem;max-width:460px;}
-.tool-tab{flex:1;padding:0.75rem;background:transparent;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.85rem;color:var(--text-muted);cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
-.tool-tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(23,20,15,0.08);}
-
-.panel{display:none;animation:slideUp 0.3s ease both;}
-.panel.active{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
-@media (max-width:800px){.panel.active{grid-template-columns:1fr;}}
-
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;}
+.card + .card{margin-top:1.5rem;}
 .card-title{font-size:0.95rem;font-weight:800;margin-bottom:1.25rem;}
-.form-label{font-size:0.7rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;margin-top:1rem;}
-.form-label:first-child{margin-top:0;}
-.form-input,.form-textarea{width:100%;background:rgba(23,20,15,0.04);border:1px solid var(--border);color:var(--text);padding:0.75rem 0.9rem;border-radius:var(--radius-md);font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;transition:var(--transition);}
-.form-textarea{resize:vertical;min-height:90px;line-height:1.5;}
-.form-input:focus,.form-textarea:focus{border-color:rgba(224,138,46,0.5);}
-.form-hint{font-size:0.75rem;color:var(--text-faint);margin-top:0.35rem;}
-.file-row{display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;}
-.file-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);padding:0.55rem 1rem;border-radius:var(--radius-sm);font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;}
-.file-btn:hover{border-color:rgba(224,138,46,0.4);color:var(--gold);}
-.file-name{font-size:0.78rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
+
+.dropzone{border:2px dashed var(--border);border-radius:var(--radius-md);padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:var(--transition);}
+.dropzone:hover,.dropzone.drag{border-color:rgba(224,138,46,0.5);background:rgba(224,138,46,0.04);}
+.dropzone-icon{font-size:2rem;margin-bottom:0.6rem;}
+.dropzone-text{font-weight:700;font-size:0.95rem;}
+.dropzone-hint{color:var(--text-faint);font-size:0.8rem;margin-top:0.3rem;}
+.file-chip{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:var(--radius-md);padding:0.9rem 1.1rem;margin-top:1rem;}
+.file-chip-name{font-size:0.85rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%;}
+.file-chip-size{font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--text-faint);}
+.file-chip-remove{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:1rem;padding:0 0.3rem;}
+.file-chip-remove:hover{color:var(--red);}
+
+.form-label{font-size:0.7rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.6rem;margin-top:1.3rem;}
+.level-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;}
+.level-opt{border:1px solid var(--border);border-radius:var(--radius-md);padding:0.85rem 0.6rem;text-align:center;cursor:pointer;transition:var(--transition);}
+.level-opt.active{border-color:var(--gold);background:rgba(224,138,46,0.06);}
+.level-opt-title{font-weight:700;font-size:0.85rem;}
+.level-opt-sub{font-size:0.72rem;color:var(--text-faint);margin-top:0.2rem;}
 
 .btn-generate{width:100%;margin-top:1.5rem;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-generate:hover{box-shadow:var(--glow-gold);}
 .btn-generate:disabled{opacity:0.6;cursor:not-allowed;box-shadow:none;}
 
-.result-card{display:flex;flex-direction:column;}
-.result-frame{background:var(--surface-2);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;overflow:hidden;aspect-ratio:16/9;position:relative;}
-.result-frame img{width:100%;height:100%;object-fit:contain;display:block;}
-.result-placeholder{color:var(--text-faint);font-size:0.85rem;text-align:center;padding:2rem;font-family:'Space Mono',monospace;}
-.spinner{width:32px;height:32px;border:3px solid rgba(224,138,46,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
-.result-status{margin-top:0.6rem;font-size:0.8rem;color:var(--text-muted);text-align:center;font-family:'Space Mono',monospace;min-height:1.2em;}
-.result-status.error{color:var(--red);}
-.btn-download{margin-top:1rem;text-align:center;display:block;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.7rem;border-radius:var(--radius-md);font-weight:700;font-size:0.85rem;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:none;transition:var(--transition);}
-.btn-download:hover{border-color:rgba(224,138,46,0.4);color:var(--gold);}
-.btn-download[disabled]{display:none;}
+.progress-track{background:var(--surface-2);border-radius:999px;height:10px;overflow:hidden;margin-top:1rem;}
+.progress-fill{height:100%;background:var(--gradient-gold);width:0%;transition:width 0.3s ease;}
+.progress-status{margin-top:0.6rem;font-size:0.82rem;color:var(--text-muted);font-family:'Space Mono',monospace;}
+.progress-status.error{color:var(--red);}
 
-/* LOGIN MODAL — same system as studio.html */
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.5rem;}
+.result-stat{background:var(--surface-2);border-radius:var(--radius-md);padding:1rem;text-align:center;}
+.result-stat-label{font-size:0.68rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;}
+.result-stat-value{font-size:1.3rem;font-weight:800;margin-top:0.3rem;font-variant-numeric:tabular-nums;}
+.result-stat-value.saved{color:var(--green);}
+.btn-download{width:100%;margin-top:1.2rem;text-align:center;display:block;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.8rem;border-radius:var(--radius-md);font-weight:700;font-size:0.9rem;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:none;transition:var(--transition);}
+.btn-download:hover{border-color:rgba(224,138,46,0.4);color:var(--gold);}
+
+/* LOGIN MODAL */
 .modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
 .modal-overlay.active{display:flex;}
 .login-box{position:relative;z-index:1;width:100%;max-width:420px;animation:slideUp 0.3s ease both;}
@@ -109,6 +112,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .auth-tabs{display:flex;background:rgba(23,20,15,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
 .auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
+.form-input{width:100%;background:rgba(23,20,15,0.04);border:1px solid var(--border);color:var(--text);padding:0.75rem 0.9rem;border-radius:var(--radius-md);font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:var(--transition);}
 .btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-auth:hover{box-shadow:var(--glow-gold);}
 .login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#c0392b;font-family:'Space Mono',monospace;}
@@ -134,59 +138,59 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 </div>
 
 <div class="main">
-  <div class="page-title">Image Generator</div>
-  <div class="page-sub">Generate a clean branded image for your business, or a stunning living image with subtle motion for your website.</div>
+  <div class="page-title">Video Compressor</div>
+  <div class="page-sub">Shrink a video's file size while keeping it looking good — no other site, no other tab.</div>
 
-  <div class="tool-tabs">
-    <button class="tool-tab active" id="tab-brand-btn" onclick="switchImgTab('brand')">Brand Image</button>
-    <button class="tool-tab" id="tab-motion-btn" onclick="switchImgTab('motion')">Motion Image</button>
+  <div class="card">
+    <div class="card-title">1. Choose a video</div>
+    <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+      <div class="dropzone-icon">🎬</div>
+      <div class="dropzone-text">Click to choose a video, or drag one here</div>
+      <div class="dropzone-hint">MP4, MOV, WEBM — any size</div>
+    </div>
+    <input type="file" id="file-input" accept="video/*" style="display:none;" onchange="onFileChosen(event)">
+    <div class="file-chip" id="file-chip" style="display:none;">
+      <span class="file-chip-name" id="file-chip-name"></span>
+      <span style="display:flex;align-items:center;gap:0.8rem;">
+        <span class="file-chip-size" id="file-chip-size"></span>
+        <button class="file-chip-remove" onclick="clearFile()">✕</button>
+      </span>
+    </div>
+
+    <div class="form-label">COMPRESSION LEVEL</div>
+    <div class="level-row">
+      <div class="level-opt" data-level="smaller" onclick="setLevel('smaller')">
+        <div class="level-opt-title">Smaller</div>
+        <div class="level-opt-sub">Max savings</div>
+      </div>
+      <div class="level-opt active" data-level="balanced" onclick="setLevel('balanced')">
+        <div class="level-opt-title">Balanced</div>
+        <div class="level-opt-sub">Recommended</div>
+      </div>
+      <div class="level-opt" data-level="quality" onclick="setLevel('quality')">
+        <div class="level-opt-title">High Quality</div>
+        <div class="level-opt-sub">Light shrink</div>
+      </div>
+    </div>
+
+    <button class="btn-generate" id="compress-btn" onclick="startCompress()" disabled>Compress Video</button>
+    <div class="progress-track" id="progress-track" style="display:none;"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-status" id="progress-status"></div>
   </div>
 
-  <!-- BRAND IMAGE -->
-  <div class="panel active" id="panel-brand">
-    <div class="card">
-      <div class="card-title">Brand Image</div>
-      <div class="form-label">BUSINESS NAME</div>
-      <input type="text" id="brand-business" class="form-input" placeholder="e.g. Amara Coffee Co.">
-      <div class="form-label">TAGLINE (OPTIONAL)</div>
-      <input type="text" id="brand-tagline" class="form-input" placeholder="e.g. Freshly roasted, every morning">
-      <div class="form-label">DESCRIBE THE IMAGE</div>
-      <textarea id="brand-prompt" class="form-textarea" placeholder="e.g. A steaming cup of coffee on a rustic wooden table, warm morning light"></textarea>
-      <div class="form-label">LOGO (OPTIONAL)</div>
-      <div class="file-row">
-        <button class="file-btn" onclick="document.getElementById('brand-logo-input').click()">Choose File</button>
-        <span class="file-name" id="brand-logo-name">No file chosen</span>
+  <div class="card" id="result-card" style="display:none;">
+    <div class="card-title">Result</div>
+    <div class="result-grid">
+      <div class="result-stat">
+        <div class="result-stat-label">ORIGINAL</div>
+        <div class="result-stat-value" id="stat-original">—</div>
       </div>
-      <input type="file" id="brand-logo-input" accept="image/*" style="display:none;" onchange="onBrandLogoChange(event)">
-      <button class="btn-generate" id="brand-generate-btn" onclick="generateBrandImage()">Generate Brand Image</button>
-    </div>
-    <div class="card result-card">
-      <div class="card-title">Result</div>
-      <div class="result-frame" id="brand-result-frame">
-        <div class="result-placeholder">Your branded image will appear here</div>
+      <div class="result-stat">
+        <div class="result-stat-label">COMPRESSED</div>
+        <div class="result-stat-value saved" id="stat-compressed">—</div>
       </div>
-      <div class="result-status" id="brand-result-status"></div>
-      <a class="btn-download" id="brand-download-btn" disabled onclick="downloadImage(this.dataset.url,'brand-image.jpg');return false;">Download Image</a>
     </div>
-  </div>
-
-  <!-- MOTION IMAGE -->
-  <div class="panel" id="panel-motion">
-    <div class="card">
-      <div class="card-title">Motion Image</div>
-      <div class="form-label">DESCRIBE THE IMAGE</div>
-      <textarea id="motion-prompt" class="form-textarea" placeholder="e.g. A vibrant African market at golden hour, people and colorful fabric"></textarea>
-      <div class="form-hint">A short, seamlessly looping living image — a slow zoom and gentle rotation. Great for a website homepage hero.</div>
-      <button class="btn-generate" id="motion-generate-btn" onclick="generateMotionImage()">Generate Motion Image</button>
-    </div>
-    <div class="card result-card">
-      <div class="card-title">Result</div>
-      <div class="result-frame" id="motion-result-frame">
-        <div class="result-placeholder">Your living image will appear here</div>
-      </div>
-      <div class="result-status" id="motion-result-status"></div>
-      <a class="btn-download" id="motion-download-btn" disabled onclick="downloadImage(this.dataset.url,'motion-image.apng');return false;">Download Image</a>
-    </div>
+    <a class="btn-download" id="download-btn" onclick="downloadResult();return false;">Download Compressed Video</a>
   </div>
 </div>
 
@@ -204,18 +208,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
       </div>
       <form id="form-signin" onsubmit="doSignIn();return false;" style="display:none;">
-        <div class="form-label">EMAIL</div>
         <input type="email" id="login-email" class="form-input" placeholder="you@example.com">
-        <div class="form-label">PASSWORD</div>
         <input type="password" id="login-password" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
-        <button class="btn-auth" style="margin-top:1.25rem;" onclick="doSignIn()">Sign In →</button>
+        <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
       </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
-        <div class="form-label">FULL NAME</div>
         <input type="text" id="signup-name" class="form-input" placeholder="Your full name">
-        <div class="form-label">EMAIL</div>
         <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
-        <div class="form-label">PASSWORD</div>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
         <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.9rem 0 0.5rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
@@ -308,112 +307,153 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
 
 <script src="limits.js"></script>
 <script>
-const IMAGE_API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+const API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
 const DOWNLOAD_PROXY = 'https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url=';
 
-function switchImgTab(tab) {
-  document.getElementById('tab-brand-btn').classList.toggle('active', tab === 'brand');
-  document.getElementById('tab-motion-btn').classList.toggle('active', tab === 'motion');
-  document.getElementById('panel-brand').classList.toggle('active', tab === 'brand');
-  document.getElementById('panel-motion').classList.toggle('active', tab === 'motion');
+let chosenFile = null;
+let level = 'balanced';
+let resultUrl = null;
+
+function fmtSize(bytes) {
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
-let brandLogoBase64 = null;
-function onBrandLogoChange(event) {
+function setLevel(l) {
+  level = l;
+  document.querySelectorAll('.level-opt').forEach(el => el.classList.toggle('active', el.dataset.level === l));
+}
+
+function onFileChosen(event) {
   const file = event.target.files[0];
   if (!file) return;
-  document.getElementById('brand-logo-name').textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = () => { brandLogoBase64 = reader.result; };
-  reader.readAsDataURL(file);
+  chosenFile = file;
+  document.getElementById('dropzone').style.display = 'none';
+  document.getElementById('file-chip').style.display = 'flex';
+  document.getElementById('file-chip-name').textContent = file.name;
+  document.getElementById('file-chip-size').textContent = fmtSize(file.size);
+  document.getElementById('compress-btn').disabled = false;
+}
+window.onFileChosen = onFileChosen;
+
+window.clearFile = function() {
+  chosenFile = null;
+  document.getElementById('file-input').value = '';
+  document.getElementById('dropzone').style.display = 'block';
+  document.getElementById('file-chip').style.display = 'none';
+  document.getElementById('compress-btn').disabled = true;
 }
 
-function setResultLoading(kind) {
-  document.getElementById(`${kind}-result-frame`).innerHTML = '<div class="spinner"></div>';
-  document.getElementById(`${kind}-result-status`).className = 'result-status';
-  document.getElementById(`${kind}-result-status`).textContent = 'Generating — this can take up to a minute...';
-  document.getElementById(`${kind}-download-btn`).removeAttribute('data-url');
-  document.getElementById(`${kind}-download-btn`).disabled = true;
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dz.classList.remove('drag');
+  if (e.dataTransfer.files[0]) {
+    document.getElementById('file-input').files = e.dataTransfer.files;
+    onFileChosen({ target: { files: e.dataTransfer.files } });
+  }
+});
+
+function setProgress(pct, text, isError) {
+  document.getElementById('progress-track').style.display = 'block';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  const status = document.getElementById('progress-status');
+  status.className = 'progress-status' + (isError ? ' error' : '');
+  status.textContent = text;
 }
-function setResultError(kind, message) {
-  document.getElementById(`${kind}-result-frame`).innerHTML = '<div class="result-placeholder">Generation failed</div>';
-  const status = document.getElementById(`${kind}-result-status`);
-  status.className = 'result-status error';
-  status.textContent = message;
+
+function uploadDirect(file, presignedUrl) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', presignedUrl);
+    xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 40); // upload = first 40%
+        setProgress(pct, `Uploading... ${Math.round((e.loaded / e.total) * 100)}%`);
+      }
+    };
+    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error('Upload failed: ' + xhr.status));
+    xhr.onerror = () => reject(new Error('Upload failed'));
+    xhr.send(file);
+  });
 }
-function setResultImage(kind, url) {
-  document.getElementById(`${kind}-result-frame`).innerHTML = `<img src="${url}" alt="Generated image">`;
-  document.getElementById(`${kind}-result-status`).className = 'result-status';
-  document.getElementById(`${kind}-result-status`).textContent = 'Done';
-  const btn = document.getElementById(`${kind}-download-btn`);
-  btn.dataset.url = url;
+
+window.startCompress = async function() {
+  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('video_compress'))) return;
+  if (!chosenFile) return;
+  const btn = document.getElementById('compress-btn');
+  btn.disabled = true;
+  document.getElementById('result-card').style.display = 'none';
+  const originalSize = chosenFile.size;
+
+  try {
+    setProgress(2, 'Preparing upload...');
+    const presignRes = await fetch(`${API}/presign-upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: chosenFile.name, contentType: chosenFile.type || 'video/mp4' }),
+    });
+    const presignData = await presignRes.json();
+    if (presignData.error) throw new Error(presignData.error);
+
+    await uploadDirect(chosenFile, presignData.presigned_url);
+    setProgress(42, 'Starting compression...');
+
+    const startRes = await fetch(`${API}/compress-video`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input_url: presignData.public_url, level }),
+    });
+    const startData = await startRes.json();
+    if (startData.error) throw new Error(startData.error);
+
+    const jobId = startData.job_id;
+    let done = false;
+    while (!done) {
+      await new Promise(r => setTimeout(r, 3000));
+      const statusRes = await fetch(`https://afrivid-tts.reaganayiecho.workers.dev/job-status/${jobId}`);
+      const s = await statusRes.json();
+      if (s.status === 'processing') {
+        setProgress(40 + Math.round((s.progress || 0) * 0.55), s.stage || 'Compressing...');
+      } else if (s.status === 'completed') {
+        setProgress(100, 'Done!');
+        resultUrl = s.output_url;
+        let compressedSize = null;
+        try {
+          const head = await fetch(resultUrl, { method: 'HEAD' });
+          compressedSize = parseInt(head.headers.get('content-length') || '0', 10);
+        } catch (e) {}
+        document.getElementById('stat-original').textContent = fmtSize(originalSize);
+        document.getElementById('stat-compressed').textContent = compressedSize ? fmtSize(compressedSize) : 'Ready';
+        document.getElementById('result-card').style.display = 'block';
+        done = true;
+      } else if (s.status === 'failed') {
+        setProgress(0, s.stage || 'Compression failed', true);
+        done = true;
+      }
+    }
+  } catch (e) {
+    setProgress(0, e.message || 'Something went wrong', true);
+  }
   btn.disabled = false;
 }
 
-window.downloadImage = async function(url, filename) {
-  if (!url) return;
+window.downloadResult = async function() {
+  if (!resultUrl) return;
   try {
-    const res = await fetch(DOWNLOAD_PROXY + encodeURIComponent(url));
+    const res = await fetch(DOWNLOAD_PROXY + encodeURIComponent(resultUrl));
     const blob = await res.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = filename;
+    a.download = 'compressed-' + (chosenFile ? chosenFile.name : 'video.mp4');
     a.click();
     URL.revokeObjectURL(a.href);
   } catch (e) {
     alert('Download failed: ' + e.message);
   }
-}
-
-window.generateBrandImage = async function() {
-  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_brand'))) return;
-  const prompt = document.getElementById('brand-prompt').value.trim();
-  const business = document.getElementById('brand-business').value.trim();
-  if (!prompt) { alert('Please describe the image you want.'); return; }
-  if (!business) { alert('Please enter your business name.'); return; }
-  const btn = document.getElementById('brand-generate-btn');
-  btn.disabled = true; btn.textContent = 'Generating...';
-  setResultLoading('brand');
-  try {
-    const res = await fetch(`${IMAGE_API}/generate-brand-image`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prompt,
-        business_name: business,
-        tagline: document.getElementById('brand-tagline').value.trim(),
-        logo_base64: brandLogoBase64,
-      }),
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    setResultImage('brand', data.url);
-  } catch (e) {
-    setResultError('brand', e.message || 'Something went wrong');
-  }
-  btn.disabled = false; btn.textContent = 'Generate Brand Image';
-}
-
-window.generateMotionImage = async function() {
-  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_motion'))) return;
-  const prompt = document.getElementById('motion-prompt').value.trim();
-  if (!prompt) { alert('Please describe the image you want.'); return; }
-  const btn = document.getElementById('motion-generate-btn');
-  btn.disabled = true; btn.textContent = 'Generating...';
-  setResultLoading('motion');
-  try {
-    const res = await fetch(`${IMAGE_API}/generate-motion-image`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }),
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    setResultImage('motion', data.url);
-  } catch (e) {
-    setResultError('motion', e.message || 'Something went wrong');
-  }
-  btn.disabled = false; btn.textContent = 'Generate Motion Image';
 }
 </script>
 

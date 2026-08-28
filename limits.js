@@ -13,6 +13,7 @@ window.AFRIVID_LIMITS = {
   editor_noise:       { max: 3, period: 'month', field: 'editor_noise' },
   image_brand:        { max: 10, period: 'month', field: 'image_brand' },
   image_motion:       { max: 10, period: 'month', field: 'image_motion' },
+  video_compress:     { max: 15, period: 'month', field: 'video_compress' },
 };
 
 function _getMonthKey() {
