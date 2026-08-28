@@ -934,6 +934,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
             <option value="5" selected>5 minutes</option>
             <option value="10">10 minutes</option>
             <option value="15">15 minutes</option>
+            <option value="20">20 minutes</option>
           </select>
         </div>
         <div>
@@ -6478,7 +6479,7 @@ window.generateTutorial = async function() {
 
   try {
     // Step 1: Generate tutorial scenes with Claude
-    const sceneCount = duration === 1 ? 3 : duration === 2 ? 4 : duration === 5 ? 8 : duration === 10 ? 15 : duration === 15 ? 20 : 22;
+    const sceneCount = duration === 1 ? 3 : duration === 2 ? 4 : duration === 5 ? 8 : duration === 10 ? 15 : duration === 15 ? 20 : duration === 20 ? 25 : 22;
     const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
