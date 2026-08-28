@@ -158,6 +158,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 /* TOOL CARDS — the main dashboard */
 .tools-section{position:relative;z-index:1;padding:5rem 2rem;max-width:1100px;margin:0 auto;}
+.api-section{position:relative;z-index:1;padding:5rem 2rem;max-width:1000px;margin:0 auto;}
+.api-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:3rem;align-items:start;margin-top:1rem;}
+@media (max-width:800px){.api-grid{grid-template-columns:1fr;}}
+.api-features{display:flex;flex-direction:column;gap:1.5rem;}
+.api-feature{display:flex;gap:1rem;align-items:flex-start;}
+.api-feature-icon{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(63,166,107,0.12);color:#3FA66B;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;margin-top:0.15rem;}
+.api-feature-title{font-weight:800;font-size:0.95rem;color:#17140F;margin-bottom:0.25rem;}
+.api-feature-desc{font-size:0.85rem;color:rgba(23,20,15,0.55);line-height:1.55;}
+.api-code-card{background:#17140F;border-radius:16px;padding:1.25rem 1.4rem;box-shadow:0 20px 50px rgba(23,20,15,0.15);}
+.api-code-dots{display:flex;gap:6px;margin-bottom:1rem;}
+.api-code-dots span{width:10px;height:10px;border-radius:50%;background:rgba(251,247,239,0.15);}
+.api-code-dots span:first-child{background:#E63329;}
+.api-code-dots span:nth-child(2){background:#E08A2E;}
+.api-code{margin:0;font-family:'Space Mono',monospace;font-size:0.78rem;line-height:1.7;color:#FBF7EF;white-space:pre-wrap;word-break:break-word;}
+.api-code-comment{color:rgba(251,247,239,0.4);}
+.api-cta{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;flex-wrap:wrap;}
 .section-label{font-size:0.72rem;letter-spacing:3px;color:#C4701E;font-family:'Space Mono',monospace;margin-bottom:0.75rem;text-align:center;font-weight:700;}
 .section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#17140F;text-align:center;margin-bottom:0.75rem;}
 .section-sub{font-size:0.95rem;color:rgba(23,20,15,0.5);text-align:center;margin-bottom:3rem;max-width:520px;margin-left:auto;margin-right:auto;}
@@ -716,6 +732,65 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <a href="design.html" class="stats-cta-btn">Design Studio</a>
   </div>
 </div>
+
+<!-- API FOR DEVELOPERS -->
+<section class="api-section">
+  <div class="section-label reveal reveal-up">FOR DEVELOPERS &amp; PLATFORMS</div>
+  <h2 class="section-title reveal reveal-up">Add AI Video Generation To Your Own Product</h2>
+  <p class="section-sub reveal reveal-up">No video engine of your own? AfriVid can be that engine. Send a topic and your settings from your own app — get back a finished video, unbranded, ready to host as if you built it yourself.</p>
+
+  <div class="api-grid reveal reveal-up">
+    <div class="api-features">
+      <div class="api-feature">
+        <div class="api-feature-icon">✓</div>
+        <div>
+          <div class="api-feature-title">Zero AfriVid branding</div>
+          <div class="api-feature-desc">No logo, no watermark, anywhere in the output — it plays inside your product looking like your product made it.</div>
+        </div>
+      </div>
+      <div class="api-feature">
+        <div class="api-feature-icon">✓</div>
+        <div>
+          <div class="api-feature-title">Full control, not a stripped-down version</div>
+          <div class="api-feature-desc">Topic, duration, language, voice and visual style — the exact same settings the AfriVid Studio web app uses, driven entirely by your own code.</div>
+        </div>
+      </div>
+      <div class="api-feature">
+        <div class="api-feature-icon">✓</div>
+        <div>
+          <div class="api-feature-title">The same real engine</div>
+          <div class="api-feature-desc">Not a lightweight demo API — the identical script-writing, narration and rendering pipeline that powers AfriVid's own tools, in five languages.</div>
+        </div>
+      </div>
+      <div class="api-feature">
+        <div class="api-feature-icon">✓</div>
+        <div>
+          <div class="api-feature-title">Simple to integrate</div>
+          <div class="api-feature-desc">One request to start a video, one status URL to poll — no SDK required, works from any backend that can make an HTTP request.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="api-code-card">
+      <div class="api-code-dots"><span></span><span></span><span></span></div>
+      <pre class="api-code">curl -X POST .../api/v1/generate-video \
+  -H "X-API-Key: your_key" \
+  -d '{
+    "topic": "how compound
+             interest works",
+    "duration": 90,
+    "voice": "woman"
+  }'
+
+<span class="api-code-comment"># -> job_id + a status URL to poll</span></pre>
+    </div>
+  </div>
+
+  <div class="api-cta reveal reveal-up">
+    <a href="contact.html" class="btn-primary" style="text-decoration:none;display:inline-block;">Request API Access</a>
+    <a href="api-docs.html" class="btn-secondary" style="text-decoration:none;display:inline-block;">Read the Docs</a>
+  </div>
+</section>
 
 <!-- FAQ -->
 <section class="faq-section">
