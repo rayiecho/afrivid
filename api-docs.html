@@ -59,6 +59,20 @@ td.type{font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--gold-da
 .callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--radius-md);padding:1rem 1.3rem;margin-bottom:1.2rem;font-size:0.9rem;color:var(--text-muted);}
 .callout b{color:var(--text);}
 
+.gk-row{display:flex;gap:0.7rem;flex-wrap:wrap;margin:0.9rem 0;}
+.gk-row input{flex:1;min-width:180px;font-family:'Syne',sans-serif;font-size:0.9rem;padding:0.65rem 0.9rem;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);outline:none;}
+.gk-row input:focus{border-color:var(--gold);}
+.gk-btn{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;padding:0.65rem 1.3rem;border:none;border-radius:var(--radius-sm);background:var(--gradient-gold);color:#fff;cursor:pointer;}
+.gk-btn:hover{opacity:0.92;}
+.gk-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.gk-error{color:var(--red);font-size:0.85rem;margin-top:0.7rem;font-weight:600;}
+.gk-result{margin-top:1rem;}
+.gk-warning{color:var(--red);font-size:0.85rem;margin-bottom:0.6rem;}
+.gk-key-box{display:flex;align-items:center;gap:0.7rem;background:var(--code-bg);color:var(--code-text);border-radius:var(--radius-md);padding:0.8rem 1rem;font-family:'Space Mono',monospace;font-size:0.85rem;overflow-x:auto;}
+.gk-key-box code{flex:1;word-break:break-all;background:none;padding:0;color:inherit;}
+.gk-copy-btn{flex-shrink:0;font-family:'Space Mono',monospace;font-size:0.72rem;padding:0.35rem 0.7rem;border:1px solid rgba(251,247,239,0.3);border-radius:var(--radius-sm);background:transparent;color:var(--code-text);cursor:pointer;}
+.gk-copy-btn:hover{background:rgba(251,247,239,0.1);}
+
 footer{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--text-faint);font-size:0.8rem;}
 </style>
 </head>
@@ -78,8 +92,21 @@ footer{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--border);c
   <h1>Generate videos from your own platform</h1>
   <p class="dek">If your product doesn't have a video-generation engine, AfriVid can be that engine. Send a topic and your preferred settings, get back a finished video — unbranded, ready to host inside your own product.</p>
 
-  <div class="callout">
-    <b>Access is invite-only for now.</b> Contact AfriVid Studio directly to get an API key. There's no self-serve signup or billing yet — that's coming later.
+  <div class="callout" id="get-key">
+    <b>Get an API key instantly.</b> No waiting on us — enter your details and a key is generated right here. Free tier is capped at 20 requests/month; contact us if you need more.
+    <form id="get-key-form" class="gk-row" style="margin-top:0.9rem;">
+      <input type="text" id="gk-name" placeholder="Name or company" autocomplete="organization" required>
+      <input type="email" id="gk-email" placeholder="Email" autocomplete="email" required>
+      <button type="submit" class="gk-btn">Get API Key</button>
+    </form>
+    <div id="gk-error" class="gk-error" hidden></div>
+    <div id="gk-result" class="gk-result" hidden>
+      <p class="gk-warning"><b>Save this now — you will not see it again.</b></p>
+      <div class="gk-key-box">
+        <code id="gk-key-text"></code>
+        <button type="button" id="gk-copy-btn" class="gk-copy-btn">Copy</button>
+      </div>
+    </div>
   </div>
 
   <h2>Authentication</h2>
@@ -93,8 +120,10 @@ footer{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--border);c
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
       <tbody>
-        <tr><td class="param">topic <span class="pill required">required</span></td><td class="type">string</td><td>What the video should explain, e.g. <code>"how compound interest works"</code>. AfriVid writes the full script from this.</td></tr>
-        <tr><td class="param">duration</td><td class="type">integer (seconds)</td><td>Target video length. Default <code>60</code>. See Durations below for realistic ranges.</td></tr>
+        <tr><td class="param">topic <span class="pill required">one of</span></td><td class="type">string</td><td>What the video should explain, e.g. <code>"how compound interest works"</code>. AfriVid writes the full script from this. Mutually exclusive with <code>script</code>.</td></tr>
+        <tr><td class="param">script <span class="pill required">one of</span></td><td class="type">string</td><td><strong>Verbatim mode.</strong> Your own finished narration text. AfriVid narrates it <em>exactly</em> as written — no AI writing, rewriting, paraphrasing, summarising or fact-adding of any kind happens to it. Use this when your copy is already reviewed or compliance-approved. The text is split into scenes deterministically: on markdown headers (<code>#</code>, <code>##</code>, …) where present — the header becomes the scene's on-screen title and is not narrated — otherwise on sentence boundaries at roughly 45–70 words per scene. A sentence is never split. Mutually exclusive with <code>topic</code>; passing both, or neither, returns <code>400</code>.</td></tr>
+        <tr><td class="param">title</td><td class="type">string</td><td>Optional. In <code>script</code> mode, adds an opening title card using this exact text. Also used as the video's title.</td></tr>
+        <tr><td class="param">duration</td><td class="type">integer (seconds)</td><td>Target video length. Default <code>60</code>. See Durations below for realistic ranges. <strong>Not applicable in <code>script</code> mode</strong> — it is ignored there, because the video has to be however long your text genuinely takes to narrate. Padding it out would mean inventing filler, and cutting it short would mean dropping your real content. Use the <code>estimated_duration</code> in the response to know the length upfront.</td></tr>
         <tr><td class="param">language</td><td class="type">string</td><td>Default <code>"English"</code>. See Languages below.</td></tr>
         <tr><td class="param">voice</td><td class="type">string</td><td><code>"woman"</code> or <code>"man"</code>. Default <code>"woman"</code>.</td></tr>
         <tr><td class="param">style</td><td class="type">string</td><td>Tone of the narration and visuals. See Styles below. Default <code>"educational and informative"</code>.</td></tr>
@@ -115,12 +144,26 @@ footer{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--border);c
     "style": "educational and informative"
   }'</pre>
 
+  <p>Example request in verbatim <code>script</code> mode — your exact words, no AI writing:</p>
+  <pre>curl -X POST https://afrivid-processor-222827815864.africa-south1.run.app/api/v1/generate-video \
+  -H "X-API-Key: your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Compound Interest Basics",
+    "script": "## What Compound Interest Is\n\nCompound interest is the process by which interest earns further interest over time...\n\n## Why Time Matters\n\nBecause growth is exponential, the number of years invested matters more than the rate itself...",
+    "language": "English",
+    "voice": "woman"
+  }'</pre>
+
   <p>Response (immediate — generation happens in the background):</p>
   <pre>{
   "accepted": true,
   "job_id": "api_1787920000",
-  "status_url": "https://afrivid-tts.reaganayiecho.workers.dev/job-status/api_1787920000"
+  "status_url": "https://afrivid-tts.reaganayiecho.workers.dev/job-status/api_1787920000",
+  "estimated_duration": 118,
+  "scene_count": 5
 }</pre>
+  <p><code>estimated_duration</code> is the total narration length in seconds, computed by summing the scenes. In <code>script</code> mode this is the real length your text will produce, so you know upfront what you are getting rather than having to wait for the render.</p>
 
   <h2>Check status</h2>
   <p>Poll the <code>status_url</code> from the response above every few seconds — no auth needed on this one, the job ID itself is the credential.</p>
@@ -181,6 +224,61 @@ footer{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--border);c
     Partner API v1 — subject to change before a stable release. Questions or a key request: contact AfriVid Studio directly.
   </footer>
 </div>
+
+<script>
+(function(){
+  var form = document.getElementById('get-key-form');
+  var errorEl = document.getElementById('gk-error');
+  var resultEl = document.getElementById('gk-result');
+  var keyText = document.getElementById('gk-key-text');
+  var copyBtn = document.getElementById('gk-copy-btn');
+  var btn = form.querySelector('.gk-btn');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    errorEl.hidden = true;
+    resultEl.hidden = true;
+    var partner_name = document.getElementById('gk-name').value.trim();
+    var email = document.getElementById('gk-email').value.trim();
+    if (!partner_name || !email) {
+      errorEl.textContent = 'Please fill in both fields.';
+      errorEl.hidden = false;
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    fetch('https://afrivid-tts.reaganayiecho.workers.dev/api-keys/request', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ partner_name: partner_name, email: email })
+    })
+      .then(function(res){ return res.json().then(function(data){ return { ok: res.ok, data: data }; }); })
+      .then(function(result){
+        if (!result.ok || !result.data.api_key) {
+          throw new Error((result.data && result.data.error) || 'Something went wrong. Please try again.');
+        }
+        keyText.textContent = result.data.api_key;
+        resultEl.hidden = false;
+        form.reset();
+      })
+      .catch(function(err){
+        errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+        errorEl.hidden = false;
+      })
+      .finally(function(){
+        btn.disabled = false;
+        btn.textContent = 'Get API Key';
+      });
+  });
+
+  copyBtn.addEventListener('click', function(){
+    navigator.clipboard.writeText(keyText.textContent).then(function(){
+      copyBtn.textContent = 'Copied!';
+      setTimeout(function(){ copyBtn.textContent = 'Copy'; }, 1500);
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
