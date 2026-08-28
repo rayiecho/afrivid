@@ -1667,7 +1667,18 @@ Create exactly ${sceneCount} scenes. Each scene must have AT LEAST ${Math.floor(
       })
     });
     const data = await response.json();
-    const text = data.content[0].text.trim();
+    let text = '';
+    if (data.content && data.content[0]) {
+      text = data.content[0].text.trim();
+    } else if (data.result && data.result.content && data.result.content[0]) {
+      text = data.result.content[0].text.trim();
+    } else if (data.response) {
+      text = data.response.trim();
+    } else if (data.text) {
+      text = data.text.trim();
+    } else {
+      throw new Error('Unexpected response: ' + JSON.stringify(data).substring(0, 200));
+    }
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('Invalid script response');
     scriptData = JSON.parse(match[0]); window.scriptData = scriptData;
