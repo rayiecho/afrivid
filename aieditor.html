@@ -334,7 +334,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <div id="phase2-download" style="display:none;margin-top:1rem;">
       <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <button id="phase2-download-link" data-url="" onclick="(async()=>{const btn=document.getElementById('phase2-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const pu='https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download='AfriVid-Edited.mp4';a.click();window.URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Processed Video';btn.disabled=false;})()" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</button>
+        <button id="phase2-download-link" data-url="" onclick="(async()=>{const btn=document.getElementById('phase2-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download='AfriVid-Edited.mp4';a.click();window.URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Processed Video';btn.disabled=false;})()" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</button>
         <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">▶ Upload to YouTube</button>
       </div>
     </div>
@@ -1110,7 +1110,7 @@ async function extractWAV() {
 async function transcribe() {
   addLog('all', '[~] Transcribing audio...');
   const wavBlob = await extractWAV();
-  const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/transcribe', {
+  const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/transcribe', {
     method:'POST', headers:{'Content-Type':'audio/wav'}, body: wavBlob
   });
   if (!res.ok) return '';
@@ -1120,7 +1120,7 @@ async function transcribe() {
 }
 
 async function claudeAsk(prompt, maxTokens) {
-  const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
+  const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       model:'claude-haiku-4-5-20251001',
@@ -1235,7 +1235,7 @@ async function exportClips(clips, filename, bitrate) {
   if (window.currentUser?.email) {
     try {
       const videoName = window.currentVideoFile?.name || 'your video';
-      await fetch('https://afrivid-tts.afrividstudio.workers.dev/send-email', {
+      await fetch('https://afrivid-tts.reaganayiecho.workers.dev/send-email', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -1496,7 +1496,7 @@ async function doTranslate(lang) {
     addLog('translate', '[~] Translating...');
     const translated = await claudeAsk(`Translate to ${langName}. Return ONLY translated text:\n"${transcript}"`, 2000);
     addLog('translate', '[~] Generating voice...');
-    const ttsRes = await fetch('https://afrivid-tts.afrividstudio.workers.dev/tts', {
+    const ttsRes = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/tts', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({text:translated, voice:lang})
     });
@@ -2489,7 +2489,7 @@ window.uploadToServer = async function() {
       });
       const processData = await processRes.json();
       console.log('[Phase2] Process response:', processData);
-      await fetch('https://afrivid-tts.afrividstudio.workers.dev/update-job', {
+      await fetch('https://afrivid-tts.reaganayiecho.workers.dev/update-job', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({job_id, status: 'processing', progress: 35, stage: 'Video uploaded! Processing in Johannesburg...'})
@@ -2529,7 +2529,7 @@ window.uploadToServer = async function() {
 async function pollJobStatus() {
   if (!window._phase2JobId) return;
   try {
-    const res = await fetch(`https://afrivid-tts.afrividstudio.workers.dev/job-status/${window._phase2JobId}`);
+    const res = await fetch(`https://afrivid-tts.reaganayiecho.workers.dev/job-status/${window._phase2JobId}`);
     const data = await res.json();
     const bar = document.getElementById('phase2-bar');
     const pct = document.getElementById('phase2-pct');
@@ -2685,7 +2685,7 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
   const btn = document.querySelector('[onclick="uploadToYouTube()"]');
   if(btn) { btn.textContent = '↑ Uploading...'; btn.disabled = true; }
   try {
-    const proxyUrl = 'https://afrivid-tts.afrividstudio.workers.dev/download-proxy?url=' + encodeURIComponent(window._serverVideoUrl);
+    const proxyUrl = 'https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url=' + encodeURIComponent(window._serverVideoUrl);
     const r = await fetch(proxyUrl);
     const blob = await r.blob();
     const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {

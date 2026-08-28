@@ -465,14 +465,14 @@ window._feedbackLoaded = false;
           <div class="system-card">
             <div class="system-info">
               <div class="system-name">TTS Worker</div>
-              <div class="system-url">afrivid-tts.afrividstudio.workers.dev</div>
+              <div class="system-url">afrivid-tts.reaganayiecho.workers.dev</div>
             </div>
             <div><span class="status-dot status-checking" id="dot-tts"></span><span id="status-tts" style="font-size:0.72rem;font-family:var(--font-mono);">Checking...</span></div>
           </div>
           <div class="system-card">
             <div class="system-info">
               <div class="system-name">Script Generator</div>
-              <div class="system-url">afrivid-tts.afrividstudio.workers.dev/ai-generate</div>
+              <div class="system-url">afrivid-tts.reaganayiecho.workers.dev/ai-generate</div>
             </div>
             <div><span class="status-dot status-checking" id="dot-ai"></span><span id="status-ai" style="font-size:0.72rem;font-family:var(--font-mono);">Checking...</span></div>
           </div>
@@ -1085,12 +1085,12 @@ async function checkWorkers() {
       status.style.color = 'var(--red)';
     }
   };
-  check('https://afrivid-tts.afrividstudio.workers.dev','dot-tts','status-tts');
+  check('https://afrivid-tts.reaganayiecho.workers.dev','dot-tts','status-tts');
   // This worker only accepts POST (it's a single-purpose Claude API proxy) and doesn't send
   // CORS headers on its 405 response to GET, so a GET check here always misreports it as
   // offline. OPTIONS is the cheapest request it handles correctly with CORS headers, so it
   // reflects real reachability without spending an actual AI generation call.
-  check('https://afrivid-tts.afrividstudio.workers.dev/ai-generate','dot-ai','status-ai','OPTIONS');
+  check('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate','dot-ai','status-ai','OPTIONS');
 
   // Firebase check
   try {
@@ -1138,7 +1138,7 @@ window.sendAnnouncement = async function() {
     let sent = 0;
     for (const email of emails) {
       try {
-        const res = await fetch('https://afrivid-tts.afrividstudio.workers.dev/send-email', {
+        const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/send-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

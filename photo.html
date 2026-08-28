@@ -1101,7 +1101,7 @@ window.applyAIEdit = async function() {
   if (!instructions) { alert('Type your edit instructions first'); return; }
   addLog('info', '[~] Processing AI instructions...');
   try {
-    const response = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
+    const response = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1211,7 +1211,7 @@ window.handleSaveToStudio = async function() {
       const blob = await (await fetch(dataURL)).blob();
       const form = new FormData();
       form.append('file', blob, 'photo-'+Date.now()+'.jpg');
-      const r = await fetch('https://afrivid-tts.afrividstudio.workers.dev/upload', {method:'POST', body:form});
+      const r = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/upload', {method:'POST', body:form});
       const rd = await r.json();
       photoUrl = rd.url || '';
     } catch(e) { console.log('R2 upload failed:', e); }
@@ -1543,7 +1543,7 @@ text: any text to add or empty string
 textPos: "none", "bottom", "top", "br"`;
 
   try {
-    const response = await fetch('https://afrivid-tts.afrividstudio.workers.dev/ai-generate', {
+    const response = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
