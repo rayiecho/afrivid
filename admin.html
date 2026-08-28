@@ -271,6 +271,7 @@ window._feedbackLoaded = false;
       <div class="nav-section">PLATFORM</div>
       <div class="nav-item" onclick="showPage('system',this)"><span class="nav-icon">◇</span> System</div>
       <div class="nav-item" onclick="showPage('content',this)"><span class="nav-icon">▣</span> Content</div>
+      <div class="nav-item" onclick="showPage('apikeys',this);loadApiKeys();"><span class="nav-icon">🔑</span> API Keys</div>
 
       <div class="nav-section">FINANCE</div>
       <div class="nav-item" onclick="showPage('finance',this)"><span class="nav-icon">$</span> Finances</div>
@@ -677,6 +678,42 @@ window._feedbackLoaded = false;
         </div>
         <div id="upg-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
         <div id="upg-list"></div>
+      </div>
+      <div class="page" id="page-apikeys">
+        <div class="flex-between mb-15">
+          <div>
+            <div class="page-title">API Keys</div>
+            <div class="page-sub">Partner access to the video-generation API — self-serve, no server changes needed per client</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="loadApiKeys()">↺ Refresh</button>
+        </div>
+        <div class="card mb-15">
+          <div class="card-title">Issue a new key</div>
+          <div class="flex gap-1" style="align-items:center;">
+            <input type="text" class="form-input" style="flex:1;" placeholder="Client / partner name" id="new-key-partner" onkeydown="if(event.key==='Enter')createApiKey()">
+            <button class="btn btn-gold" onclick="createApiKey()">Create Key</button>
+          </div>
+          <div id="new-key-result" style="display:none;margin-top:1rem;padding:0.85rem 1rem;background:rgba(116,198,157,0.08);border:1px solid rgba(116,198,157,0.25);border-radius:8px;font-family:var(--font-mono);font-size:0.82rem;"></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>PARTNER</th>
+                  <th>KEY</th>
+                  <th>CREATED</th>
+                  <th>USAGE</th>
+                  <th>STATUS</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="apikeys-tbody">
+                <tr><td colspan="6" style="color:var(--muted);">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       <div class="page" id="page-feedback">
         <div class="page-header">
@@ -1525,6 +1562,79 @@ updateClock();
       <div class="stat-card"><div class="stat-value" style="color:#F5A623">${Math.round(words/1000000*100)/100}M</div><div class="stat-label">OF 1M TARGET</div></div>
     `;
   } catch(e) {}
+};
+
+// ── API PARTNER KEYS ──
+const API_KEYS_WORKER = 'https://afrivid-tts.reaganayiecho.workers.dev';
+const ADMIN_SECRET_HEADER = 'avs_admin_KQWnNZboq1qqmmNYU1KjbHn4o99uO93B8qigWgEz8o0';
+
+window.loadApiKeys = async function() {
+  const tbody = document.getElementById('apikeys-tbody');
+  tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);">Loading...</td></tr>';
+  try {
+    const res = await fetch(`${API_KEYS_WORKER}/api-keys/list`, {
+      headers: { 'X-Admin-Secret': ADMIN_SECRET_HEADER },
+    });
+    const data = await res.json();
+    const keys = data.keys || [];
+    if (!keys.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);">No keys issued yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = keys.map(k => `
+      <tr>
+        <td>${k.partner_name || '—'}</td>
+        <td style="font-family:var(--font-mono);font-size:0.78rem;">
+          <span style="cursor:pointer;" title="Click to copy" onclick="navigator.clipboard.writeText('${k.key}');showToast('Key copied');">${k.key.slice(0,10)}...${k.key.slice(-4)} 📋</span>
+        </td>
+        <td>${k.created_at ? new Date(k.created_at).toLocaleDateString() : '—'}</td>
+        <td>${k.usage_count || 0}</td>
+        <td><span style="color:${k.active ? '#74C69D' : '#E63329'};font-weight:700;">${k.active ? 'Active' : 'Revoked'}</span></td>
+        <td><button class="btn ${k.active ? 'btn-outline' : 'btn-gold'} btn-sm" onclick="toggleApiKey('${k.key}', ${!k.active})">${k.active ? 'Revoke' : 'Reactivate'}</button></td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="color:#E63329;">Failed to load: ${e.message}</td></tr>`;
+  }
+};
+
+window.createApiKey = async function() {
+  const input = document.getElementById('new-key-partner');
+  const partner_name = input.value.trim();
+  if (!partner_name) { showToast('Enter a client name first', 'error'); return; }
+  try {
+    const res = await fetch(`${API_KEYS_WORKER}/api-keys/create`, {
+      method: 'POST',
+      headers: { 'X-Admin-Secret': ADMIN_SECRET_HEADER, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partner_name }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    const resultBox = document.getElementById('new-key-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `<b>${partner_name}</b>'s key — copy it now, send it to them:<br><span style="color:#74C69D;user-select:all;">${data.api_key}</span>`;
+    input.value = '';
+    showToast('API key created');
+    loadApiKeys();
+  } catch (e) {
+    showToast('Failed to create key: ' + e.message, 'error');
+  }
+};
+
+window.toggleApiKey = async function(key, active) {
+  try {
+    const res = await fetch(`${API_KEYS_WORKER}/api-keys/revoke`, {
+      method: 'POST',
+      headers: { 'X-Admin-Secret': ADMIN_SECRET_HEADER, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, active }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    showToast(active ? 'Key reactivated' : 'Key revoked');
+    loadApiKeys();
+  } catch (e) {
+    showToast('Failed: ' + e.message, 'error');
+  }
 };
 
 window.loadFeedback = async function() {
