@@ -703,6 +703,8 @@ window.generateOnServer = async function() {
           // Store server video URL for share/download buttons
           window._serverVideoUrl = d.output_url;
           window._serverThumbUrl = d.thumbnail_url || '';
+          const finalPlayer = document.getElementById('final-video-player');
+          if (finalPlayer) { finalPlayer.src = d.output_url; finalPlayer.style.display = 'block'; }
           // Update download button text
           const dlBtn = document.getElementById('btn-download');
           if (dlBtn) { dlBtn.textContent = 'Download MP4'; dlBtn.onclick = async () => { dlBtn.textContent='Downloading...';dlBtn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}dlBtn.textContent='Download MP4';dlBtn.disabled=false;}; }
@@ -994,6 +996,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </div>
           <div id="tutorial-download" style="display:none;">
             <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Tutorial ready!</div>
+            <video id="tutorial-video-player" controls style="width:100%;max-width:640px;border-radius:12px;margin-bottom:0.75rem;background:#000;display:block;"></video>
             <button id="tutorial-download-link" onclick="downloadTutorialVideo()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Download Tutorial</button>
             <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-left:0.5rem;">▶ Upload to YouTube</button>
           </div>
@@ -1402,8 +1405,13 @@ Or just paste your raw content and we will structure it into scenes automaticall
           Video Preview
         </div>
 
-        <div id="canvas-container" style="position:relative;max-height:380px;overflow:hidden;">
-          <canvas id="video-canvas" style="max-width:100%;max-height:360px;display:block;margin:0 auto;"></canvas>
+        <div class="btn-row" style="margin-bottom:1rem;">
+          <button class="btn btn-gold" id="btn-generate-server" onclick="generateOnServer()" style="font-size:1rem;padding:0.85rem 2rem;">Generate Video</button>
+          <button class="btn btn-outline" onclick="goToStep(2)">Edit Script</button>
+        </div>
+
+        <div id="canvas-container" style="position:relative;max-height:220px;overflow:hidden;">
+          <canvas id="video-canvas" style="max-width:100%;max-height:220px;display:block;margin:0 auto;"></canvas>
           <div class="crop-overlay" id="crop-overlay"></div>
           <div class="crop-selection" id="crop-selection" style="display:none;"></div>
           <div class="canvas-overlay" id="canvas-overlay">
@@ -1422,11 +1430,6 @@ Or just paste your raw content and we will structure it into scenes automaticall
 
         <div class="status-log" id="status-log">
           <span class="log-line info">// AfriVid Studio ready. Press Start Recording to generate your video.</span>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn btn-gold" id="btn-generate-server" onclick="generateOnServer()" style="font-size:1rem;padding:0.85rem 2rem;">Generate Video</button>
-          <button class="btn btn-outline" onclick="goToStep(2)">← Back to Script</button>
         </div>
         <!-- SERVER PROCESSING STATUS -->
         <div id="server-gen-status" style="display:none;margin-top:1rem;background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
@@ -1460,6 +1463,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <div class="download-icon"></div>
         <div class="download-title">Your Video is Ready!</div>
         <div class="download-sub" id="download-info">Your YAN training video has been generated successfully.</div>
+        <video id="final-video-player" controls style="width:100%;max-width:640px;border-radius:12px;margin:1rem auto;display:none;background:#000;"></video>
         <div class="btn-row" style="justify-content:center;">
           <button class="btn btn-green" id="btn-download" onclick="downloadVideo()">Download WebM</button>
           <button class="btn btn-gold" onclick="downloadMP4()">Download MP4</button>
@@ -6437,6 +6441,8 @@ window.generateTutorial = async function() {
             window._serverVideoUrl = sd.output_url;
             window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
             document.getElementById('tutorial-download').style.display = 'block';
+            const tvp = document.getElementById('tutorial-video-player');
+            if (tvp) tvp.src = sd.output_url;
             const tdb = document.getElementById('tutorial-dashboard-btn');
             if (tdb) tdb.style.display = 'block';
             document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
@@ -6472,7 +6478,7 @@ window.generateTutorial = async function() {
 
   try {
     // Step 1: Generate tutorial scenes with Claude
-    const sceneCount = duration === 1 ? 3 : duration === 2 ? 4 : duration === 5 ? 8 : duration === 10 ? 15 : 22;
+    const sceneCount = duration === 1 ? 3 : duration === 2 ? 4 : duration === 5 ? 8 : duration === 10 ? 15 : duration === 15 ? 20 : 22;
     const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -6500,7 +6506,7 @@ CRITICAL: If a "content" scene uses "points" instead of a caption, each point mu
 CRITICAL: A "content" scene using the regular icon-list "points" (i.e. NOT "layout":"flow") should have however many real, distinct points the topic actually supports — typically 4-8, up to 5 per on-screen column. Never pad with weak or repetitive points just to hit a count; a genuine 4-point list beats a stretched 10-point one. Depth belongs in each point's "detail" field, not in inflating the count.
 CRITICAL: A "content" scene with NO "points" (caption-only) can run long when the topic genuinely needs it — that's fine — its screen is a live rotating sequence of AI-generated images related to the topic while the narrator talks, not one static line, so never worry about that scene "looking empty".
 CRITICAL: If "${topic}" is code-related, place "code" scenes right where that code is actually relevant in the tutorial's flow (not clustered near the end), and make each code scene's voiceover a genuine, unhurried walkthrough — what the code does AND why, line by line where it matters — not a quick pass over it. Give it enough duration/words to match that depth.
-CRITICAL: Each voiceover must be EXACTLY ${Math.round(duration*60/sceneCount*2.5)} words, UNLESS the scene's content (a long caption-only section, a rich points list, or an unhurried code walkthrough) genuinely needs more — then scale the word count and "duration" to match, even if that shifts time from other scenes. Count carefully.
+CRITICAL: Each voiceover must be AT LEAST ${Math.round(duration*60/sceneCount*2.5)} words — never fewer, that's what makes the video the requested total length. If the scene's content (a long caption-only section, a rich points list, or an unhurried code walkthrough) genuinely needs more, use more and scale that scene's "duration" up to match, even if that shifts time from other scenes. Count carefully — the sum of every scene's "duration" must equal ${duration*60} seconds.
 Make voiceover natural and educational. Return ONLY valid JSON array.`}]
       })
     });
@@ -6553,6 +6559,8 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
           window._serverVideoUrl = sd.output_url;
           window._scriptData = { title: topic, description: 'Created with AfriVid Studio' };
           document.getElementById('tutorial-download').style.display = 'block';
+          const tvp2 = document.getElementById('tutorial-video-player');
+          if (tvp2) tvp2.src = sd.output_url;
           document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
           btn.textContent = 'Generate Tutorial Video';
           btn.disabled = false;
