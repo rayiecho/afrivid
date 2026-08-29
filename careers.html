@@ -57,13 +57,13 @@ form{display:flex;flex-direction:column;gap:1rem;}
 .field input:focus,.field select:focus{border-color:var(--gold);}
 .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2317140f' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.7rem center;padding-right:2.2rem;}
 
-.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+.hp{display:none;}
 
 .submit-btn{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;padding:0.85rem 1.6rem;border:none;border-radius:var(--radius-sm);background:var(--gradient-gold);color:#fff;cursor:pointer;align-self:flex-start;}
 .submit-btn:hover{opacity:0.92;}
 .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
 
-.form-error{color:var(--red);font-size:0.85rem;font-weight:600;display:none;}
+.form-error{display:none;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--radius-md);padding:0.9rem 1.2rem;color:var(--red);font-size:0.88rem;font-weight:600;}
 .form-error.show{display:block;}
 
 .success{display:none;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--radius-md);padding:1.4rem 1.5rem;}
@@ -222,12 +222,45 @@ const form = document.getElementById('apply-form');
 const submitBtn = document.getElementById('submit-btn');
 const errorBox = document.getElementById('form-error');
 
+function showError(msg, focusEl) {
+  errorBox.textContent = msg;
+  errorBox.classList.add('show');
+  errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (focusEl) focusEl.focus();
+}
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   errorBox.classList.remove('show');
 
-  // Honeypot: a real visitor never fills a field they can't see.
+  // Check every required field ourselves instead of relying only on the
+  // browser's native validation — a native tooltip on a field the user
+  // has scrolled past is easy to miss entirely, which reads as "nothing
+  // happened" when really a field was just left blank.
+  const required = [
+    ['f-name', 'your full name'], ['f-position', 'a position'],
+    ['f-email', 'your email'], ['f-phone', 'your phone number'],
+    ['f-whatsapp', 'your WhatsApp number'], ['f-occupation', 'your occupation'],
+    ['f-linkedin', 'your LinkedIn profile'], ['f-gender', 'your gender'],
+    ['f-country', 'your country of residence'],
+  ];
+  for (const [id, label] of required) {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) {
+      showError(`Please fill in ${label} before submitting.`, el);
+      return;
+    }
+  }
+
+  // Honeypot: a real visitor never fills a field they can't see. Browser
+  // autofill occasionally does anyway — rather than silently doing
+  // nothing (which looks exactly like a broken button to a real
+  // applicant), still show success without actually writing the record.
   if (document.querySelector('input[name="company"]').value.trim()) {
+    form.style.display = 'none';
+    const successBox = document.getElementById('success-box');
+    successBox.classList.add('show');
+    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
@@ -249,11 +282,12 @@ form.addEventListener('submit', async (e) => {
       createdAt: serverTimestamp(),
     });
     form.style.display = 'none';
-    document.getElementById('success-box').classList.add('show');
+    const successBox = document.getElementById('success-box');
+    successBox.classList.add('show');
+    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (err) {
     console.error('Application submit failed:', err);
-    errorBox.textContent = 'Something went wrong sending your application — please try again in a moment.';
-    errorBox.classList.add('show');
+    showError('Something went wrong sending your application — please try again in a moment.');
     submitBtn.disabled = false;
     submitBtn.textContent = 'Submit application →';
   }
