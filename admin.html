@@ -273,6 +273,9 @@ window._feedbackLoaded = false;
       <div class="nav-item" onclick="showPage('content',this)"><span class="nav-icon">▣</span> Content</div>
       <div class="nav-item" onclick="showPage('apikeys',this);loadApiKeys();"><span class="nav-icon">🔑</span> API Keys</div>
 
+      <div class="nav-section">TEAM</div>
+      <div class="nav-item" onclick="showPage('applications',this);loadApplications();"><span class="nav-icon">📋</span> Applications</div>
+
       <div class="nav-section">FINANCE</div>
       <div class="nav-item" onclick="showPage('finance',this)"><span class="nav-icon">$</span> Finances</div>
       <div class="nav-item" onclick="showPage('balance',this)"><span class="nav-icon">≡</span> Balance Sheet</div>
@@ -725,6 +728,17 @@ window._feedbackLoaded = false;
         </div>
         <div id="fb-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
         <div id="fb-list"></div>
+      </div>
+      <div class="page" id="page-applications">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Applications</div>
+            <div class="page-subtitle">Submissions from the careers page</div>
+          </div>
+          <button onclick="loadApplications()" class="btn btn-gold btn-sm">↺ Refresh</button>
+        </div>
+        <div id="app-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
+        <div id="app-list"></div>
       </div>
       <div class="page" id="page-balance">
         <div class="flex-between mb-15">
@@ -1878,6 +1892,79 @@ window.markUpgradeDone = async function(id) {
   try {
     await updateDoc(doc(db,'upgrade_requests',id),{status:'completed'});
     loadUpgrades();
+  } catch(e) { alert('Failed: '+e.message); }
+};
+
+window.loadApplications = async function() {
+  const list = document.getElementById('app-list');
+  const stats = document.getElementById('app-stats');
+  if(!list) return;
+  list.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">[..] Loading...</div>';
+  try {
+    const snap = await getDocs(query(collection(db,'job_applications'),orderBy('createdAt','desc')));
+    const items = snap.docs.map(d=>({id:d.id,...d.data()}));
+    const byPosition = {};
+    items.forEach(i => { byPosition[i.position] = (byPosition[i.position]||0) + 1; });
+    const topPosition = Object.entries(byPosition).sort((a,b)=>b[1]-a[1])[0];
+    const newCount = items.filter(i=>i.status==='new').length;
+    if(stats) stats.innerHTML = `
+      <div class="stat-card"><div class="stat-value">${items.length}</div><div class="stat-label">TOTAL</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:#F5A623">${newCount}</div><div class="stat-label">UNREVIEWED</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:#74C69D;font-size:1.1rem;">${topPosition?topPosition[0]:'—'}</div><div class="stat-label">TOP ROLE</div></div>
+      <div class="stat-card"><div class="stat-value">${Object.keys(byPosition).length}</div><div class="stat-label">ROLES APPLIED TO</div></div>
+    `;
+    list.innerHTML = items.length ? items.map(item=>`
+      <div style="background:#0D1F35;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+          <div>
+            <div style="color:#fff;font-weight:800;font-size:0.95rem;">${item.name||'—'}</div>
+            <div style="color:#F5A623;font-size:0.78rem;font-weight:700;">${item.position||'—'}</div>
+          </div>
+          <span style="background:${item.status==='new'?'rgba(245,166,35,0.1)':'rgba(116,198,157,0.1)'};color:${item.status==='new'?'#F5A623':'#74C69D'};padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:700;">${(item.status||'new').toUpperCase()}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+          <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+            <div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:0.2rem;">EMAIL</div>
+            <div style="color:#fff;font-size:0.8rem;word-break:break-word;">${item.email||'—'}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+            <div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
+            <div style="color:#fff;font-size:0.8rem;">${item.phone||'—'}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+            <div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:0.2rem;">WHATSAPP</div>
+            <div style="color:#fff;font-size:0.8rem;">${item.whatsapp||'—'}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+            <div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:0.2rem;">OCCUPATION</div>
+            <div style="color:#fff;font-size:0.8rem;">${item.occupation||'—'}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+            <div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:0.2rem;">GENDER</div>
+            <div style="color:#fff;font-size:0.8rem;">${item.gender||'—'}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
+            <div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
+            <div style="color:#fff;font-size:0.8rem;">${item.country||'—'}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          ${item.linkedin ? `<a href="${item.linkedin}" target="_blank" rel="noopener" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;text-decoration:none;">View LinkedIn ↗</a>` : ''}
+          <a href="mailto:${item.email}?subject=Your application to AfriVid Studio" style="background:#F5A623;border:none;color:#050A14;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;text-decoration:none;">Reply by Email</a>
+          ${item.status!=='reviewed' ? `<button onclick="markApplicationReviewed('${item.id}')" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">Mark Reviewed</button>` : ''}
+          <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
+        </div>
+      </div>
+    `).join('') : '<div style="color:rgba(255,255,255,0.3);text-align:center;padding:2rem;">No applications yet</div>';
+  } catch(e) {
+    if(list) list.innerHTML = `<div style="color:#E63329;">[x] ${e.message}</div>`;
+  }
+};
+
+window.markApplicationReviewed = async function(id) {
+  try {
+    await updateDoc(doc(db,'job_applications',id),{status:'reviewed'});
+    loadApplications();
   } catch(e) { alert('Failed: '+e.message); }
 };
 </script>
