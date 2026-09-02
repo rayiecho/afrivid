@@ -1,0 +1,13 @@
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# This file changes occasionally (marketing hero swaps) and some devices'
+# disk caches were serving a months-old cached copy even after the file
+# changed server-side, despite must-revalidate — no-store forces a real
+# fetch every time instead. Fine to keep long-cacheable once this settles
+# into a real cache-busted filename scheme later.
+/images/hero-team.jpg
+  Cache-Control: no-cache, no-store, must-revalidate

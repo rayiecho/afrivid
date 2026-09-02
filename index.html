@@ -1115,18 +1115,31 @@ if('serviceWorker' in navigator) {
 // homepage visitor can't count() them directly — that always hit permission-denied and fell
 // back to hardcoded numbers. Real counts now live in the publicly-readable public_stats/counts
 // doc, kept in sync by a +1 write next to every signup and every saved video.
+//
+// Real-browser testing (repeated close/reopen cycles) found this failing intermittently with
+// zero caching involved — a transient hiccup fetching the gstatic module or the doc itself would
+// permanently show the hardcoded fallback for that whole session, no way to self-correct short of
+// a manual reload. Retries a couple of times with a short backoff before actually giving up.
 (async () => {
-  try {
-    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const db = getFirestore();
-    const snap = await getDoc(doc(db, 'public_stats', 'counts'));
-    if (!snap.exists()) throw new Error('public_stats/counts missing');
-    const data = snap.data();
-    document.getElementById('stat-users').textContent = (data.userCount || 0) + '+';
-    document.getElementById('stat-videos').textContent = (data.videoCount || 0) + '+';
-  } catch(e) {
-    document.getElementById('stat-users').textContent = '6+';
-    document.getElementById('stat-videos').textContent = '65+';
+  const MAX_ATTEMPTS = 3;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+      const db = getFirestore();
+      const snap = await getDoc(doc(db, 'public_stats', 'counts'));
+      if (!snap.exists()) throw new Error('public_stats/counts missing');
+      const data = snap.data();
+      document.getElementById('stat-users').textContent = (data.userCount || 0) + '+';
+      document.getElementById('stat-videos').textContent = (data.videoCount || 0) + '+';
+      return;
+    } catch(e) {
+      if (attempt === MAX_ATTEMPTS) {
+        document.getElementById('stat-users').textContent = '6+';
+        document.getElementById('stat-videos').textContent = '65+';
+      } else {
+        await new Promise(r => setTimeout(r, 500 * attempt));
+      }
+    }
   }
 })();
 </script>
