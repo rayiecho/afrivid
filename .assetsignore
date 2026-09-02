@@ -1,0 +1,49 @@
+# Cloudflare Workers Static Assets ignore file (gitignore-style syntax).
+# Keeps the deployed asset bundle small: only ships what the site's
+# HTML/JS/CSS actually references by a real, literal path.
+
+# Version control / local tooling state
+.git/
+.wrangler/
+.claude/
+node_modules/
+
+# One-off dev/build/migration scripts at the repo root (add_*.py, fix_*.py,
+# build_*.py, apply_*.py, etc.) — dev tooling used to hand-edit the HTML
+# during development, not site assets.
+/*.py
+
+# Superseded HTML backups
+*.bak
+
+# Ad-hoc local test artifacts (already gitignored; not referenced by any page)
+/test_r2.jpg
+/test_voice.wav
+/test_image.jpg
+/test_tts_output.mp3
+
+# Sample category-thumbnail library used only by the backend video pipeline
+# (afrivid-remotion/afrivid-processor) during local development. Not
+# referenced by any page; the live site instead fetches AI-generated
+# category images from R2 at request time (see afrivid-processor/app.py).
+/afrivid-library/
+
+# images/: keep only the handful of files a page actually loads by a
+# literal path (verified by grepping every .html/.js/.css for each
+# filename). Exclude everything else in this directory, which is either:
+#   - per-category thumbnails (images/<category>/<category>_<n>.jpg) —
+#     these are fetched from the "afrivid-videos" R2 bucket at runtime via
+#     a template path built in afrivid-processor/app.py, not local assets;
+#   - unreferenced raw footage for the backend comedy/compositing pipeline
+#     (kling_*.mp4, lion_/hyena_/snake_/parrot_/antelope_/human_/podcast_*.mp4,
+#     "woman presentor.mp4", "hyena presentor.mp4", podium_frame_*.jpg,
+#     background1.jpg, background2.jpg, "LINDA MWANANCHI CHANNELL.png") —
+#     none of these are linked from any page's markup or scripts.
+/images/*
+!/images/hero-team.jpg
+!/images/logo.png
+!/images/background1.webp
+!/images/background2.webp
+
+# Stray WSL/Windows download marker files, wherever they turn up
+*:Zone.Identifier
