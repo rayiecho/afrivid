@@ -1,15 +1,32 @@
 (function() {
-  const AFRIVID_CONTEXT = `You are AfriVid Assistant for afrivid.studio - Africa's AI video platform. Be brief and helpful.
+  // Kept broad and current — direct feedback was that answers felt narrow/stale, since this
+  // previously listed only 5 pages and one pricing line. Mirrors the real tool list on the
+  // homepage and the real pricing/FAQ copy on pricing.html, so answers stay accurate as long as
+  // this is updated alongside those pages rather than drifting independently.
+  const AFRIVID_CONTEXT = `You are AfriVid Assistant for afrivid.studio — Africa's AI video creation platform, built for African creators, in 6 African languages. Be brief, warm, and helpful. Answer in 1-4 sentences unless genuinely more detail is needed.
 
-PAGES: create.html (make videos), aieditor.html (AI edit), edit.html (manual edit), photo.html (photos), design.html (graphics), studio.html (library), pricing.html (Free/Pro $5/month)
+TOOLS (each is its own page, linked from the homepage/nav):
+- Video Creator (create.html): type a topic, AfriVid writes the script, generates voice, builds slides, exports a full MP4 in any of 6 African languages.
+- AI Video Editor (aieditor.html): viral clips, highlight reels, silence removal, voice translation from an uploaded video.
+- Manual Editor (edit.html): frame-by-frame manual video editing.
+- Tutorial Maker (create.html, Tutorial Maker tab): explain any concept as narrated slides, or auto-record a live walkthrough of any website.
+- Ad Maker (create.html, Ad Maker tab): turns a business description into a short branded video ad.
+- Design Studio (design.html): AI-fill flyers, posters, banners, logos from a short description.
+- Image Generator (images.html): branded photorealistic images for a business, or "living" images with subtle motion for a website.
+- Photo Editor (photo.html): background removal, African flag overlays, AI photo enhancement.
+- Slides Generator (create.html, Slides Generator tab): a topic into a full slide deck, downloadable as images or PDF.
+- Video Compressor (compress.html): shrink a video's file size, balancing size vs. quality.
+- Studio/My Studio (studio.html): your library of everything you've created.
+- Developer API (api-docs.html): send a topic or script via API, get back a finished, unbranded MP4.
+- Careers (careers.html): open roles at AfriVid — applications reviewed within 14 working days.
 
-VIDEO PROMPTS: "Sunday sermon: [topic] — key points and call to action" | "Why African businesses need [product]" | "[Topic] explained for African students"
+PRICING (pricing.html — always quote this, not a guess): Free plan is $0/month forever, no payment info required. Pro is $5/month with higher limits. Pro payment currently works via emailing to arrange payment (M-Pesa/MTN Mobile Money support is planned, not live yet). Upgrading never deletes existing work — hitting a free-plan limit just prompts an upgrade or a wait until next month's reset.
 
-AI EDIT PROMPTS: "Keep best 60 seconds" | "Remove first 30 seconds" | "Make it TikTok ready" | "Remove silences"
+VIDEO PROMPT EXAMPLES: "Sunday sermon: [topic] — key points and call to action" | "Why African businesses need [product]" | "[Topic] explained for African students"
+AI EDIT PROMPT EXAMPLES: "Keep best 60 seconds" | "Remove first 30 seconds" | "Make it TikTok ready" | "Remove silences"
+PHOTO PROMPT EXAMPLES: "Make professional with bright lighting" | "Warm African sunset tone" | "Passport photo style"
 
-PHOTO PROMPTS: "Make professional with bright lighting" | "Warm African sunset tone" | "Passport photo style"
-
-Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
+Give exact example prompts in quotes when relevant. Always guide the user to the correct page/tool by name. If asked something you genuinely don't know about AfriVid, say so plainly and suggest contacting support (info@afrivid.studio) rather than guessing.`;
 
   // Create widget HTML
   const widget = document.createElement('div');
@@ -100,30 +117,27 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
     sendAfriVidChat();
   };
 
-  // Quick local responses for lazy chat
+  // Quick local responses for lazy chat — matched against the WHOLE message (after stripping
+  // punctuation), not a substring search. The old `.includes(w)` check fired on any message
+  // that merely *contained* one of these words anywhere — "thanks for the tutorial maker prompts,
+  // bye" or a real question ending in "...right?" could get hijacked into a canned "you're
+  // welcome"/goodbye reply instead of an actual answer. Real feedback ("problems in answers")
+  // traced directly to this. Exact/near-exact short-message matching only, so a genuine question
+  // that happens to contain "hi" or "bye" as a substring of a longer word/sentence is never
+  // intercepted.
   const LOCAL_RESPONSES = {
-    greet: ['hello','hi','hey','hola','habari','jambo','bonjour','sawa','what up','sup'],
-    thanks: ['thanks','thank you','asante','merci','thx','ty','cheers'],
-    bye: ['bye','goodbye','later','kwaheri','au revoir','ciao'],
-    who: ['who are you','what are you','are you ai','are you human','who made you'],
+    greet: ['hello','hi','hey','hola','habari','jambo','bonjour','sawa','what up','sup','yo'],
+    thanks: ['thanks','thank you','asante','merci','thx','ty','cheers','thanks!','thank you!'],
+    bye: ['bye','goodbye','later','kwaheri','au revoir','ciao','bye!','goodbye!'],
+    who: ['who are you','what are you','are you ai','are you human','who made you','are you a bot'],
   };
 
-  // Check if user is Pro before sending to API
-  async function checkProAccess() {
-    if (!window.currentUser) return false;
-    try {
-      const {getFirestore, doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-      const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-      if (!window.db) {
-        const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-        window.db = getFirestore(app);
-      }
-      const snap = await getDoc(doc(window.db, 'studio_users', window.currentUser.uid));
-      if (!snap.exists()) return false;
-      const plan = snap.data().plan || 'beta';
-      return plan === 'pro' || plan === 'beta';
-    } catch(e) { return false; }
+  function normalizeForLocalMatch(text) {
+    return text.toLowerCase().replace(/[.,!?;:]+$/g, '').trim();
+  }
+
+  function matchesLocalResponse(normalized, phrases) {
+    return phrases.includes(normalized);
   }
 
   window.sendAfriVidChat = async function() {
@@ -134,57 +148,44 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
 
     addMessage(msg, 'user');
 
-    // Check for lazy/irrelevant chat first
-    const lower = msg.toLowerCase().trim();
-    
-    if (LOCAL_RESPONSES.greet.some(w => lower.includes(w) && lower.length < 20)) {
+    // Check for lazy/irrelevant chat first — exact match on the whole (punctuation-stripped)
+    // message only, never a substring search, so a real question that happens to contain one
+    // of these words doesn't get hijacked into a canned reply instead of an actual answer.
+    const normalized = normalizeForLocalMatch(msg);
+
+    if (matchesLocalResponse(normalized, LOCAL_RESPONSES.greet)) {
       addMessage("Hey! I'm your AfriVid assistant. What would you like to create or edit today? 🌍", 'bot');
       return;
     }
-    if (LOCAL_RESPONSES.thanks.some(w => lower.includes(w))) {
+    if (matchesLocalResponse(normalized, LOCAL_RESPONSES.thanks)) {
       addMessage("You're welcome! Anything else I can help you with on AfriVid?", 'bot');
       return;
     }
-    if (LOCAL_RESPONSES.bye.some(w => lower.includes(w))) {
+    if (matchesLocalResponse(normalized, LOCAL_RESPONSES.bye)) {
       addMessage("Goodbye! Come back anytime you need help creating content. 🔥", 'bot');
       return;
     }
-    if (LOCAL_RESPONSES.who.some(w => lower.includes(w))) {
+    if (matchesLocalResponse(normalized, LOCAL_RESPONSES.who)) {
       addMessage("I'm the AfriVid AI assistant — built to help African creators get the most out of AfriVid Studio. Ask me how to create videos, edit, translate or design! 🌍", 'bot');
       return;
     }
-    if (['how are you','how r you','how are u','hows it going','how do you do'].some(w => lower.includes(w))) {
+    if (matchesLocalResponse(normalized, ['how are you','how r you','how are u','hows it going','how do you do'])) {
       addMessage("I'm always ready to help! What would you like to create today on AfriVid? 🔥", 'bot');
       return;
     }
-    if (['i am sick','i am tired','i am sad','i am happy','i am bored','i am hungry','i am fine','i am good','i am okay'].some(w => lower.includes(w))) {
-      addMessage("I hear you! When you're ready, AfriVid can help you create amazing content. What would you like to make? 🌍", 'bot');
-      return;
-    }
-    if (['what is afrivid','what is afrivid studio','tell me about afrivid'].some(w => lower.includes(w))) {
+    if (matchesLocalResponse(normalized, ['what is afrivid','what is afrivid studio','tell me about afrivid'])) {
       addMessage("AfriVid Studio is Africa's first AI video creation platform! Create videos from text, edit with AI, translate to African languages, design graphics and more — all at afrivid.studio 🌍", 'bot');
       return;
     }
-    if (lower.length < 3) {
+    if (normalized.length < 2) {
       addMessage("Please ask me something about AfriVid — like how to create a video or use the AI editor!", 'bot');
       return;
     }
 
-    // window.currentUser is undefined until the page's Firebase auth listener fires once —
-    // clicking a suggestion chip right after page load could otherwise misread "not yet
-    // loaded" as "signed out". Give it a moment to settle before deciding.
-    for (let i = 0; i < 20 && window.currentUser === undefined; i++) {
-      await new Promise(r => setTimeout(r, 100));
-    }
-    if (!window.currentUser) {
-      addMessage("Sign in to use the AfriVid AI assistant. Create a free account at afrivid.studio! 🌍", 'bot');
-      return;
-    }
-    const isPro = await checkProAccess();
-    if (!isPro) {
-      addMessage("The AI assistant is available for Pro users. Upgrade to Pro for $5/month to get unlimited AI assistance, unlimited videos and more! Visit the pricing page to upgrade. 🚀", 'bot');
-      return;
-    }
+    // No sign-in gate, no plan gate — the assistant answers anyone, signed in or not, on any
+    // plan. It previously required a Pro account (even the error message was wrong: the code
+    // actually allowed 'beta' plan too, but any Firestore hiccup silently fell back to blocking
+    // everyone with a "upgrade to Pro" message that often didn't even match their real plan).
     chatHistory.push({role:'user', content: msg});
 
     // Show typing
@@ -193,25 +194,28 @@ Answer in 1-3 sentences. Give exact prompts in quotes. Guide to correct page.`;;
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
-      const res = await fetch('https://yan-ai-worker.youngafricansn.workers.dev', {
+      // Self-hosted via Workers AI (same infrastructure every other AI feature on the site
+      // already uses) instead of a separate external worker on a different Cloudflare account —
+      // that dependency had its own auth/uptime risk disconnected from everything else here.
+      // This endpoint takes a plain {messages, max_tokens} shape with no separate top-level
+      // `system` field, so the system prompt goes in as the first message instead.
+      const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         signal: controller.signal,
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 300,
-          system: AFRIVID_CONTEXT,
-          messages: chatHistory.slice(-6)
+          max_tokens: 400,
+          messages: [{role:'system', content: AFRIVID_CONTEXT}, ...chatHistory.slice(-6)]
         })
       });
       clearTimeout(timeout);
       const data = await res.json();
       const reply = data.content?.[0]?.text || 'Sorry, I could not process that. Please try again.';
-      
+
       removeTyping(typingId);
       addMessage(reply, 'bot');
       chatHistory.push({role:'assistant', content: reply});
-      
+
       // Keep history manageable
       if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
       
