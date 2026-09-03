@@ -762,9 +762,13 @@ window._feedbackLoaded = false;
               <div class="text-muted" style="padding:1rem;">Loading users...</div>
             </div>
             <div class="form-group" style="margin-top:1rem;margin-bottom:0;">
-              <div class="form-label">TO</div>
-              <input type="email" class="form-input" id="compose-to" placeholder="recipient@example.com">
-              <div class="text-muted" style="font-size:0.68rem;margin-top:0.4rem;" id="compose-selected-name">Pick a user above, or type an email address directly.</div>
+              <div class="form-label">TO (CLICK USERS ABOVE, OR ADD ANY EMAIL DIRECTLY — SEND TO SEVERAL AT ONCE)</div>
+              <div style="display:flex;gap:0.5rem;">
+                <input type="email" class="form-input" id="compose-add-email" placeholder="someone@example.com — not a user? add them here" onkeydown="if(event.key==='Enter'){event.preventDefault();addComposeRecipientFromInput();}">
+                <button type="button" class="btn btn-outline btn-sm" onclick="addComposeRecipientFromInput()" style="flex-shrink:0;">Add</button>
+              </div>
+              <div id="compose-recipients-list" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.6rem;"></div>
+              <div class="text-muted" style="font-size:0.68rem;margin-top:0.4rem;" id="compose-selected-name">No recipients added yet.</div>
             </div>
           </div>
 
@@ -2111,6 +2115,9 @@ const app = getApps().length ? getApps()[0] : initializeApp(cfg);
 const db = getFirestore(app);
 
 let composeUsers = [];
+// Each entry: {email, name}. `name` is empty for a manually-typed non-user address. Deduped by
+// lowercased email so clicking the same user twice (or re-adding a typed address) is a no-op.
+let composeRecipients = [];
 
 // Realistic starting points an admin can pick, then freely edit before sending.
 const COMPOSE_TEMPLATES = {
@@ -2132,16 +2139,73 @@ function renderComposeUserList(users) {
   const wrap = document.getElementById('compose-user-list');
   if (!wrap) return;
   if (!users.length) { wrap.innerHTML = '<div class="text-muted" style="padding:1rem;">No users found</div>'; return; }
-  wrap.innerHTML = users.slice(0,50).map(u => `
-    <div class="compose-user-row" data-uid="${u.id}" onclick="selectComposeUser('${u.id}')" style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <div style="font-size:0.82rem;font-weight:600;">${u.displayName||u.email||'User'}</div>
-        <div style="font-size:0.68rem;color:rgba(255,255,255,0.4);font-family:var(--font-mono);">${u.email||'—'}</div>
+  const selectedEmails = new Set(composeRecipients.map(r => r.email.toLowerCase()));
+  wrap.innerHTML = users.slice(0,50).map(u => {
+    const isSelected = u.email && selectedEmails.has(u.email.toLowerCase());
+    return `
+    <div class="compose-user-row${isSelected ? ' selected' : ''}" data-uid="${u.id}" onclick="selectComposeUser('${u.id}')" style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;align-items:center;gap:0.6rem;">
+        <span style="width:16px;height:16px;border-radius:4px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;${isSelected ? 'background:var(--gold);border-color:var(--gold);' : ''}">${isSelected ? '<span style="color:#17140F;font-size:0.65rem;font-weight:800;">✓</span>' : ''}</span>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;">${u.displayName||u.email||'User'}</div>
+          <div style="font-size:0.68rem;color:rgba(255,255,255,0.4);font-family:var(--font-mono);">${u.email||'—'}</div>
+        </div>
       </div>
       <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'beta'}</span>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
+
+// Renders the chip list of everyone currently queued to receive this email — a mix of clicked
+// users and manually-added non-user addresses is completely normal, they're stored identically
+// once added (only `name` distinguishes them, and only for display).
+function renderComposeRecipients() {
+  const wrap = document.getElementById('compose-recipients-list');
+  const nameEl = document.getElementById('compose-selected-name');
+  if (!wrap) return;
+  wrap.innerHTML = composeRecipients.map(r => `
+    <span style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(224,138,46,0.12);border:1px solid rgba(224,138,46,0.3);border-radius:999px;padding:0.3rem 0.4rem 0.3rem 0.75rem;font-size:0.75rem;">
+      ${r.name ? escapeComposeHtml(r.name) + ' · ' : ''}${escapeComposeHtml(r.email)}
+      <button type="button" onclick="removeComposeRecipient('${r.email.replace(/'/g,"\\'")}')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:0.9rem;line-height:1;padding:0;opacity:0.6;" title="Remove">×</button>
+    </span>
+  `).join('');
+  if (nameEl) {
+    nameEl.textContent = composeRecipients.length
+      ? `${composeRecipients.length} recipient${composeRecipients.length === 1 ? '' : 's'} added.`
+      : 'No recipients added yet.';
+  }
+  renderComposeUserList(composeUsers.filter(u => document.getElementById('compose-user-search')?.value
+    ? (u.email||'').toLowerCase().includes(document.getElementById('compose-user-search').value.toLowerCase()) || (u.displayName||'').toLowerCase().includes(document.getElementById('compose-user-search').value.toLowerCase())
+    : true));
+}
+
+function addComposeRecipient(email, name) {
+  const clean = String(email||'').trim();
+  if (!clean || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) return false;
+  if (composeRecipients.some(r => r.email.toLowerCase() === clean.toLowerCase())) return true; // already added, not an error
+  composeRecipients.push({ email: clean, name: name || '' });
+  renderComposeRecipients();
+  return true;
+}
+
+window.removeComposeRecipient = function(email) {
+  composeRecipients = composeRecipients.filter(r => r.email.toLowerCase() !== email.toLowerCase());
+  renderComposeRecipients();
+};
+
+window.addComposeRecipientFromInput = function() {
+  const input = document.getElementById('compose-add-email');
+  if (!input) return;
+  const ok = addComposeRecipient(input.value);
+  if (!ok) {
+    setComposeStatus('error', 'That doesn\'t look like a valid email address.');
+    return;
+  }
+  input.value = '';
+  const statusEl = document.getElementById('compose-status');
+  if (statusEl) statusEl.innerHTML = '';
+};
 
 window.loadComposeUsers = async function() {
   const wrap = document.getElementById('compose-user-list');
@@ -2166,16 +2230,18 @@ window.filterComposeUsers = function(q) {
   renderComposeUserList(filtered);
 };
 
+// Clicking a user toggles them in/out of the recipient list — clicking an already-selected
+// user again removes them, exactly mirroring the × on their chip, so there's one consistent
+// mental model instead of click-to-add-only.
 window.selectComposeUser = function(uid) {
   const u = composeUsers.find(x=>x.id===uid);
-  if (!u) return;
-  const toEl = document.getElementById('compose-to');
-  const nameEl = document.getElementById('compose-selected-name');
-  if (toEl) toEl.value = u.email || '';
-  if (nameEl) nameEl.textContent = 'Selected: ' + (u.displayName || u.email || uid);
-  document.querySelectorAll('.compose-user-row').forEach(r=>r.classList.remove('selected'));
-  const row = document.querySelector(`.compose-user-row[data-uid="${uid}"]`);
-  if (row) row.classList.add('selected');
+  if (!u || !u.email) return;
+  const alreadyIn = composeRecipients.some(r => r.email.toLowerCase() === u.email.toLowerCase());
+  if (alreadyIn) {
+    removeComposeRecipient(u.email);
+  } else {
+    addComposeRecipient(u.email, u.displayName || '');
+  }
 };
 
 window.applyComposeTemplate = function(key) {
@@ -2186,15 +2252,14 @@ window.applyComposeTemplate = function(key) {
 };
 
 window.clearComposeForm = function() {
-  document.getElementById('compose-to').value = '';
+  document.getElementById('compose-add-email').value = '';
   document.getElementById('compose-subject').value = '';
   document.getElementById('compose-body').value = '';
   document.getElementById('compose-link-url').value = '';
   composeAttachedFiles = [];
   renderComposeAttachmentsList();
-  const nameEl = document.getElementById('compose-selected-name');
-  if (nameEl) nameEl.textContent = 'Pick a user above, or type an email address directly.';
-  document.querySelectorAll('.compose-user-row').forEach(r=>r.classList.remove('selected'));
+  composeRecipients = [];
+  renderComposeRecipients();
   const statusEl = document.getElementById('compose-status');
   if (statusEl) statusEl.innerHTML = '';
 };
@@ -2372,14 +2437,22 @@ function setComposeStatus(kind, message) {
 }
 
 window.sendComposeEmail = async function() {
-  const to = document.getElementById('compose-to').value.trim();
+  // Whatever's still sitting in the "add email" box but never got clicked/Enter-ed counts too —
+  // real feedback on an earlier single-recipient version was that typing an address and hitting
+  // Send without an explicit "Add" step should still just work, not silently drop it.
+  const pendingInput = document.getElementById('compose-add-email');
+  if (pendingInput && pendingInput.value.trim()) {
+    addComposeRecipient(pendingInput.value);
+    pendingInput.value = '';
+  }
+  const to = composeRecipients.map(r => r.email);
   const subject = document.getElementById('compose-subject').value.trim();
   const body = document.getElementById('compose-body').value.trim();
   const includeLogo = document.getElementById('compose-include-logo').checked;
   const btn = document.getElementById('compose-send-btn');
 
-  if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
-    setComposeStatus('error', 'Enter a valid recipient email address.');
+  if (!to.length) {
+    setComposeStatus('error', 'Add at least one recipient.');
     return;
   }
   if (!subject) {
@@ -2408,7 +2481,7 @@ window.sendComposeEmail = async function() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: 'AfriVid Studio <info@afrivid.studio>',
-        to: [to],
+        to,
         subject,
         html,
         ...(attachments.length ? { attachments } : {})
@@ -2419,8 +2492,9 @@ window.sendComposeEmail = async function() {
       try { detail = (await res.json()).error || ''; } catch(e) {}
       throw new Error(detail || `Send failed (HTTP ${res.status})`);
     }
-    setComposeStatus('success', `✅ Email sent to ${to}`);
-    if (window.showToast) showToast('Email sent to ' + to, 'success');
+    const summary = to.length === 1 ? to[0] : `${to.length} recipients`;
+    setComposeStatus('success', `✅ Email sent to ${summary}`);
+    if (window.showToast) showToast('Email sent to ' + summary, 'success');
   } catch(e) {
     setComposeStatus('error', `[x] Failed to send: ${e.message}`);
     if (window.showToast) showToast('Failed to send email', 'error');
