@@ -155,6 +155,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <input type="text" id="brand-tagline" class="form-input" placeholder="e.g. Freshly roasted, every morning">
       <div class="form-label">DESCRIBE THE IMAGE</div>
       <textarea id="brand-prompt" class="form-textarea" placeholder="e.g. A steaming cup of coffee on a rustic wooden table, warm morning light"></textarea>
+      <div class="form-label">STYLE</div>
+      <div class="tool-tabs" style="margin-bottom:0.5rem;max-width:320px;">
+        <button type="button" class="tool-tab active" id="brand-style-photo-btn" onclick="setBrandStyle('photo')">Photo</button>
+        <button type="button" class="tool-tab" id="brand-style-poster-btn" onclick="setBrandStyle('poster')">Poster</button>
+      </div>
+      <div id="brand-poster-options" style="display:none;margin-bottom:1rem;">
+        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+          <input type="checkbox" id="brand-poster-exact-wording">
+          <span class="form-hint" style="margin:0;">Use my wording exactly as the headline (unchecked = let AI turn it into a punchy headline)</span>
+        </label>
+      </div>
       <div class="form-label">LOGO (OPTIONAL)</div>
       <div class="file-row">
         <button class="file-btn" onclick="document.getElementById('brand-logo-input').click()">Choose File</button>
@@ -427,7 +438,7 @@ async function saveGeneratedImageToStudio(url, kind, prompt, extra) {
     await addDoc(collection(window.db, 'studio_photos'), {
       userId: window.currentUser.uid,
       userEmail: window.currentUser.email,
-      title: kind === 'brand' ? 'Brand Image' : 'Motion Image',
+      title: kind === 'brand' ? 'Brand Image' : kind === 'poster' ? 'Poster' : 'Motion Image',
       dataURL: url,
       thumbnail: url,
       kind, // 'brand' | 'motion' — lets Studio distinguish these from photo.html's edited photos
@@ -440,6 +451,15 @@ async function saveGeneratedImageToStudio(url, kind, prompt, extra) {
   }
 }
 
+let brandStyle = 'photo';
+window.setBrandStyle = function(style) {
+  brandStyle = style;
+  document.getElementById('brand-style-photo-btn').classList.toggle('active', style === 'photo');
+  document.getElementById('brand-style-poster-btn').classList.toggle('active', style === 'poster');
+  document.getElementById('brand-poster-options').style.display = style === 'poster' ? 'block' : 'none';
+  document.getElementById('brand-generate-btn').textContent = style === 'poster' ? 'Generate Poster' : 'Generate Brand Image';
+};
+
 window.generateBrandImage = async function() {
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_brand'))) return;
   const prompt = document.getElementById('brand-prompt').value.trim();
@@ -450,6 +470,7 @@ window.generateBrandImage = async function() {
   btn.disabled = true; btn.textContent = 'Generating...';
   setResultLoading('brand');
   try {
+    const exactWording = document.getElementById('brand-poster-exact-wording').checked;
     const res = await fetch(`${IMAGE_API}/generate-brand-image`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -458,16 +479,18 @@ window.generateBrandImage = async function() {
         business_name: business,
         tagline: document.getElementById('brand-tagline').value.trim(),
         logo_base64: brandLogoBase64,
+        style: brandStyle,
+        enhance_text: !exactWording,
       }),
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     setResultImage('brand', data.url);
-    saveGeneratedImageToStudio(data.url, 'brand', prompt, { businessName: business });
+    saveGeneratedImageToStudio(data.url, brandStyle === 'poster' ? 'poster' : 'brand', prompt, { businessName: business });
   } catch (e) {
     setResultError('brand', e.message || 'Something went wrong');
   }
-  btn.disabled = false; btn.textContent = 'Generate Brand Image';
+  btn.disabled = false; btn.textContent = brandStyle === 'poster' ? 'Generate Poster' : 'Generate Brand Image';
 }
 
 window.generateMotionImage = async function() {
