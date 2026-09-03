@@ -33,7 +33,7 @@ Give exact example prompts in quotes when relevant. Always guide the user to the
   widget.id = 'afrivid-chat-widget';
   widget.innerHTML = `
     <div id="acw-btn" title="Chat With AfriVid Online" onclick="toggleAfriVidChat()">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <img src="images/logo.png" alt="AfriVid" id="acw-btn-logo">
     </div>
     <div id="acw-box" style="display:none;">
       <div id="acw-header">
@@ -70,8 +70,9 @@ Give exact example prompts in quotes when relevant. Always guide the user to the
   const style = document.createElement('style');
   style.textContent = `
     #afrivid-chat-widget { position:fixed; bottom:2rem; left:2rem; z-index:9990; font-family:'Syne',sans-serif; }
-    #acw-btn { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#F5A623,#E8931A); color:#050A14; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 20px rgba(245,166,35,0.4); transition:transform 0.2s; }
+    #acw-btn { width:52px; height:52px; border-radius:50%; background:#0A0F1E; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 20px rgba(245,166,35,0.4); transition:transform 0.2s; overflow:hidden; }
     #acw-btn:hover { transform:scale(1.08); }
+    #acw-btn-logo { width:100%; height:100%; object-fit:cover; border-radius:50%; }
     #acw-box { position:absolute; bottom:64px; left:0; width:340px; background:#0D1117; border:1px solid rgba(245,166,35,0.2); border-radius:16px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.6); display:flex; flex-direction:column; max-height:500px; }
     #acw-header { background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.05)); padding:0.85rem 1rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); }
     #acw-avatar { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#F5A623,#E8931A); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1rem; color:#050A14; flex-shrink:0; }
@@ -191,40 +192,55 @@ Give exact example prompts in quotes when relevant. Always guide the user to the
     // Show typing
     const typingId = addTyping();
 
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
-      // Self-hosted via Workers AI (same infrastructure every other AI feature on the site
-      // already uses) instead of a separate external worker on a different Cloudflare account —
-      // that dependency had its own auth/uptime risk disconnected from everything else here.
-      // This endpoint takes a plain {messages, max_tokens} shape with no separate top-level
-      // `system` field, so the system prompt goes in as the first message instead.
-      const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        signal: controller.signal,
-        body: JSON.stringify({
-          max_tokens: 400,
-          messages: [{role:'system', content: AFRIVID_CONTEXT}, ...chatHistory.slice(-6)]
-        })
-      });
-      clearTimeout(timeout);
-      const data = await res.json();
-      const reply = data.content?.[0]?.text || 'Sorry, I could not process that. Please try again.';
+    // Self-hosted via Workers AI (same infrastructure every other AI feature on the site
+    // already uses) instead of a separate external worker on a different Cloudflare account —
+    // that dependency had its own auth/uptime risk disconnected from everything else here.
+    // This endpoint takes a plain {messages, max_tokens} shape with no separate top-level
+    // `system` field, so the system prompt goes in as the first message instead.
+    //
+    // Retries a couple of times before giving up: an occasional Workers AI hiccup returns a
+    // 200 with no usable text at all (the model call itself came back empty), which used to
+    // show a permanent-feeling "could not process that" for one unlucky request with zero
+    // chance to self-correct — the exact same shape of bug already found and fixed once today
+    // in the homepage's stats fetch.
+    const MAX_ATTEMPTS = 3;
+    let reply = null, lastErrorWasTimeout = false;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS && !reply; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000);
+        const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          signal: controller.signal,
+          body: JSON.stringify({
+            max_tokens: 400,
+            messages: [{role:'system', content: AFRIVID_CONTEXT}, ...chatHistory.slice(-6)]
+          })
+        });
+        clearTimeout(timeout);
+        const data = await res.json();
+        const text = data.content?.[0]?.text;
+        if (text) { reply = text; break; }
+      } catch(e) {
+        lastErrorWasTimeout = e.name === 'AbortError';
+      }
+      if (!reply && attempt < MAX_ATTEMPTS) await new Promise(r => setTimeout(r, 400 * attempt));
+    }
 
-      removeTyping(typingId);
+    removeTyping(typingId);
+    if (reply) {
       addMessage(reply, 'bot');
       chatHistory.push({role:'assistant', content: reply});
-
       // Keep history manageable
       if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-      
-    } catch(e) {
-      removeTyping(typingId);
-      const errMsg = e.name === 'AbortError' 
-        ? 'Taking too long. Try a shorter question or check your connection.'
-        : 'Connection error. Please check your internet and try again.';
-      addMessage(errMsg, 'bot');
+    } else {
+      addMessage(
+        lastErrorWasTimeout
+          ? 'Taking too long. Try a shorter question or check your connection.'
+          : 'Connection error. Please check your internet and try again.',
+        'bot'
+      );
     }
   };
 
