@@ -439,6 +439,10 @@ body::after{
           <div class="stat-card-label">VIDEOS CREATED</div>
         </div>
         <div class="stat-card">
+          <div class="stat-card-value" id="stat-photos">0</div>
+          <div class="stat-card-label">IMAGES CREATED</div>
+        </div>
+        <div class="stat-card">
           <div class="stat-card-value" id="stat-designs">0</div>
           <div class="stat-card-label">DESIGNS CREATED</div>
         </div>
@@ -458,6 +462,7 @@ body::after{
           <!-- FILTER TABS -->
           <div class="filter-tabs">
             <button class="filter-tab active" onclick="filterContent('video')">Videos Created</button>
+            <button class="filter-tab" onclick="filterContent('photo')">Images Created</button>
             <button class="filter-tab" onclick="filterContent('design')">Designs Created</button>
           </div>
 
@@ -688,27 +693,42 @@ function renderContentCard(docId, data, type, collectionName) {
 
 let studioTab = 'video';
 let cachedVideos = [];
+let cachedPhotos = [];
 let cachedDesigns = [];
+
+// Everything tab-specific keyed by type in one place — adding "photo" here (previously
+// missing entirely, despite renderContentCard/icons/download logic all already supporting a
+// 'photo' card type) is what actually surfaces the images/ads/graphics that were already
+// correctly saving to studio_photos but had nowhere in this UI to show up.
+const STUDIO_TAB_META = {
+  video:  { collection: 'studio_videos',  label: 'VIDEOS CREATED',  emptyNoun: 'videos',  createHref: 'create.html', createLabel: 'Create Your First Video →' },
+  photo:  { collection: 'studio_photos',  label: 'IMAGES CREATED',  emptyNoun: 'images',  createHref: 'images.html', createLabel: 'Create Your First Image →' },
+  design: { collection: 'studio_designs', label: 'DESIGNS CREATED', emptyNoun: 'designs', createHref: 'design.html', createLabel: 'Start Designing →' },
+};
+function cachedItemsFor(tab) {
+  return tab === 'video' ? cachedVideos : tab === 'photo' ? cachedPhotos : cachedDesigns;
+}
 
 function updateStatCards() {
   document.getElementById('stat-videos').textContent = cachedVideos.length;
+  document.getElementById('stat-photos').textContent = cachedPhotos.length;
   document.getElementById('stat-designs').textContent = cachedDesigns.length;
-  document.getElementById('stat-total').textContent = cachedVideos.length + cachedDesigns.length;
+  document.getElementById('stat-total').textContent = cachedVideos.length + cachedPhotos.length + cachedDesigns.length;
 }
 
 function renderStudioTab() {
   const grid = document.getElementById('my-files-grid');
   const count = document.getElementById('my-files-count');
   const label = document.getElementById('my-files-label');
-  const items = studioTab === 'video' ? cachedVideos : cachedDesigns;
-  label.textContent = studioTab === 'video' ? 'VIDEOS CREATED' : 'DESIGNS CREATED';
+  const meta = STUDIO_TAB_META[studioTab];
+  const items = cachedItemsFor(studioTab);
+  label.textContent = meta.label;
   count.textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
   updateStatCards();
 
   if (!currentUser) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
-      <div class="empty-icon">${studioTab === 'video' ? '' : ''}</div>
-      <div class="empty-title">Sign in to see your ${studioTab === 'video' ? 'videos' : 'designs'}</div>
+      <div class="empty-title">Sign in to see your ${meta.emptyNoun}</div>
       <div class="empty-sub">Your creations are saved to your account and shown here.</div>
       <button class="empty-btn" onclick="showLogin()" style="border:none;cursor:pointer;">Sign In Free →</button>
     </div>`;
@@ -717,20 +737,19 @@ function renderStudioTab() {
 
   if (items.length === 0) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
-      <div class="empty-icon">${studioTab === 'video' ? '' : ''}</div>
-      <div class="empty-title">No ${studioTab === 'video' ? 'videos' : 'designs'} yet</div>
-      <div class="empty-sub">${studioTab === 'video' ? 'Create your first video' : 'Design something'} — it will appear here.</div>
-      <a href="${studioTab === 'video' ? 'create.html' : 'design.html'}" class="empty-btn">${studioTab === 'video' ? 'Create Your First Video →' : 'Start Designing →'}</a>
+      <div class="empty-title">No ${meta.emptyNoun} yet</div>
+      <div class="empty-sub">Create something — it will appear here.</div>
+      <a href="${meta.createHref}" class="empty-btn">${meta.createLabel}</a>
     </div>`;
     return;
   }
 
-  grid.innerHTML = items.map(d => renderContentCard(d.id, d.data(), studioTab, studioTab === 'video' ? 'studio_videos' : 'studio_designs')).join('');
+  grid.innerHTML = items.map(d => renderContentCard(d.id, d.data(), studioTab, meta.collection)).join('');
 }
 
 async function loadUserFiles(uid) {
   const grid = document.getElementById('my-files-grid');
-  if (!uid) { cachedVideos = []; cachedDesigns = []; renderStudioTab(); return; }
+  if (!uid) { cachedVideos = []; cachedPhotos = []; cachedDesigns = []; renderStudioTab(); return; }
 
   grid.innerHTML = Array.from({length:3}).map(() => `<div class="skeleton-card">
     <div class="skeleton-thumb"></div>
@@ -739,11 +758,13 @@ async function loadUserFiles(uid) {
   </div>`).join('');
 
   try {
-    const [videos, designs] = await Promise.all([
+    const [videos, photos, designs] = await Promise.all([
       fetchOwnedDocs('studio_videos', uid),
+      fetchOwnedDocs('studio_photos', uid),
       fetchOwnedDocs('studio_designs', uid),
     ]);
     cachedVideos = videos;
+    cachedPhotos = photos;
     cachedDesigns = designs;
     renderStudioTab();
   } catch(e) {

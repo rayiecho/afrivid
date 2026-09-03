@@ -259,6 +259,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+// Exposed so the plain (non-module) <script> block below — where generateBrandImage/
+// generateMotionImage actually live — can reach it. That script never had ANY Firestore
+// access before, which is the whole reason generated images never saved to My Studio at all.
+window.db = db;
 
 onAuthStateChanged(auth, (user) => {
   window.currentUser = user;
@@ -407,6 +411,35 @@ window.downloadImage = async function(url, filename) {
   }
 }
 
+// Generated images previously never saved anywhere — this whole file had zero Firestore
+// calls, so nothing created here ever showed up in My Studio regardless of what studio.html
+// itself does. Writes to `studio_photos` — the collection photo.html's own "save to Studio"
+// already uses and firestore.rules already has a real rule for (studio.html's own query needs
+// extending separately to actually read this collection at all — that's a Studio-side gap,
+// tracked with the other My Studio issues, not duplicated here). Matches photo.html's existing
+// field shape so both tools' output looks the same once Studio actually lists them. Silently
+// skips saving when signed out rather than blocking generation/download, which work fine
+// anonymously.
+async function saveGeneratedImageToStudio(url, kind, prompt, extra) {
+  if (!window.currentUser || !window.db) return;
+  try {
+    const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    await addDoc(collection(window.db, 'studio_photos'), {
+      userId: window.currentUser.uid,
+      userEmail: window.currentUser.email,
+      title: kind === 'brand' ? 'Brand Image' : 'Motion Image',
+      dataURL: url,
+      thumbnail: url,
+      kind, // 'brand' | 'motion' — lets Studio distinguish these from photo.html's edited photos
+      prompt,
+      createdAt: serverTimestamp(),
+      ...extra,
+    });
+  } catch (e) {
+    console.error('[Studio save] failed to save generated image:', e);
+  }
+}
+
 window.generateBrandImage = async function() {
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_brand'))) return;
   const prompt = document.getElementById('brand-prompt').value.trim();
@@ -430,6 +463,7 @@ window.generateBrandImage = async function() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     setResultImage('brand', data.url);
+    saveGeneratedImageToStudio(data.url, 'brand', prompt, { businessName: business });
   } catch (e) {
     setResultError('brand', e.message || 'Something went wrong');
   }
@@ -452,6 +486,7 @@ window.generateMotionImage = async function() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     setResultImage('motion', data.url);
+    saveGeneratedImageToStudio(data.url, 'motion', prompt, {});
   } catch (e) {
     setResultError('motion', e.message || 'Something went wrong');
   }
