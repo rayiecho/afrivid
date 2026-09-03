@@ -369,7 +369,7 @@ function setResultImage(kind, url) {
   document.getElementById(`${kind}-result-status`).textContent = 'Done';
   const btn = document.getElementById(`${kind}-download-btn`);
   btn.dataset.url = url;
-  btn.disabled = false;
+  btn.removeAttribute('disabled');
   // The file is already hosted at a permanent public URL the moment it's
   // generated — no separate "publish" step, so the embed link is just that
   // same URL, ready to drop straight into an <img src="..."> tag.
