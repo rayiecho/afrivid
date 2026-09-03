@@ -4175,15 +4175,26 @@ window._downloadVideo = async function() {
     }
   }
 
-  saveToLibrary(videoBlob, scriptData.title, scriptData.duration);
-  if (window.trackVideoGeneration) window.trackVideoGeneration(scriptData.title, scriptData.duration);
+  // Only save if this exact blob wasn't already persisted when rendering finished — otherwise
+  // hitting Download created a second (broken) studio_videos doc for the same video.
+  if (savedVideoBlob !== videoBlob) {
+    saveToLibrary(videoBlob, scriptData.title, scriptData.duration);
+    if (window.trackVideoGeneration) window.trackVideoGeneration(scriptData.title, scriptData.duration);
+  }
 }
 
 // -- TAB SWITCHING --
 // -- VIDEO LIBRARY --
 let videoLibrary = []; try { videoLibrary = JSON.parse(localStorage.getItem('afrivid-library') || '[]'); } catch(e) {}
 
+// Tracks WHICH blob has already been persisted. Keyed on the Blob object itself rather than a
+// plain boolean so it self-resets the moment a new render produces a new Blob — a locally
+// rendered video used to be written to studio_videos two-to-four times (auto-finish + Download
+// button, each calling saveToLibrary AND trackVideoGeneration).
+let savedVideoBlob = null;
+
 function saveToLibrary(blob, title, duration) {
+  savedVideoBlob = blob;
   const reader = new FileReader();
   reader.onload = function() {
     const entry = {
@@ -4200,9 +4211,9 @@ function saveToLibrary(blob, title, duration) {
     renderLibrary();
   };
   reader.readAsDataURL(blob);
-  // Also save to Firestore studio
+  // Also save to Firestore studio — THE single source of truth for a locally rendered video.
   if (currentUser) {
-    import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js').then(({ getFirestore, collection, addDoc, doc, updateDoc, increment, serverTimestamp }) => {
+    import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js').then(async ({ getFirestore, collection, addDoc, doc, updateDoc, increment, serverTimestamp }) => {
       const db = getFirestore();
       // Generate thumbnail from canvas
       let thumbnail = '';
@@ -4216,13 +4227,28 @@ function saveToLibrary(blob, title, duration) {
         }
       } catch(e) {}
 
+      // Upload the actual rendered video to R2 so My Studio gets a real playable URL. Locally
+      // rendered videos previously saved with videoUrl:'' and showed as dead cards.
+      // (Deliberately NOT falling back to window._serverVideoUrl — it is never cleared, so a
+      // stale server/ad URL from earlier in the session would be attached to this local render.)
+      let videoUrl = '';
+      if (blob) {
+        try {
+          const form = new FormData();
+          form.append('file', blob, 'video-' + Date.now() + '.webm');
+          const r = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/upload', { method: 'POST', body: form });
+          const rd = await r.json();
+          videoUrl = rd.url || '';
+        } catch(e) { console.log('[Studio] R2 video upload failed, saving without URL:', e); }
+      }
+
       addDoc(collection(db, 'studio_videos'), {
         userId: currentUser.uid,
         userEmail: currentUser.email,
         title: title,
         duration: duration,
         size: (blob.size / 1024 / 1024).toFixed(1) + 'MB',
-        videoUrl: '',
+        videoUrl: videoUrl,
         thumbnail: thumbnail,
         createdAt: serverTimestamp()
       }).then(() => {
@@ -5620,6 +5646,16 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
         thumbDataURL = tc.toDataURL('image/jpeg', 0.7);
       }
     } catch(e) {}
+    // Locally rendered video (no server job) — push the blob to R2 so the saved doc has a real URL
+    if (!videoUrl && videoBlob) {
+      try {
+        const form = new FormData();
+        form.append('file', videoBlob, 'video-' + Date.now() + '.webm');
+        const r = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/upload', { method: 'POST', body: form });
+        const rd = await r.json();
+        videoUrl = rd.url || '';
+      } catch(e) { console.log('[Studio] R2 video upload failed, saving without URL:', e); }
+    }
     await addDoc(collection(db, 'studio_videos'), {
       userId: currentUser.uid,
       userEmail: currentUser.email,
@@ -5641,6 +5677,9 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
   }
 };
 
+// Counter-only. This used to ALSO addDoc a second studio_videos record (no videoUrl, no
+// thumbnail) alongside the one saveToLibrary writes, producing duplicate broken cards in My
+// Studio. saveToLibrary is now the single writer of studio_videos (and of the public videoCount).
 async function trackVideoGeneration(title, duration) {
     if (!currentUser) return;
     const ref = doc(db, 'studio_users', currentUser.uid);
@@ -5648,14 +5687,6 @@ async function trackVideoGeneration(title, duration) {
       videosGenerated: increment(1),
       lastVideoAt: serverTimestamp()
     });
-    await addDoc(collection(db, 'studio_videos'), {
-      userId: currentUser.uid,
-      userEmail: currentUser.email,
-      title: title,
-      duration: duration,
-      createdAt: serverTimestamp()
-    });
-    updateDoc(doc(db, 'public_stats', 'counts'), { videoCount: increment(1) }).catch(() => {});
     userProfile.videosGenerated = (userProfile.videosGenerated || 0) + 1;
     if(window.updateUserUI) window.updateUserUI(); // Update display immediately
     if(window.updateUserUI) window.updateUserUI();
@@ -7112,6 +7143,24 @@ async function generateAd() {
           window._scriptData = { title: businessName + ' — Video Ad', description: description };
           btn.textContent = 'Generate Video Ad';
           btn.disabled = false;
+          // Persist the finished ad to My Studio — ads were fully generated but never saved.
+          try {
+            const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+            const _adDb = getFirestore();
+            if (window.currentUser) {
+              await addDoc(collection(_adDb, 'studio_videos'), {
+                userId: window.currentUser.uid,
+                userEmail: window.currentUser.email,
+                title: businessName + ' — Video Ad',
+                duration: status.duration || 0,
+                videoUrl: status.output_url,
+                thumbnail: status.thumbnail_url || '',
+                createdAt: serverTimestamp(),
+                source: 'ad'
+              });
+              console.log('[Studio] Ad saved to Firestore');
+            }
+          } catch(e) { console.log('[Studio] Ad save failed:', e); }
         } else if (status.status === 'failed') {
           clearInterval(poll);
           document.removeEventListener('visibilitychange', onVisibleAd);

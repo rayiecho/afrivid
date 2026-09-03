@@ -665,14 +665,17 @@ function renderContentCard(docId, data, type, collectionName) {
     thumbClick = src ? `playStudioVideo('${docId}','${title.replace(/'/g,"\\'")}','${data.videoUrl||''}','${data.dataURL||''}')` : '';
     mainAction = `<button class="card-btn primary" onclick="playStudioVideo('${docId}','${title.replace(/'/g,"\\'")}','${data.videoUrl||''}','${data.dataURL||''}')">▶ Play</button>
       <button class="card-btn" onclick="useTemplate('${title.replace(/'/g,"\\'")}')">Recreate</button>
-      <button class="card-btn" onclick="downloadStudioItem('${src}','${title.replace(/'/g,"\\'")}','video')"></button>`;
+      <button class="card-btn" onclick="downloadStudioItem('${src}','${title.replace(/'/g,"\\'")}','video')">Download</button>
+      <button class="card-btn" onclick="copyShareLink('${src}')">Share</button>`;
   } else if (type === 'photo') {
     thumbClick = data.dataURL ? `viewPhoto('${docId}')` : '';
     mainAction = `<button class="card-btn primary" onclick="openPhotoInEditor('${docId}','${data.dataURL||''}')">Edit</button>
-      <button class="card-btn" onclick="downloadStudioItem('${data.dataURL||''}','${title.replace(/'/g,"\\'")}','photo')"></button>`;
+      <button class="card-btn" onclick="downloadStudioItem('${data.dataURL||''}','${title.replace(/'/g,"\\'")}','photo')">Download</button>
+      <button class="card-btn" onclick="copyShareLink('${data.dataURL||''}')">Share</button>`;
   } else {
     mainAction = `<button class="card-btn primary" onclick="openDesignInEditor('${docId}','${data.dataURL||''}')">Edit</button>
-      <button class="card-btn" onclick="downloadStudioItem('${data.dataURL||''}','${title.replace(/'/g,"\\'")}','png')"></button>`;
+      <button class="card-btn" onclick="downloadStudioItem('${data.dataURL||''}','${title.replace(/'/g,"\\'")}','png')">Download</button>
+      <button class="card-btn" onclick="copyShareLink('${data.dataURL||''}')">Share</button>`;
   }
 
   return `<div class="content-card" data-item-type="${type}">
