@@ -41,6 +41,7 @@ node_modules/
 #     none of these are linked from any page's markup or scripts.
 /images/*
 !/images/hero-team.jpg
+!/images/hero-team-*.jpg
 !/images/logo.png
 !/images/background1.webp
 !/images/background2.webp
