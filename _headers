@@ -4,10 +4,11 @@
 /
   Cache-Control: no-cache, no-store, must-revalidate
 
-# This file changes occasionally (marketing hero swaps) and some devices'
-# disk caches were serving a months-old cached copy even after the file
-# changed server-side, despite must-revalidate — no-store forces a real
-# fetch every time instead. Fine to keep long-cacheable once this settles
-# into a real cache-busted filename scheme later.
-/images/hero-team.jpg
-  Cache-Control: no-cache, no-store, must-revalidate
+# The hero photo used to live at this one fixed filename, and even with
+# no-store here, Cloudflare's own edge cache (which caches image
+# extensions by default regardless of origin Cache-Control) kept serving
+# old bytes from some edge locations after a swap. Fixed at the root:
+# each hero swap now ships as a NEW filename (images/hero-team-YYYYMMDD.jpg)
+# referenced from index.html, so a stale edge-cached copy of the old
+# filename is simply never requested again. No header override needed —
+# just give the next swap a new filename rather than overwriting this one.

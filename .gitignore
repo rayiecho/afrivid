@@ -14,3 +14,9 @@ images/*.mp4
 images/*.jpg
 images/*.png
 !images/hero-team.jpg
+!images/hero-team-*.jpg
+
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
