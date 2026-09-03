@@ -2902,59 +2902,42 @@ function resetPassword() {
 </script>
 
 <!-- FEEDBACK MODAL -->
-<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
-      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Share Your Feedback</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Help us build a better AfriVid for Africa 🌍</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;">
-      <button onclick="setFeedbackType('bug',this)" class="fb-type-btn" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🐛 Bug</button>
-      <button onclick="setFeedbackType('feature',this)" class="fb-type-btn" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">✨ Feature</button>
-      <button onclick="setFeedbackType('praise',this)" class="fb-type-btn" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">🔥 Praise</button>
-      <button onclick="setFeedbackType('general',this)" class="fb-type-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💬 General</button>
-      <button onclick="setFeedbackType('complaint',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">😤 Complaint</button>
-      <button onclick="setFeedbackType('idea',this)" class="fb-type-btn" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.75rem;font-weight:700;">💡 Idea</button>
-    </div>
-    <input type="hidden" id="feedback-type" value="general">
-    <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem;align-items:center;">
-      <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Rate AfriVid:</span>
-      <div id="star-rating" style="display:flex;gap:0.25rem;">
-        <span onclick="setRating(1)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(2)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(3)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(4)" style="font-size:1.4rem;cursor:pointer;opacity:0.3;">⭐</span>
-        <span onclick="setRating(5)" style="font-size:1.4rem;cursor:pointer;opacity:1;">⭐</span>
-      </div>
-    </div>
-    <input type="hidden" id="feedback-rating" value="5">
-    <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
-    <div style="display:flex;gap:0.5rem;">
-      <button onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Feedback →</button>
-    </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your feedback goes directly to the AfriVid team 🙏</div>
-  </div>
-</div>
-
 <script>
-function setFeedbackType(type, btn) {
-  document.getElementById('feedback-type').value = type;
-  document.querySelectorAll('.fb-type-btn').forEach(b => { b.style.opacity='0.5'; });
-  btn.style.opacity = '1';
+const FB_CATEGORIES = {
+  problem: { collection: 'feedback', placeholder: "Tell us what's broken — the more detail (what you did, what you expected), the faster we can fix it..." },
+  feedback: { collection: 'feedback', placeholder: "Tell us what you think, or what you'd love to see in AfriVid..." },
+  support: { collection: 'feedback', placeholder: "Tell us what you need help with..." },
+  apply: { collection: 'job_applications', placeholder: "What do you want to do at AfriVid? (role, skills, what you'd bring)" }
+};
+function setContactCategory(cat, btn) {
+  document.getElementById('feedback-type').value = cat;
+  document.querySelectorAll('.fb-cat-btn').forEach(b => { b.style.opacity = '0.5'; });
+  if (btn) btn.style.opacity = '1';
+  const info = FB_CATEGORIES[cat] || FB_CATEGORIES.feedback;
+  const applyFields = document.getElementById('fb-apply-fields');
+  if (applyFields) applyFields.style.display = cat === 'apply' ? 'block' : 'none';
+  const msg = document.getElementById('feedback-msg');
+  if (msg) msg.placeholder = info.placeholder;
+  if (cat === 'apply' && window.currentUser) {
+    const nameEl = document.getElementById('fb-apply-name');
+    const emailEl = document.getElementById('fb-apply-email');
+    if (nameEl && !nameEl.value && window.currentUser.displayName) nameEl.value = window.currentUser.displayName;
+    if (emailEl && !emailEl.value && window.currentUser.email) emailEl.value = window.currentUser.email;
+  }
 }
-function setRating(val) {
-  document.getElementById('feedback-rating').value = val;
-  document.querySelectorAll('#star-rating span').forEach((s,i) => { s.style.opacity = i < val ? '1' : '0.3'; });
+function fbToast(msg, isError) {
+  if (typeof window._showToast === 'function') { window._showToast(msg, isError ? 'error' : 'success'); return; }
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:' + (isError ? '#E63329' : '#F5A623') + ';color:' + (isError ? '#fff' : '#050A14') + ';padding:0.65rem 1.25rem;border-radius:10px;font-weight:800;font-size:0.82rem;z-index:100000;font-family:Syne,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.4);max-width:320px;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
 }
 async function submitFeedback() {
+  const type = document.getElementById('feedback-type')?.value || 'feedback';
   const msg = document.getElementById('feedback-msg')?.value?.trim() || '';
-  const type = document.getElementById('feedback-type')?.value || 'general';
-  const rating = parseInt(document.getElementById('feedback-rating')?.value || '5');
-  if (!msg) { alert('Please write your feedback'); return; }
   const btn = document.getElementById('feedback-submit-btn');
-  if(btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
+  const setBtn = (text, disabled) => { if (btn) { btn.textContent = text; btn.disabled = disabled; } };
   try {
     const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
     const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
@@ -2963,33 +2946,68 @@ async function submitFeedback() {
       const app = getApps().length ? getApps()[0] : initializeApp(cfg);
       window.db = getFirestore(app);
     }
-    await addDoc(collection(window.db, 'feedback'), {
-      type, message: msg, rating,
-      userId: window.currentUser?.uid || 'anonymous',
-      userEmail: window.currentUser?.email || 'anonymous',
-      page: window.location.pathname,
-      createdAt: serverTimestamp(),
-      status: 'unread'
-    });
+    if (type === 'apply') {
+      const name = document.getElementById('fb-apply-name')?.value?.trim() || '';
+      const email = document.getElementById('fb-apply-email')?.value?.trim() || window.currentUser?.email || '';
+      if (!name || !email) { fbToast('Please add your name and email', true); return; }
+      if (!msg) { fbToast('Tell us what you want to do', true); return; }
+      setBtn('[..] Sending...', true);
+      await addDoc(collection(window.db, 'job_applications'), {
+        name, email, position: msg,
+        status: 'new', createdAt: serverTimestamp(),
+        source: 'quick_apply', page: window.location.pathname
+      });
+    } else {
+      if (!msg) { fbToast('Please write your message', true); return; }
+      setBtn('[..] Sending...', true);
+      await addDoc(collection(window.db, 'feedback'), {
+        type, message: msg,
+        userId: window.currentUser?.uid || 'anonymous',
+        userEmail: window.currentUser?.email || 'anonymous',
+        page: window.location.pathname,
+        createdAt: serverTimestamp(),
+        status: 'unread'
+      });
+    }
     document.getElementById('feedback-msg').value = '';
+    const nameEl = document.getElementById('fb-apply-name'); if (nameEl) nameEl.value = '';
+    const emailEl = document.getElementById('fb-apply-email'); if (emailEl) emailEl.value = '';
     document.getElementById('feedback-modal').style.display = 'none';
-    if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
-    alert('✅ Thank you for your feedback!');
+    setBtn('Send →', false);
+    fbToast(type === 'apply' ? "Thanks! We'll be in touch." : 'Thank you — message sent!', false);
   } catch(e) {
-    if(btn) { btn.textContent = 'Send Feedback →'; btn.disabled = false; }
-    alert('Failed: ' + e.message);
+    setBtn('Send →', false);
+    fbToast('Failed: ' + e.message, true);
   }
 }
 // FAB button
 (function(){
   const fab = document.createElement('button');
   fab.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:998;background:#F5A623;border:none;color:#050A14;padding:0 1rem;height:42px;border-radius:21px;font-size:0.82rem;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;gap:0.4rem;font-family:Syne,sans-serif;font-weight:900;';
-  fab.innerHTML = '💬 Feedback';
+  fab.innerHTML = '💬 Contact';
   fab.onclick = () => {
     const modal = document.getElementById('feedback-modal');
-    if(modal) { modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex'; }
+    if (!modal) return;
+    const opening = modal.style.display !== 'flex';
+    modal.style.display = opening ? 'flex' : 'none';
+    if (opening && window.currentUser) {
+      const nameEl = document.getElementById('fb-apply-name');
+      const emailEl = document.getElementById('fb-apply-email');
+      if (nameEl && !nameEl.value && window.currentUser.displayName) nameEl.value = window.currentUser.displayName;
+      if (emailEl && !emailEl.value && window.currentUser.email) emailEl.value = window.currentUser.email;
+    }
   };
-  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(fab));
+  document.addEventListener('DOMContentLoaded', () => {
+    // This page has pre-existing unclosed <div> tags deep inside the video-editor
+    // panel markup (unrelated to this modal, too risky to untangle here) that make the
+    // HTML parser mis-nest anything appearing later in the raw source — including the
+    // contact modal above, no matter where it's textually placed. Re-parenting it here
+    // at runtime guarantees it actually ends up a direct child of <body>, so it renders
+    // and is clickable regardless of that unrelated bug.
+    const modal = document.getElementById('feedback-modal');
+    if (modal && modal.parentElement !== document.body) document.body.appendChild(modal);
+    document.body.appendChild(fab);
+  });
 })();
 </script>
 
@@ -3173,6 +3191,36 @@ const _eUsageCheck = setInterval(() => {
 }, 500);
 setTimeout(() => clearInterval(_eUsageCheck), 10000);
 </script>
+
+<!-- CONTACT MODAL (kept as a direct child of body — the surrounding markup here has
+     other pre-existing unclosed tags deep inside the video-editor panels, so this modal
+     is deliberately placed at this exact spot rather than back near the old FEEDBACK
+     MODAL comment, to guarantee it lands outside that broken nesting instead of inheriting it) -->
+<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
+      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
+      <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:1;">💬 Feedback</button>
+      <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🛟 Support</button>
+      <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🚀 Join Us</button>
+    </div>
+    <input type="hidden" id="feedback-type" value="feedback">
+    <div id="fb-apply-fields" style="display:none;">
+      <input type="text" id="fb-apply-name" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;box-sizing:border-box;margin-bottom:0.6rem;outline:none;">
+      <input type="email" id="fb-apply-email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;box-sizing:border-box;margin-bottom:0.6rem;outline:none;">
+    </div>
+    <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
+    <div style="display:flex;gap:0.5rem;">
+      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
+    </div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
+  </div>
+</div>
 </body>
 </html>
 <script>
