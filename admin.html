@@ -191,6 +191,10 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .upload-zone{border:2px dashed var(--border);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;}
 .upload-zone:hover{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.03);}
 
+/* COMPOSE EMAIL */
+.compose-user-row:hover{background:rgba(255,255,255,0.03);}
+.compose-user-row.selected{background:rgba(245,166,35,0.08);border-left:2px solid var(--gold);}
+
 /* GRID LAYOUTS */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;}
@@ -275,6 +279,9 @@ window._feedbackLoaded = false;
 
       <div class="nav-section">TEAM</div>
       <div class="nav-item" onclick="showPage('applications',this);loadApplications();"><span class="nav-icon">📋</span> Applications</div>
+
+      <div class="nav-section">COMMS</div>
+      <div class="nav-item" onclick="showPage('compose',this);loadComposeUsers();"><span class="nav-icon">✉</span> Compose Email</div>
 
       <div class="nav-section">FINANCE</div>
       <div class="nav-item" onclick="showPage('finance',this)"><span class="nav-icon">$</span> Finances</div>
@@ -740,6 +747,57 @@ window._feedbackLoaded = false;
         <div id="app-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
         <div id="app-list"></div>
       </div>
+
+      <!-- COMPOSE EMAIL -->
+      <div class="page" id="page-compose">
+        <div class="page-title">Compose Email</div>
+        <div class="page-sub">Send a one-off message to any user</div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">SELECT RECIPIENT</div>
+            <input type="text" class="form-input mb-1" id="compose-user-search" placeholder="Search users by name or email..." oninput="filterComposeUsers(this.value)">
+            <div id="compose-user-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;">
+              <div class="text-muted" style="padding:1rem;">Loading users...</div>
+            </div>
+            <div class="form-group" style="margin-top:1rem;margin-bottom:0;">
+              <div class="form-label">TO</div>
+              <input type="email" class="form-input" id="compose-to" placeholder="recipient@example.com">
+              <div class="text-muted" style="font-size:0.68rem;margin-top:0.4rem;" id="compose-selected-name">Pick a user above, or type an email address directly.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">MESSAGE</div>
+            <div class="form-group">
+              <div class="form-label">START FROM A TEMPLATE (OPTIONAL — FREELY EDITABLE)</div>
+              <div class="flex gap-1" style="flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="applyComposeTemplate('checkin')">Just Checking In</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="applyComposeTemplate('thanks')">Thanks for Reaching Out</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="applyComposeTemplate('application')">Application Follow-Up</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-label">SUBJECT</div>
+              <input type="text" class="form-input" id="compose-subject" placeholder="Subject line">
+            </div>
+            <div class="form-group" style="margin-bottom:0.5rem;">
+              <div class="form-label">BODY</div>
+              <textarea class="form-textarea" id="compose-body" style="min-height:220px;" placeholder="Write your message..."></textarea>
+            </div>
+            <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;margin-bottom:1rem;">
+              <input type="checkbox" id="compose-include-logo" checked style="width:16px;height:16px;">
+              <span style="font-size:0.78rem;color:var(--muted);">Include AfriVid Studio logo &amp; branded footer</span>
+            </label>
+            <div class="flex gap-1">
+              <button class="btn btn-gold" id="compose-send-btn" onclick="sendComposeEmail()">Send Email</button>
+              <button class="btn btn-outline btn-sm" onclick="clearComposeForm()">Clear</button>
+            </div>
+            <div id="compose-status" style="margin-top:1rem;"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="page" id="page-balance">
         <div class="flex-between mb-15">
           <div>
@@ -1966,5 +2024,195 @@ window.markApplicationReviewed = async function(id) {
     await updateDoc(doc(db,'job_applications',id),{status:'reviewed'});
     loadApplications();
   } catch(e) { alert('Failed: '+e.message); }
+};
+</script>
+
+<!-- COMPOSE EMAIL -->
+<script type="module">
+import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+
+const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
+const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+const db = getFirestore(app);
+
+let composeUsers = [];
+
+// Realistic starting points an admin can pick, then freely edit before sending.
+const COMPOSE_TEMPLATES = {
+  checkin: {
+    subject: 'Just checking in from AfriVid Studio',
+    body: "Hi there,\n\nJust checking in — we noticed it's been a while since you've been in AfriVid Studio and wanted to say hello.\n\nIf anything got in the way, or something on the platform isn't working the way you'd expect, just reply to this email and let us know. We read every message.\n\nHope to see you back in the studio soon.\n\nBest,\nThe AfriVid Team"
+  },
+  thanks: {
+    subject: 'Thanks for reaching out',
+    body: "Hi there,\n\nThanks so much for getting in touch with AfriVid Studio — we really appreciate you taking the time to write in.\n\n[Add your response here]\n\nIf you have any other questions, don't hesitate to reply directly to this email.\n\nBest,\nThe AfriVid Team"
+  },
+  application: {
+    subject: 'Following up on your application to AfriVid Studio',
+    body: "Hi there,\n\nThank you again for applying to AfriVid Studio — we've had a chance to review your application and wanted to follow up.\n\n[Add update here — next steps, a question, or a decision]\n\nWe appreciate your interest in joining the team and the time you put into your application.\n\nBest regards,\nThe AfriVid Team"
+  }
+};
+
+function renderComposeUserList(users) {
+  const wrap = document.getElementById('compose-user-list');
+  if (!wrap) return;
+  if (!users.length) { wrap.innerHTML = '<div class="text-muted" style="padding:1rem;">No users found</div>'; return; }
+  wrap.innerHTML = users.slice(0,50).map(u => `
+    <div class="compose-user-row" data-uid="${u.id}" onclick="selectComposeUser('${u.id}')" style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;">${u.displayName||u.email||'User'}</div>
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.4);font-family:var(--font-mono);">${u.email||'—'}</div>
+      </div>
+      <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'beta'}</span>
+    </div>
+  `).join('');
+}
+
+window.loadComposeUsers = async function() {
+  const wrap = document.getElementById('compose-user-list');
+  if (wrap) wrap.innerHTML = '<div class="text-muted" style="padding:1rem;">Loading users...</div>';
+  try {
+    const snap = await getDocs(collection(db, 'studio_users'));
+    composeUsers = [];
+    snap.forEach(d => composeUsers.push({id:d.id, ...d.data()}));
+    composeUsers.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    renderComposeUserList(composeUsers);
+  } catch(e) {
+    if (wrap) wrap.innerHTML = `<div style="color:#E63329;padding:1rem;">[x] ${e.message}</div>`;
+  }
+};
+
+window.filterComposeUsers = function(q) {
+  const needle = (q||'').toLowerCase();
+  const filtered = composeUsers.filter(u =>
+    (u.email||'').toLowerCase().includes(needle) ||
+    (u.displayName||'').toLowerCase().includes(needle)
+  );
+  renderComposeUserList(filtered);
+};
+
+window.selectComposeUser = function(uid) {
+  const u = composeUsers.find(x=>x.id===uid);
+  if (!u) return;
+  const toEl = document.getElementById('compose-to');
+  const nameEl = document.getElementById('compose-selected-name');
+  if (toEl) toEl.value = u.email || '';
+  if (nameEl) nameEl.textContent = 'Selected: ' + (u.displayName || u.email || uid);
+  document.querySelectorAll('.compose-user-row').forEach(r=>r.classList.remove('selected'));
+  const row = document.querySelector(`.compose-user-row[data-uid="${uid}"]`);
+  if (row) row.classList.add('selected');
+};
+
+window.applyComposeTemplate = function(key) {
+  const t = COMPOSE_TEMPLATES[key];
+  if (!t) return;
+  document.getElementById('compose-subject').value = t.subject;
+  document.getElementById('compose-body').value = t.body;
+};
+
+window.clearComposeForm = function() {
+  document.getElementById('compose-to').value = '';
+  document.getElementById('compose-subject').value = '';
+  document.getElementById('compose-body').value = '';
+  const nameEl = document.getElementById('compose-selected-name');
+  if (nameEl) nameEl.textContent = 'Pick a user above, or type an email address directly.';
+  document.querySelectorAll('.compose-user-row').forEach(r=>r.classList.remove('selected'));
+  const statusEl = document.getElementById('compose-status');
+  if (statusEl) statusEl.innerHTML = '';
+};
+
+function escapeComposeHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+// Same dark-background, gold-heading shell used by the broadcast announcement email,
+// with the AfriVid Studio logo embedded near the top as a hosted image (no MIME attachment).
+function buildComposeEmailHtml(bodyText, includeLogo) {
+  const safeBody = escapeComposeHtml(bodyText).replace(/\n/g, '<br>');
+  const logoBlock = includeLogo
+    ? `<img src="https://afrivid.studio/images/logo.png" alt="AfriVid Studio" style="width:56px;height:56px;border-radius:12px;margin-bottom:0.75rem;">`
+    : '';
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        ${logoBlock}
+        <h1 style="color:#F5A623;font-size:1.5rem;margin:0;">AfriVid Studio</h1>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
+        <p style="line-height:1.7;color:rgba(255,255,255,0.8);margin:0;">${safeBody}</p>
+      </div>
+      <div style="text-align:center;margin-bottom:1rem;">
+        <a href="https://afrivid.studio" style="background:#F5A623;color:#050A14;padding:0.75rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Visit AfriVid Studio</a>
+      </div>
+      <p style="text-align:center;color:rgba(255,255,255,0.3);font-size:0.75rem;">AfriVid Studio · afrivid.studio · support@afrivid.studio</p>
+    </div>
+  `;
+}
+
+function setComposeStatus(kind, message) {
+  const statusEl = document.getElementById('compose-status');
+  if (!statusEl) return;
+  const colors = {
+    success: {bg:'rgba(116,198,157,0.08)', border:'rgba(116,198,157,0.25)', text:'var(--green)'},
+    error: {bg:'rgba(230,51,41,0.08)', border:'rgba(230,51,41,0.25)', text:'var(--red)'}
+  };
+  const c = colors[kind] || colors.error;
+  statusEl.innerHTML = `<div style="padding:0.75rem 1rem;background:${c.bg};border:1px solid ${c.border};border-radius:8px;font-size:0.8rem;color:${c.text};">${message}</div>`;
+}
+
+window.sendComposeEmail = async function() {
+  const to = document.getElementById('compose-to').value.trim();
+  const subject = document.getElementById('compose-subject').value.trim();
+  const body = document.getElementById('compose-body').value.trim();
+  const includeLogo = document.getElementById('compose-include-logo').checked;
+  const btn = document.getElementById('compose-send-btn');
+
+  if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+    setComposeStatus('error', 'Enter a valid recipient email address.');
+    return;
+  }
+  if (!subject) {
+    setComposeStatus('error', 'Enter a subject line.');
+    return;
+  }
+  if (!body) {
+    setComposeStatus('error', 'Write a message body.');
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = '[..] Sending...'; }
+  const statusEl = document.getElementById('compose-status');
+  if (statusEl) statusEl.innerHTML = '';
+
+  try {
+    const html = buildComposeEmailHtml(body, includeLogo);
+    const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'AfriVid Studio <support@afrivid.studio>',
+        to: [to],
+        subject,
+        html
+      })
+    });
+    if (!res.ok) {
+      let detail = '';
+      try { detail = (await res.json()).error || ''; } catch(e) {}
+      throw new Error(detail || `Send failed (HTTP ${res.status})`);
+    }
+    setComposeStatus('success', `✅ Email sent to ${to}`);
+    if (window.showToast) showToast('Email sent to ' + to, 'success');
+  } catch(e) {
+    setComposeStatus('error', `[x] Failed to send: ${e.message}`);
+    if (window.showToast) showToast('Failed to send email', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send Email'; }
+  }
 };
 </script>
