@@ -2131,11 +2131,42 @@ function escapeComposeHtml(str) {
 
 // Same dark-background, gold-heading shell used by the broadcast announcement email,
 // with the AfriVid Studio logo embedded near the top as a hosted image (no MIME attachment).
+// Real AfriVid social profiles — pulled from index.html's own footer so this signature never
+// drifts out of sync with the actual public links.
+const COMPOSE_SOCIAL_LINKS = [
+  { label: 'FB', name: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61590870207039', color: '#1877F2' },
+  { label: 'IG', name: 'Instagram', url: 'https://instagram.com/afrividstudio', color: '#E1306C' },
+  { label: 'TT', name: 'TikTok', url: 'https://www.tiktok.com/@afrividstudio', color: '#000000' },
+  { label: 'X', name: 'Twitter / X', url: 'https://x.com/afrividstudio', color: '#000000' },
+  { label: 'YT', name: 'YouTube', url: 'https://www.youtube.com/@AfrividStudio', color: '#FF0000' },
+];
+
 function buildComposeEmailHtml(bodyText, includeLogo) {
   const safeBody = escapeComposeHtml(bodyText).replace(/\n/g, '<br>');
   const logoBlock = includeLogo
     ? `<img src="https://afrivid.studio/images/logo.png" alt="AfriVid Studio" style="width:56px;height:56px;border-radius:12px;margin-bottom:0.75rem;">`
     : '';
+  // Table-based layout (not flex/grid) — the one layout method email clients reliably render
+  // consistently, unlike the rest of this template which can afford to be a plain div since
+  // Gmail's own web/app clients are the only realistic target for that part.
+  const socialIcons = COMPOSE_SOCIAL_LINKS.map(s => `
+    <a href="${s.url}" title="${s.name}" style="display:inline-block;width:32px;height:32px;line-height:32px;text-align:center;background:${s.color};color:#fff;border-radius:8px;text-decoration:none;font-family:Arial,sans-serif;font-size:11px;font-weight:700;margin:0 4px;">${s.label}</a>
+  `).join('');
+  const signatureBlock = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:1.5rem;border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;">
+      <tr>
+        <td style="width:90px;vertical-align:top;">
+          <img src="https://afrivid.studio/images/hero-team.jpg" alt="AfriVid Studio" width="80" height="80" style="width:80px;height:80px;border-radius:10px;object-fit:cover;display:block;">
+        </td>
+        <td style="vertical-align:top;padding-left:1rem;">
+          <p style="margin:0 0 2px;color:#F5A623;font-weight:700;font-size:0.95rem;">AfriVid Studio</p>
+          <p style="margin:0 0 8px;color:rgba(255,255,255,0.6);font-size:0.8rem;">Customer Care Support</p>
+          <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:0.8rem;">E: info@afrivid.studio &nbsp;·&nbsp; W: afrivid.studio</p>
+          <div style="margin-top:8px;">${socialIcons}</div>
+        </td>
+      </tr>
+    </table>
+  `;
   return `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
       <div style="text-align:center;margin-bottom:1.5rem;">
@@ -2149,7 +2180,7 @@ function buildComposeEmailHtml(bodyText, includeLogo) {
       <div style="text-align:center;margin-bottom:1rem;">
         <a href="https://afrivid.studio" style="background:#F5A623;color:#050A14;padding:0.75rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Visit AfriVid Studio</a>
       </div>
-      <p style="text-align:center;color:rgba(255,255,255,0.3);font-size:0.75rem;">AfriVid Studio · afrivid.studio · info@afrivid.studio</p>
+      ${signatureBlock}
     </div>
   `;
 }
