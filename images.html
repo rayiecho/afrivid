@@ -161,10 +161,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <button type="button" class="tool-tab" id="brand-style-poster-btn" onclick="setBrandStyle('poster')">Poster</button>
       </div>
       <div id="brand-poster-options" style="display:none;margin-bottom:1rem;">
-        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.85rem;">
           <input type="checkbox" id="brand-poster-exact-wording">
           <span class="form-hint" style="margin:0;">Use my wording exactly as the headline (unchecked = let AI turn it into a punchy headline)</span>
         </label>
+        <div class="form-label">YOUR OWN PHOTO (OPTIONAL)</div>
+        <div class="file-row">
+          <button class="file-btn" onclick="document.getElementById('brand-photo-input').click()">Choose File</button>
+          <span class="file-name" id="brand-photo-name">No file chosen — we'll generate a background image instead</span>
+        </div>
+        <input type="file" id="brand-photo-input" accept="image/*" style="display:none;" onchange="onBrandPhotoChange(event)">
       </div>
       <div class="form-label">LOGO (OPTIONAL)</div>
       <div class="file-row">
@@ -357,6 +363,16 @@ function onBrandLogoChange(event) {
   reader.readAsDataURL(file);
 }
 
+let brandPhotoBase64 = null;
+function onBrandPhotoChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('brand-photo-name').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = () => { brandPhotoBase64 = reader.result; };
+  reader.readAsDataURL(file);
+}
+
 function setResultLoading(kind) {
   document.getElementById(`${kind}-result-frame`).innerHTML = '<div class="spinner"></div>';
   document.getElementById(`${kind}-result-status`).className = 'result-status';
@@ -479,6 +495,7 @@ window.generateBrandImage = async function() {
         business_name: business,
         tagline: document.getElementById('brand-tagline').value.trim(),
         logo_base64: brandLogoBase64,
+        photo_base64: brandStyle === 'poster' ? brandPhotoBase64 : null,
         style: brandStyle,
         enhance_text: !exactWording,
       }),
