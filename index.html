@@ -138,17 +138,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-nav-tool:hover{background:#E08A2E;color:#17140F;border-color:#E08A2E;transform:translateY(-1px);}
 
 /* HERO */
-.hero{position:relative;z-index:1;height:82vh;min-height:520px;max-height:820px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero{position:relative;z-index:1;height:82vh;min-height:560px;max-height:860px;display:flex;align-items:center;justify-content:flex-end;overflow:hidden;}
 .hero-photo{position:absolute;top:-25%;left:0;right:0;width:100%;height:150%;object-fit:cover;object-position:center 25%;will-change:transform;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(23,20,15,0.35) 0%,rgba(23,20,15,0.55) 55%,rgba(23,20,15,0.82) 100%);}
-.hero-content{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 2rem;text-align:center;will-change:transform,opacity;}
+.hero-overlay{position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(23,20,15,0.35) 0%,rgba(23,20,15,0.55) 55%,rgba(23,20,15,0.82) 100%),
+  linear-gradient(90deg,rgba(23,20,15,0) 0%,rgba(23,20,15,0.4) 42%,rgba(23,20,15,0.8) 100%);}
+.hero-content{position:relative;z-index:1;max-width:560px;margin:0;padding:0 clamp(1.25rem,6vw,5rem) 0 2rem;text-align:left;will-change:transform,opacity;}
 .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);backdrop-filter:blur(6px);border-radius:50px;padding:0.4rem 1rem;margin-bottom:1.25rem;opacity:0;animation:fadeUp 0.7s ease-out forwards;}
 .hero-badge-dot{width:8px;height:8px;border-radius:50%;background:#E08A2E;animation:blink 2s ease-in-out infinite;}
 .hero-badge-text{font-size:0.72rem;color:#fff;font-family:'Space Mono',monospace;letter-spacing:1px;}
-.hero-title{font-size:clamp(2rem,4.2vw,3.4rem);font-weight:800;line-height:1.15;margin-bottom:1.1rem;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,0.35);opacity:0;animation:fadeUp 0.8s ease-out 0.1s forwards;}
+.hero-title{font-size:clamp(1.9rem,3.4vw,2.75rem);font-weight:800;line-height:1.15;margin-bottom:1.1rem;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,0.5);opacity:0;animation:fadeUp 0.8s ease-out 0.1s forwards;}
 .hero-title-grad{background:linear-gradient(135deg,#F0A94E,#E08A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero-rule{width:56px;height:3px;background:#E08A2E;margin:0 auto 1.25rem;border-radius:2px;opacity:0;animation:fadeUp 0.7s ease-out 0.2s forwards;}
-.hero-sub{font-size:1.05rem;color:rgba(255,255,255,0.85);max-width:480px;margin:0 auto;line-height:1.6;opacity:0;animation:fadeUp 0.8s ease-out 0.3s forwards;}
+.hero-rule{width:56px;height:3px;background:#E08A2E;margin:0 0 1.25rem;border-radius:2px;opacity:0;animation:fadeUp 0.7s ease-out 0.2s forwards;}
+.hero-sub{font-size:1.02rem;color:rgba(255,255,255,0.9);max-width:520px;margin:0;line-height:1.6;text-shadow:0 1px 12px rgba(0,0,0,0.4);opacity:0;animation:fadeUp 0.8s ease-out 0.3s forwards;}
+.hero-powered{font-size:0.85rem;font-weight:700;color:#F0A94E;letter-spacing:0.3px;margin-top:1.1rem;text-shadow:0 1px 12px rgba(0,0,0,0.4);opacity:0;animation:fadeUp 0.8s ease-out 0.4s forwards;}
 .btn-primary{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border:none;padding:1rem 2.5rem;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;font-family:'Syne',sans-serif;}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(224,138,46,0.4);}
 .btn-secondary{background:transparent;color:#17140F;border:1px solid rgba(23,20,15,0.18);padding:1rem 2.5rem;border-radius:12px;font-weight:600;font-size:1rem;cursor:pointer;transition:all 0.3s;font-family:'Syne',sans-serif;}
@@ -289,9 +292,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .navbar-badge{display:none;}
   .navbar-actions{gap:0.4rem;}
   .btn-nav-tool{padding:0.4rem 0.7rem;font-size:0.72rem;}
-  .hero{height:70vh;min-height:420px;}
-  .hero-title{font-size:1.9rem;margin-bottom:0.9rem;}
-  .hero-sub{font-size:0.92rem;}
+  .hero{height:88vh;min-height:560px;align-items:flex-end;padding-bottom:3rem;}
+  .hero-content{max-width:100%;padding:0 1.25rem;}
+  .hero-title{font-size:1.7rem;margin-bottom:0.9rem;}
+  .hero-sub{font-size:0.9rem;max-width:100%;}
+  .hero-powered{font-size:0.72rem;}
   .tools-section,.how-section,.features-section,.pricing-section,.stats-section,.faq-section{padding-left:1.25rem;padding-right:1.25rem;}
   .faq-question{padding:1rem 1.15rem;font-size:0.88rem;}
   .faq-answer-inner{padding:0 1.15rem 1.1rem;font-size:0.84rem;}
@@ -613,11 +618,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <span class="hero-badge-text">BUILT FOR AFRICA</span>
     </div>
     <h1 class="hero-title">
-      Africa's <span class="hero-title-grad">Video Creation</span> Platform<br>
-      Powered by <span class="hero-title-grad">First Gen AI</span>
+      Africa's <span class="hero-title-grad">Video Creation</span> Platform
     </h1>
     <div class="hero-rule"></div>
-    <p class="hero-sub">Create, edit and translate professional videos in minutes — AI-powered, built for Africa, free during beta.</p>
+    <p class="hero-sub">Powering African learning platforms for video lesson creation — African creators, businesses, organizations and advertising.</p>
+    <p class="hero-powered">POWERED BY AFRICA'S FIRST-GEN, GROWING AI</p>
   </div>
 </section>
 
