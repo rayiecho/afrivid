@@ -758,6 +758,11 @@ window._feedbackLoaded = false;
           <div class="card">
             <div class="card-title">SELECT RECIPIENT</div>
             <input type="text" class="form-input mb-1" id="compose-user-search" placeholder="Search users by name or email..." oninput="filterComposeUsers(this.value)">
+            <div style="display:flex;gap:0.5rem;margin-bottom:0.6rem;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="selectAllComposeUsers()">Select All</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="deselectAllComposeUsers()">Deselect All</button>
+              <span class="text-muted" style="font-size:0.75rem;align-self:center;">— applies to the list below (respects search)</span>
+            </div>
             <div id="compose-user-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;">
               <div class="text-muted" style="padding:1rem;">Loading users...</div>
             </div>
@@ -2233,6 +2238,22 @@ window.filterComposeUsers = function(q) {
 // Clicking a user toggles them in/out of the recipient list — clicking an already-selected
 // user again removes them, exactly mirroring the × on their chip, so there's one consistent
 // mental model instead of click-to-add-only.
+// Both respect whatever's currently typed in the search box, so "Select All" after a search
+// means "everyone matching this search," not literally every user in the collection.
+function visibleComposeUsers() {
+  const q = (document.getElementById('compose-user-search')?.value || '').toLowerCase();
+  if (!q) return composeUsers;
+  return composeUsers.filter(u => (u.email||'').toLowerCase().includes(q) || (u.displayName||'').toLowerCase().includes(q));
+}
+window.selectAllComposeUsers = function() {
+  visibleComposeUsers().forEach(u => { if (u.email) addComposeRecipient(u.email, u.displayName || ''); });
+};
+window.deselectAllComposeUsers = function() {
+  const visibleEmails = new Set(visibleComposeUsers().map(u => (u.email||'').toLowerCase()));
+  composeRecipients = composeRecipients.filter(r => !visibleEmails.has(r.email.toLowerCase()));
+  renderComposeRecipients();
+};
+
 window.selectComposeUser = function(uid) {
   const u = composeUsers.find(x=>x.id===uid);
   if (!u || !u.email) return;
