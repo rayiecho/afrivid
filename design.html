@@ -1875,10 +1875,14 @@ window.doSignUp=async function(){
   if(!name||!email||!password){err.style.display='block';err.textContent='[!] Fill all fields';return;}
   try{
     const cred=await createUserWithEmailAndPassword(auth,email,password);
-    await updateProfile(cred.user,{displayName:name});
-    await sendEmailVerification(cred.user);
+    // Critical: create the Firestore profile FIRST, right after the Auth account exists —
+    // updateProfile/sendEmailVerification below are best-effort and must never block this
+    // (a rate-limited verification email previously left a real Auth account with no
+    // studio_users doc, invisible everywhere the app reads from that collection).
     await setDoc(doc(db,'studio_users',cred.user.uid),{name,email,videosGenerated:0,joinedAt:serverTimestamp(),plan:'beta'});
     updateDoc(doc(db,'public_stats','counts'),{userCount:increment(1)}).catch(()=>{});
+    try { await updateProfile(cred.user,{displayName:name}); } catch(e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
+    try { await sendEmailVerification(cred.user); } catch(e) { console.log('[Signup] sendEmailVerification failed (non-critical):', e); }
     hideLogin();
   }catch(e){err.style.display='block';err.textContent='[!] '+e.message.replace('Firebase: ','');}
 }

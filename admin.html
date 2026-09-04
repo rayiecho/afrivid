@@ -2140,7 +2140,7 @@ function renderComposeUserList(users) {
   if (!wrap) return;
   if (!users.length) { wrap.innerHTML = '<div class="text-muted" style="padding:1rem;">No users found</div>'; return; }
   const selectedEmails = new Set(composeRecipients.map(r => r.email.toLowerCase()));
-  wrap.innerHTML = users.slice(0,50).map(u => {
+  wrap.innerHTML = users.map(u => {
     const isSelected = u.email && selectedEmails.has(u.email.toLowerCase());
     return `
     <div class="compose-user-row${isSelected ? ' selected' : ''}" data-uid="${u.id}" onclick="selectComposeUser('${u.id}')" style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">

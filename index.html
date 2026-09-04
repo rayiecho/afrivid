@@ -988,14 +988,20 @@ window.signUp = async function() {
   if(btn){ btn.textContent='Creating account...'; btn.disabled=true; }
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(cred.user, { displayName: name });
-    await sendEmailVerification(cred.user);
+    // Critical: create the Firestore profile FIRST, right after the Auth account exists.
+    // updateProfile/sendEmailVerification below are best-effort and must never be able to
+    // block this — previously running after them meant a rate-limited or failed
+    // verification email left a real Auth account with no studio_users doc at all,
+    // invisible everywhere the app reads from studio_users (admin's Compose Email list,
+    // stats, plan/quota), and stuck permanently ("email already in use" on any retry).
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
       displayName: name, email,
       videosGenerated: 0, photosEdited: 0, designsCreated: 0,
       createdAt: serverTimestamp(), lastActive: serverTimestamp(), plan: 'beta'
     });
     updateDoc(doc(db, 'public_stats', 'counts'), { userCount: increment(1) }).catch(() => {});
+    try { await updateProfile(cred.user, { displayName: name }); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
+    try { await sendEmailVerification(cred.user); } catch (e) { console.log('[Signup] sendEmailVerification failed (non-critical):', e); }
     if(btn){ btn.textContent='Account Created!'; btn.disabled=true; }
     if(err){ err.style.display='block'; err.style.color='#74C69D'; err.textContent='Account created! Check your inbox AND spam/junk folder for the verification email, then sign in.'; }
 
