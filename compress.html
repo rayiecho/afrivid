@@ -425,11 +425,10 @@ window.startCompress = async function() {
       } else if (s.status === 'completed') {
         setProgress(100, 'Done!');
         resultUrl = s.output_url;
-        let compressedSize = null;
-        try {
-          const head = await fetch(resultUrl, { method: 'HEAD' });
-          compressedSize = parseInt(head.headers.get('content-length') || '0', 10);
-        } catch (e) {}
+        // The backend now reports the real compressed size directly in the job status —
+        // a cross-origin HEAD request to the R2 bucket previously tried the same thing but
+        // was silently blocked by the bucket's CORS policy, always falling back to "Ready".
+        const compressedSize = s.output_size || null;
         document.getElementById('stat-original').textContent = fmtSize(originalSize);
         document.getElementById('stat-compressed').textContent = compressedSize ? fmtSize(compressedSize) : 'Ready';
         document.getElementById('result-card').style.display = 'block';
