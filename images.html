@@ -100,6 +100,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .embed-input{margin:0;font-family:'Space Mono',monospace;font-size:0.76rem;color:var(--text-muted);}
 .embed-row .file-btn{flex-shrink:0;}
 
+/* AI INTAKE — the optional "Refine with AI" conversation that sits in front of poster
+   generation. Deliberately built out of the page's existing .form-input/.form-textarea/
+   .file-btn/.form-hint vocabulary; these classes only add the containing box, spacing and
+   the two states (question row, brief chip) that had no existing equivalent. */
+.intake-box{border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.25rem;background:var(--surface-2);}
+.intake-title{font-size:0.88rem;font-weight:800;margin-bottom:0.3rem;}
+.intake-btn{width:100%;padding:0.7rem;}
+.intake-step{font-size:0.72rem;font-family:'Space Mono',monospace;letter-spacing:1px;color:var(--text-faint);margin-bottom:0.6rem;}
+.intake-q{font-size:0.85rem;font-weight:700;line-height:1.4;margin-bottom:0.4rem;}
+.intake-q + .form-textarea{min-height:62px;}
+.intake-actions{display:flex;gap:0.5rem;margin-top:0.85rem;flex-wrap:wrap;}
+.intake-actions .file-btn{flex:1 1 150px;padding:0.65rem;text-align:center;}
+.intake-actions .file-btn.primary{background:var(--gradient-gold);color:var(--bg);border-color:transparent;font-weight:800;}
+.intake-actions .file-btn.primary:hover{box-shadow:var(--glow-gold);color:var(--bg);}
+.intake-busy{display:flex;align-items:center;gap:0.7rem;font-size:0.82rem;color:var(--text-muted);}
+.intake-busy .spinner{width:20px;height:20px;border-width:2px;flex-shrink:0;}
+.intake-error{font-size:0.82rem;color:var(--red);}
+.intake-chip{margin-top:0.85rem;padding:0.6rem 0.75rem;border-radius:var(--radius-sm);background:rgba(224,138,46,0.12);border:1px solid rgba(224,138,46,0.35);font-size:0.78rem;line-height:1.5;}
+.intake-chip a{color:var(--gold);font-weight:700;text-decoration:none;}
+.intake-chip a:hover{text-decoration:underline;}
+
 /* LOGIN MODAL — same system as studio.html */
 .modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
 .modal-overlay.active{display:flex;}
@@ -161,6 +182,25 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <button type="button" class="tool-tab" id="brand-style-poster-btn" onclick="setBrandStyle('poster')">Poster</button>
       </div>
       <div id="brand-poster-options" style="display:none;margin-bottom:1rem;">
+
+        <!-- AI INTAKE — optional conversational brief builder. Everything in here can be
+             ignored entirely: the main Generate Poster button below still works exactly as
+             it did before, with whatever the user has already typed. -->
+        <div class="intake-box">
+          <div class="intake-title">Not sure what to write?</div>
+          <div class="form-hint" style="margin:0 0 0.8rem;">Let AI read your description (and your website, if you have one), ask a couple of quick questions, then turn it into a proper poster brief you can edit. Totally optional — you can skip this and just hit Generate Poster.</div>
+          <div class="form-label" style="margin-top:0;">YOUR WEBSITE (OPTIONAL)</div>
+          <input type="text" id="brand-website" class="form-input" placeholder="e.g. amaracoffee.co.ke">
+          <button type="button" class="file-btn intake-btn" id="brand-refine-btn" onclick="startPosterIntake()" style="margin-top:0.8rem;">Refine with AI</button>
+
+          <div id="brand-intake-panel" style="display:none;margin-top:1rem;"></div>
+
+          <div id="brand-brief-chip" class="intake-chip" style="display:none;">
+            <span>Your AI brief is being used for this poster.</span>
+            <a href="#" onclick="clearPosterBrief();return false;">Use my own description instead</a>
+          </div>
+        </div>
+
         <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.85rem;">
           <input type="checkbox" id="brand-poster-exact-wording">
           <span class="form-hint" style="margin:0;">Use my wording exactly as the headline (unchecked = let AI turn it into a punchy headline)</span>
@@ -563,6 +603,179 @@ function currentBrandPosterColors() {
 }
 renderBrandPosterSwatches();
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// AI POSTER INTAKE
+//
+// Thin prompts ("my shop", "end of year sale") are the norm, and a single-shot generator
+// has nothing concrete to work with, so it invents generic filler. This flow sits in front
+// of generation: the backend judges whether there's real material, asks at most two rounds
+// of one-to-two targeted questions if not, then synthesises one brief the user confirms or
+// edits before anything is generated.
+//
+// It is entirely optional in both directions — the Generate Poster button never routes
+// through here, and every step of the conversation has a "skip, build it now" exit.
+//
+// The backend is stateless (Cloud Run gives no instance affinity between requests), so all
+// conversation state lives in these four variables and is posted back on every call.
+// ═══════════════════════════════════════════════════════════════════════════════
+let posterIntakeHistory = [];      // [{questions:[...], answers:[...]}] — grows one per round
+let posterIntakeSite = '';         // extracted website context, fetched once and re-sent
+let posterIntakeSiteChecked = false;
+let posterIntakeQuestions = [];    // the questions currently on screen
+let brandPosterBrief = '';         // the confirmed brief, '' when not in use
+
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+function intakePanel() { return document.getElementById('brand-intake-panel'); }
+
+function setIntakeBusy(message) {
+  const p = intakePanel();
+  p.style.display = 'block';
+  p.innerHTML = `<div class="intake-busy"><div class="spinner"></div><span>${escHtml(message)}</span></div>`;
+  document.getElementById('brand-refine-btn').disabled = true;
+}
+
+function setIntakeError(message) {
+  const p = intakePanel();
+  p.style.display = 'block';
+  p.innerHTML = `<div class="intake-error">${escHtml(message)}</div>
+    <div class="intake-actions"><button type="button" class="file-btn" onclick="startPosterIntake()">Try again</button></div>`;
+  document.getElementById('brand-refine-btn').disabled = false;
+}
+
+async function posterIntakeCall(extra) {
+  const res = await fetch(`${IMAGE_API}/poster-intake`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.assign({
+      description: document.getElementById('brand-prompt').value.trim(),
+      business_name: document.getElementById('brand-business').value.trim(),
+      website: document.getElementById('brand-website').value.trim(),
+      history: posterIntakeHistory,
+      site_context: posterIntakeSite,
+      site_context_checked: posterIntakeSiteChecked,
+    }, extra || {})),
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  // Carry the extracted site context forward so a two-round conversation costs one fetch
+  // of the user's website rather than one per round.
+  if (data.site_context) posterIntakeSite = data.site_context;
+  if (data.site_context_checked) posterIntakeSiteChecked = true;
+  return data;
+}
+
+function renderPosterIntake(data) {
+  document.getElementById('brand-refine-btn').disabled = false;
+  if (data.status === 'questions') return renderPosterIntakeQuestions(data);
+  return renderPosterBrief(data);
+}
+
+function renderPosterIntakeQuestions(data) {
+  posterIntakeQuestions = data.questions || [];
+  const p = intakePanel();
+  p.style.display = 'block';
+  p.innerHTML =
+    `<div class="intake-step">STEP ${data.round} OF ${data.max_rounds} — QUICK QUESTIONS</div>` +
+    posterIntakeQuestions.map(function(q, i) {
+      return `<div class="intake-q" style="margin-top:${i ? '0.9rem' : '0'};">${escHtml(q)}</div>
+        <textarea class="form-textarea" id="brand-intake-a${i}" placeholder="Your answer — or leave it blank to skip"></textarea>`;
+    }).join('') +
+    `<div class="intake-actions">
+       <button type="button" class="file-btn primary" onclick="submitPosterIntakeAnswers()">Send answers</button>
+       <button type="button" class="file-btn" onclick="skipToPosterBrief()">Skip — build the brief now</button>
+     </div>`;
+  const first = document.getElementById('brand-intake-a0');
+  if (first) first.focus();
+}
+
+function renderPosterBrief(data) {
+  const p = intakePanel();
+  p.style.display = 'block';
+  p.innerHTML =
+    `<div class="intake-step">YOUR POSTER BRIEF</div>
+     <div class="form-hint" style="margin:0 0 0.6rem;">Edit anything here before we generate — this is exactly what the poster will be built from.</div>
+     <textarea class="form-textarea" id="brand-brief-text" style="min-height:180px;font-size:0.82rem;line-height:1.6;"></textarea>
+     <div class="intake-actions">
+       <button type="button" class="file-btn primary" onclick="confirmPosterBrief()">Use this brief &amp; generate</button>
+       <button type="button" class="file-btn" onclick="startPosterIntake()">Start over</button>
+     </div>`;
+  // Set as a value rather than as markup — the brief is free text and must never be parsed
+  // as HTML on its way into the box.
+  document.getElementById('brand-brief-text').value = data.brief || '';
+}
+
+window.startPosterIntake = async function() {
+  const description = document.getElementById('brand-prompt').value.trim();
+  const business = document.getElementById('brand-business').value.trim();
+  if (!description) { alert('Write a line or two about your poster first — even a few words is enough to start.'); return; }
+  if (!business) { alert('Please enter your business name.'); return; }
+  posterIntakeHistory = [];
+  posterIntakeQuestions = [];
+  posterIntakeSite = '';
+  posterIntakeSiteChecked = false;
+  setIntakeBusy(document.getElementById('brand-website').value.trim()
+    ? 'Reading your website and your description...' : 'Reading your description...');
+  try {
+    renderPosterIntake(await posterIntakeCall({}));
+  } catch (e) {
+    setIntakeError(e.message || 'Could not reach the AI just now.');
+  }
+};
+
+window.submitPosterIntakeAnswers = async function() {
+  const answers = posterIntakeQuestions.map(function(_, i) {
+    const el = document.getElementById(`brand-intake-a${i}`);
+    return el ? el.value.trim() : '';
+  });
+  posterIntakeHistory = posterIntakeHistory.concat([{ questions: posterIntakeQuestions, answers: answers }]);
+  // Someone who answers nothing at all is telling us they're done — go straight to the
+  // brief instead of asking a second round they clearly don't want.
+  const answeredNothing = answers.every(function(a) { return !a; });
+  setIntakeBusy(answeredNothing ? 'Putting your brief together...' : 'Thinking about what you said...');
+  try {
+    renderPosterIntake(await posterIntakeCall(answeredNothing ? { force_brief: true } : {}));
+  } catch (e) {
+    setIntakeError(e.message || 'Could not reach the AI just now.');
+  }
+};
+
+window.skipToPosterBrief = async function() {
+  // Escape hatch mid-conversation: keep whatever has been typed into the open answer boxes,
+  // then jump straight to the brief without another question round.
+  const answers = posterIntakeQuestions.map(function(_, i) {
+    const el = document.getElementById(`brand-intake-a${i}`);
+    return el ? el.value.trim() : '';
+  });
+  if (posterIntakeQuestions.length) {
+    posterIntakeHistory = posterIntakeHistory.concat([{ questions: posterIntakeQuestions, answers: answers }]);
+  }
+  setIntakeBusy('Putting your brief together...');
+  try {
+    renderPosterIntake(await posterIntakeCall({ force_brief: true }));
+  } catch (e) {
+    setIntakeError(e.message || 'Could not reach the AI just now.');
+  }
+};
+
+window.confirmPosterBrief = function() {
+  const box = document.getElementById('brand-brief-text');
+  brandPosterBrief = box ? box.value.trim() : '';
+  intakePanel().style.display = 'none';
+  document.getElementById('brand-brief-chip').style.display = brandPosterBrief ? 'block' : 'none';
+  generateBrandImage();
+};
+
+window.clearPosterBrief = function() {
+  brandPosterBrief = '';
+  document.getElementById('brand-brief-chip').style.display = 'none';
+  intakePanel().style.display = 'none';
+};
+
 window.generateBrandImage = async function() {
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_brand'))) return;
   const prompt = document.getElementById('brand-prompt').value.trim();
@@ -590,13 +803,20 @@ window.generateBrandImage = async function() {
         orientation: brandStyle === 'poster' ? brandOrientation : undefined,
         bg_color: posterColors ? posterColors.bg : undefined,
         accent_color: posterColors ? posterColors.accent : undefined,
+        // Both optional and poster-only. `brief` is the confirmed output of the AI intake
+        // above — when present the backend feeds it to refine_poster_prompt in place of the
+        // raw description, so the copy is built from real facts instead of invented filler.
+        // Empty when the user skipped the intake entirely, which is the pre-existing path.
+        brief: brandStyle === 'poster' ? (brandPosterBrief || undefined) : undefined,
+        website: brandStyle === 'poster' ? (document.getElementById('brand-website').value.trim() || undefined) : undefined,
       }),
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     const posterAspect = { landscape: '16/9', portrait: '4/5', square: '1/1' };
     setResultImage('brand', data.url, brandStyle === 'poster' ? posterAspect[brandOrientation] : '16/9');
-    saveGeneratedImageToStudio(data.url, brandStyle === 'poster' ? 'poster' : 'brand', prompt, { businessName: business });
+    saveGeneratedImageToStudio(data.url, brandStyle === 'poster' ? 'poster' : 'brand', prompt,
+      brandPosterBrief ? { businessName: business, brief: brandPosterBrief } : { businessName: business });
   } catch (e) {
     setResultError('brand', e.message || 'Something went wrong');
   }
