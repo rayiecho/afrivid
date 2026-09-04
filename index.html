@@ -721,7 +721,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 <div class="stats-section">
   <div class="stats-grid">
     <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.05s forwards;"><div class="stat-num" id="stat-users">...</div><div class="stat-label">CREATORS JOINED</div></div>
-    <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.15s forwards;"><div class="stat-num" id="stat-videos">...</div><div class="stat-label">VIDEOS CREATED</div></div>
+    <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.15s forwards;"><div class="stat-num">5+</div><div class="stat-label">COUNTRIES REACHED</div></div>
     <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.25s forwards;"><div class="stat-num">6</div><div class="stat-label">AFRICAN LANGUAGES</div></div>
     <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.35s forwards;"><div class="stat-num">5</div><div class="stat-label">AI TOOLS</div></div>
   </div>
@@ -1140,12 +1140,10 @@ if('serviceWorker' in navigator) {
       if (!snap.exists()) throw new Error('public_stats/counts missing');
       const data = snap.data();
       document.getElementById('stat-users').textContent = (data.userCount || 0) + '+';
-      document.getElementById('stat-videos').textContent = (data.videoCount || 0) + '+';
       return;
     } catch(e) {
       if (attempt === MAX_ATTEMPTS) {
         document.getElementById('stat-users').textContent = '6+';
-        document.getElementById('stat-videos').textContent = '65+';
       } else {
         await new Promise(r => setTimeout(r, 500 * attempt));
       }
