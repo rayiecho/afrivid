@@ -1569,6 +1569,10 @@ let currentUser = null;
 let userProfile = null;
 let scriptData = null; window.scriptData = null;
 let videoBlob = null;
+// saveToLibrary() is called from both the auto-finish path and the manual Download button —
+// without this guard, downloading a video that already auto-saved on render would push a
+// second, duplicate Firestore doc (plus a second R2 upload of the same blob).
+let videoAlreadySavedToFirestore = false;
 let recordedChunks = [];
 let isRecording = false;
 let animFrame = null;
@@ -4075,6 +4079,7 @@ window._stopRecording = function stopRecording() {
 
 window.finishVideo = function finishVideo() {
   videoBlob = new Blob(recordedChunks, { type: 'video/webm' }); window._videoBlob = videoBlob;
+  videoAlreadySavedToFirestore = false;
   const sizeMB = (videoBlob.size / 1024 / 1024).toFixed(1);
 
   addLog('success', `[ok] Video ready! Size: ${sizeMB}MB`);
@@ -4212,7 +4217,10 @@ function saveToLibrary(blob, title, duration) {
   };
   reader.readAsDataURL(blob);
   // Also save to Firestore studio — THE single source of truth for a locally rendered video.
-  if (currentUser) {
+  // Guarded so calling this again from the manual Download button (after an auto-save on
+  // render finish already ran) doesn't push a second, duplicate doc + a second R2 upload.
+  if (currentUser && !videoAlreadySavedToFirestore) {
+    videoAlreadySavedToFirestore = true;
     import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js').then(async ({ getFirestore, collection, addDoc, doc, updateDoc, increment, serverTimestamp }) => {
       const db = getFirestore();
       // Generate thumbnail from canvas
@@ -5826,6 +5834,7 @@ window._makeAnother = makeAnother = function() {
   }
   scriptData = null;
   videoBlob = null;
+  videoAlreadySavedToFirestore = false;
   recordedChunks = [];
   window.cachedAudioBuffers = null;
   window.lastCompletedScene = 0;
