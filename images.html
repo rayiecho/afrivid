@@ -172,7 +172,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         </div>
         <input type="file" id="brand-photo-input" accept="image/*" style="display:none;" onchange="onBrandPhotoChange(event)">
 
-        <div class="form-label" style="margin-top:0.85rem;">LAYOUT</div>
+        <div class="form-label" style="margin-top:0.85rem;">ORIENTATION</div>
+        <div class="tool-tabs" style="margin-bottom:1rem;max-width:400px;">
+          <button type="button" class="tool-tab" id="brand-orient-landscape-btn" onclick="setBrandOrientation('landscape')">Landscape</button>
+          <button type="button" class="tool-tab active" id="brand-orient-portrait-btn" onclick="setBrandOrientation('portrait')">Portrait</button>
+          <button type="button" class="tool-tab" id="brand-orient-square-btn" onclick="setBrandOrientation('square')">Square</button>
+        </div>
+
+        <div class="form-label">LAYOUT</div>
         <select id="brand-poster-template" class="form-input" style="margin-bottom:1rem;">
           <option value="photo-right">Photo on the right</option>
           <option value="photo-left">Photo on the left</option>
@@ -415,8 +422,13 @@ function setResultError(kind, message) {
   status.className = 'result-status error';
   status.textContent = message;
 }
-function setResultImage(kind, url) {
-  document.getElementById(`${kind}-result-frame`).innerHTML = `<img src="${url}" alt="Generated image">`;
+function setResultImage(kind, url, aspectRatio) {
+  const frame = document.getElementById(`${kind}-result-frame`);
+  // The frame defaults to a 16:9 box (fine for the photo/landscape-poster case) — a portrait
+  // or square poster inside that would render tiny and letterboxed, so match the frame's
+  // shape to whatever was actually generated.
+  frame.style.aspectRatio = aspectRatio || '16/9';
+  frame.innerHTML = `<img src="${url}" alt="Generated image">`;
   document.getElementById(`${kind}-result-status`).className = 'result-status';
   document.getElementById(`${kind}-result-status`).textContent = 'Done';
   const btn = document.getElementById(`${kind}-download-btn`);
@@ -501,6 +513,16 @@ window.setBrandStyle = function(style) {
   document.getElementById('brand-generate-btn').textContent = style === 'poster' ? 'Generate Poster' : 'Generate Brand Image';
 };
 
+// Portrait default — real posters (print, WhatsApp status, Instagram) are portrait/square far
+// more often than landscape; landscape stays available for banner-style use cases.
+let brandOrientation = 'portrait';
+window.setBrandOrientation = function(orientation) {
+  brandOrientation = orientation;
+  document.getElementById('brand-orient-landscape-btn').classList.toggle('active', orientation === 'landscape');
+  document.getElementById('brand-orient-portrait-btn').classList.toggle('active', orientation === 'portrait');
+  document.getElementById('brand-orient-square-btn').classList.toggle('active', orientation === 'square');
+};
+
 // Curated background+accent pairs, plus a "Custom" option that reveals two real color
 // pickers — covers the common case with one click while still allowing an exact color.
 const BRAND_POSTER_PALETTES = [
@@ -565,13 +587,15 @@ window.generateBrandImage = async function() {
         style: brandStyle,
         enhance_text: !exactWording,
         template: brandStyle === 'poster' ? document.getElementById('brand-poster-template').value : undefined,
+        orientation: brandStyle === 'poster' ? brandOrientation : undefined,
         bg_color: posterColors ? posterColors.bg : undefined,
         accent_color: posterColors ? posterColors.accent : undefined,
       }),
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    setResultImage('brand', data.url);
+    const posterAspect = { landscape: '16/9', portrait: '4/5', square: '1/1' };
+    setResultImage('brand', data.url, brandStyle === 'poster' ? posterAspect[brandOrientation] : '16/9');
     saveGeneratedImageToStudio(data.url, brandStyle === 'poster' ? 'poster' : 'brand', prompt, { businessName: business });
   } catch (e) {
     setResultError('brand', e.message || 'Something went wrong');
