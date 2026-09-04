@@ -171,6 +171,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
           <span class="file-name" id="brand-photo-name">No file chosen — we'll generate a background image instead</span>
         </div>
         <input type="file" id="brand-photo-input" accept="image/*" style="display:none;" onchange="onBrandPhotoChange(event)">
+
+        <div class="form-label" style="margin-top:0.85rem;">LAYOUT</div>
+        <select id="brand-poster-template" class="form-input" style="margin-bottom:1rem;">
+          <option value="photo-right">Photo on the right</option>
+          <option value="photo-left">Photo on the left</option>
+          <option value="centered">Centered, no photo</option>
+          <option value="bold">Bold / event poster</option>
+        </select>
+
+        <div class="form-label">COLORS</div>
+        <div id="brand-poster-swatches" style="display:flex;gap:0.6rem;margin-bottom:0.75rem;flex-wrap:wrap;"></div>
+        <div id="brand-poster-custom-colors" style="display:none;gap:1.25rem;margin-bottom:1rem;">
+          <div>
+            <div class="form-hint" style="margin-bottom:0.3rem;">Background</div>
+            <input type="color" id="brand-poster-bg-color" value="#080E1C">
+          </div>
+          <div>
+            <div class="form-hint" style="margin-bottom:0.3rem;">Accent</div>
+            <input type="color" id="brand-poster-accent-color" value="#F5A623">
+          </div>
+        </div>
       </div>
       <div class="form-label">LOGO (OPTIONAL)</div>
       <div class="file-row">
@@ -480,6 +501,46 @@ window.setBrandStyle = function(style) {
   document.getElementById('brand-generate-btn').textContent = style === 'poster' ? 'Generate Poster' : 'Generate Brand Image';
 };
 
+// Curated background+accent pairs, plus a "Custom" option that reveals two real color
+// pickers — covers the common case with one click while still allowing an exact color.
+const BRAND_POSTER_PALETTES = [
+  { name: 'Navy & Gold', bg: '#080E1C', accent: '#F5A623' },
+  { name: 'Forest & Tan', bg: '#1B2A1E', accent: '#D8B26A' },
+  { name: 'Maroon & Gold', bg: '#2A1414', accent: '#E0A840' },
+  { name: 'Charcoal & Blue', bg: '#1A1D24', accent: '#5B9BD5' },
+  { name: 'Plum & Pink', bg: '#12143B', accent: '#E63988' },
+  { name: 'Cream & Rust', bg: '#F4EDE0', accent: '#8B4A2B' },
+];
+let brandPosterPalette = 0; // index into BRAND_POSTER_PALETTES, or -1 for custom
+
+function renderBrandPosterSwatches() {
+  const wrap = document.getElementById('brand-poster-swatches');
+  if (!wrap) return;
+  wrap.innerHTML = BRAND_POSTER_PALETTES.map((p, i) => `
+    <button type="button" onclick="selectBrandPosterPalette(${i})" title="${p.name}"
+      style="width:34px;height:34px;border-radius:50%;cursor:pointer;padding:0;border:2px solid ${brandPosterPalette === i ? '#E08A2E' : 'transparent'};background:linear-gradient(90deg, ${p.bg} 50%, ${p.accent} 50%);"></button>
+  `).join('') + `
+    <button type="button" onclick="selectBrandPosterPalette(-1)" title="Custom"
+      style="width:34px;height:34px;border-radius:50%;cursor:pointer;padding:0;border:2px solid ${brandPosterPalette === -1 ? '#E08A2E' : 'transparent'};background:var(--surface-2);color:var(--text-muted);font-size:0.65rem;display:flex;align-items:center;justify-content:center;">Custom</button>
+  `;
+}
+window.selectBrandPosterPalette = function(i) {
+  brandPosterPalette = i;
+  document.getElementById('brand-poster-custom-colors').style.display = i === -1 ? 'flex' : 'none';
+  renderBrandPosterSwatches();
+};
+function currentBrandPosterColors() {
+  if (brandPosterPalette === -1) {
+    return {
+      bg: document.getElementById('brand-poster-bg-color').value,
+      accent: document.getElementById('brand-poster-accent-color').value,
+    };
+  }
+  const p = BRAND_POSTER_PALETTES[brandPosterPalette] || BRAND_POSTER_PALETTES[0];
+  return { bg: p.bg, accent: p.accent };
+}
+renderBrandPosterSwatches();
+
 window.generateBrandImage = async function() {
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('image_brand'))) return;
   const prompt = document.getElementById('brand-prompt').value.trim();
@@ -491,6 +552,7 @@ window.generateBrandImage = async function() {
   setResultLoading('brand');
   try {
     const exactWording = document.getElementById('brand-poster-exact-wording').checked;
+    const posterColors = brandStyle === 'poster' ? currentBrandPosterColors() : null;
     const res = await fetch(`${IMAGE_API}/generate-brand-image`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -502,6 +564,9 @@ window.generateBrandImage = async function() {
         photo_base64: brandStyle === 'poster' ? brandPhotoBase64 : null,
         style: brandStyle,
         enhance_text: !exactWording,
+        template: brandStyle === 'poster' ? document.getElementById('brand-poster-template').value : undefined,
+        bg_color: posterColors ? posterColors.bg : undefined,
+        accent_color: posterColors ? posterColors.accent : undefined,
       }),
     });
     const data = await res.json();
