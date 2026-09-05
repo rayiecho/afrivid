@@ -102,6 +102,15 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 .card-head{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.85rem;}
 .card-title{font-size:0.9rem;font-weight:800;}
 .card-note{font-size:0.7rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
+
+/* One tool visible at a time instead of a long stack — the whole rail used to need several
+   screens of scrolling, easy to get lost in. Export stays outside the tabs, always visible,
+   since it's the one thing that's never "another tool" — it's where every tab's work lands. */
+.tab-bar{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.9rem;}
+.tab-btn{flex:1 1 auto;min-width:64px;padding:0.55rem 0.4rem;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:0.72rem;font-weight:700;text-align:center;cursor:pointer;}
+.tab-btn.active{border-color:var(--gold);color:var(--text);background:var(--bg);}
+.tool-card{display:none;}
+.tool-card.active{display:block;}
 .form-label{font-size:0.68rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;margin-top:0.9rem;}
 .form-label:first-child{margin-top:0;}
 
@@ -236,7 +245,16 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
     <!-- ── RAIL ── -->
     <div class="rail">
 
-      <div class="card">
+      <div class="tab-bar" id="tool-tabs">
+        <button class="tab-btn active" data-tab="brand" onclick="showTab('brand')">🎨 Brand</button>
+        <button class="tab-btn" data-tab="mic" onclick="showTab('mic')">🎤 Mic</button>
+        <button class="tab-btn" data-tab="noise" onclick="showTab('noise')">🎚️ Noise</button>
+        <button class="tab-btn" data-tab="crop" onclick="showTab('crop')">✂️ Crop</button>
+        <button class="tab-btn" data-tab="cut" onclick="showTab('cut')">🔪 Cut</button>
+        <button class="tab-btn" data-tab="color" onclick="showTab('color')">💡 Color</button>
+      </div>
+
+      <div class="card tool-card active" data-tab="brand">
         <div class="card-head"><div class="card-title">🎨 Brand it — studio background</div><div class="card-note">live</div></div>
         <span class="form-label">Backdrop</span>
         <div class="chip-row" id="bg-chips">
@@ -257,7 +275,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
         <div class="card-note" id="seg-note" style="margin-top:.6rem">Segmentation model loads on first use.</div>
       </div>
 
-      <div class="card">
+      <div class="card tool-card" data-tab="mic">
         <div class="card-head"><div class="card-title">🎤 Mic</div><div class="card-note">tracks you</div></div>
         <div class="toggle-row">
           <div><div class="toggle-label">Show mic on me</div><div class="toggle-sub">Placed from where you actually are in frame</div></div>
@@ -274,7 +292,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
         <div class="slider-row"><label>Size</label><input type="range" id="sl-micsize" min="50" max="200" value="100"><span class="val" id="v-micsize">100</span></div>
       </div>
 
-      <div class="card">
+      <div class="card tool-card" data-tab="noise">
         <div class="card-head"><div class="card-title">🎚️ Reduce noise</div><div class="card-note">RNNoise · live</div></div>
         <div class="toggle-row">
           <div><div class="toggle-label">Clean up the sound</div><div class="toggle-sub" id="rn-sub">Toggle while it plays to A/B it</div></div>
@@ -284,7 +302,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
         <div class="meter"><span>clean</span><div class="meter-track"><div class="meter-fill wet" id="m-wet"></div></div></div>
       </div>
 
-      <div class="card">
+      <div class="card tool-card" data-tab="crop">
         <div class="card-head"><div class="card-title">✂️ Crop</div><div class="card-note">drag the handles</div></div>
         <div class="toggle-row">
           <div><div class="toggle-label">Crop the frame</div><div class="toggle-sub">Drag corners and edges on the preview</div></div>
@@ -301,7 +319,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
         <div class="btn-row"><button class="btn" onclick="resetCrop()">Reset crop</button></div>
       </div>
 
-      <div class="card">
+      <div class="card tool-card" data-tab="cut">
         <div class="card-head"><div class="card-title">🔪 Cut</div><div class="card-note">instant</div></div>
         <div class="card-note" id="cut-sel">Drag on the timeline to select a range.</div>
         <div class="btn-row">
@@ -312,7 +330,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
         <div class="cut-list" id="cut-list"></div>
       </div>
 
-      <div class="card">
+      <div class="card tool-card" data-tab="color">
         <div class="card-head"><div class="card-title">💡 Light &amp; colour</div><div class="card-note">live</div></div>
         <div class="chip-row" id="grade-chips">
           <button class="chip active" data-grade="none">Original</button>
@@ -934,6 +952,14 @@ function drawMic(ctx, cx, cy, size, style, baseY) {
   }
   ctx.restore();
 }
+
+// One tool panel visible at a time — Export is deliberately not one of the tabs, it stays
+// visible below them regardless of which tool is open.
+function showTab(name) {
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.toggle('active', c.dataset.tab === name));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+}
+window.showTab = showTab;
 
 /* ═══ 5. OVERLAY (crop handles + mic) ═════════════════════════════════════ */
 const HANDLES = ['nw','n','ne','e','se','s','sw','w'];
