@@ -387,6 +387,45 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 </div>
 </div>
 
+<!-- STUDIO UPGRADE — real server-side AI, distinct from the instant browser tools below.
+     Kept as its own section (not mixed into QUICK TOOLS) so these new capabilities are
+     immediately visible rather than buried among the existing grid. -->
+<div class="features-section">
+  <div class="features-label">🎬 STUDIO UPGRADE — SERVER AI</div>
+  <p style="color:rgba(255,255,255,0.45);font-size:0.78rem;margin:-0.5rem 0 0.85rem;">These run on our servers (real AI models, not the browser) — clicking starts a job that takes a few minutes, not seconds. You'll see live progress below each one.</p>
+  <div class="features-grid">
+
+    <div class="feature-card" onclick="togglePanel('su-noise')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🎚️</div>
+      <div class="feature-name">AI Noise Reduction</div>
+      <div class="feature-desc">Real spectral denoising — learns your recording's own noise floor instead of a fixed filter</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('su-fillers')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🗣️</div>
+      <div class="feature-name">Remove Filler Words</div>
+      <div class="feature-desc">Cuts "um", "uh" and stutters using real transcription, with a quick zoom at each cut</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('su-overlays')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">📌</div>
+      <div class="feature-name">Key-Point Graphics</div>
+      <div class="feature-desc">AI finds 2-4 key moments in what you say and adds a timed on-screen graphic</div>
+    </div>
+
+    <div class="feature-card" onclick="togglePanel('su-bg')">
+      <div class="feature-badge badge-new">NEW</div>
+      <div class="feature-icon">🖼️</div>
+      <div class="feature-name">Studio Background</div>
+      <div class="feature-desc">Server-quality background blur or replace — full-video AI segmentation, not the quick browser version below</div>
+    </div>
+
+  </div>
+</div>
+
 <!-- FEATURES GRID -->
 <div class="features-section">
   <div class="features-label">⚡ QUICK TOOLS</div>
@@ -465,6 +504,47 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <div class="feature-desc">Remove or blur your video background automatically</div>
     </div>
 
+  </div>
+</div>
+
+<!-- STUDIO UPGRADE SUB PANELS -->
+<div class="sub-panel" id="panel-su-noise">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🎚️ AI Noise Reduction</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Learns the actual noise in your recording and removes it while keeping your voice — real fix, not a fixed filter. Uploads your video, processes it on our servers, then gives you the cleaned-up file.</p>
+    <button class="btn btn-gold" onclick="runStudioUpgrade('denoise_ml','su-noise')">🎚️ Run on Server</button>
+    <div class="ai-log" id="studio-log-su-noise"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-su-fillers">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🗣️ Remove Filler Words</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Transcribes your video for real, finds "um", "uh" and stutters, cuts them, and adds a quick zoom at each cut so it reads as a deliberate edit.</p>
+    <button class="btn btn-gold" onclick="runStudioUpgrade('filler_words','su-fillers')">🗣️ Run on Server</button>
+    <div class="ai-log" id="studio-log-su-fillers"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-su-overlays">
+  <div class="sub-panel-inner">
+    <div class="sub-title">📌 Key-Point Graphics</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">AI reads your transcript, picks 2-4 moments worth calling out, and adds a timed graphic exactly when you say it.</p>
+    <button class="btn btn-gold" onclick="runStudioUpgrade('topic_overlays','su-overlays')">📌 Run on Server</button>
+    <div class="ai-log" id="studio-log-su-overlays"></div>
+  </div>
+</div>
+
+<div class="sub-panel" id="panel-su-bg">
+  <div class="sub-panel-inner">
+    <div class="sub-title">🖼️ Studio Background (Server)</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Full AI segmentation across every frame of your video — slower than the quick browser version above, but much cleaner edges and works on the whole clip, not just a preview.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+      <button class="btn btn-gold" onclick="runStudioUpgrade('background_replace','su-bg',{background_mode:'blur'})">🌫 Blur</button>
+      <button class="btn btn-gold" onclick="runStudioUpgrade('background_replace','su-bg',{background_mode:'color',background_color:'#0A1929'})">⬛ Navy</button>
+      <button class="btn btn-gold" onclick="runStudioUpgrade('background_replace','su-bg',{background_mode:'color',background_color:'#FFFFFF'})">⬜ White</button>
+    </div>
+    <div class="ai-log" id="studio-log-su-bg"></div>
   </div>
 </div>
 
@@ -939,6 +1019,83 @@ async function runFeature(type, param) {
     case 'bgremove': await doBgRemove(param || 'blur'); break;
   }
 }
+
+// ── STUDIO UPGRADE — SERVER-SIDE AI ACTIONS ──
+// Unlike the QUICK TOOLS above (client-side, in-browser processing), these are real backend
+// jobs — spectral-gating denoise, Whisper-based filler-word detection, MediaPipe segmentation
+// — that genuinely can't run in a browser. They always go straight to the server with the
+// exact action the button names (no free-text guessing, no client-side vocabulary that's
+// never heard of these actions), reusing the same presign-upload -> PUT -> /process -> poll
+// pattern the long-video "AfriVid Cloud" path already uses.
+window._studioJobId = null;
+window._studioPollInterval = null;
+
+function studioLog(panelName, msg, color) {
+  const el = document.getElementById('studio-log-' + panelName);
+  if (el) el.innerHTML = `<span style="color:${color || '#F5A623'}">${msg}</span>`;
+}
+
+async function runStudioUpgrade(actionKey, panelName, extra) {
+  if (!currentVideoFile) { alert('Upload a video first'); return; }
+  if (!window.currentUser) { showLogin('Sign in to use AI features'); return; }
+  if (!await checkAfriVidLimit('aieditor_session')) return;
+
+  clearInterval(window._studioPollInterval);
+  studioLog(panelName, '[~] Uploading video...');
+  try {
+    const signRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/presign-upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: currentVideoFile.name, contentType: currentVideoFile.type || 'video/mp4' }),
+    });
+    const signData = await signRes.json();
+    if (signData.error) throw new Error(signData.error);
+    const { job_id, presigned_url, public_url } = signData;
+
+    const uploadRes = await fetch(presigned_url, {
+      method: 'PUT',
+      headers: { 'Content-Type': currentVideoFile.type || 'video/mp4' },
+      body: currentVideoFile,
+    });
+    if (!uploadRes.ok) throw new Error('Upload failed: ' + uploadRes.status);
+
+    studioLog(panelName, '[~] Starting server processing — this can take a few minutes...');
+    const body = Object.assign({
+      job_id, input_url: public_url, actions: [actionKey],
+      user_email: window.currentUser.email, user_id: window.currentUser.uid,
+    }, extra || {});
+    const processRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/process', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const processData = await processRes.json();
+    if (processData.error) throw new Error(processData.error);
+
+    window._studioJobId = job_id;
+    window._studioPollInterval = setInterval(() => pollStudioJob(panelName), 4000);
+  } catch (e) {
+    studioLog(panelName, '[x] ' + e.message, '#E63329');
+  }
+}
+
+async function pollStudioJob(panelName) {
+  if (!window._studioJobId) return;
+  try {
+    const res = await fetch(`https://afrivid-tts.reaganayiecho.workers.dev/job-status/${window._studioJobId}`);
+    const data = await res.json();
+    if (data.status === 'completed' && data.output_url) {
+      clearInterval(window._studioPollInterval);
+      studioLog(panelName, `[ok] Done! <a href="${data.output_url}" target="_blank" style="color:#F5A623;text-decoration:underline;">Download result</a>`, '#74C69D');
+    } else if (data.status === 'failed') {
+      clearInterval(window._studioPollInterval);
+      studioLog(panelName, '[x] Processing failed: ' + (data.stage || 'unknown error'), '#E63329');
+    } else {
+      studioLog(panelName, `[~] ${data.stage || 'Processing...'} (${data.progress || 0}%)`);
+    }
+  } catch (e) { /* transient poll error — next tick retries */ }
+}
+window.runStudioUpgrade = runStudioUpgrade;
 
 async function doSpeedChange(factor) {
   const video = document.getElementById('ai-video');
