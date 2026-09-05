@@ -491,6 +491,35 @@ const RN_WORKLET = `https://cdn.jsdelivr.net/npm/@sapphi-red/web-noise-suppresso
 const RN_WASM    = `https://cdn.jsdelivr.net/npm/@sapphi-red/web-noise-suppressor@${RN_VERSION}/dist/rnnoise_simd.wasm`;
 const RN_NAME    = '@sapphi-red/web-noise-suppressor/rnnoise';
 
+// A hand-drawn capsule kept reading as a cartoon prop no matter how the shading was tuned —
+// a real icon design is a far more reliable way to guarantee "this is obviously a
+// microphone" than approximating one with primitive shapes. Classic handheld-mic silhouette
+// (rounded grille head, neck ring, tapered body) so it points the right way by default: head
+// up, body merging into the stand arm coming from below.
+const MIC_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="220" viewBox="0 0 100 220">
+  <defs>
+    <linearGradient id="mb" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a6a6ae"/><stop offset="0.35" stop-color="#5c5c64"/>
+      <stop offset="0.65" stop-color="#2c2c31"/><stop offset="1" stop-color="#131316"/>
+    </linearGradient>
+    <linearGradient id="md" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3c3c43"/><stop offset="1" stop-color="#0a0a0c"/>
+    </linearGradient>
+  </defs>
+  <rect x="14" y="6" width="72" height="122" rx="36" fill="url(#mb)"/>
+  <g stroke="#000" stroke-opacity="0.32" stroke-width="3">
+    <line x1="21" y1="28" x2="79" y2="28"/><line x1="19" y1="44" x2="81" y2="44"/>
+    <line x1="18" y1="60" x2="82" y2="60"/><line x1="19" y1="76" x2="81" y2="76"/>
+    <line x1="21" y1="92" x2="79" y2="92"/><line x1="24" y1="108" x2="76" y2="108"/>
+  </g>
+  <ellipse cx="34" cy="40" rx="9" ry="34" fill="#fff" opacity="0.16"/>
+  <rect x="27" y="130" width="46" height="15" rx="4" fill="url(#md)"/>
+  <rect x="32" y="147" width="36" height="58" rx="11" fill="url(#mb)"/>
+  <rect x="32" y="170" width="36" height="9" fill="#E08A2E"/>
+</svg>`;
+const micImg = new Image();
+micImg.src = 'data:image/svg+xml,' + encodeURIComponent(MIC_SVG);
+
 /* ── the single source of truth for what the user has asked for ─────────────── */
 const S = {
   file: null,
@@ -847,7 +876,11 @@ function micAnchor() {
   // a tight head-and-shoulders shot and a full-body seated one).
   const baseY = Math.min(0.99, b.y + b.h);
   const mouthY = b.y + b.h * 0.13;
-  const reachFrac = 0.35 + Math.min(1, Math.max(0, S.mic.height / 100)) * 0.62;
+  // The height slider's actual range is -50..50 (see #sl-michgt), not 0..100 — dividing by
+  // 100 alone meant even the slider's maximum only reached the halfway point of the intended
+  // reach, so the mic could never get anywhere near the mouth no matter how high it was set.
+  const heightNorm = Math.min(1, Math.max(0, (S.mic.height + 50) / 100));
+  const reachFrac = 0.35 + heightNorm * 0.62;
   const y = baseY - (baseY - mouthY) * reachFrac;
   const x = b.x + b.w * (0.5 + S.mic.side * 0.42);
   // `s` is the mic's height as a fraction of the FRAME height, not the person's width —
@@ -895,7 +928,11 @@ function drawMic(ctx, cx, cy, size, style, baseY) {
     const pole = ctx.createLinearGradient(cx - poleW / 2, 0, cx + poleW / 2, 0);
     pole.addColorStop(0, '#4A4A52'); pole.addColorStop(0.5, '#1C1C20'); pole.addColorStop(1, '#0A0A0C');
     ctx.fillStyle = pole;
-    ctx.beginPath(); ctx.roundRect(cx - poleW / 2, cy + r * 0.5, poleW, base - (cy + r * 0.5), poleW / 2); ctx.fill();
+    // Starts at the bottom edge of the mic image itself (which is `size` tall, centred on
+    // cy), not a fraction of it, or the pole visibly poked through the mic body for the new
+    // taller icon.
+    const micBottom = cy + r;
+    ctx.beginPath(); ctx.roundRect(cx - poleW / 2, micBottom, poleW, base - micBottom, poleW / 2); ctx.fill();
     ctx.fillStyle = '#0A0A0C';
     ctx.beginPath(); ctx.ellipse(cx, base, Math.max(r * 0.85, size * 0.22), Math.max(r * 0.22, size * 0.06), 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = 'rgba(255,255,255,0.08)';
@@ -917,38 +954,19 @@ function drawMic(ctx, cx, cy, size, style, baseY) {
     ctx.fillStyle = '#E08A2E';
     ctx.beginPath(); ctx.arc(0, -r * 0.16, r * 0.08, 0, Math.PI * 2); ctx.fill();
   } else {
-    // Broadcast dynamic mic on a yoke — a horizontal mesh-grille cylinder pointed at the
-    // speaker, the RE20/PodMic silhouette real podcast setups actually use, rather than a
-    // narrow vertical capsule (which read as a cartoon prop rather than a real microphone).
-    if (style === 'boom') ctx.rotate(-0.16);
-    const cylW = r * 2.0, cylH = r * 0.92;
-    // Small yoke bracket connecting the pole top to the cylinder's pivot.
-    ctx.fillStyle = '#2A2A2E';
-    ctx.beginPath(); ctx.roundRect(-r * 0.10, cylH * 0.10, r * 0.20, r * 0.55, r * 0.08); ctx.fill();
-    ctx.beginPath(); ctx.arc(0, cylH * 0.55, r * 0.16, 0, Math.PI * 2); ctx.fill();
-    // Body: dark metal end caps + a lighter mesh-wrapped mid-section.
-    const bodyGrad = ctx.createLinearGradient(0, -cylH / 2, 0, cylH / 2);
-    bodyGrad.addColorStop(0, '#8A8A92'); bodyGrad.addColorStop(0.5, '#4E4E56'); bodyGrad.addColorStop(1, '#2A2A2E');
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath(); ctx.roundRect(-cylW / 2, -cylH / 2, cylW, cylH, cylH / 2); ctx.fill();
-    ctx.fillStyle = '#17171A';
-    ctx.beginPath(); ctx.ellipse(-cylW / 2 + cylH * 0.16, 0, cylH * 0.18, cylH * 0.5, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(cylW / 2 - cylH * 0.16, 0, cylH * 0.18, cylH * 0.5, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.shadowBlur = 0;
-    // Mesh texture: a grid of tiny dots reads as woven wire mesh from a distance far better
-    // than horizontal bars did.
-    ctx.fillStyle = 'rgba(0,0,0,0.35)';
-    const dot = Math.max(1, cylH * 0.09);
-    for (let gx = -cylW / 2 + cylH * 0.32; gx < cylW / 2 - cylH * 0.32; gx += dot * 2.1) {
-      for (let gy = -cylH * 0.32; gy < cylH * 0.32; gy += dot * 2.1) {
-        ctx.beginPath(); ctx.arc(gx, gy, dot * 0.45, 0, Math.PI * 2); ctx.fill();
-      }
+    // A real icon asset instead of an approximated shape — see MIC_SVG above. Native aspect
+    // is 100x220 (tall); drawn centred on (0,0) with the head end up, matching how the arm
+    // approaches from below. 'boom' tilts it slightly, as if reaching in at an angle.
+    if (style === 'boom') ctx.rotate(-0.13);
+    const iw = size * (100 / 220), ih = size;
+    if (micImg.complete && micImg.naturalWidth) {
+      ctx.drawImage(micImg, -iw / 2, -ih / 2, iw, ih);
+    } else {
+      // SVG data URIs decode essentially instantly, so this is only a placeholder for the
+      // handful of frames before the very first draw — a plain capsule beats nothing.
+      ctx.fillStyle = '#2C2C31';
+      ctx.beginPath(); ctx.roundRect(-iw * 0.36, -ih * 0.5, iw * 0.72, ih, iw * 0.3); ctx.fill();
     }
-    ctx.fillStyle = 'rgba(255,255,255,0.22)';
-    ctx.beginPath(); ctx.ellipse(-cylW * 0.1, -cylH * 0.28, cylW * 0.22, cylH * 0.12, -0.2, 0, Math.PI * 2); ctx.fill();
-    // Brand accent band, kept from the earlier design.
-    ctx.fillStyle = '#E08A2E';
-    ctx.beginPath(); ctx.roundRect(-cylH * 0.06, -cylH / 2, cylH * 0.12, cylH, 0); ctx.fill();
   }
   ctx.restore();
 }
