@@ -252,6 +252,8 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
           <button class="chip" data-bg="scene" data-scene="green">Green Room</button>
         </div>
         <div class="slider-row"><label>Edge feather</label><input type="range" id="sl-feather" min="0" max="100" value="40"><span class="val" id="v-feather">40</span></div>
+        <span class="form-label">Brand name on the wall (optional)</span>
+        <input class="form-input" type="text" id="bg-brand" placeholder="e.g. The Growth Show" maxlength="40">
         <div class="card-note" id="seg-note" style="margin-top:.6rem">Segmentation model loads on first use.</div>
       </div>
 
@@ -476,7 +478,7 @@ const S = {
   file: null,
   duration: 0,
   srcW: 0, srcH: 0,
-  bg: { mode: 'off', color: '#0A1929', scene: null },
+  bg: { mode: 'off', color: '#0A1929', scene: null, brand: '' },
   feather: 0.40,
   mic: { on: false, style: 'handheld', side: 0.55, height: 0, size: 1.0 },
   denoise: false,
@@ -557,6 +559,8 @@ uniform vec3 uBgColor;
 uniform float uUseMask;
 uniform float uBlurLod;
 uniform float uFeather;
+uniform float uFloorY;       // frame fraction (0=top,1=bottom) where the real floor/seat
+                              // starts being kept instead of replaced — 1.0 disables it
 uniform float uContrast, uBrightness, uSaturation, uGamma;
 uniform vec3  uTint;
 
@@ -570,11 +574,17 @@ void main(){
     float m = texture(uMask, uv).r;
     float e = clamp(uFeather, 0.01, 0.49);
     float person = 1.0 - smoothstep(0.5 - e, 0.5 + e, m);
+    // A pure segmentation swap replaces the floor and chair along with the wall, which reads
+    // as the presenter floating in front of a backdrop rather than sitting in a room. Below
+    // where the detected person's feet/seat are, keep the real footage regardless of what the
+    // mask says — same idea as chroma-key operators leaving the desk in shot.
+    float floorKeep = smoothstep(uFloorY - 0.08, uFloorY + 0.05, vUV.y);
+    float keep = max(person, floorKeep);
     vec3 bg;
     if (uBgMode == 1)      bg = textureLod(uVideo, uv, uBlurLod).rgb;
     else if (uBgMode == 2) bg = uBgColor;
     else                   bg = texture(uBgImage, vUV).rgb;
-    col = mix(bg, fg, person);
+    col = mix(bg, fg, keep);
   }
 
   // The grade is deliberately shaped so the server can reproduce it exactly:
@@ -617,7 +627,7 @@ function initGL() {
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   for (const n of ['uVideo','uMask','uBgImage','uCrop','uBgMode','uBgColor','uUseMask',
-                   'uBlurLod','uFeather','uContrast','uBrightness','uSaturation','uGamma','uTint'])
+                   'uBlurLod','uFeather','uFloorY','uContrast','uBrightness','uSaturation','uGamma','uTint'])
     U[n] = gl.getUniformLocation(prog, n);
 
   const mkTex = (unit) => {
@@ -693,6 +703,10 @@ function drawGL() {
   gl.uniform1f(U.uUseMask, haveMask ? 1 : 0);
   gl.uniform1f(U.uBlurLod, 4.0);
   gl.uniform1f(U.uFeather, 0.02 + S.feather * 0.46);
+  // Keep the real floor/chair starting just below the detected person's feet — without a
+  // detected person yet (segmenter still loading, or nobody in frame), disable it (1.0)
+  // rather than guess, so the very first frame doesn't flash a hard cut across the middle.
+  gl.uniform1f(U.uFloorY, personBox ? Math.min(0.97, personBox.y + personBox.h * 1.06) : 1.0);
   const rgb = hexToRgb(S.bg.color);
   gl.uniform3f(U.uBgColor, rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
   const g = S.grade;
@@ -794,24 +808,33 @@ function trackPerson(data, w, h) {
 // Live preview tracks the person every frame. For EXPORT we send one stabilised anchor
 // (the median of everything seen), because a per-frame track would have to be transported
 // and replayed server-side for a 20-minute file — see the report note on this.
-const micSamples = { x: [], y: [], s: [] };
+const micSamples = { x: [], y: [], s: [], baseY: [] };
 
 function micAnchor() {
   if (!personBox) return null;
   const b = personBox;
-  // Chest height on a seated presenter sits a little under half way down the visible body.
-  const y = b.y + b.h * (0.46 + S.mic.height / 250);
+  // A real stand/boom mount doesn't move when you dial in more reach — only the arm between
+  // its fixed base and the capsule gets longer. baseY sits near chest/desk height and stays
+  // put; the height slider only changes how far the capsule extends from it toward the mouth.
+  const baseY = Math.min(0.98, b.y + b.h * 0.80);
+  const reach = b.h * (0.22 + S.mic.height / 260);
+  const y = baseY - reach;
   const x = b.x + b.w * (0.5 + S.mic.side * 0.42);
   // `s` is the mic's height as a fraction of the FRAME height, not the person's width —
   // shoulders span most of the frame in a talking-head shot, which made a width-derived
   // size balloon. Clamped so it always reads as a prop rather than a billboard.
   const s = Math.min(0.42, Math.max(0.12, b.h * 0.34)) * S.mic.size;
-  return { x: Math.min(0.97, Math.max(0.03, x)), y: Math.min(0.97, Math.max(0.03, y)), s };
+  return {
+    x: Math.min(0.97, Math.max(0.03, x)),
+    y: Math.min(0.97, Math.max(0.03, y)),
+    baseY: Math.min(0.99, Math.max(0.03, baseY)),
+    s,
+  };
 }
 
 function recordMicAnchor() {
   const a = micAnchor(); if (!a) return;
-  for (const [k, v] of [['x', a.x], ['y', a.y], ['s', a.s]]) {
+  for (const [k, v] of [['x', a.x], ['y', a.y], ['s', a.s], ['baseY', a.baseY]]) {
     micSamples[k].push(v);
     if (micSamples[k].length > 600) micSamples[k].shift();
   }
@@ -819,14 +842,29 @@ function recordMicAnchor() {
 
 function medianAnchor() {
   const med = (arr) => { if (!arr.length) return null; const s = [...arr].sort((p, q) => p - q); return s[s.length >> 1]; };
-  const x = med(micSamples.x), y = med(micSamples.y), s = med(micSamples.s);
-  return (x == null) ? null : { x, y, s };
+  const x = med(micSamples.x), y = med(micSamples.y), s = med(micSamples.s), baseY = med(micSamples.baseY);
+  return (x == null) ? null : { x, y, s, baseY };
 }
 
 // One drawing routine, used both for the live overlay and for the PNG shipped to the
 // server — so the exported mic is literally the same artwork the user previewed.
-function drawMic(ctx, cx, cy, size, style) {
+//
+// baseY, when given, is a FIXED point (doesn't move with the height slider) that the arm
+// below the capsule connects to — a mount plate at the bottom, a rod up to the capsule at
+// (cx,cy). Without it (the small export snapshot canvas, which has no absolute frame
+// coordinates to anchor a base to) it falls back to a fixed proportional reach below the
+// capsule, so every render still shows a base — nothing ever just hangs in mid-air.
+function drawMic(ctx, cx, cy, size, style, baseY) {
   const r = size / 2;
+  const base = baseY != null ? baseY : cy + size * 1.35;
+  if (base > cy) {
+    ctx.save();
+    ctx.strokeStyle = '#3A3A41'; ctx.lineWidth = Math.max(2, size * 0.09); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(cx, cy + r * 0.55); ctx.lineTo(cx, base); ctx.stroke();
+    ctx.fillStyle = '#101013';
+    ctx.beginPath(); ctx.ellipse(cx, base, Math.max(r * 0.6, size * 0.16), Math.max(r * 0.16, size * 0.045), 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
   ctx.save();
   ctx.translate(cx, cy);
   ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = size * 0.18; ctx.shadowOffsetY = size * 0.05;
@@ -884,7 +922,7 @@ function drawOverlay() {
 
   if (S.mic.on) {
     const a = micAnchor();
-    if (a) drawMic(octx, a.x * W, a.y * H, a.s * H, S.mic.style);
+    if (a) drawMic(octx, a.x * W, a.y * H, a.s * H, S.mic.style, a.baseY * H);
   }
 
   if (S.cropOn) {
@@ -1202,13 +1240,36 @@ const SCENES = {
   green:  { a: '#0F2A1E', b: '#1E5C3C', c: '#4FA97A', label: 'Green Room' },
 };
 
-function renderScene(name, w, h) {
+function renderScene(name, w, h, brand) {
   const s = SCENES[name] || SCENES.warm;
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, w * 0.35, h);
   g.addColorStop(0, s.a); g.addColorStop(0.55, s.b); g.addColorStop(1, s.a);
   x.fillStyle = g; x.fillRect(0, 0, w, h);
+
+  // Acoustic foam panel tiling — a flat gradient reads as a color wash, not a room. Wedge
+  // tiles (the classic pyramid foam profile) over the upper wall area is what actually makes
+  // it look like a real studio rather than a backdrop. Left below the floor-preservation line
+  // (see uFloorY in the shader) so it doesn't compete with the real chair/floor that shows
+  // through there anyway.
+  const tile = Math.max(26, Math.round(w * 0.042));
+  x.save();
+  for (let py = 0; py < h * 0.88; py += tile) {
+    for (let px = 0; px < w; px += tile) {
+      const dark = (((px / tile) | 0) + ((py / tile) | 0)) % 2 === 0;
+      x.fillStyle = dark ? 'rgba(0,0,0,0.32)' : 'rgba(0,0,0,0.12)';
+      x.beginPath();
+      x.moveTo(px + tile / 2, py);
+      x.lineTo(px + tile, py + tile / 2);
+      x.lineTo(px + tile / 2, py + tile);
+      x.lineTo(px, py + tile / 2);
+      x.closePath();
+      x.fill();
+    }
+  }
+  x.restore();
+
   // A soft key light behind the shoulder, the thing that actually reads as "a studio".
   const spot = x.createRadialGradient(w * 0.68, h * 0.30, 0, w * 0.68, h * 0.30, w * 0.55);
   spot.addColorStop(0, s.c + 'CC'); spot.addColorStop(0.5, s.c + '33'); spot.addColorStop(1, 'rgba(0,0,0,0)');
@@ -1216,11 +1277,21 @@ function renderScene(name, w, h) {
   const vig = x.createRadialGradient(w / 2, h / 2, h * 0.25, w / 2, h / 2, h * 0.95);
   vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,0.55)');
   x.fillStyle = vig; x.fillRect(0, 0, w, h);
+
+  if (brand && brand.trim()) {
+    x.save();
+    x.font = `700 ${Math.round(h * 0.07)}px 'Space Grotesk', Arial, sans-serif`;
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.shadowColor = 'rgba(0,0,0,0.65)'; x.shadowBlur = h * 0.015; x.shadowOffsetY = h * 0.004;
+    x.fillStyle = 'rgba(255,255,255,0.82)';
+    x.fillText(brand.trim().toUpperCase(), w * 0.30, h * 0.20, w * 0.55);
+    x.restore();
+  }
   return c;
 }
 
 function applyScene(name) {
-  const c = renderScene(name, 1280, 720);
+  const c = renderScene(name, 1280, 720, S.bg.brand);
   gl.activeTexture(gl.TEXTURE2);
   gl.bindTexture(gl.TEXTURE_2D, texBg);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
@@ -1244,6 +1315,12 @@ chipGroup('bg-chips', (b) => {
   if (b.dataset.color) S.bg.color = b.dataset.color;
   if (b.dataset.scene) { S.bg.scene = b.dataset.scene; applyScene(b.dataset.scene); }
   if (S.bg.mode !== 'off') ensureSegmenter();
+});
+$('bg-brand').addEventListener('input', (e) => {
+  S.bg.brand = e.target.value;
+  // Only re-render the texture live if a studio scene is actually selected right now —
+  // typing while on Off/Blur/a solid color would otherwise burn a scene render for nothing.
+  if (S.bg.mode === 'scene' && S.bg.scene) applyScene(S.bg.scene);
 });
 chipGroup('mic-chips', (b) => { S.mic.style = b.dataset.mic; });
 chipGroup('ratio-chips', (b) => {
@@ -1335,7 +1412,13 @@ function buildPlan() {
   if (S.bg.mode !== 'off') {
     plan.background = { mode: S.bg.mode === 'scene' ? 'image' : S.bg.mode, color: S.bg.color };
     if (S.bg.mode === 'scene') {
-      plan.background.image_b64 = renderScene(S.bg.scene, out.w, out.h).toDataURL('image/jpeg', 0.9).split(',')[1];
+      plan.background.image_b64 = renderScene(S.bg.scene, out.w, out.h, S.bg.brand).toDataURL('image/jpeg', 0.9).split(',')[1];
+    }
+    // Same floor-preservation line the live shader draws (see uFloorY) — sent through so the
+    // export keeps the real floor/chair below it instead of replacing the whole frame, which
+    // otherwise reads as floating in front of a backdrop rather than sitting in a room.
+    if (personBox) {
+      plan.background.floor_y = +Math.min(0.97, personBox.y + personBox.h * 1.06).toFixed(4);
     }
   }
   if (S.mic.on) {
