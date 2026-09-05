@@ -510,6 +510,7 @@ function fmtTime(s) { s = Math.max(0, s || 0); const m = Math.floor(s / 60); ret
 
 async function loadFile(file) {
   S.file = file;
+  startPreUpload(file);
   video.src = URL.createObjectURL(file);
   await new Promise((res, rej) => {
     video.onloadedmetadata = res;
@@ -703,10 +704,7 @@ function drawGL() {
   gl.uniform1f(U.uUseMask, haveMask ? 1 : 0);
   gl.uniform1f(U.uBlurLod, 4.0);
   gl.uniform1f(U.uFeather, 0.02 + S.feather * 0.46);
-  // Keep the real floor/chair starting just below the detected person's feet — without a
-  // detected person yet (segmenter still loading, or nobody in frame), disable it (1.0)
-  // rather than guess, so the very first frame doesn't flash a hard cut across the middle.
-  gl.uniform1f(U.uFloorY, personBox ? Math.min(0.97, personBox.y + personBox.h * 1.06) : 1.0);
+  gl.uniform1f(U.uFloorY, FLOOR_Y);
   const rgb = hexToRgb(S.bg.color);
   gl.uniform3f(U.uBgColor, rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
   const g = S.grade;
@@ -727,6 +725,16 @@ function hexToRgb(h) {
 let segmenter = null, segLoading = false, segCanvas = null, segCtx = null, segTs = 0;
 let personBox = null;                       // smoothed {x,y,w,h} in 0..1 source space
 const SEG_W = 256;
+
+// Below this line (frame fraction from the top), the background swap NEVER touches the
+// pixels — regardless of what the segmentation mask says. First attempt derived this from
+// the detected person's own bounding box (bottom of person + margin), which overshot badly
+// on a full-body seated shot: the box already reaches the feet, so "bottom of box + margin"
+// clamped to almost nothing, and the chair/floor got replaced along with the wall — legs
+// left floating in the new background with no seat under them. A fixed, generous line is
+// far more predictable: the wall gets replaced, the chair/floor/legs never do, no per-video
+// guessing. If this needs to move for a specific shot later, it's one number.
+const FLOOR_Y = 0.52;
 
 async function ensureSegmenter() {
   if (segmenter || segLoading) return;
@@ -813,12 +821,16 @@ const micSamples = { x: [], y: [], s: [], baseY: [] };
 function micAnchor() {
   if (!personBox) return null;
   const b = personBox;
-  // A real stand/boom mount doesn't move when you dial in more reach — only the arm between
-  // its fixed base and the capsule gets longer. baseY sits near chest/desk height and stays
-  // put; the height slider only changes how far the capsule extends from it toward the mouth.
-  const baseY = Math.min(0.98, b.y + b.h * 0.80);
-  const reach = b.h * (0.22 + S.mic.height / 260);
-  const y = baseY - reach;
+  // A real floor/desk stand plants its foot on the ground — where the legs are — and the
+  // arm reaches UP from there toward the mouth; it does not float at chest height. baseY is
+  // therefore the bottom of the detected person (feet), which never moves; the height slider
+  // only changes how far up the arm reaches from that fixed foot, toward mouthY (a rough
+  // chin/mouth height estimated as a fraction of the person's own box, so it adapts to both
+  // a tight head-and-shoulders shot and a full-body seated one).
+  const baseY = Math.min(0.99, b.y + b.h);
+  const mouthY = b.y + b.h * 0.13;
+  const reachFrac = 0.35 + Math.min(1, Math.max(0, S.mic.height / 100)) * 0.62;
+  const y = baseY - (baseY - mouthY) * reachFrac;
   const x = b.x + b.w * (0.5 + S.mic.side * 0.42);
   // `s` is the mic's height as a fraction of the FRAME height, not the person's width —
   // shoulders span most of the frame in a talking-head shot, which made a width-derived
@@ -849,29 +861,36 @@ function medianAnchor() {
 // One drawing routine, used both for the live overlay and for the PNG shipped to the
 // server — so the exported mic is literally the same artwork the user previewed.
 //
-// baseY, when given, is a FIXED point (doesn't move with the height slider) that the arm
-// below the capsule connects to — a mount plate at the bottom, a rod up to the capsule at
-// (cx,cy). Without it (the small export snapshot canvas, which has no absolute frame
-// coordinates to anchor a base to) it falls back to a fixed proportional reach below the
-// capsule, so every render still shows a base — nothing ever just hangs in mid-air.
+// baseY, when given, is a FIXED point on the ground (doesn't move with the height slider)
+// that a stand pole rises from, up to the capsule mount at (cx,cy). Without it (the small
+// export snapshot canvas, which has no absolute frame coordinates to anchor a floor to) it
+// falls back to a fixed proportional reach below the capsule, so every render still shows a
+// base — nothing ever just hangs in mid-air.
 function drawMic(ctx, cx, cy, size, style, baseY) {
   const r = size / 2;
-  const base = baseY != null ? baseY : cy + size * 1.35;
+  const base = baseY != null ? baseY : cy + size * 2.4;
   if (base > cy) {
     ctx.save();
-    ctx.strokeStyle = '#3A3A41'; ctx.lineWidth = Math.max(2, size * 0.09); ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(cx, cy + r * 0.55); ctx.lineTo(cx, base); ctx.stroke();
-    ctx.fillStyle = '#101013';
-    ctx.beginPath(); ctx.ellipse(cx, base, Math.max(r * 0.6, size * 0.16), Math.max(r * 0.16, size * 0.045), 0, 0, Math.PI * 2); ctx.fill();
+    // A real stand pole, not a wire: two-tone so it reads as a cylinder, with a weighted
+    // round foot flat on the floor.
+    const poleW = Math.max(3, size * 0.10);
+    const pole = ctx.createLinearGradient(cx - poleW / 2, 0, cx + poleW / 2, 0);
+    pole.addColorStop(0, '#4A4A52'); pole.addColorStop(0.5, '#1C1C20'); pole.addColorStop(1, '#0A0A0C');
+    ctx.fillStyle = pole;
+    ctx.beginPath(); ctx.roundRect(cx - poleW / 2, cy + r * 0.5, poleW, base - (cy + r * 0.5), poleW / 2); ctx.fill();
+    ctx.fillStyle = '#0A0A0C';
+    ctx.beginPath(); ctx.ellipse(cx, base, Math.max(r * 0.85, size * 0.22), Math.max(r * 0.22, size * 0.06), 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath(); ctx.ellipse(cx, base - size * 0.02, Math.max(r * 0.85, size * 0.22) * 0.7, Math.max(r * 0.22, size * 0.06) * 0.5, 0, Math.PI, 0); ctx.fill();
     ctx.restore();
   }
   ctx.save();
   ctx.translate(cx, cy);
-  ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = size * 0.18; ctx.shadowOffsetY = size * 0.05;
-  const metal = ctx.createLinearGradient(-r, -r, r, r);
-  metal.addColorStop(0, '#6E6E76'); metal.addColorStop(0.45, '#2C2C31'); metal.addColorStop(1, '#111114');
+  ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = size * 0.2; ctx.shadowOffsetY = size * 0.06;
 
   if (style === 'lapel') {
+    const metal = ctx.createLinearGradient(-r, -r, r, r);
+    metal.addColorStop(0, '#6E6E76'); metal.addColorStop(0.45, '#2C2C31'); metal.addColorStop(1, '#111114');
     ctx.fillStyle = metal;
     ctx.beginPath(); ctx.ellipse(0, 0, r * 0.34, r * 0.44, 0, 0, Math.PI * 2); ctx.fill();
     ctx.shadowBlur = 0;
@@ -879,27 +898,39 @@ function drawMic(ctx, cx, cy, size, style, baseY) {
     ctx.beginPath(); ctx.moveTo(0, r * 0.44); ctx.quadraticCurveTo(r * 0.5, r * 1.2, r * 0.15, r * 1.9); ctx.stroke();
     ctx.fillStyle = '#E08A2E';
     ctx.beginPath(); ctx.arc(0, -r * 0.16, r * 0.08, 0, Math.PI * 2); ctx.fill();
-  } else if (style === 'boom') {
-    ctx.rotate(-0.35);
-    ctx.fillStyle = metal;
-    ctx.beginPath(); ctx.roundRect(-r * 0.22, -r * 1.15, r * 0.44, r * 1.5, r * 0.22); ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(255,255,255,0.10)';
-    for (let i = 0; i < 5; i++) { ctx.fillRect(-r * 0.18, -r * 1.02 + i * r * 0.22, r * 0.36, r * 0.06); }
-    ctx.strokeStyle = '#4A4A52'; ctx.lineWidth = Math.max(1.5, size * 0.05); ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(0, r * 0.35); ctx.lineTo(r * 0.15, r * 1.7); ctx.stroke();
   } else {
-    ctx.fillStyle = metal;
-    ctx.beginPath(); ctx.roundRect(-r * 0.30, -r * 1.0, r * 0.60, r * 1.05, r * 0.30); ctx.fill();
+    // Broadcast dynamic mic on a yoke — a horizontal mesh-grille cylinder pointed at the
+    // speaker, the RE20/PodMic silhouette real podcast setups actually use, rather than a
+    // narrow vertical capsule (which read as a cartoon prop rather than a real microphone).
+    if (style === 'boom') ctx.rotate(-0.16);
+    const cylW = r * 2.0, cylH = r * 0.92;
+    // Small yoke bracket connecting the pole top to the cylinder's pivot.
+    ctx.fillStyle = '#2A2A2E';
+    ctx.beginPath(); ctx.roundRect(-r * 0.10, cylH * 0.10, r * 0.20, r * 0.55, r * 0.08); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, cylH * 0.55, r * 0.16, 0, Math.PI * 2); ctx.fill();
+    // Body: dark metal end caps + a lighter mesh-wrapped mid-section.
+    const bodyGrad = ctx.createLinearGradient(0, -cylH / 2, 0, cylH / 2);
+    bodyGrad.addColorStop(0, '#8A8A92'); bodyGrad.addColorStop(0.5, '#4E4E56'); bodyGrad.addColorStop(1, '#2A2A2E');
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath(); ctx.roundRect(-cylW / 2, -cylH / 2, cylW, cylH, cylH / 2); ctx.fill();
+    ctx.fillStyle = '#17171A';
+    ctx.beginPath(); ctx.ellipse(-cylW / 2 + cylH * 0.16, 0, cylH * 0.18, cylH * 0.5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cylW / 2 - cylH * 0.16, 0, cylH * 0.18, cylH * 0.5, 0, 0, Math.PI * 2); ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(255,255,255,0.12)';
-    for (let i = 0; i < 4; i++) ctx.fillRect(-r * 0.24, -r * 0.86 + i * r * 0.22, r * 0.48, r * 0.07);
-    const body = ctx.createLinearGradient(-r * 0.2, 0, r * 0.2, 0);
-    body.addColorStop(0, '#3A3A41'); body.addColorStop(0.5, '#1A1A1E'); body.addColorStop(1, '#0C0C0F');
-    ctx.fillStyle = body;
-    ctx.beginPath(); ctx.roundRect(-r * 0.17, r * 0.02, r * 0.34, r * 1.05, r * 0.08); ctx.fill();
+    // Mesh texture: a grid of tiny dots reads as woven wire mesh from a distance far better
+    // than horizontal bars did.
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    const dot = Math.max(1, cylH * 0.09);
+    for (let gx = -cylW / 2 + cylH * 0.32; gx < cylW / 2 - cylH * 0.32; gx += dot * 2.1) {
+      for (let gy = -cylH * 0.32; gy < cylH * 0.32; gy += dot * 2.1) {
+        ctx.beginPath(); ctx.arc(gx, gy, dot * 0.45, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.beginPath(); ctx.ellipse(-cylW * 0.1, -cylH * 0.28, cylW * 0.22, cylH * 0.12, -0.2, 0, Math.PI * 2); ctx.fill();
+    // Brand accent band, kept from the earlier design.
     ctx.fillStyle = '#E08A2E';
-    ctx.beginPath(); ctx.roundRect(-r * 0.17, r * 0.30, r * 0.34, r * 0.16, r * 0.04); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(-cylH * 0.06, -cylH / 2, cylH * 0.12, cylH, 0); ctx.fill();
   }
   ctx.restore();
 }
@@ -1414,12 +1445,9 @@ function buildPlan() {
     if (S.bg.mode === 'scene') {
       plan.background.image_b64 = renderScene(S.bg.scene, out.w, out.h, S.bg.brand).toDataURL('image/jpeg', 0.9).split(',')[1];
     }
-    // Same floor-preservation line the live shader draws (see uFloorY) — sent through so the
-    // export keeps the real floor/chair below it instead of replacing the whole frame, which
-    // otherwise reads as floating in front of a backdrop rather than sitting in a room.
-    if (personBox) {
-      plan.background.floor_y = +Math.min(0.97, personBox.y + personBox.h * 1.06).toFixed(4);
-    }
+    // Same fixed floor-preservation line the live shader draws (see FLOOR_Y) — sent through
+    // so export keeps the real floor/chair below it instead of replacing the whole frame.
+    plan.background.floor_y = FLOOR_Y;
   }
   if (S.mic.on) {
     // One stabilised anchor rather than a per-frame track: the median of every position
@@ -1498,6 +1526,57 @@ function uploadDirectXHR(file, presignedUrl, onProgress) {
   });
 }
 
+// A stall (see uploadDirectXHR above) is very often a transient network hiccup, not a dead
+// connection — retrying the whole upload usually just works. Wraps presign + upload as one
+// unit since a fresh attempt needs a fresh presigned URL (the old one may be stale/consumed).
+async function uploadOnce(file, onProgress) {
+  const ctrl = new AbortController();
+  const to = setTimeout(() => ctrl.abort(), 20000);
+  let signRes;
+  try {
+    signRes = await fetch(API + '/presign-upload', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4' }),
+      signal: ctrl.signal,
+    });
+  } catch (e) {
+    throw new Error(e.name === 'AbortError' ? 'Could not reach the server (timed out).' : e.message);
+  } finally { clearTimeout(to); }
+  const sign = await signRes.json();
+  if (sign.error) throw new Error(sign.error);
+  await uploadDirectXHR(file, sign.presigned_url, onProgress);
+  return sign;
+}
+
+async function uploadWithRetry(file, attempts, onProgress, onStatus) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      if (onStatus) onStatus(i === 0 ? null : `Retrying upload (attempt ${i + 1}/${attempts})…`);
+      return await uploadOnce(file, onProgress);
+    } catch (e) {
+      lastErr = e;
+      if (i < attempts - 1) await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+  throw lastErr;
+}
+
+// ── BACKGROUND PRE-UPLOAD ─────────────────────────────────────────────────
+// Preview never touches the server, so there is no reason Export should be the first time
+// the file leaves the browser. Started the moment a video loads, in parallel with the user's
+// live editing, so by the time they actually click Export the upload is very likely already
+// done — and if a transient stall happens, there is a full editing session's worth of time
+// to quietly retry before it would ever surface as a failure.
+window._preUpload = null;
+window._preUploadProgress = 0;
+
+function startPreUpload(file) {
+  window._preUploadProgress = 0;
+  window._preUpload = uploadWithRetry(file, 3, (p) => { window._preUploadProgress = p; }, null)
+    .catch((e) => { console.log('[PreUpload] failed, export will retry its own upload:', e.message); return null; });
+}
+
 let pollTimer = null, exportStartedAt = 0;
 function setStatus(msg, cls) {
   const el = $('export-status');
@@ -1518,24 +1597,24 @@ async function runExport() {
   exportStartedAt = Date.now();
   try {
     setStatus('Preparing upload…'); setBar(2);
-    const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), 20000);
-    let signRes;
-    try {
-      signRes = await fetch(API + '/presign-upload', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: S.file.name, contentType: S.file.type || 'video/mp4' }),
-        signal: ctrl.signal,
-      });
-    } catch (e) {
-      throw new Error(e.name === 'AbortError' ? 'Could not reach the server (timed out).' : e.message);
-    } finally { clearTimeout(to); }
-    const sign = await signRes.json();
-    if (sign.error) throw new Error(sign.error);
-
-    await uploadDirectXHR(S.file, sign.presigned_url, (p) => {
-      setStatus('Uploading your video… ' + p + '%'); setBar(2 + p * 0.28);
-    });
+    // Reuse the pre-upload kicked off the moment the video was loaded (see startPreUpload)
+    // — very likely already finished by now. If it's still running, show its live progress
+    // while waiting on the same promise rather than starting a second upload from scratch;
+    // if it failed outright (all 3 of its own retries exhausted), fall through to one more
+    // fresh attempt here rather than giving up on what it already tried.
+    let sign = null;
+    if (window._preUpload) {
+      const watcher = setInterval(() => {
+        setStatus('Uploading your video… ' + window._preUploadProgress + '%');
+        setBar(2 + window._preUploadProgress * 0.28);
+      }, 400);
+      try { sign = await window._preUpload; } finally { clearInterval(watcher); }
+    }
+    if (!sign) {
+      sign = await uploadWithRetry(S.file, 3, (p) => {
+        setStatus('Uploading your video… ' + p + '%'); setBar(2 + p * 0.28);
+      }, (msg) => { if (msg) setStatus(msg); });
+    }
 
     setStatus('Rendering your edit on the server…'); setBar(32);
     const res = await fetch(API + '/studio-export', {

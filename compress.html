@@ -410,6 +410,45 @@ function uploadDirect(file, presignedUrl) {
   });
 }
 
+// A stall (see uploadDirect's stall timer) is very often a transient network hiccup, not a
+// dead connection — retrying the whole upload usually just works. Wraps presign + upload as
+// one unit since a fresh attempt needs a fresh presigned URL (the old one may be stale).
+async function presignAndUpload(file, onProgress) {
+  const presignController = new AbortController();
+  const presignTimeout = setTimeout(() => presignController.abort(), 20000);
+  let presignRes;
+  try {
+    presignRes = await fetch(`${API}/presign-upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4' }),
+      signal: presignController.signal,
+    });
+  } catch (e) {
+    throw new Error(e.name === 'AbortError' ? 'Could not reach the server (timed out). Check your connection and try again.' : e.message);
+  } finally {
+    clearTimeout(presignTimeout);
+  }
+  const presignData = await presignRes.json();
+  if (presignData.error) throw new Error(presignData.error);
+  await uploadDirect(file, presignData.presigned_url);   // reports its own progress via setProgress
+  return presignData;
+}
+
+async function uploadWithRetry(file, attempts, onStatus) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      if (onStatus && i > 0) onStatus(`Retrying upload (attempt ${i + 1}/${attempts})...`);
+      return await presignAndUpload(file);
+    } catch (e) {
+      lastErr = e;
+      if (i < attempts - 1) await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+  throw lastErr;
+}
+
 window.startCompress = async function() {
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('video_compress'))) return;
   if (!chosenFile) return;
@@ -420,30 +459,9 @@ window.startCompress = async function() {
 
   try {
     setProgress(2, 'Preparing upload...');
-    // This call never touches the file itself (just its name/type), so it should always be
-    // fast regardless of file size — plain fetch() has no timeout at all, so a slow network
-    // path or a cold backend instance previously left this step hanging indefinitely with the
-    // bar frozen on "Preparing upload..." and zero feedback that anything was wrong.
-    const presignController = new AbortController();
-    const presignTimeout = setTimeout(() => presignController.abort(), 20000);
-    let presignRes;
-    try {
-      presignRes = await fetch(`${API}/presign-upload`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: chosenFile.name, contentType: chosenFile.type || 'video/mp4' }),
-        signal: presignController.signal,
-      });
-    } catch (e) {
-      if (e.name === 'AbortError') throw new Error('Could not reach the server (timed out). Check your connection and try again.');
-      throw e;
-    } finally {
-      clearTimeout(presignTimeout);
-    }
-    const presignData = await presignRes.json();
-    if (presignData.error) throw new Error(presignData.error);
-
-    await uploadDirect(chosenFile, presignData.presigned_url);
+    // A single stall used to be a hard failure the user had to manually retry — most stalls
+    // are a transient network hiccup, so retry a couple of times on our own first.
+    const presignData = await uploadWithRetry(chosenFile, 3, (msg) => setProgress(2, msg));
     setProgress(42, 'Starting compression...');
 
     const startRes = await fetch(`${API}/compress-video`, {
