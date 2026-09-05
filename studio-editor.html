@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="description" content="Edit your video the way you would in a studio — brand it, mic it, clean the sound, crop, cut and grade it. Everything previews instantly; you only wait once, at export.">
+<meta property="og:title" content="AfriVid Studio — Studio Editor | Africa">
+<meta property="og:description" content="Brand it, mic it, clean the sound, crop, cut and grade — previewed instantly, rendered once at export.">
+<meta property="og:url" content="https://afrivid.studio">
+<meta property="og:image" content="https://afrivid.studio/images/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriVid Studio — Studio Editor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF7EF;
+  --surface:#FFFFFF;
+  --surface-2:#F3EDE0;
+  --border:rgba(23,20,15,0.1);
+  --text:#17140F;
+  --text-muted:rgba(23,20,15,0.62);
+  --text-faint:rgba(23,20,15,0.4);
+  --gold:#E08A2E;
+  --gold-dark:#C4701E;
+  --green:#3F7D5C;
+  --red:#E63329;
+  --gradient-gold:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:16px;
+  --glow-gold:0 0 20px rgba(224,138,46,.35),0 0 60px rgba(224,138,46,.15);
+  --transition:all 0.2s ease;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.topbar{position:sticky;top:0;z-index:100;padding:0.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.back-btn{display:flex;align-items:center;gap:0.4rem;color:var(--text-muted);text-decoration:none;font-size:0.85rem;font-weight:600;transition:var(--transition);}
+.back-btn:hover{color:var(--gold);}
+.back-btn svg{width:18px;height:18px;}
+.topbar-divider{width:1px;height:20px;background:var(--border);}
+.topbar-title{font-size:1rem;font-weight:800;}
+.topbar-title span{color:var(--gold);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.user-name{font-size:0.82rem;font-weight:700;cursor:pointer;}
+.btn-signin{background:transparent;border:1px solid rgba(224,138,46,0.4);color:var(--gold);padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signin:hover{box-shadow:var(--glow-gold);}
+.btn-signout{background:none;border:1px solid var(--border);color:var(--text-faint);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout:hover{border-color:var(--red);color:var(--red);}
+
+.wrap{max-width:1500px;margin:0 auto;padding:1.5rem 1.25rem 4rem;}
+.page-title{font-size:1.6rem;font-weight:800;}
+.page-sub{color:var(--text-muted);font-size:0.9rem;margin-top:0.25rem;}
+.page-sub b{color:var(--text);}
+
+/* ── landing dropzone ── */
+.dropzone{margin-top:1.5rem;border:2px dashed var(--border);border-radius:var(--radius-lg);padding:4rem 1.5rem;text-align:center;cursor:pointer;transition:var(--transition);background:var(--surface);}
+.dropzone:hover,.dropzone.drag{border-color:rgba(224,138,46,0.5);background:rgba(224,138,46,0.04);}
+.dropzone-icon{font-size:2.4rem;margin-bottom:0.6rem;}
+.dropzone-text{font-weight:800;font-size:1.05rem;}
+.dropzone-hint{color:var(--text-faint);font-size:0.82rem;margin-top:0.4rem;}
+
+/* ── editor grid ── */
+.editor{display:none;grid-template-columns:minmax(0,1fr) 380px;gap:1.25rem;margin-top:1.25rem;align-items:start;}
+.editor.on{display:grid;}
+@media(max-width:1080px){.editor.on{grid-template-columns:minmax(0,1fr);}}
+
+.stage-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;}
+.stage{position:relative;background:#12100D;border-radius:var(--radius-md);overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:280px;}
+/* The two canvases live in a shrink-wrapping box so the overlay is always exactly on top
+   of the picture — anchoring it to .stage instead would misalign it whenever the stage is
+   taller than the video (min-height, or a very wide crop). */
+.stage-inner{position:relative;line-height:0;}
+.stage-inner canvas{display:block;max-width:100%;}
+#ov{position:absolute;top:0;left:0;width:100%;height:100%;}
+#ov.grabbing{cursor:grabbing;}
+#srcVideo{display:none;}
+.stage-badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.55);color:#fff;font-family:'Space Mono',monospace;font-size:0.66rem;letter-spacing:1px;padding:4px 8px;border-radius:var(--radius-sm);pointer-events:none;}
+.stage-fps{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.55);color:#9ad;font-family:'Space Mono',monospace;font-size:0.66rem;padding:4px 8px;border-radius:var(--radius-sm);pointer-events:none;}
+
+/* ── transport + timeline ── */
+.transport{display:flex;align-items:center;gap:0.75rem;margin-top:0.85rem;}
+.btn-play{width:42px;height:42px;flex:0 0 42px;border-radius:50%;border:none;background:var(--gradient-gold);color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.time-read{font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.timeline{position:relative;flex:1;height:44px;background:var(--surface-2);border-radius:var(--radius-sm);cursor:pointer;overflow:hidden;}
+.tl-cut{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(45deg,rgba(230,51,41,.45),rgba(230,51,41,.45) 5px,rgba(230,51,41,.28) 5px,rgba(230,51,41,.28) 10px);}
+.tl-sel{position:absolute;top:0;bottom:0;background:rgba(224,138,46,.28);border-left:2px solid var(--gold);border-right:2px solid var(--gold);}
+.tl-head{position:absolute;top:0;bottom:0;width:2px;background:#17140F;pointer-events:none;}
+.tl-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-faint);font-family:'Space Mono',monospace;pointer-events:none;}
+
+/* ── right rail ── */
+.rail{display:flex;flex-direction:column;gap:0.9rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem;}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.85rem;}
+.card-title{font-size:0.9rem;font-weight:800;}
+.card-note{font-size:0.7rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
+.form-label{font-size:0.68rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;margin-top:0.9rem;}
+.form-label:first-child{margin-top:0;}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:0.45rem;}
+.chip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:0.42rem 0.85rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;color:var(--text);transition:var(--transition);}
+.chip:hover{border-color:rgba(224,138,46,0.5);}
+.chip.active{border-color:var(--gold);background:rgba(224,138,46,0.1);color:var(--gold-dark);}
+.chip .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:1px solid rgba(0,0,0,.15);}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.55rem 0;}
+.toggle-label{font-size:0.85rem;font-weight:700;}
+.toggle-sub{font-size:0.72rem;color:var(--text-faint);margin-top:0.15rem;}
+.switch{position:relative;width:46px;height:26px;flex:0 0 46px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;transition:var(--transition);}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:var(--transition);}
+.switch.on{background:var(--gradient-gold);border-color:transparent;}
+.switch.on::after{left:22px;}
+
+.slider-row{display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;}
+.slider-row label{font-size:0.72rem;color:var(--text-muted);width:74px;flex:0 0 74px;}
+.slider-row input[type=range]{flex:1;accent-color:var(--gold);}
+.slider-row .val{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--text-faint);width:38px;text-align:right;font-variant-numeric:tabular-nums;}
+
+.meter{display:flex;align-items:center;gap:0.5rem;margin-top:0.6rem;}
+.meter span{font-size:0.68rem;font-family:'Space Mono',monospace;color:var(--text-faint);width:42px;}
+.meter-track{flex:1;height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;}
+.meter-fill{height:100%;width:0%;border-radius:999px;transition:width .08s linear;}
+.meter-fill.dry{background:var(--red);}
+.meter-fill.wet{background:var(--green);}
+
+.btn{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius-md);padding:0.55rem 0.8rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;color:var(--text);transition:var(--transition);}
+.btn:hover{border-color:rgba(224,138,46,0.5);color:var(--gold-dark);}
+.btn.danger:hover{border-color:var(--red);color:var(--red);}
+.btn-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.6rem;}
+.cut-list{margin-top:0.7rem;display:flex;flex-direction:column;gap:0.35rem;max-height:120px;overflow:auto;}
+.cut-item{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:var(--radius-sm);padding:0.35rem 0.6rem;font-family:'Space Mono',monospace;font-size:0.72rem;}
+.cut-item button{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:0.9rem;}
+.cut-item button:hover{color:var(--red);}
+
+.btn-export{width:100%;background:var(--gradient-gold);color:#fff;border:none;padding:0.95rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-export:hover{box-shadow:var(--glow-gold);}
+.btn-export:disabled{opacity:0.55;cursor:not-allowed;box-shadow:none;}
+.progress-track{background:var(--surface-2);border-radius:999px;height:9px;overflow:hidden;margin-top:0.85rem;}
+.progress-fill{height:100%;background:var(--gradient-gold);width:0%;transition:width 0.3s ease;}
+.progress-status{margin-top:0.55rem;font-size:0.78rem;color:var(--text-muted);font-family:'Space Mono',monospace;word-break:break-word;}
+.progress-status.error{color:var(--red);}
+.progress-status.ok{color:var(--green);}
+.summary{margin-top:0.7rem;font-size:0.74rem;color:var(--text-muted);line-height:1.55;}
+.summary b{color:var(--text);}
+.est{margin-top:0.5rem;font-size:0.72rem;font-family:'Space Mono',monospace;color:var(--text-faint);}
+.btn-download{display:block;text-align:center;margin-top:0.8rem;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.75rem;border-radius:var(--radius-md);font-weight:700;font-size:0.86rem;text-decoration:none;transition:var(--transition);}
+.btn-download:hover{border-color:rgba(224,138,46,0.4);color:var(--gold);}
+.file-chip{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:var(--radius-md);padding:0.7rem 0.9rem;margin-bottom:0.9rem;}
+.file-chip-name{font-size:0.8rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%;}
+.file-chip-size{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--text-faint);}
+
+/* LOGIN MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
+.modal-overlay.active{display:flex;}
+.login-box{position:relative;z-index:1;width:100%;max-width:420px;animation:slideUp 0.3s ease both;}
+.login-header{text-align:center;margin-bottom:2rem;}
+.login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:var(--bg);margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:var(--text);}
+.login-title span{color:var(--gold);}
+.login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.auth-tabs{display:flex;background:rgba(23,20,15,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
+.auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
+.form-input{width:100%;background:rgba(23,20,15,0.04);border:1px solid var(--border);color:var(--text);padding:0.75rem 0.9rem;border-radius:var(--radius-md);font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:var(--transition);}
+.btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-auth:hover{box-shadow:var(--glow-gold);}
+.login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#c0392b;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:var(--text-faint);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Home
+    </a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">AfriVid <span>Studio Editor</span></div>
+  </div>
+  <div class="topbar-right">
+    <span class="user-name" id="user-name" style="display:none"></span>
+    <button class="btn-signin" id="btn-signin" onclick="showLogin()">Sign In</button>
+    <button class="btn-signout" id="btn-signout" onclick="signOut()" style="display:none">Sign Out</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-title">Studio Editor</div>
+  <div class="page-sub">Every control below changes what you see and hear <b>immediately</b> — nothing is sent anywhere while you work. You only wait once, when you press Export.</div>
+
+  <div class="dropzone" id="dz">
+    <div class="dropzone-icon">🎬</div>
+    <div class="dropzone-text">Drop a video here, or click to choose one</div>
+    <div class="dropzone-hint">MP4, MOV or WebM · stays on your device until you export</div>
+    <input type="file" id="file" accept="video/*" hidden>
+  </div>
+
+  <div class="editor" id="editor">
+    <!-- ── STAGE ── -->
+    <div>
+      <div class="stage-card">
+        <div class="file-chip" id="file-chip" style="display:none">
+          <span class="file-chip-name" id="file-name"></span>
+          <span class="file-chip-size" id="file-size"></span>
+        </div>
+        <div class="stage" id="stage">
+          <div class="stage-inner" id="stage-inner">
+            <canvas id="gl"></canvas>
+            <canvas id="ov"></canvas>
+          </div>
+          <video id="srcVideo" playsinline crossorigin="anonymous"></video>
+          <div class="stage-badge" id="stage-badge">PREVIEW</div>
+          <div class="stage-fps" id="stage-fps"></div>
+        </div>
+        <div class="transport">
+          <button class="btn-play" id="btn-play" onclick="togglePlay()">▶</button>
+          <div class="time-read" id="time-read">0:00 / 0:00</div>
+          <div class="timeline" id="timeline">
+            <div class="tl-hint" id="tl-hint">drag across to select a range</div>
+            <div class="tl-head" id="tl-head" style="left:0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RAIL ── -->
+    <div class="rail">
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">🎨 Brand it — studio background</div><div class="card-note">live</div></div>
+        <span class="form-label">Backdrop</span>
+        <div class="chip-row" id="bg-chips">
+          <button class="chip active" data-bg="off">Off</button>
+          <button class="chip" data-bg="blur">Blur</button>
+          <button class="chip" data-bg="color" data-color="#0A1929"><i class="sw" style="background:#0A1929"></i>Navy</button>
+          <button class="chip" data-bg="color" data-color="#1C1C1E"><i class="sw" style="background:#1C1C1E"></i>Charcoal</button>
+          <button class="chip" data-bg="color" data-color="#F2F2F0"><i class="sw" style="background:#F2F2F0"></i>White</button>
+          <button class="chip" data-bg="color" data-color="#E08A2E"><i class="sw" style="background:#E08A2E"></i>Gold</button>
+          <button class="chip" data-bg="scene" data-scene="warm">Warm Studio</button>
+          <button class="chip" data-bg="scene" data-scene="news">Newsroom</button>
+          <button class="chip" data-bg="scene" data-scene="sunset">Sunset</button>
+          <button class="chip" data-bg="scene" data-scene="green">Green Room</button>
+        </div>
+        <div class="slider-row"><label>Edge feather</label><input type="range" id="sl-feather" min="0" max="100" value="40"><span class="val" id="v-feather">40</span></div>
+        <div class="card-note" id="seg-note" style="margin-top:.6rem">Segmentation model loads on first use.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">🎤 Mic</div><div class="card-note">tracks you</div></div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Show mic on me</div><div class="toggle-sub">Placed from where you actually are in frame</div></div>
+          <div class="switch" id="sw-mic" onclick="toggleMic()"></div>
+        </div>
+        <span class="form-label">Style</span>
+        <div class="chip-row" id="mic-chips">
+          <button class="chip active" data-mic="handheld">Handheld</button>
+          <button class="chip" data-mic="lapel">Lapel</button>
+          <button class="chip" data-mic="boom">Boom</button>
+        </div>
+        <div class="slider-row"><label>Side</label><input type="range" id="sl-micside" min="-100" max="100" value="55"><span class="val" id="v-micside">55</span></div>
+        <div class="slider-row"><label>Height</label><input type="range" id="sl-michgt" min="-50" max="50" value="0"><span class="val" id="v-michgt">0</span></div>
+        <div class="slider-row"><label>Size</label><input type="range" id="sl-micsize" min="50" max="200" value="100"><span class="val" id="v-micsize">100</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">🎚️ Reduce noise</div><div class="card-note">RNNoise · live</div></div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Clean up the sound</div><div class="toggle-sub" id="rn-sub">Toggle while it plays to A/B it</div></div>
+          <div class="switch" id="sw-noise" onclick="toggleNoise()"></div>
+        </div>
+        <div class="meter"><span>raw</span><div class="meter-track"><div class="meter-fill dry" id="m-dry"></div></div></div>
+        <div class="meter"><span>clean</span><div class="meter-track"><div class="meter-fill wet" id="m-wet"></div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">✂️ Crop</div><div class="card-note">drag the handles</div></div>
+        <div class="toggle-row">
+          <div><div class="toggle-label">Crop the frame</div><div class="toggle-sub">Drag corners and edges on the preview</div></div>
+          <div class="switch" id="sw-crop" onclick="toggleCrop()"></div>
+        </div>
+        <span class="form-label">Snap to</span>
+        <div class="chip-row" id="ratio-chips">
+          <button class="chip active" data-ratio="free">Free</button>
+          <button class="chip" data-ratio="16:9">16:9</button>
+          <button class="chip" data-ratio="9:16">9:16</button>
+          <button class="chip" data-ratio="1:1">1:1</button>
+          <button class="chip" data-ratio="4:5">4:5</button>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="resetCrop()">Reset crop</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">🔪 Cut</div><div class="card-note">instant</div></div>
+        <div class="card-note" id="cut-sel">Drag on the timeline to select a range.</div>
+        <div class="btn-row">
+          <button class="btn danger" onclick="cutSelection()">Delete selection</button>
+          <button class="btn" onclick="keepSelection()">Keep only this</button>
+          <button class="btn" onclick="clearCuts()">Undo all cuts</button>
+        </div>
+        <div class="cut-list" id="cut-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">💡 Light &amp; colour</div><div class="card-note">live</div></div>
+        <div class="chip-row" id="grade-chips">
+          <button class="chip active" data-grade="none">Original</button>
+          <button class="chip" data-grade="warm"><i class="sw" style="background:#E2653B"></i>Red / warm</button>
+          <button class="chip" data-grade="cool"><i class="sw" style="background:#3B7FE2"></i>Blue / cool</button>
+          <button class="chip" data-grade="vivid">Vivid</button>
+          <button class="chip" data-grade="cine">Cinematic</button>
+          <button class="chip" data-grade="bright">Brighten</button>
+          <button class="chip" data-grade="bw">B&amp;W</button>
+        </div>
+        <div class="slider-row"><label>Brightness</label><input type="range" id="sl-bright" min="-40" max="40" value="0"><span class="val" id="v-bright">0</span></div>
+        <div class="slider-row"><label>Contrast</label><input type="range" id="sl-contrast" min="50" max="180" value="100"><span class="val" id="v-contrast">100</span></div>
+        <div class="slider-row"><label>Saturation</label><input type="range" id="sl-sat" min="0" max="250" value="100"><span class="val" id="v-sat">100</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">⬇️ Export</div><div class="card-note">one render</div></div>
+        <div class="summary" id="export-summary">Nothing changed yet.</div>
+        <div class="est" id="export-est"></div>
+        <button class="btn-export" id="btn-export" onclick="runExport()">Export video</button>
+        <div class="progress-track"><div class="progress-fill" id="export-bar"></div></div>
+        <div class="progress-status" id="export-status">You are looking at what the export will be.</div>
+        <a class="btn-download" id="export-dl" style="display:none" target="_blank" rel="noopener">Download the finished video</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="login-box">
+    <button class="modal-close" onclick="hideLogin()">×</button>
+    <div class="login-header">
+      <div class="login-icon">A</div>
+      <div class="login-title">AfriVid <span>Studio</span></div>
+    </div>
+    <div class="login-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
+      </div>
+      <div id="form-signin">
+        <input class="form-input" type="email" id="login-email" placeholder="Email">
+        <input class="form-input" type="password" id="login-password" placeholder="Password">
+        <button class="btn-auth" onclick="doSignIn()">Sign In</button>
+      </div>
+      <div id="form-signup" style="display:none">
+        <input class="form-input" type="text" id="signup-name" placeholder="Your name">
+        <input class="form-input" type="email" id="signup-email" placeholder="Email">
+        <input class="form-input" type="password" id="signup-password" placeholder="Password (min 6)">
+        <button class="btn-auth" onclick="doSignUp()">Create Account</button>
+      </div>
+      <div class="login-error" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, (user) => {
+  window.currentUser = user;
+  if (user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    document.getElementById('btn-signout').style.display = 'block';
+    const nameEl = document.getElementById('user-name');
+    nameEl.style.display = 'block';
+    nameEl.textContent = user.displayName || user.email.split('@')[0];
+  } else {
+    document.getElementById('btn-signin').style.display = 'block';
+    document.getElementById('btn-signout').style.display = 'none';
+    document.getElementById('user-name').style.display = 'none';
+  }
+});
+
+window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); }
+window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); }
+window.showAuthTab = function(tab) {
+  document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+}
+window.doSignIn = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  try { await signInWithEmailAndPassword(auth, email, password); hideLogin(); }
+  catch (e) { err.style.display = 'block'; err.textContent = '[!] ' + e.message.replace('Firebase: ', ''); }
+}
+window.doSignUp = async function() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const err = document.getElementById('login-error');
+  if (!name || !email || !password) { err.style.display = 'block'; err.textContent = '[!] Fill all fields'; return; }
+  if (password.length < 6) { err.style.display = 'block'; err.textContent = '[!] Password min 6 characters'; return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
+    await sendEmailVerification(cred.user);
+    await setDoc(doc(db, 'studio_users', cred.user.uid), { name, email, joinedAt: serverTimestamp(), plan: 'beta' });
+    hideLogin();
+  } catch (e) { err.style.display = 'block'; err.textContent = '[!] ' + e.message.replace('Firebase: ', ''); }
+}
+window.signOut = async function() { await fbSignOut(auth); }
+document.getElementById('login-modal').addEventListener('click', function(e) { if (e.target === this) hideLogin(); });
+</script>
+
+<script src="limits.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════════
+   AfriVid Studio Editor
+
+   The whole point of this page is the split between PREVIEW and EXPORT.
+
+   PREVIEW is 100% in the browser and instant — no upload, no server, no waiting:
+     · background replacement runs MediaPipe selfie segmentation (the SAME
+       selfie_segmenter.tflite the server uses in replace_background()) over the
+       WASM build, and composites in a WebGL2 shader;
+     · noise reduction runs RNNoise in an AudioWorklet on the real audio track, so
+       toggling it mid-playback is an instant A/B of the actual sound;
+     · crop, cut and colour are pure geometry and shader maths.
+
+   EXPORT uploads the file ONCE and sends a single edit plan. The server composes
+   trim + crop + colour + mic overlay into ONE ffmpeg filtergraph (one video
+   re-encode), and only adds a pass for background replacement or denoise when the
+   user actually asked for them.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+const API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+const STATUS_URL = 'https://afrivid-tts.reaganayiecho.workers.dev/job-status/';
+
+const MP_VERSION = '1.0.1';
+const MP_BUNDLE  = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERSION}/vision_bundle.mjs`;
+const MP_WASM    = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERSION}/wasm`;
+// Byte-identical to the model baked into the processor image at /app/models/selfie_segmenter.tflite.
+const MP_MODEL   = 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite';
+
+const RN_VERSION = '0.3.5';
+const RN_WORKLET = `https://cdn.jsdelivr.net/npm/@sapphi-red/web-noise-suppressor@${RN_VERSION}/dist/rnnoise/workletProcessor.js`;
+const RN_WASM    = `https://cdn.jsdelivr.net/npm/@sapphi-red/web-noise-suppressor@${RN_VERSION}/dist/rnnoise_simd.wasm`;
+const RN_NAME    = '@sapphi-red/web-noise-suppressor/rnnoise';
+
+/* ── the single source of truth for what the user has asked for ─────────────── */
+const S = {
+  file: null,
+  duration: 0,
+  srcW: 0, srcH: 0,
+  bg: { mode: 'off', color: '#0A1929', scene: null },
+  feather: 0.40,
+  mic: { on: false, style: 'handheld', side: 0.55, height: 0, size: 1.0 },
+  denoise: false,
+  cropOn: false,
+  crop: { x: 0, y: 0, w: 1, h: 1 },
+  ratio: 'free',
+  cuts: [],                       // [{start,end}] removed ranges, in source seconds
+  sel: null,                      // {start,end} current timeline selection
+  grade: { name: 'none', brightness: 0, contrast: 1, saturation: 1, gamma: 1, tint: [1, 1, 1] },
+};
+window.S = S;
+
+const $ = (id) => document.getElementById(id);
+const video = $('srcVideo');
+const glCanvas = $('gl');
+const ov = $('ov');
+const octx = ov.getContext('2d');
+
+/* ═══ 1. FILE INTAKE ════════════════════════════════════════════════════════ */
+const dz = $('dz');
+dz.onclick = () => $('file').click();
+dz.ondragover = (e) => { e.preventDefault(); dz.classList.add('drag'); };
+dz.ondragleave = () => dz.classList.remove('drag');
+dz.ondrop = (e) => { e.preventDefault(); dz.classList.remove('drag'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); };
+$('file').onchange = (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); };
+
+function fmtSize(b) { return b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
+function fmtTime(s) { s = Math.max(0, s || 0); const m = Math.floor(s / 60); return m + ':' + String(Math.floor(s % 60)).padStart(2, '0'); }
+
+async function loadFile(file) {
+  S.file = file;
+  video.src = URL.createObjectURL(file);
+  await new Promise((res, rej) => {
+    video.onloadedmetadata = res;
+    video.onerror = () => rej(new Error('Could not read that video'));
+  });
+  S.duration = video.duration;
+  S.srcW = video.videoWidth; S.srcH = video.videoHeight;
+  S.crop = { x: 0, y: 0, w: 1, h: 1 };
+  S.cuts = []; S.sel = null;
+
+  $('file-name').textContent = file.name;
+  $('file-size').textContent = fmtSize(file.size) + ' · ' + S.srcW + '×' + S.srcH + ' · ' + fmtTime(S.duration);
+  $('file-chip').style.display = 'flex';
+  dz.style.display = 'none';
+  $('editor').classList.add('on');
+
+  initGL();
+  sizeCanvases();
+  await video.play().catch(() => {});   // decode a frame; autoplay block is fine
+  video.pause(); video.currentTime = Math.min(0.1, S.duration / 2);
+  startRenderLoop();
+  renderTimeline();
+  updateSummary();
+  window._editorReady = true;
+}
+window.loadFile = loadFile;
+
+/* ═══ 2. WEBGL COMPOSITOR ══════════════════════════════════════════════════ */
+let gl = null, prog = null, U = {}, texVideo = null, texMask = null, texBg = null;
+let maskW = 0, maskH = 0, haveMask = false, mipOn = false;
+
+const VERT = `#version 300 es
+in vec2 aPos;
+out vec2 vUV;
+void main(){ vUV = aPos * 0.5 + 0.5; vUV.y = 1.0 - vUV.y; gl_Position = vec4(aPos, 0.0, 1.0); }`;
+
+const FRAG = `#version 300 es
+precision highp float;
+in vec2 vUV;
+out vec4 fragColor;
+uniform sampler2D uVideo;
+uniform sampler2D uMask;
+uniform sampler2D uBgImage;
+uniform vec4 uCrop;          // x,y,w,h in source UV
+uniform int  uBgMode;        // 0 off, 1 blur, 2 colour, 3 image
+uniform vec3 uBgColor;
+uniform float uUseMask;
+uniform float uBlurLod;
+uniform float uFeather;
+uniform float uContrast, uBrightness, uSaturation, uGamma;
+uniform vec3  uTint;
+
+void main(){
+  vec2 uv = uCrop.xy + vUV * uCrop.zw;
+  vec3 fg  = texture(uVideo, uv).rgb;
+  vec3 col = fg;
+
+  if (uBgMode > 0 && uUseMask > 0.5) {
+    // The selfie segmenter's category mask marks the PERSON 0 and background 255.
+    float m = texture(uMask, uv).r;
+    float e = clamp(uFeather, 0.01, 0.49);
+    float person = 1.0 - smoothstep(0.5 - e, 0.5 + e, m);
+    vec3 bg;
+    if (uBgMode == 1)      bg = textureLod(uVideo, uv, uBlurLod).rgb;
+    else if (uBgMode == 2) bg = uBgColor;
+    else                   bg = texture(uBgImage, vUV).rgb;
+    col = mix(bg, fg, person);
+  }
+
+  // The grade is deliberately shaped so the server can reproduce it exactly:
+  //   a per-channel curve  -> ffmpeg lutrgb with this same expression
+  //   saturation then tint -> one 3x3 colorchannelmixer, diag(tint) * satMatrix
+  // Measured agreement between the two: worst 2.4/255, mean 0.5/255 across every preset.
+  // (ffmpeg's own eq filter is NOT used for this: its saturation is a chroma-space
+  // operation rather than this luma mix, and its gamma diverges from pow by up to 22/255.)
+  col = clamp((col - 0.5) * uContrast + 0.5 + uBrightness, 0.0, 1.0);
+  col = pow(col, vec3(1.0 / uGamma));
+  float l = dot(col, vec3(0.299, 0.587, 0.114));
+  col = mix(vec3(l), col, uSaturation);
+  col = col * uTint;
+  fragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+}`;
+
+function compile(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+
+function initGL() {
+  if (gl) return;
+  gl = glCanvas.getContext('webgl2', { premultipliedAlpha: false, preserveDrawingBuffer: true });
+  if (!gl) { alert('This browser has no WebGL2 — the studio preview needs it.'); return; }
+  prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'aPos');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+  for (const n of ['uVideo','uMask','uBgImage','uCrop','uBgMode','uBgColor','uUseMask',
+                   'uBlurLod','uFeather','uContrast','uBrightness','uSaturation','uGamma','uTint'])
+    U[n] = gl.getUniformLocation(prog, n);
+
+  const mkTex = (unit) => {
+    const t = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    return t;
+  };
+  // Every texture starts LINEAR-only. A mipmap MIN_FILTER on a texture with no mip levels
+  // is "incomplete" and samples as black on a real GPU, so the pyramid is only switched on
+  // while the blur backdrop is actually using it.
+  texVideo = mkTex(0);
+  texMask  = mkTex(1);
+  texBg    = mkTex(2);
+  gl.uniform1i(U.uVideo, 0); gl.uniform1i(U.uMask, 1); gl.uniform1i(U.uBgImage, 2);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+}
+
+const MAX_OUT_W = 1280;
+function fit(w, h) {
+  const s = Math.min(1, MAX_OUT_W / Math.max(1, w));
+  return { w: Math.max(2, Math.round(w * s / 2) * 2), h: Math.max(2, Math.round(h * s / 2) * 2) };
+}
+// What the preview canvas is right now — the full frame while the crop tool is open, so the
+// user can see and drag outside the crop rect.
+function outputSize() {
+  return S.cropOn ? fit(S.srcW, S.srcH)
+                  : fit(Math.round(S.srcW * S.crop.w), Math.round(S.srcH * S.crop.h));
+}
+// What the exported file will be, regardless of which tool happens to be open. Everything
+// shipped to the server (backdrop still, mic PNG, overlay offsets) is sized against this.
+function exportSize() {
+  return fit(Math.round(S.srcW * S.crop.w), Math.round(S.srcH * S.crop.h));
+}
+
+function sizeCanvases() {
+  const { w, h } = outputSize();
+  glCanvas.width = w; glCanvas.height = h;
+  ov.width = w; ov.height = h;
+  // Only the picture canvas gets a CSS size; .stage-inner shrink-wraps it and the overlay
+  // fills that box, so overlay coordinates always map 1:1 onto the pixels underneath.
+  const box = $('stage').getBoundingClientRect();
+  const maxH = Math.min(window.innerHeight * 0.64, 720);
+  const disp = Math.min((box.width || w) / w, maxH / h, 1.6);
+  glCanvas.style.width = Math.round(w * disp) + 'px';
+  glCanvas.style.height = Math.round(h * disp) + 'px';
+  if (gl) gl.viewport(0, 0, w, h);
+}
+window.addEventListener('resize', () => { if (S.file) sizeCanvases(); });
+
+function drawGL() {
+  if (!gl || video.readyState < 2) return;
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, texVideo);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+  // A mip pyramid is the cheapest honest defocus we can get per frame, and it is exactly
+  // what the server does too (downscale, blur, scale back).
+  if (S.bg.mode === 'blur') {
+    gl.generateMipmap(gl.TEXTURE_2D);
+    if (mipOn !== true) { gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); mipOn = true; }
+  } else if (mipOn !== false) {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); mipOn = false;
+  }
+
+  const c = S.cropOn ? { x: 0, y: 0, w: 1, h: 1 } : S.crop;
+  gl.uniform4f(U.uCrop, c.x, c.y, c.w, c.h);
+  const modeNum = S.bg.mode === 'blur' ? 1 : S.bg.mode === 'color' ? 2 : S.bg.mode === 'scene' ? 3 : 0;
+  gl.uniform1i(U.uBgMode, modeNum);
+  gl.uniform1f(U.uUseMask, haveMask ? 1 : 0);
+  gl.uniform1f(U.uBlurLod, 4.0);
+  gl.uniform1f(U.uFeather, 0.02 + S.feather * 0.46);
+  const rgb = hexToRgb(S.bg.color);
+  gl.uniform3f(U.uBgColor, rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
+  const g = S.grade;
+  gl.uniform1f(U.uContrast, g.contrast);
+  gl.uniform1f(U.uBrightness, g.brightness);
+  gl.uniform1f(U.uSaturation, g.saturation);
+  gl.uniform1f(U.uGamma, g.gamma);
+  gl.uniform3f(U.uTint, g.tint[0], g.tint[1], g.tint[2]);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+
+function hexToRgb(h) {
+  h = (h || '#000000').replace('#', '');
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+
+/* ═══ 3. SEGMENTATION (background + person tracking) ═══════════════════════ */
+let segmenter = null, segLoading = false, segCanvas = null, segCtx = null, segTs = 0;
+let personBox = null;                       // smoothed {x,y,w,h} in 0..1 source space
+const SEG_W = 256;
+
+async function ensureSegmenter() {
+  if (segmenter || segLoading) return;
+  segLoading = true;
+  $('seg-note').textContent = 'Loading the segmentation model…';
+  try {
+    const vision = await import(MP_BUNDLE);
+    const fileset = await vision.FilesetResolver.forVisionTasks(MP_WASM);
+    const opts = (delegate) => ({
+      baseOptions: { modelAssetPath: MP_MODEL, delegate },
+      runningMode: 'VIDEO', outputCategoryMask: true, outputConfidenceMasks: false,
+    });
+    try { segmenter = await vision.ImageSegmenter.createFromOptions(fileset, opts('GPU')); }
+    catch (e) { segmenter = await vision.ImageSegmenter.createFromOptions(fileset, opts('CPU')); }
+    segCanvas = document.createElement('canvas');
+    segCanvas.width = SEG_W;
+    segCanvas.height = Math.max(2, Math.round(SEG_W * S.srcH / Math.max(1, S.srcW)));
+    segCtx = segCanvas.getContext('2d', { willReadFrequently: true });
+    $('seg-note').textContent = 'Segmentation running in your browser — nothing is uploaded.';
+    window._segReady = true;
+  } catch (e) {
+    $('seg-note').textContent = 'Could not load the segmentation model: ' + e.message;
+  } finally { segLoading = false; }
+}
+
+function needSeg() { return S.bg.mode !== 'off' || S.mic.on; }
+
+function runSegOnce() {
+  if (!segmenter || !segCanvas || video.readyState < 2) return;
+  segCtx.drawImage(video, 0, 0, segCanvas.width, segCanvas.height);
+  segTs += 33;
+  let res;
+  try { res = segmenter.segmentForVideo(segCanvas, segTs); } catch (e) { return; }
+  const cm = res.categoryMask;
+  if (!cm) return;
+  const w = cm.width, h = cm.height;
+  const data = cm.getAsUint8Array();
+
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, texMask);
+  if (w !== maskW || h !== maskH) {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, w, h, 0, gl.RED, gl.UNSIGNED_BYTE, data);
+    maskW = w; maskH = h;
+  } else {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, w, h, gl.RED, gl.UNSIGNED_BYTE, data);
+  }
+  haveMask = true;
+  trackPerson(data, w, h);
+  cm.close();
+}
+
+// Person bounding box straight off the mask (person == 0). Cheap: ~37k bytes a frame.
+function trackPerson(data, w, h) {
+  let x0 = w, y0 = h, x1 = -1, y1 = -1, n = 0;
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let x = 0; x < w; x++) {
+      if (data[row + x] === 0) {
+        n++;
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (n < w * h * 0.01 || x1 < 0) return;           // no believable person in frame
+  const box = { x: x0 / w, y: y0 / h, w: (x1 - x0) / w, h: (y1 - y0) / h };
+  if (!personBox) personBox = box;
+  else {
+    const a = 0.22;                                  // EMA so the mic does not jitter
+    personBox = {
+      x: personBox.x + (box.x - personBox.x) * a, y: personBox.y + (box.y - personBox.y) * a,
+      w: personBox.w + (box.w - personBox.w) * a, h: personBox.h + (box.h - personBox.h) * a,
+    };
+  }
+  recordMicAnchor();
+}
+
+/* ═══ 4. MIC OVERLAY ══════════════════════════════════════════════════════ */
+// Live preview tracks the person every frame. For EXPORT we send one stabilised anchor
+// (the median of everything seen), because a per-frame track would have to be transported
+// and replayed server-side for a 20-minute file — see the report note on this.
+const micSamples = { x: [], y: [], s: [] };
+
+function micAnchor() {
+  if (!personBox) return null;
+  const b = personBox;
+  // Chest height on a seated presenter sits a little under half way down the visible body.
+  const y = b.y + b.h * (0.46 + S.mic.height / 250);
+  const x = b.x + b.w * (0.5 + S.mic.side * 0.42);
+  // `s` is the mic's height as a fraction of the FRAME height, not the person's width —
+  // shoulders span most of the frame in a talking-head shot, which made a width-derived
+  // size balloon. Clamped so it always reads as a prop rather than a billboard.
+  const s = Math.min(0.42, Math.max(0.12, b.h * 0.34)) * S.mic.size;
+  return { x: Math.min(0.97, Math.max(0.03, x)), y: Math.min(0.97, Math.max(0.03, y)), s };
+}
+
+function recordMicAnchor() {
+  const a = micAnchor(); if (!a) return;
+  for (const [k, v] of [['x', a.x], ['y', a.y], ['s', a.s]]) {
+    micSamples[k].push(v);
+    if (micSamples[k].length > 600) micSamples[k].shift();
+  }
+}
+
+function medianAnchor() {
+  const med = (arr) => { if (!arr.length) return null; const s = [...arr].sort((p, q) => p - q); return s[s.length >> 1]; };
+  const x = med(micSamples.x), y = med(micSamples.y), s = med(micSamples.s);
+  return (x == null) ? null : { x, y, s };
+}
+
+// One drawing routine, used both for the live overlay and for the PNG shipped to the
+// server — so the exported mic is literally the same artwork the user previewed.
+function drawMic(ctx, cx, cy, size, style) {
+  const r = size / 2;
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = size * 0.18; ctx.shadowOffsetY = size * 0.05;
+  const metal = ctx.createLinearGradient(-r, -r, r, r);
+  metal.addColorStop(0, '#6E6E76'); metal.addColorStop(0.45, '#2C2C31'); metal.addColorStop(1, '#111114');
+
+  if (style === 'lapel') {
+    ctx.fillStyle = metal;
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 0.34, r * 0.44, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = Math.max(1, size * 0.02);
+    ctx.beginPath(); ctx.moveTo(0, r * 0.44); ctx.quadraticCurveTo(r * 0.5, r * 1.2, r * 0.15, r * 1.9); ctx.stroke();
+    ctx.fillStyle = '#E08A2E';
+    ctx.beginPath(); ctx.arc(0, -r * 0.16, r * 0.08, 0, Math.PI * 2); ctx.fill();
+  } else if (style === 'boom') {
+    ctx.rotate(-0.35);
+    ctx.fillStyle = metal;
+    ctx.beginPath(); ctx.roundRect(-r * 0.22, -r * 1.15, r * 0.44, r * 1.5, r * 0.22); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255,255,255,0.10)';
+    for (let i = 0; i < 5; i++) { ctx.fillRect(-r * 0.18, -r * 1.02 + i * r * 0.22, r * 0.36, r * 0.06); }
+    ctx.strokeStyle = '#4A4A52'; ctx.lineWidth = Math.max(1.5, size * 0.05); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(0, r * 0.35); ctx.lineTo(r * 0.15, r * 1.7); ctx.stroke();
+  } else {
+    ctx.fillStyle = metal;
+    ctx.beginPath(); ctx.roundRect(-r * 0.30, -r * 1.0, r * 0.60, r * 1.05, r * 0.30); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    for (let i = 0; i < 4; i++) ctx.fillRect(-r * 0.24, -r * 0.86 + i * r * 0.22, r * 0.48, r * 0.07);
+    const body = ctx.createLinearGradient(-r * 0.2, 0, r * 0.2, 0);
+    body.addColorStop(0, '#3A3A41'); body.addColorStop(0.5, '#1A1A1E'); body.addColorStop(1, '#0C0C0F');
+    ctx.fillStyle = body;
+    ctx.beginPath(); ctx.roundRect(-r * 0.17, r * 0.02, r * 0.34, r * 1.05, r * 0.08); ctx.fill();
+    ctx.fillStyle = '#E08A2E';
+    ctx.beginPath(); ctx.roundRect(-r * 0.17, r * 0.30, r * 0.34, r * 0.16, r * 0.04); ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* ═══ 5. OVERLAY (crop handles + mic) ═════════════════════════════════════ */
+const HANDLES = ['nw','n','ne','e','se','s','sw','w'];
+let dragMode = null, dragStart = null, cropStart = null;
+
+function handlePoints(r, W, H) {
+  const x = r.x * W, y = r.y * H, w = r.w * W, h = r.h * H;
+  return {
+    nw: [x, y], n: [x + w / 2, y], ne: [x + w, y], e: [x + w, y + h / 2],
+    se: [x + w, y + h], s: [x + w / 2, y + h], sw: [x, y + h], w: [x, y + h / 2],
+  };
+}
+
+function drawOverlay() {
+  const W = ov.width, H = ov.height;
+  octx.clearRect(0, 0, W, H);
+
+  if (S.mic.on) {
+    const a = micAnchor();
+    if (a) drawMic(octx, a.x * W, a.y * H, a.s * H, S.mic.style);
+  }
+
+  if (S.cropOn) {
+    const r = S.crop;
+    octx.fillStyle = 'rgba(0,0,0,0.55)';
+    octx.fillRect(0, 0, W, r.y * H);
+    octx.fillRect(0, (r.y + r.h) * H, W, H - (r.y + r.h) * H);
+    octx.fillRect(0, r.y * H, r.x * W, r.h * H);
+    octx.fillRect((r.x + r.w) * W, r.y * H, W - (r.x + r.w) * W, r.h * H);
+    octx.strokeStyle = '#E08A2E'; octx.lineWidth = 2;
+    octx.strokeRect(r.x * W, r.y * H, r.w * W, r.h * H);
+    octx.strokeStyle = 'rgba(255,255,255,0.35)'; octx.lineWidth = 1;
+    for (let i = 1; i < 3; i++) {
+      octx.beginPath();
+      octx.moveTo((r.x + r.w * i / 3) * W, r.y * H); octx.lineTo((r.x + r.w * i / 3) * W, (r.y + r.h) * H);
+      octx.moveTo(r.x * W, (r.y + r.h * i / 3) * H); octx.lineTo((r.x + r.w) * W, (r.y + r.h * i / 3) * H);
+      octx.stroke();
+    }
+    const pts = handlePoints(r, W, H);
+    octx.fillStyle = '#E08A2E'; octx.strokeStyle = '#fff'; octx.lineWidth = 2;
+    for (const k of HANDLES) {
+      const [px, py] = pts[k];
+      octx.beginPath(); octx.rect(px - 7, py - 7, 14, 14); octx.fill(); octx.stroke();
+    }
+  }
+}
+
+function ovPos(e) {
+  const b = ov.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return { x: (t.clientX - b.left) / b.width, y: (t.clientY - b.top) / b.height };
+}
+
+function hitHandle(p) {
+  const b = ov.getBoundingClientRect();
+  const tolX = 18 / Math.max(1, b.width), tolY = 18 / Math.max(1, b.height);
+  const r = S.crop;
+  const L = r.x, R = r.x + r.w, T = r.y, B = r.y + r.h;
+  const nearL = Math.abs(p.x - L) < tolX, nearR = Math.abs(p.x - R) < tolX;
+  const nearT = Math.abs(p.y - T) < tolY, nearB = Math.abs(p.y - B) < tolY;
+  const inX = p.x > L - tolX && p.x < R + tolX;
+  const inY = p.y > T - tolY && p.y < B + tolY;
+  // Corners win over edges, and a whole edge is grabbable — not just its midpoint, which
+  // is what a video editor actually feels like.
+  if (nearT && nearL) return 'nw';
+  if (nearT && nearR) return 'ne';
+  if (nearB && nearL) return 'sw';
+  if (nearB && nearR) return 'se';
+  if (nearT && inX) return 'n';
+  if (nearB && inX) return 's';
+  if (nearL && inY) return 'w';
+  if (nearR && inY) return 'e';
+  if (p.x > L && p.x < R && p.y > T && p.y < B) return 'move';
+  return null;
+}
+window.__hitHandle = hitHandle;
+
+ov.addEventListener('pointerdown', (e) => {
+  if (!S.cropOn) return;
+  const p = ovPos(e);
+  const m = hitHandle(p);
+  if (!m) return;
+  dragMode = m; dragStart = p; cropStart = { ...S.crop };
+  ov.setPointerCapture(e.pointerId);
+  ov.classList.add('grabbing');
+  e.preventDefault();
+});
+ov.addEventListener('pointermove', (e) => {
+  if (!dragMode) return;
+  const p = ovPos(e);
+  const dx = p.x - dragStart.x, dy = p.y - dragStart.y;
+  let { x, y, w, h } = cropStart;
+  const MIN = 0.06;
+  if (dragMode === 'move') {
+    x = Math.min(1 - w, Math.max(0, x + dx));
+    y = Math.min(1 - h, Math.max(0, y + dy));
+  } else {
+    if (dragMode.includes('w')) { const nx = Math.min(x + w - MIN, Math.max(0, x + dx)); w += x - nx; x = nx; }
+    if (dragMode.includes('e')) { w = Math.min(1 - x, Math.max(MIN, w + dx)); }
+    if (dragMode.includes('n')) { const ny = Math.min(y + h - MIN, Math.max(0, y + dy)); h += y - ny; y = ny; }
+    if (dragMode.includes('s')) { h = Math.min(1 - y, Math.max(MIN, h + dy)); }
+    if (S.ratio !== 'free') {
+      const [rw, rh] = S.ratio.split(':').map(Number);
+      const target = (rw / rh) * (S.srcH / S.srcW);       // aspect in normalised space
+      h = w / target;
+      if (y + h > 1) { h = 1 - y; w = h * target; }
+    }
+  }
+  S.crop = { x, y, w, h };
+  updateSummary();
+  e.preventDefault();
+});
+const endDrag = () => { if (dragMode) { dragMode = null; ov.classList.remove('grabbing'); } };
+ov.addEventListener('pointerup', endDrag);
+ov.addEventListener('pointercancel', endDrag);
+
+/* ═══ 6. RENDER LOOP ══════════════════════════════════════════════════════ */
+let rafId = null, lastFpsT = 0, frames = 0, segBusy = false;
+
+function startRenderLoop() {
+  if (rafId) cancelAnimationFrame(rafId);
+  const tick = (t) => {
+    rafId = requestAnimationFrame(tick);
+    if (needSeg()) {
+      if (!segmenter && !segLoading) ensureSegmenter();
+      // Segmentation runs as fast as it can and the shader always uses the newest mask,
+      // so a slow machine degrades to a slightly stale matte instead of dropping frames.
+      if (segmenter && !segBusy) { segBusy = true; try { runSegOnce(); } finally { segBusy = false; } }
+    } else { haveMask = false; }
+    drawGL();
+    drawOverlay();
+    enforceCuts();
+    updateTransport();
+    frames++;
+    if (t - lastFpsT > 500) { $('stage-fps').textContent = Math.round(frames * 1000 / (t - lastFpsT)) + ' fps'; frames = 0; lastFpsT = t; }
+  };
+  rafId = requestAnimationFrame(tick);
+}
+
+/* ═══ 7. TRANSPORT, TIMELINE, CUTS ════════════════════════════════════════ */
+function togglePlay() {
+  if (video.paused) { if (audioCtx) audioCtx.resume(); video.play(); $('btn-play').textContent = '❚❚'; }
+  else { video.pause(); $('btn-play').textContent = '▶'; }
+}
+window.togglePlay = togglePlay;
+
+function keepSegments() {
+  const cuts = [...S.cuts].sort((a, b) => a.start - b.start);
+  const keep = []; let t = 0;
+  for (const c of cuts) {
+    if (c.start > t) keep.push([t, Math.min(c.start, S.duration)]);
+    t = Math.max(t, c.end);
+  }
+  if (t < S.duration) keep.push([t, S.duration]);
+  return keep.filter(([a, b]) => b - a > 0.05);
+}
+
+function enforceCuts() {
+  if (!S.cuts.length) return;
+  const t = video.currentTime;
+  for (const c of S.cuts) {
+    if (t >= c.start - 0.01 && t < c.end) {
+      const next = c.end < S.duration - 0.05 ? c.end + 0.01 : (keepSegments()[0] || [0])[0];
+      video.currentTime = next;
+      return;
+    }
+  }
+}
+
+function updateTransport() {
+  const keep = keepSegments();
+  const kept = keep.reduce((a, [s, e]) => a + (e - s), 0) || S.duration;
+  $('time-read').textContent = fmtTime(video.currentTime) + ' / ' + fmtTime(kept);
+  $('tl-head').style.left = (100 * video.currentTime / Math.max(0.01, S.duration)) + '%';
+  $('btn-play').textContent = video.paused ? '▶' : '❚❚';
+}
+
+const tl = $('timeline');
+let tlDrag = null;
+tl.addEventListener('pointerdown', (e) => {
+  const b = tl.getBoundingClientRect();
+  tlDrag = ((e.clientX - b.left) / b.width) * S.duration;
+  tl.setPointerCapture(e.pointerId);
+});
+tl.addEventListener('pointermove', (e) => {
+  if (tlDrag == null) return;
+  const b = tl.getBoundingClientRect();
+  const t = ((e.clientX - b.left) / b.width) * S.duration;
+  S.sel = { start: Math.max(0, Math.min(tlDrag, t)), end: Math.min(S.duration, Math.max(tlDrag, t)) };
+  renderTimeline();
+});
+tl.addEventListener('pointerup', (e) => {
+  if (tlDrag == null) return;
+  const b = tl.getBoundingClientRect();
+  const t = ((e.clientX - b.left) / b.width) * S.duration;
+  if (Math.abs(t - tlDrag) < 0.15) { S.sel = null; video.currentTime = Math.max(0, Math.min(S.duration - 0.05, t)); }
+  tlDrag = null;
+  renderTimeline(); updateSummary();
+});
+
+function renderTimeline() {
+  [...tl.querySelectorAll('.tl-cut,.tl-sel')].forEach(n => n.remove());
+  for (const c of S.cuts) {
+    const d = document.createElement('div');
+    d.className = 'tl-cut';
+    d.style.left = (100 * c.start / S.duration) + '%';
+    d.style.width = (100 * (c.end - c.start) / S.duration) + '%';
+    tl.appendChild(d);
+  }
+  if (S.sel) {
+    const d = document.createElement('div');
+    d.className = 'tl-sel';
+    d.style.left = (100 * S.sel.start / S.duration) + '%';
+    d.style.width = (100 * (S.sel.end - S.sel.start) / S.duration) + '%';
+    tl.appendChild(d);
+  }
+  $('tl-hint').style.display = (S.cuts.length || S.sel) ? 'none' : 'flex';
+  $('cut-sel').textContent = S.sel
+    ? `Selected ${fmtTime(S.sel.start)} → ${fmtTime(S.sel.end)} (${(S.sel.end - S.sel.start).toFixed(1)}s)`
+    : 'Drag on the timeline to select a range.';
+  const list = $('cut-list'); list.innerHTML = '';
+  S.cuts.forEach((c, i) => {
+    const d = document.createElement('div');
+    d.className = 'cut-item';
+    d.innerHTML = `<span>cut ${fmtTime(c.start)} → ${fmtTime(c.end)}</span>`;
+    const b = document.createElement('button');
+    b.textContent = '×'; b.onclick = () => { S.cuts.splice(i, 1); renderTimeline(); updateSummary(); };
+    d.appendChild(b); list.appendChild(d);
+  });
+}
+
+function mergeCuts() {
+  S.cuts.sort((a, b) => a.start - b.start);
+  const out = [];
+  for (const c of S.cuts) {
+    const last = out[out.length - 1];
+    if (last && c.start <= last.end + 0.01) last.end = Math.max(last.end, c.end);
+    else out.push({ ...c });
+  }
+  S.cuts = out;
+}
+window.cutSelection = () => { if (!S.sel) return; S.cuts.push({ ...S.sel }); mergeCuts(); S.sel = null; renderTimeline(); updateSummary(); };
+window.keepSelection = () => {
+  if (!S.sel) return;
+  S.cuts = [];
+  if (S.sel.start > 0.02) S.cuts.push({ start: 0, end: S.sel.start });
+  if (S.sel.end < S.duration - 0.02) S.cuts.push({ start: S.sel.end, end: S.duration });
+  mergeCuts();
+  video.currentTime = S.sel.start; S.sel = null;
+  renderTimeline(); updateSummary();
+};
+window.clearCuts = () => { S.cuts = []; S.sel = null; renderTimeline(); updateSummary(); };
+
+/* ═══ 8. AUDIO — RNNOISE ══════════════════════════════════════════════════ */
+let audioCtx = null, mediaSrc = null, dryGain = null, wetGain = null, rnNode = null;
+let anaDry = null, anaWet = null, rnReady = false, rnLoading = false;
+
+async function ensureAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 48000 });
+  mediaSrc = audioCtx.createMediaElementSource(video);
+  dryGain = audioCtx.createGain(); wetGain = audioCtx.createGain();
+  dryGain.gain.value = 1; wetGain.gain.value = 0;
+  anaDry = audioCtx.createAnalyser(); anaDry.fftSize = 512;
+  anaWet = audioCtx.createAnalyser(); anaWet.fftSize = 512;
+  mediaSrc.connect(dryGain); dryGain.connect(anaDry); anaDry.connect(audioCtx.destination);
+  wetGain.connect(anaWet); anaWet.connect(audioCtx.destination);
+  startMeters();
+}
+
+async function ensureRnnoise() {
+  await ensureAudio();
+  if (rnReady || rnLoading) return;
+  rnLoading = true;
+  $('rn-sub').textContent = 'Loading the noise model…';
+  try {
+    const wasmBinary = await (await fetch(RN_WASM)).arrayBuffer();
+    await audioCtx.audioWorklet.addModule(RN_WORKLET);
+    rnNode = new AudioWorkletNode(audioCtx, RN_NAME, {
+      processorOptions: { wasmBinary, maxChannels: 2 },
+      outputChannelCount: [2],
+    });
+    mediaSrc.connect(rnNode); rnNode.connect(wetGain);
+    // The processor instantiates its WASM asynchronously and emits silence until it is
+    // ready, so nothing is routed through it until we know it can actually pass audio.
+    await new Promise(r => setTimeout(r, 400));
+    rnReady = true;
+    window._rnnoiseReady = true;
+    $('rn-sub').textContent = 'Toggle while it plays to A/B it';
+  } catch (e) {
+    $('rn-sub').textContent = 'Noise model unavailable: ' + e.message;
+  } finally { rnLoading = false; }
+}
+
+async function toggleNoise() {
+  S.denoise = !S.denoise;
+  $('sw-noise').classList.toggle('on', S.denoise);
+  updateSummary();
+  if (S.denoise) await ensureRnnoise(); else await ensureAudio();
+  if (!audioCtx) return;
+  audioCtx.resume();
+  const t = audioCtx.currentTime, R = 0.04;
+  const wet = (S.denoise && rnReady) ? 1 : 0;
+  dryGain.gain.cancelScheduledValues(t); wetGain.gain.cancelScheduledValues(t);
+  dryGain.gain.setTargetAtTime(1 - wet, t, R);
+  wetGain.gain.setTargetAtTime(wet, t, R);
+}
+window.toggleNoise = toggleNoise;
+
+function startMeters() {
+  const bufD = new Uint8Array(anaDry.fftSize), bufW = new Uint8Array(anaWet.fftSize);
+  const rms = (ana, buf) => {
+    ana.getByteTimeDomainData(buf);
+    let s = 0; for (let i = 0; i < buf.length; i++) { const v = (buf[i] - 128) / 128; s += v * v; }
+    return Math.sqrt(s / buf.length);
+  };
+  const loop = () => {
+    if (!audioCtx) return;
+    const d = rms(anaDry, bufD), w = rms(anaWet, bufW);
+    window._meterDry = d; window._meterWet = w;
+    $('m-dry').style.width = Math.min(100, d * 320) + '%';
+    $('m-wet').style.width = Math.min(100, w * 320) + '%';
+    requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+/* ═══ 9. BACKDROP SCENES ══════════════════════════════════════════════════ */
+// Rendered here, in the browser, and shipped to the server as the actual image used at
+// export — so preview and export cannot drift apart.
+const SCENES = {
+  warm:   { a: '#3A2A1C', b: '#7A4B22', c: '#E0A05A', label: 'Warm Studio' },
+  news:   { a: '#0A1B2E', b: '#123A5C', c: '#2E7FB8', label: 'Newsroom' },
+  sunset: { a: '#2B1436', b: '#8E3B5E', c: '#E9744A', label: 'Sunset' },
+  green:  { a: '#0F2A1E', b: '#1E5C3C', c: '#4FA97A', label: 'Green Room' },
+};
+
+function renderScene(name, w, h) {
+  const s = SCENES[name] || SCENES.warm;
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, w * 0.35, h);
+  g.addColorStop(0, s.a); g.addColorStop(0.55, s.b); g.addColorStop(1, s.a);
+  x.fillStyle = g; x.fillRect(0, 0, w, h);
+  // A soft key light behind the shoulder, the thing that actually reads as "a studio".
+  const spot = x.createRadialGradient(w * 0.68, h * 0.30, 0, w * 0.68, h * 0.30, w * 0.55);
+  spot.addColorStop(0, s.c + 'CC'); spot.addColorStop(0.5, s.c + '33'); spot.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = spot; x.fillRect(0, 0, w, h);
+  const vig = x.createRadialGradient(w / 2, h / 2, h * 0.25, w / 2, h / 2, h * 0.95);
+  vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,0.55)');
+  x.fillStyle = vig; x.fillRect(0, 0, w, h);
+  return c;
+}
+
+function applyScene(name) {
+  const c = renderScene(name, 1280, 720);
+  gl.activeTexture(gl.TEXTURE2);
+  gl.bindTexture(gl.TEXTURE_2D, texBg);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+  S.bg.sceneCanvas = c;
+}
+
+/* ═══ 10. CONTROL WIRING ══════════════════════════════════════════════════ */
+function chipGroup(containerId, onPick) {
+  const box = $(containerId);
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    [...box.querySelectorAll('.chip')].forEach(c => c.classList.remove('active'));
+    b.classList.add('active');
+    onPick(b);
+    updateSummary();
+  });
+}
+
+chipGroup('bg-chips', (b) => {
+  S.bg.mode = b.dataset.bg;
+  if (b.dataset.color) S.bg.color = b.dataset.color;
+  if (b.dataset.scene) { S.bg.scene = b.dataset.scene; applyScene(b.dataset.scene); }
+  if (S.bg.mode !== 'off') ensureSegmenter();
+});
+chipGroup('mic-chips', (b) => { S.mic.style = b.dataset.mic; });
+chipGroup('ratio-chips', (b) => {
+  S.ratio = b.dataset.ratio;
+  if (S.ratio !== 'free') {
+    const [rw, rh] = S.ratio.split(':').map(Number);
+    const target = (rw / rh) * (S.srcH / S.srcW);
+    let w = Math.min(1, S.crop.w), h = w / target;
+    if (h > 1) { h = 1; w = h * target; }
+    S.crop = { x: (1 - w) / 2, y: (1 - h) / 2, w, h };
+  }
+});
+
+const GRADES = {
+  none:   { brightness: 0,     contrast: 1,    saturation: 1,    gamma: 1,    tint: [1, 1, 1] },
+  warm:   { brightness: 0.02,  contrast: 1.06, saturation: 1.15, gamma: 1,    tint: [1.12, 0.99, 0.88] },
+  cool:   { brightness: 0.01,  contrast: 1.06, saturation: 1.05, gamma: 1,    tint: [0.88, 0.99, 1.16] },
+  vivid:  { brightness: 0.03,  contrast: 1.15, saturation: 1.45, gamma: 1,    tint: [1, 1, 1] },
+  cine:   { brightness: -0.02, contrast: 1.20, saturation: 0.88, gamma: 1.05, tint: [0.97, 1.0, 1.06] },
+  bright: { brightness: 0.10,  contrast: 1.05, saturation: 1.10, gamma: 1.15, tint: [1, 1, 1] },
+  bw:     { brightness: 0.01,  contrast: 1.14, saturation: 0,    gamma: 1,    tint: [1, 1, 1] },
+};
+chipGroup('grade-chips', (b) => {
+  const g = GRADES[b.dataset.grade] || GRADES.none;
+  S.grade = { name: b.dataset.grade, ...g, tint: [...g.tint] };
+  $('sl-bright').value = Math.round(g.brightness * 100);
+  $('sl-contrast').value = Math.round(g.contrast * 100);
+  $('sl-sat').value = Math.round(g.saturation * 100);
+  syncSliderLabels();
+});
+
+function slider(id, valId, apply) {
+  const el = $(id);
+  const run = () => { $(valId).textContent = el.value; apply(Number(el.value)); updateSummary(); };
+  el.addEventListener('input', run);
+  return run;
+}
+slider('sl-feather', 'v-feather', v => S.feather = v / 100);
+slider('sl-micside', 'v-micside', v => S.mic.side = v / 100);
+slider('sl-michgt', 'v-michgt', v => S.mic.height = v);
+slider('sl-micsize', 'v-micsize', v => S.mic.size = v / 100);
+slider('sl-bright', 'v-bright', v => { S.grade.brightness = v / 100; S.grade.name = 'custom'; });
+slider('sl-contrast', 'v-contrast', v => { S.grade.contrast = v / 100; S.grade.name = 'custom'; });
+slider('sl-sat', 'v-sat', v => { S.grade.saturation = v / 100; S.grade.name = 'custom'; });
+function syncSliderLabels() {
+  $('v-bright').textContent = $('sl-bright').value;
+  $('v-contrast').textContent = $('sl-contrast').value;
+  $('v-sat').textContent = $('sl-sat').value;
+}
+
+window.toggleMic = () => {
+  S.mic.on = !S.mic.on;
+  $('sw-mic').classList.toggle('on', S.mic.on);
+  if (S.mic.on) ensureSegmenter();
+  updateSummary();
+};
+window.toggleCrop = () => {
+  S.cropOn = !S.cropOn;
+  $('sw-crop').classList.toggle('on', S.cropOn);
+  $('stage-badge').textContent = S.cropOn ? 'CROP — DRAG THE HANDLES' : 'PREVIEW';
+  sizeCanvases();
+  updateSummary();
+};
+window.resetCrop = () => { S.crop = { x: 0, y: 0, w: 1, h: 1 }; sizeCanvases(); updateSummary(); };
+
+/* ═══ 11. EXPORT PLAN ═════════════════════════════════════════════════════ */
+function cropChanged() { const c = S.crop; return c.x > 0.002 || c.y > 0.002 || c.w < 0.998 || c.h < 0.998; }
+function gradeChanged() {
+  const g = S.grade;
+  return Math.abs(g.brightness) > 0.001 || Math.abs(g.contrast - 1) > 0.001 ||
+         Math.abs(g.saturation - 1) > 0.001 || Math.abs(g.gamma - 1) > 0.001 ||
+         g.tint.some(t => Math.abs(t - 1) > 0.001);
+}
+
+function buildPlan() {
+  const out = exportSize();
+  const plan = { keep: keepSegments(), source_duration: S.duration, output: { w: out.w, h: out.h } };
+  if (cropChanged()) {
+    plan.crop = { x: +S.crop.x.toFixed(5), y: +S.crop.y.toFixed(5), w: +S.crop.w.toFixed(5), h: +S.crop.h.toFixed(5) };
+  }
+  if (gradeChanged()) {
+    plan.color = {
+      brightness: +S.grade.brightness.toFixed(4), contrast: +S.grade.contrast.toFixed(4),
+      saturation: +S.grade.saturation.toFixed(4), gamma: +S.grade.gamma.toFixed(4),
+      tint: S.grade.tint.map(t => +t.toFixed(4)),
+    };
+  }
+  if (S.denoise) plan.denoise = true;
+  if (S.bg.mode !== 'off') {
+    plan.background = { mode: S.bg.mode === 'scene' ? 'image' : S.bg.mode, color: S.bg.color };
+    if (S.bg.mode === 'scene') {
+      plan.background.image_b64 = renderScene(S.bg.scene, out.w, out.h).toDataURL('image/jpeg', 0.9).split(',')[1];
+    }
+  }
+  if (S.mic.on) {
+    // One stabilised anchor rather than a per-frame track: the median of every position
+    // seen while the user was previewing. See the report — a full track would have to be
+    // transported and replayed frame by frame server-side.
+    const a = medianAnchor() || micAnchor();
+    if (a) {
+      const px = Math.max(24, Math.round(a.s * out.h));
+      const c = document.createElement('canvas');
+      c.width = Math.round(px * 1.4); c.height = Math.round(px * 2.6);
+      drawMic(c.getContext('2d'), c.width / 2, c.height * 0.42, px, S.mic.style);
+      plan.mic = {
+        x: +a.x.toFixed(4), y: +a.y.toFixed(4), style: S.mic.style,
+        // Top-left offset in output pixels, so the server never has to know how the
+        // artwork sits inside its own canvas.
+        ox: Math.round(a.x * out.w - c.width / 2),
+        oy: Math.round(a.y * out.h - c.height * 0.42),
+        w: c.width, h: c.height,
+        png_b64: c.toDataURL('image/png').split(',')[1],
+      };
+    }
+  }
+  return plan;
+}
+window.buildPlan = buildPlan;
+
+function updateSummary() {
+  const bits = [];
+  if (S.bg.mode !== 'off') bits.push('<b>' + (S.bg.mode === 'blur' ? 'Blurred background'
+    : S.bg.mode === 'scene' ? (SCENES[S.bg.scene] || {}).label + ' backdrop' : 'Solid ' + S.bg.color + ' backdrop') + '</b>');
+  if (S.mic.on) bits.push('<b>' + S.mic.style + ' mic</b>');
+  if (S.denoise) bits.push('<b>noise reduction</b>');
+  if (cropChanged()) bits.push('<b>crop</b> to ' + Math.round(S.crop.w * S.srcW) + '×' + Math.round(S.crop.h * S.srcH));
+  if (S.cuts.length) {
+    const removed = S.cuts.reduce((a, c) => a + (c.end - c.start), 0);
+    bits.push('<b>' + S.cuts.length + ' cut' + (S.cuts.length > 1 ? 's' : '') + '</b> (−' + removed.toFixed(1) + 's)');
+  }
+  if (gradeChanged()) bits.push('<b>' + (S.grade.name === 'custom' ? 'custom grade' : S.grade.name + ' grade') + '</b>');
+  $('export-summary').innerHTML = bits.length ? 'Export will apply: ' + bits.join(', ') + '.' : 'Nothing changed yet.';
+
+  // Honest estimate. The filtergraph pass runs comfortably faster than realtime; background
+  // replacement is measured at roughly 32 s per minute of 720p on the 4-vCPU service.
+  const keptMin = (keepSegments().reduce((a, [s, e]) => a + (e - s), 0) || S.duration) / 60;
+  let secs = 20 + keptMin * 18;
+  if (S.bg.mode !== 'off') secs += keptMin * 32;
+  if (S.denoise) secs += keptMin * 8;
+  const up = S.file ? (S.file.size / (1.5 * 1024 * 1024)) : 0;   // ~1.5 MB/s is a fair African-broadband assumption
+  $('export-est').textContent = `Rough estimate: ~${Math.ceil((secs + up) / 60)} min total (upload + render)` +
+    (S.bg.mode !== 'off' ? ' — the studio background is the slow part.' : '');
+  renderTimeline();
+}
+
+/* ═══ 12. UPLOAD + EXPORT ═════════════════════════════════════════════════ */
+// Plain fetch() has no timeout and reports no upload progress — the exact gap that made
+// other uploads on this site look hung. XHR with a stall timer that only fires when bytes
+// genuinely stop moving, so a slow-but-working upload is never mistaken for a dead one.
+function uploadDirectXHR(file, presignedUrl, onProgress) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', presignedUrl);
+    xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
+    const STALL_TIMEOUT_MS = 45000;
+    let stallTimer = null;
+    const arm = () => {
+      clearTimeout(stallTimer);
+      stallTimer = setTimeout(() => {
+        xhr.abort();
+        reject(new Error('Upload stalled — no data sent for 45s. Check your connection and try again.'));
+      }, STALL_TIMEOUT_MS);
+    };
+    arm();
+    xhr.upload.onprogress = (e) => { arm(); if (e.lengthComputable && onProgress) onProgress(Math.round(e.loaded / e.total * 100)); };
+    xhr.onload = () => { clearTimeout(stallTimer); (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error('Upload failed: ' + xhr.status)); };
+    xhr.onerror = () => { clearTimeout(stallTimer); reject(new Error('Upload failed — could not reach the upload server.')); };
+    xhr.send(file);
+  });
+}
+
+let pollTimer = null, exportStartedAt = 0;
+function setStatus(msg, cls) {
+  const el = $('export-status');
+  el.className = 'progress-status' + (cls ? ' ' + cls : '');
+  el.textContent = msg;
+}
+function setBar(p) { $('export-bar').style.width = Math.max(0, Math.min(100, p)) + '%'; }
+
+async function runExport() {
+  if (!S.file) { alert('Load a video first'); return; }
+  if (!keepSegments().length) { setStatus('[x] Everything is cut — keep at least one piece of the video.', 'error'); return; }
+  if (!window.currentUser) { showLogin(); return; }
+  if (window.checkAfriVidLimit && !await window.checkAfriVidLimit('studio_editor_export')) return;
+
+  clearInterval(pollTimer);
+  $('export-dl').style.display = 'none';
+  $('btn-export').disabled = true;
+  exportStartedAt = Date.now();
+  try {
+    setStatus('Preparing upload…'); setBar(2);
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 20000);
+    let signRes;
+    try {
+      signRes = await fetch(API + '/presign-upload', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: S.file.name, contentType: S.file.type || 'video/mp4' }),
+        signal: ctrl.signal,
+      });
+    } catch (e) {
+      throw new Error(e.name === 'AbortError' ? 'Could not reach the server (timed out).' : e.message);
+    } finally { clearTimeout(to); }
+    const sign = await signRes.json();
+    if (sign.error) throw new Error(sign.error);
+
+    await uploadDirectXHR(S.file, sign.presigned_url, (p) => {
+      setStatus('Uploading your video… ' + p + '%'); setBar(2 + p * 0.28);
+    });
+
+    setStatus('Rendering your edit on the server…'); setBar(32);
+    const res = await fetch(API + '/studio-export', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        job_id: sign.job_id, input_url: sign.public_url,
+        user_email: window.currentUser.email, user_id: window.currentUser.uid,
+        plan: buildPlan(),
+      }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    window._exportJobId = sign.job_id;
+    pollTimer = setInterval(() => pollExport(sign.job_id), 4000);
+  } catch (e) {
+    setStatus('[x] ' + e.message, 'error');
+    $('btn-export').disabled = false;
+  }
+}
+window.runExport = runExport;
+
+async function pollExport(jobId) {
+  try {
+    const r = await fetch(STATUS_URL + jobId);
+    const d = await r.json();
+    const mins = ((Date.now() - exportStartedAt) / 60000).toFixed(1);
+    if (d.status === 'completed' && d.output_url) {
+      clearInterval(pollTimer);
+      setBar(100);
+      setStatus(`Done in ${mins} min.`, 'ok');
+      const a = $('export-dl');
+      a.href = d.output_url; a.style.display = 'block';
+      $('btn-export').disabled = false;
+      window._exportDone = { url: d.output_url, minutes: +mins };
+    } else if (d.status === 'failed') {
+      clearInterval(pollTimer);
+      setStatus('[x] ' + (d.stage || 'Export failed'), 'error');
+      $('btn-export').disabled = false;
+    } else {
+      setBar(32 + (d.progress || 0) * 0.66);
+      setStatus(`${d.stage || 'Rendering'} — ${d.progress || 0}% · ${mins} min elapsed`);
+    }
+  } catch (e) { /* transient — next tick retries */ }
+}
+
+syncSliderLabels();
+window._pageReady = true;
+</script>
+</body>
+</html>
