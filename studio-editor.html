@@ -558,7 +558,13 @@ function fmtTime(s) { s = Math.max(0, s || 0); const m = Math.floor(s / 60); ret
 
 async function loadFile(file) {
   S.file = file;
-  startPreUpload(file);
+  // Uploading was previously kicked off here, immediately, running in the background while
+  // the segmentation model downloads/initializes and the WebGL preview loop starts up — all
+  // heavy concurrent work that the compressor's upload never has to contend with, since it
+  // only ever starts an upload once the page is otherwise idle. That's the one real
+  // difference between the two pages' upload code (both use the identical chunkedUpload()),
+  // and repeated real failures were specific to this page, not the compressor, so upload now
+  // starts only at Export time here too — the exact pattern already proven reliable.
   video.src = URL.createObjectURL(file);
   await new Promise((res, rej) => {
     video.onloadedmetadata = res;
@@ -1551,20 +1557,6 @@ function updateSummary() {
 // otherwise confirmed stable, which pointed at that specific cross-origin destination rather
 // than bandwidth. Routes through our own server in small, individually-retried pieces instead.
 
-// ── BACKGROUND PRE-UPLOAD ─────────────────────────────────────────────────
-// Preview never touches the server, so there is no reason Export should be the first time
-// the file leaves the browser. Started the moment a video loads, in parallel with the user's
-// live editing, so by the time they actually click Export the upload is very likely already
-// done.
-window._preUpload = null;
-window._preUploadProgress = 0;
-
-function startPreUpload(file) {
-  window._preUploadProgress = 0;
-  window._preUpload = chunkedUpload(API, file, (p) => { window._preUploadProgress = p; }, null)
-    .catch((e) => { console.log('[PreUpload] failed, export will retry its own upload:', e.message); return null; });
-}
-
 let pollTimer = null, exportStartedAt = 0;
 function setStatus(msg, cls) {
   const el = $('export-status');
@@ -1584,25 +1576,10 @@ async function runExport() {
   $('btn-export').disabled = true;
   exportStartedAt = Date.now();
   try {
-    setStatus('Preparing upload…'); setBar(2);
-    // Reuse the pre-upload kicked off the moment the video was loaded (see startPreUpload)
-    // — very likely already finished by now. If it's still running, show its live progress
-    // while waiting on the same promise rather than starting a second upload from scratch;
-    // if it failed outright (all 3 of its own retries exhausted), fall through to one more
-    // fresh attempt here rather than giving up on what it already tried.
-    let sign = null;
-    if (window._preUpload) {
-      const watcher = setInterval(() => {
-        setStatus('Uploading your video… ' + window._preUploadProgress + '%');
-        setBar(2 + window._preUploadProgress * 0.28);
-      }, 400);
-      try { sign = await window._preUpload; } finally { clearInterval(watcher); }
-    }
-    if (!sign) {
-      sign = await chunkedUpload(API, S.file, (p) => {
-        setStatus('Uploading your video… ' + p + '%'); setBar(2 + p * 0.28);
-      }, (msg) => { if (msg) setStatus(msg); });
-    }
+    setStatus('Uploading your video… 0%'); setBar(2);
+    const sign = await chunkedUpload(API, S.file, (p) => {
+      setStatus('Uploading your video… ' + p + '%'); setBar(2 + p * 0.28);
+    }, (msg) => { if (msg) setStatus(msg); });
 
     setStatus('Rendering your edit on the server…'); setBar(32);
     const res = await fetch(API + '/studio-export', {
