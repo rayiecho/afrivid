@@ -14,6 +14,7 @@ window.AFRIVID_LIMITS = {
   image_brand:        { max: 10, period: 'month', field: 'image_brand' },
   image_motion:       { max: 10, period: 'month', field: 'image_motion' },
   video_compress:     { max: 15, period: 'month', field: 'video_compress' },
+  studio_editor_export: { max: 3, period: 'month', field: 'studio_editor_export' },
 };
 
 function _getMonthKey() {
