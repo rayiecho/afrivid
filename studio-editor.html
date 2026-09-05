@@ -457,6 +457,7 @@ document.getElementById('login-modal').addEventListener('click', function(e) { i
 </script>
 
 <script src="limits.js"></script>
+<script src="upload.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════════════
    AfriVid Studio Editor
@@ -1545,79 +1546,22 @@ function updateSummary() {
 }
 
 /* ═══ 12. UPLOAD + EXPORT ═════════════════════════════════════════════════ */
-// Plain fetch() has no timeout and reports no upload progress — the exact gap that made
-// other uploads on this site look hung. XHR with a stall timer that only fires when bytes
-// genuinely stop moving, so a slow-but-working upload is never mistaken for a dead one.
-function uploadDirectXHR(file, presignedUrl, onProgress) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', presignedUrl);
-    xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
-    const STALL_TIMEOUT_MS = 45000;
-    let stallTimer = null;
-    const arm = () => {
-      clearTimeout(stallTimer);
-      stallTimer = setTimeout(() => {
-        xhr.abort();
-        reject(new Error('Upload stalled — no data sent for 45s. Check your connection and try again.'));
-      }, STALL_TIMEOUT_MS);
-    };
-    arm();
-    xhr.upload.onprogress = (e) => { arm(); if (e.lengthComputable && onProgress) onProgress(Math.round(e.loaded / e.total * 100)); };
-    xhr.onload = () => { clearTimeout(stallTimer); (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error('Upload failed: ' + xhr.status)); };
-    xhr.onerror = () => { clearTimeout(stallTimer); reject(new Error('Upload failed — could not reach the upload server.')); };
-    xhr.send(file);
-  });
-}
-
-// A stall (see uploadDirectXHR above) is very often a transient network hiccup, not a dead
-// connection — retrying the whole upload usually just works. Wraps presign + upload as one
-// unit since a fresh attempt needs a fresh presigned URL (the old one may be stale/consumed).
-async function uploadOnce(file, onProgress) {
-  const ctrl = new AbortController();
-  const to = setTimeout(() => ctrl.abort(), 20000);
-  let signRes;
-  try {
-    signRes = await fetch(API + '/presign-upload', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4' }),
-      signal: ctrl.signal,
-    });
-  } catch (e) {
-    throw new Error(e.name === 'AbortError' ? 'Could not reach the server (timed out).' : e.message);
-  } finally { clearTimeout(to); }
-  const sign = await signRes.json();
-  if (sign.error) throw new Error(sign.error);
-  await uploadDirectXHR(file, sign.presigned_url, onProgress);
-  return sign;
-}
-
-async function uploadWithRetry(file, attempts, onProgress, onStatus) {
-  let lastErr;
-  for (let i = 0; i < attempts; i++) {
-    try {
-      if (onStatus) onStatus(i === 0 ? null : `Retrying upload (attempt ${i + 1}/${attempts})…`);
-      return await uploadOnce(file, onProgress);
-    } catch (e) {
-      lastErr = e;
-      if (i < attempts - 1) await new Promise(r => setTimeout(r, 2000));
-    }
-  }
-  throw lastErr;
-}
+// Upload itself goes through chunkedUpload() (see upload.js) — a direct browser PUT to R2's
+// own storage domain was failing to send any data at all for some users on connections
+// otherwise confirmed stable, which pointed at that specific cross-origin destination rather
+// than bandwidth. Routes through our own server in small, individually-retried pieces instead.
 
 // ── BACKGROUND PRE-UPLOAD ─────────────────────────────────────────────────
 // Preview never touches the server, so there is no reason Export should be the first time
 // the file leaves the browser. Started the moment a video loads, in parallel with the user's
 // live editing, so by the time they actually click Export the upload is very likely already
-// done — and if a transient stall happens, there is a full editing session's worth of time
-// to quietly retry before it would ever surface as a failure.
+// done.
 window._preUpload = null;
 window._preUploadProgress = 0;
 
 function startPreUpload(file) {
   window._preUploadProgress = 0;
-  window._preUpload = uploadWithRetry(file, 3, (p) => { window._preUploadProgress = p; }, null)
+  window._preUpload = chunkedUpload(API, file, (p) => { window._preUploadProgress = p; }, null)
     .catch((e) => { console.log('[PreUpload] failed, export will retry its own upload:', e.message); return null; });
 }
 
@@ -1655,7 +1599,7 @@ async function runExport() {
       try { sign = await window._preUpload; } finally { clearInterval(watcher); }
     }
     if (!sign) {
-      sign = await uploadWithRetry(S.file, 3, (p) => {
+      sign = await chunkedUpload(API, S.file, (p) => {
         setStatus('Uploading your video… ' + p + '%'); setBar(2 + p * 0.28);
       }, (msg) => { if (msg) setStatus(msg); });
     }

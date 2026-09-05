@@ -310,6 +310,7 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
 </script>
 
 <script src="limits.js"></script>
+<script src="upload.js"></script>
 <script>
 const API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
 const DOWNLOAD_PROXY = 'https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url=';
@@ -368,86 +369,10 @@ function setProgress(pct, text, isError) {
   status.textContent = text;
 }
 
-function uploadDirect(file, presignedUrl) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', presignedUrl);
-    xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
-
-    // A large file on a slow connection can legitimately take many minutes, so this can't be
-    // a fixed total-duration timeout — but if NO progress happens for a while, the upload is
-    // stalled (a dropped connection, a dead presigned URL) rather than just slow, and the
-    // previous code had no way to tell the difference from "still working": it would sit on
-    // a frozen progress bar forever with zero feedback, which is exactly what looked like a
-    // silent hang. Reset a stall timer on every real progress tick instead.
-    const STALL_TIMEOUT_MS = 45000;
-    let stallTimer = null;
-    const armStallTimer = () => {
-      clearTimeout(stallTimer);
-      stallTimer = setTimeout(() => {
-        xhr.abort();
-        reject(new Error('Upload stalled — no data sent for 45s. Check your connection and try again.'));
-      }, STALL_TIMEOUT_MS);
-    };
-    armStallTimer();
-
-    xhr.upload.onprogress = (e) => {
-      armStallTimer();
-      if (e.lengthComputable) {
-        const pct = Math.round((e.loaded / e.total) * 40); // upload = first 40%
-        setProgress(pct, `Uploading... ${Math.round((e.loaded / e.total) * 100)}%`);
-      }
-    };
-    xhr.onload = () => {
-      clearTimeout(stallTimer);
-      (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error('Upload failed: ' + xhr.status));
-    };
-    xhr.onerror = () => {
-      clearTimeout(stallTimer);
-      reject(new Error('Upload failed — could not reach the upload server. Check your connection and try again.'));
-    };
-    xhr.send(file);
-  });
-}
-
-// A stall (see uploadDirect's stall timer) is very often a transient network hiccup, not a
-// dead connection — retrying the whole upload usually just works. Wraps presign + upload as
-// one unit since a fresh attempt needs a fresh presigned URL (the old one may be stale).
-async function presignAndUpload(file, onProgress) {
-  const presignController = new AbortController();
-  const presignTimeout = setTimeout(() => presignController.abort(), 20000);
-  let presignRes;
-  try {
-    presignRes = await fetch(`${API}/presign-upload`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4' }),
-      signal: presignController.signal,
-    });
-  } catch (e) {
-    throw new Error(e.name === 'AbortError' ? 'Could not reach the server (timed out). Check your connection and try again.' : e.message);
-  } finally {
-    clearTimeout(presignTimeout);
-  }
-  const presignData = await presignRes.json();
-  if (presignData.error) throw new Error(presignData.error);
-  await uploadDirect(file, presignData.presigned_url);   // reports its own progress via setProgress
-  return presignData;
-}
-
-async function uploadWithRetry(file, attempts, onStatus) {
-  let lastErr;
-  for (let i = 0; i < attempts; i++) {
-    try {
-      if (onStatus && i > 0) onStatus(`Retrying upload (attempt ${i + 1}/${attempts})...`);
-      return await presignAndUpload(file);
-    } catch (e) {
-      lastErr = e;
-      if (i < attempts - 1) await new Promise(r => setTimeout(r, 2000));
-    }
-  }
-  throw lastErr;
-}
+// Upload itself now goes through chunkedUpload() (see upload.js) — a direct browser PUT to
+// R2's own storage domain was failing to send any data at all for some users on connections
+// otherwise confirmed stable, which pointed at that specific cross-origin destination rather
+// than bandwidth. Routes through our own server in small, individually-retried pieces instead.
 
 window.startCompress = async function() {
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('video_compress'))) return;
@@ -458,16 +383,16 @@ window.startCompress = async function() {
   const originalSize = chosenFile.size;
 
   try {
-    setProgress(2, 'Preparing upload...');
-    // A single stall used to be a hard failure the user had to manually retry — most stalls
-    // are a transient network hiccup, so retry a couple of times on our own first.
-    const presignData = await uploadWithRetry(chosenFile, 3, (msg) => setProgress(2, msg));
+    setProgress(2, 'Uploading... 0%');
+    const uploadResult = await chunkedUpload(API, chosenFile, (pct) => {
+      setProgress(2 + pct * 0.40, `Uploading... ${pct}%`);
+    }, (msg) => setProgress(2, msg));
     setProgress(42, 'Starting compression...');
 
     const startRes = await fetch(`${API}/compress-video`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input_url: presignData.public_url, level }),
+      body: JSON.stringify({ input_url: uploadResult.public_url, level }),
     });
     const startData = await startRes.json();
     if (startData.error) throw new Error(startData.error);
