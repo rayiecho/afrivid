@@ -363,6 +363,10 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
         <div class="slider-row"><label>Brightness</label><input type="range" id="sl-bright" min="-40" max="40" value="0"><span class="val" id="v-bright">0</span></div>
         <div class="slider-row"><label>Contrast</label><input type="range" id="sl-contrast" min="50" max="180" value="100"><span class="val" id="v-contrast">100</span></div>
         <div class="slider-row"><label>Saturation</label><input type="range" id="sl-sat" min="0" max="250" value="100"><span class="val" id="v-sat">100</span></div>
+        <div class="toggle-row" style="margin-top:0.9rem;">
+          <div><div class="toggle-label">Enhance quality</div><div class="toggle-sub">Sharpen and boost detail — makes soft/blurry footage more recognizable. The sharpening itself only shows in the exported video, not this preview.</div></div>
+          <div class="switch" id="sw-enhance" onclick="toggleEnhance()"></div>
+        </div>
       </div>
 
       <div class="card">
@@ -555,6 +559,7 @@ const S = {
   cuts: [],                       // [{start,end}] removed ranges, in source seconds
   sel: null,                      // {start,end} current timeline selection
   grade: { name: 'none', brightness: 0, contrast: 1, saturation: 1, gamma: 1, tint: [1, 1, 1] },
+  enhance: false,
 };
 window.S = S;
 
@@ -637,6 +642,9 @@ uniform float uFloorY;       // frame fraction (0=top,1=bottom) where the real f
                               // starts being kept instead of replaced — 1.0 disables it
 uniform float uContrast, uBrightness, uSaturation, uGamma;
 uniform vec3  uTint;
+uniform float uEnhance;      // 0 or 1 — approximate preview of the export-side sharpen+boost;
+                              // the sharpen itself only happens at export (a real convolution
+                              // pass isn't worth the per-frame cost just for a live preview)
 
 void main(){
   vec2 uv = uCrop.xy + vUV * uCrop.zw;
@@ -672,6 +680,11 @@ void main(){
   float l = dot(col, vec3(0.299, 0.587, 0.114));
   col = mix(vec3(l), col, uSaturation);
   col = col * uTint;
+  if (uEnhance > 0.5) {
+    col = clamp((col - 0.5) * 1.08 + 0.5, 0.0, 1.0);
+    float le = dot(col, vec3(0.299, 0.587, 0.114));
+    col = mix(vec3(le), col, 1.12);
+  }
   fragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
 }`;
 
@@ -701,7 +714,7 @@ function initGL() {
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   for (const n of ['uVideo','uMask','uBgImage','uCrop','uBgMode','uBgColor','uUseMask',
-                   'uBlurLod','uFeather','uFloorY','uContrast','uBrightness','uSaturation','uGamma','uTint'])
+                   'uBlurLod','uFeather','uFloorY','uContrast','uBrightness','uSaturation','uGamma','uTint','uEnhance'])
     U[n] = gl.getUniformLocation(prog, n);
 
   const mkTex = (unit) => {
@@ -786,6 +799,7 @@ function drawGL() {
   gl.uniform1f(U.uSaturation, g.saturation);
   gl.uniform1f(U.uGamma, g.gamma);
   gl.uniform3f(U.uTint, g.tint[0], g.tint[1], g.tint[2]);
+  gl.uniform1f(U.uEnhance, S.enhance ? 1 : 0);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 
@@ -1612,6 +1626,11 @@ window.toggleCrop = () => {
   sizeCanvases();
   updateSummary();
 };
+window.toggleEnhance = () => {
+  S.enhance = !S.enhance;
+  $('sw-enhance').classList.toggle('on', S.enhance);
+  updateSummary();
+};
 window.resetCrop = () => { S.crop = { x: 0, y: 0, w: 1, h: 1 }; sizeCanvases(); updateSummary(); };
 
 /* ═══ 11. EXPORT PLAN ═════════════════════════════════════════════════════ */
@@ -1637,6 +1656,7 @@ function buildPlan() {
     };
   }
   if (S.denoise) plan.denoise = true;
+  if (S.enhance) plan.enhance = true;
   if (S.bg.mode !== 'off') {
     plan.background = { mode: S.bg.mode === 'scene' ? 'image' : S.bg.mode, color: S.bg.color };
     if (S.bg.mode === 'scene') {
