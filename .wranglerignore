@@ -1,0 +1,5 @@
+# .claude/ holds agent worktrees (git worktree checkouts used for isolated background work) —
+# each one is a full nested copy of the repo's tracked files. Without this, wrangler scans
+# every worktree's copy of every site file on each deploy, and the scanned-file count only
+# grows as more worktrees are used over time.
+.claude/
