@@ -373,14 +373,39 @@ function uploadDirect(file, presignedUrl) {
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', presignedUrl);
     xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
+
+    // A large file on a slow connection can legitimately take many minutes, so this can't be
+    // a fixed total-duration timeout — but if NO progress happens for a while, the upload is
+    // stalled (a dropped connection, a dead presigned URL) rather than just slow, and the
+    // previous code had no way to tell the difference from "still working": it would sit on
+    // a frozen progress bar forever with zero feedback, which is exactly what looked like a
+    // silent hang. Reset a stall timer on every real progress tick instead.
+    const STALL_TIMEOUT_MS = 45000;
+    let stallTimer = null;
+    const armStallTimer = () => {
+      clearTimeout(stallTimer);
+      stallTimer = setTimeout(() => {
+        xhr.abort();
+        reject(new Error('Upload stalled — no data sent for 45s. Check your connection and try again.'));
+      }, STALL_TIMEOUT_MS);
+    };
+    armStallTimer();
+
     xhr.upload.onprogress = (e) => {
+      armStallTimer();
       if (e.lengthComputable) {
         const pct = Math.round((e.loaded / e.total) * 40); // upload = first 40%
         setProgress(pct, `Uploading... ${Math.round((e.loaded / e.total) * 100)}%`);
       }
     };
-    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error('Upload failed: ' + xhr.status));
-    xhr.onerror = () => reject(new Error('Upload failed'));
+    xhr.onload = () => {
+      clearTimeout(stallTimer);
+      (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error('Upload failed: ' + xhr.status));
+    };
+    xhr.onerror = () => {
+      clearTimeout(stallTimer);
+      reject(new Error('Upload failed — could not reach the upload server. Check your connection and try again.'));
+    };
     xhr.send(file);
   });
 }
@@ -395,11 +420,26 @@ window.startCompress = async function() {
 
   try {
     setProgress(2, 'Preparing upload...');
-    const presignRes = await fetch(`${API}/presign-upload`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: chosenFile.name, contentType: chosenFile.type || 'video/mp4' }),
-    });
+    // This call never touches the file itself (just its name/type), so it should always be
+    // fast regardless of file size — plain fetch() has no timeout at all, so a slow network
+    // path or a cold backend instance previously left this step hanging indefinitely with the
+    // bar frozen on "Preparing upload..." and zero feedback that anything was wrong.
+    const presignController = new AbortController();
+    const presignTimeout = setTimeout(() => presignController.abort(), 20000);
+    let presignRes;
+    try {
+      presignRes = await fetch(`${API}/presign-upload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: chosenFile.name, contentType: chosenFile.type || 'video/mp4' }),
+        signal: presignController.signal,
+      });
+    } catch (e) {
+      if (e.name === 'AbortError') throw new Error('Could not reach the server (timed out). Check your connection and try again.');
+      throw e;
+    } finally {
+      clearTimeout(presignTimeout);
+    }
     const presignData = await presignRes.json();
     if (presignData.error) throw new Error(presignData.error);
 
