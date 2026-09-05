@@ -1035,29 +1035,73 @@ function studioLog(panelName, msg, color) {
   if (el) el.innerHTML = `<span style="color:${color || '#F5A623'}">${msg}</span>`;
 }
 
+// Plain fetch() has no timeout and gives no upload progress — the exact gap that made the
+// video compressor's upload look "hung" with a large file and zero feedback. Same fix here:
+// XHR for real progress plus a stall timer that only fires when bytes genuinely stop moving
+// (so a slow-but-working upload of a large file is never mistaken for a dead one), and an
+// abort-based timeout on the presign call, which should always be fast regardless of file
+// size since it never touches the file itself.
+function uploadDirectXHR(file, presignedUrl, onProgress) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', presignedUrl);
+    xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
+    const STALL_TIMEOUT_MS = 45000;
+    let stallTimer = null;
+    const armStallTimer = () => {
+      clearTimeout(stallTimer);
+      stallTimer = setTimeout(() => {
+        xhr.abort();
+        reject(new Error('Upload stalled — no data sent for 45s. Check your connection and try again.'));
+      }, STALL_TIMEOUT_MS);
+    };
+    armStallTimer();
+    xhr.upload.onprogress = (e) => {
+      armStallTimer();
+      if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.onload = () => {
+      clearTimeout(stallTimer);
+      (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error('Upload failed: ' + xhr.status));
+    };
+    xhr.onerror = () => {
+      clearTimeout(stallTimer);
+      reject(new Error('Upload failed — could not reach the upload server. Check your connection and try again.'));
+    };
+    xhr.send(file);
+  });
+}
+
 async function runStudioUpgrade(actionKey, panelName, extra) {
   if (!currentVideoFile) { alert('Upload a video first'); return; }
   if (!window.currentUser) { showLogin('Sign in to use AI features'); return; }
   if (!await checkAfriVidLimit('aieditor_session')) return;
 
   clearInterval(window._studioPollInterval);
-  studioLog(panelName, '[~] Uploading video...');
+  studioLog(panelName, '[~] Preparing upload...');
   try {
-    const signRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/presign-upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: currentVideoFile.name, contentType: currentVideoFile.type || 'video/mp4' }),
-    });
+    const presignController = new AbortController();
+    const presignTimeout = setTimeout(() => presignController.abort(), 20000);
+    let signRes;
+    try {
+      signRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/presign-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: currentVideoFile.name, contentType: currentVideoFile.type || 'video/mp4' }),
+        signal: presignController.signal,
+      });
+    } catch (e) {
+      if (e.name === 'AbortError') throw new Error('Could not reach the server (timed out). Check your connection and try again.');
+      throw e;
+    } finally {
+      clearTimeout(presignTimeout);
+    }
     const signData = await signRes.json();
     if (signData.error) throw new Error(signData.error);
     const { job_id, presigned_url, public_url } = signData;
 
-    const uploadRes = await fetch(presigned_url, {
-      method: 'PUT',
-      headers: { 'Content-Type': currentVideoFile.type || 'video/mp4' },
-      body: currentVideoFile,
-    });
-    if (!uploadRes.ok) throw new Error('Upload failed: ' + uploadRes.status);
+    studioLog(panelName, '[~] Uploading video... 0%');
+    await uploadDirectXHR(currentVideoFile, presigned_url, (pct) => studioLog(panelName, `[~] Uploading video... ${pct}%`));
 
     studioLog(panelName, '[~] Starting server processing — this can take a few minutes...');
     const body = Object.assign({
