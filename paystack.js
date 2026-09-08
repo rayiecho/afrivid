@@ -14,7 +14,13 @@
 // script's download.
 (function () {
   var API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
-  var INLINE_JS = 'https://js.paystack.co/v1/inline.js';
+  // v2 specifically — a real ES6 class exposing `new PaystackPop().checkout({...})`
+  // with onSuccess/onCancel hooks. v1/inline.js (the old URL this pointed at) still
+  // only exposes the static PaystackPop.setup({...}).openIframe() object form, which
+  // is not a constructor — confirmed by actually loading both scripts and inspecting
+  // what each assigns to window.PaystackPop, not assumed from documentation alone.
+  // Apple Pay requires v2.
+  var INLINE_JS = 'https://js.paystack.co/v2/inline.js';
 
   // Amounts are USD cents — the smallest unit, which is what Paystack expects and
   // what PAYSTACK_AMOUNT_PLANS in app.py maps back from if metadata is ever lost.
