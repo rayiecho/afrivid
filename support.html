@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support AfriVid — AfriVid Studio</title>
+<meta name="description" content="Support AfriVid Studio. A one-off donation to help grow Africa's tech infrastructure — no account required, no credits or plan involved.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#E08A2E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AfriVid">
+<link rel="apple-touch-icon" href="/images/logo.png">
+<style>
+/* AfriVid brand tokens — identical values to pricing.html/index.html, not a
+   new language. Committed light/cream design, no dark variant. */
+:root{
+  --cream:#FBF7EF;
+  --ink:#17140F;
+  --ink-70:rgba(23,20,15,0.70);
+  --ink-64:rgba(23,20,15,0.64);
+  --ink-50:rgba(23,20,15,0.50);
+  --line:rgba(23,20,15,0.10);
+  --line-soft:rgba(23,20,15,0.06);
+  --card:#FFFFFF;
+  --amber:#E08A2E;
+  --amber-deep:#C4701E;
+  --amber-text:#9C5918;
+  --amber-wash:rgba(224,138,46,0.08);
+  --amber-line:rgba(224,138,46,0.30);
+  --good:#2F7D53;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+
+.navbar{position:sticky;top:0;z-index:500;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
+.navbar-brand{display:flex;align-items:center;gap:0.6rem;text-decoration:none;}
+.navbar-brand img{height:36px;width:auto;object-fit:contain;}
+.navbar-badge{font-weight:800;font-size:0.95rem;letter-spacing:-0.01em;}
+.navbar-actions{display:flex;align-items:center;gap:0.5rem;}
+.btn-nav-tool{font-size:0.82rem;font-weight:700;padding:0.5rem 0.85rem;border-radius:9px;text-decoration:none;color:var(--ink-70);border:1px solid transparent;transition:background 0.18s,color 0.18s;}
+.btn-nav-tool:hover{background:rgba(23,20,15,0.05);color:var(--ink);}
+.btn-nav-cta{font-size:0.82rem;font-weight:800;padding:0.5rem 1rem;border-radius:9px;text-decoration:none;background:var(--amber);color:#fff;border:none;transition:background 0.18s;}
+.btn-nav-cta:hover{background:var(--amber-deep);}
+@media(max-width:820px){.navbar{padding:0.8rem 1rem;}.navbar-actions .btn-nav-tool{display:none;}}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 1.5rem;}
+.hero{text-align:center;padding:4.5rem 0 2.5rem;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-text);margin-bottom:1rem;}
+h1{font-size:clamp(2.1rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.02em;line-height:1.08;margin-bottom:1rem;}
+h1 em{font-style:normal;color:var(--amber-deep);}
+.hero p{color:var(--ink-64);font-size:1.02rem;line-height:1.65;max-width:600px;margin:0 auto;}
+
+section{padding:1.5rem 0 3.5rem;}
+
+/* Email — always shown. A signed-in visitor's own account email wins over it
+   automatically (see paystack.js openDonation()); this is only the fallback
+   for anyone who is not signed in, since Paystack always requires one. */
+.email-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem 1.6rem;margin-bottom:1.5rem;}
+.email-card label{display:block;font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-50);margin-bottom:0.55rem;}
+.email-card input{width:100%;font-family:'Syne',sans-serif;font-size:0.95rem;padding:0.75rem 0.9rem;border-radius:10px;border:1px solid var(--line);background:var(--cream);color:var(--ink);}
+.email-card input:focus{outline:none;border-color:var(--amber-line);}
+.email-note{margin-top:0.6rem;font-size:0.8rem;color:var(--ink-50);line-height:1.5;}
+
+.donate-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.9rem;}
+@media(max-width:720px){.donate-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:480px){.donate-grid{grid-template-columns:repeat(2,1fr);}}
+.donate-btn{display:flex;flex-direction:column;align-items:center;gap:0.25rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem 0.6rem;cursor:pointer;font-family:'Syne',sans-serif;transition:border-color 0.18s,background 0.18s,transform 0.12s;}
+.donate-btn:hover{border-color:var(--amber);background:var(--amber-wash);transform:translateY(-2px);}
+.donate-btn:active{transform:translateY(0);}
+.donate-usd{font-size:1.35rem;font-weight:800;color:var(--ink);}
+.donate-kes{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--ink-50);}
+.donate-btn:hover .donate-usd{color:var(--amber-deep);}
+
+.why{margin-top:2.5rem;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.7rem 1.8rem;}
+.why h2{font-size:1.2rem;font-weight:800;margin-bottom:0.7rem;}
+.why p{color:var(--ink-64);font-size:0.9rem;line-height:1.65;}
+.why p + p{margin-top:0.7rem;}
+
+.note{margin-top:1.5rem;font-size:0.82rem;color:var(--ink-50);line-height:1.6;text-align:center;}
+
+footer{border-top:1px solid var(--line);margin-top:2rem;padding:2.2rem 1.5rem;text-align:center;}
+footer p{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--ink-50);}
+footer nav{margin-bottom:0.9rem;}
+footer nav a{font-size:0.82rem;color:var(--ink-64);text-decoration:none;margin:0 0.7rem;}
+footer nav a:hover{color:var(--amber-deep);}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">
+    <img src="images/logo.png" alt="AfriVid Studio">
+    <div class="navbar-badge">AfriVid Studio</div>
+  </a>
+  <div class="navbar-actions">
+    <a href="pricing.html" class="btn-nav-tool">Pricing</a>
+    <a href="studio.html" class="btn-nav-cta">Start free</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Support AfriVid</div>
+    <h1>Help grow <em>Africa's tech infrastructure</em>.</h1>
+    <p>AfriVid is built for Africa, by Africans. A donation here buys nothing on
+       your account — no credits, no plan, no unlock — it just helps us keep
+       building. Pay with card, M&#8209;Pesa or bank transfer, signed in or not.</p>
+  </header>
+
+  <section>
+
+    <div class="email-card">
+      <label for="donate-email">Your email</label>
+      <input type="email" id="donate-email" placeholder="you@example.com" autocomplete="email">
+      <p class="email-note">Paystack needs this for your receipt. If you're signed in on this
+         device, your account email is used automatically and this is ignored.</p>
+    </div>
+
+    <div class="donate-grid" id="donate-grid">
+      <!-- Filled in by the script below from PRESETS, so the USD/KES figures can
+           never drift from the one shared rate in paystack.js. -->
+    </div>
+
+    <p class="note">Amounts are shown in USD with the KES equivalent underneath. Card
+       payments always work; M&#8209;Pesa and bank transfer switch on automatically if
+       you've set your currency to KES on <a href="pricing.html" style="color:var(--amber-text);">Pricing</a>.</p>
+
+    <div class="why">
+      <h2>Where this goes</h2>
+      <p>AfriVid runs real infrastructure — video rendering, storage and AI
+         generation — priced in dollars, for a continent that mostly earns and
+         pays in something else. Donations help cover that gap directly, and
+         help us keep the free tier free.</p>
+      <p>This is separate from any plan or credit purchase. It is recorded on
+         its own, grants no entitlement, and is never required to use AfriVid.</p>
+    </div>
+
+  </section>
+
+</div>
+
+<footer>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+  <p>&copy; 2026 AfriVid Studio. Built for Africa, by Africans.</p>
+</footer>
+
+<!-- paystack.js owns the checkout logic (avStartDonation), the currency rate
+     and every price string this page renders — no payment logic lives here. -->
+<script src="paystack.js"></script>
+<script>
+(function () {
+  // USD cents. Ascending, matches the framing copy above.
+  var PRESETS = [100, 300, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 50000];
+
+  function renderGrid() {
+    var rate = window.AFRIVID_USD_TO_KES || 130;
+    var grid = document.getElementById('donate-grid');
+    grid.innerHTML = '';
+    PRESETS.forEach(function (cents) {
+      var usd = cents / 100;
+      var kes = Math.round(usd * rate);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'donate-btn';
+      btn.innerHTML = '<span class="donate-usd">$' + usd + '</span>' +
+                      '<span class="donate-kes">KSh ' + kes.toLocaleString('en-US') + '</span>';
+      btn.addEventListener('click', function () {
+        var email = document.getElementById('donate-email').value;
+        window.avStartDonation(cents, email);
+      });
+      grid.appendChild(btn);
+    });
+  }
+  renderGrid();
+
+  // support.html has no [data-av-plan] buttons (a donation isn't a plan), so
+  // paystack.js's own wire() never calls prewarm() for this page. Do it
+  // ourselves at load — without this, the first donate click would fall onto
+  // the slow (awaiting) path and risk losing the click's "real gesture"
+  // status before Apple Pay/checkout ever opens.
+  if (window.avPrewarmCheckout) window.avPrewarmCheckout();
+})();
+</script>
+
+</body>
+</html>

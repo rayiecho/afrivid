@@ -167,6 +167,13 @@
     paystackInline().then(function (P) { cachedPop = P; }).catch(function () {});
   }
 
+  // support.html carries no [data-av-plan] buttons (a donation isn't a plan),
+  // so wire()'s own prewarm() call below never fires for it. Exposed so that
+  // page can warm the same three lookups itself at load — without this, its
+  // first donate click would fall onto the slow (awaiting) path and risk the
+  // exact gesture-loss bug documented above avStartCheckout.
+  window.avPrewarmCheckout = prewarm;
+
   function publicKey() {
     if (!keyPromise) {
       keyPromise = fetch(API + '/config/paystack-public-key')
@@ -495,6 +502,111 @@
     if (g !== 'ok') return;
 
     openCheckout(planId, plan, user, key, Pop);
+  }
+
+  // ── Donations ────────────────────────────────────────────────────────────────
+  // A donation is NOT a plan purchase: it is not in PLANS, it grants nothing
+  // (no credits, no tier, no tool unlock), and it works for a signed-in OR a
+  // fully anonymous visitor. The one thing Paystack always requires is an
+  // email — support.html supplies its own inline input for anyone who isn't
+  // signed in and passes the value in here; a signed-in user's own email
+  // always wins over it.
+  //
+  // metadata.donation = true (mirrored in metadata.plan = 'donation') is the
+  // convention /webhooks/paystack (app.py) checks BEFORE it ever looks at a
+  // real plan id, so this money is routed to credits.record_donation() and
+  // never anywhere near apply_upgrade().
+  function openDonation(amountUsdCents, email, user, key, Pop) {
+    var donorEmail = (user && user.email) || (email || '').trim();
+    if (!donorEmail) {
+      show('We need your email', 'Paystack requires an email address to send a receipt. ' +
+           'Enter one below and try again.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+      return;
+    }
+    if (!key) {
+      show('Payments coming online shortly',
+           'Card payment is not switched on yet. Nothing was charged. Please check back soon.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+      return;
+    }
+    if (!Pop) {
+      show('Could not open checkout',
+           'We could not reach Paystack just now. Nothing was charged — please check your ' +
+           'connection and try again.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+      return;
+    }
+
+    var cur = currency();
+    var kesAmount = Math.round((amountUsdCents / 100) * USD_TO_KES_RATE) * 100;
+    var amount = cur === 'KES' ? kesAmount : amountUsdCents;
+
+    // Same reference shape as avStartCheckout's — Paystack accepts only
+    // alphanumerics and - . = in a reference.
+    var reference = 'av-donate-' + Date.now() + '-' +
+                    Math.random().toString(36).replace(/[^a-z0-9]/g, '').slice(0, 6);
+
+    var metadata = {
+      donation: true,
+      plan: 'donation',
+      amount: amountUsdCents,
+      currency: cur,
+      custom_fields: [
+        { display_name: 'Donation', variable_name: 'donation', value: 'true' },
+      ],
+    };
+    if (user && user.uid) metadata.uid = user.uid;
+    if (user && user.email) metadata.email = user.email;
+
+    return new Pop().checkout({
+      key: key,
+      email: donorEmail,
+      amount: amount,
+      currency: cur,
+      ref: reference,
+      metadata: metadata,
+      onSuccess: function () {
+        // Nothing to confirm server-side — a donation grants no entitlement to
+        // poll for, unlike confirmUpgrade() above. Say thanks immediately.
+        show('Thank you!',
+             'Your support helps grow Africa’s tech infrastructure. We appreciate it.',
+             [{ label: 'Close', primary: true, onClick: hide }]);
+      },
+      onCancel: function () {
+        // Closing the Paystack window is not a failure and not a donation.
+      },
+    }).catch(function (e) {
+      console.warn('[Donate] checkout failed:', e && e.message);
+      show('Could not open checkout',
+           'We could not start Paystack checkout just now. Nothing was charged — please ' +
+           'try again in a moment.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+    });
+  }
+
+  // Same two-path shape as avStartCheckout above, and for the same reason:
+  // the fast path calls .checkout() with ZERO awaits between the click and
+  // opening it, so a real user gesture is still live when Apple Pay needs it.
+  // Unlike avStartCheckout's gate(), a missing cachedUser does not block this
+  // path — an anonymous donor is a normal case, not a fallback.
+  window.avStartDonation = function (amountUsdCents, email) {
+    amountUsdCents = parseInt(amountUsdCents, 10) || 0;
+    if (amountUsdCents <= 0) { console.error('[Donate] bad amount', amountUsdCents); return; }
+
+    if (cachedKey && cachedPop) {
+      openDonation(amountUsdCents, email, cachedUser, cachedKey, cachedPop);
+      return;
+    }
+    slowStartDonation(amountUsdCents, email);
+  };
+
+  async function slowStartDonation(amountUsdCents, email) {
+    var user = await currentUser().catch(function () { return null; });
+    var key = await publicKey();
+    var Pop = null;
+    try { Pop = await paystackInline(); } catch (e) { Pop = null; }
+    openDonation(amountUsdCents, email, user, key, Pop);
   }
 
   // ── Fallback for the shared limit gate ──────────────────────────────────────
