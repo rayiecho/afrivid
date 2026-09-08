@@ -775,7 +775,12 @@ window.avSyncPayment = async function (useRef) {
     msg.className = 'billing-sync-msg err'; msg.textContent = 'Sign in first.'; msg.style.display = 'block';
     return;
   }
-  const body = {};
+  // user_email, not just the Authorization header: credits.identify() (shared
+  // by every billing route) only ever reads email from this field, even on a
+  // verified token — it does not decode the email claim out of the token
+  // itself. Omitting this is exactly why the email-search path failed with
+  // "this account has no email to search by" despite being signed in.
+  const body = { user_email: billingUser.email || '' };
   if (useRef) {
     const ref = (document.getElementById('billing-sync-ref').value || '').trim();
     if (!ref) return;
