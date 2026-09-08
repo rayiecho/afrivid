@@ -506,22 +506,27 @@ window._feedbackLoaded = false;
 
         <div class="grid-2">
           <div class="card">
-            <div class="card-title">BETA CONTROLS</div>
+            <div class="card-title">USAGE CONTROLS</div>
             <div class="form-group">
               <div class="form-label">VIDEO LIMIT PER USER</div>
               <div class="flex gap-1">
-                <input type="number" class="form-input" id="beta-limit" value="10" min="1" max="100" style="width:100px;">
+                <input type="number" class="form-input" id="usage-limit" value="10" min="1" max="100" style="width:100px;">
                 <button class="btn btn-gold btn-sm" onclick="saveBetaLimit()">Save</button>
               </div>
             </div>
             <div class="form-group">
-              <div class="form-label">BETA MODE</div>
+              <div class="form-label">LIMIT MODE</div>
               <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
-                <input type="checkbox" id="beta-toggle" checked style="width:18px;height:18px;">
-                <span style="font-size:0.85rem;">Beta limits active</span>
+                <input type="checkbox" id="usage-toggle" checked style="width:18px;height:18px;">
+                <span style="font-size:0.85rem;">Usage limits active</span>
               </label>
             </div>
             <button class="btn btn-outline btn-sm" onclick="saveSystemSettings()">Save Settings</button>
+            <div class="form-group" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+              <div class="form-label">DATA CLEANUP</div>
+              <button class="btn btn-outline btn-sm" id="migrate-beta-btn" onclick="migrateBetaPlans()">Migrate legacy "beta" plan labels</button>
+              <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.4rem;">One-time: relabels any existing user still on plan:"beta" to plan:"free". Safe to run more than once.</div>
+            </div>
           </div>
           <div class="card">
             <div class="card-title">SEND ANNOUNCEMENT</div>
@@ -1207,12 +1212,12 @@ function renderUsersTable(users) {
       <td><span class="badge badge-gold">${u.videosGenerated||0}</span></td>
       <td><span class="badge ${u.banned?'badge-red':'badge-green'}">${u.banned?'Banned':'Active'}</span></td>
       <td>
-        <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'beta'}</span>
+        <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'free'}</span>
       </td>
       <td>
         <button class="btn btn-outline btn-sm" onclick="viewUser('${u.id}')">View</button>
         <button class="btn btn-outline btn-sm" style="margin-left:0.4rem;color:#4CC9F0;border-color:rgba(76,201,240,0.3);" onclick="setUserLimit('${u.id}','${u.email}')">⚙ Limit</button>
-        <button class="btn ${u.plan==='pro'?'btn-outline':'btn-green'} btn-sm" style="margin-left:0.4rem;" onclick="togglePlan('${u.id}','${u.email}','${u.plan||'beta'}')">${u.plan==='pro'?'→ Beta':'→ Pro'}</button>
+        <button class="btn ${u.plan==='pro'?'btn-outline':'btn-green'} btn-sm" style="margin-left:0.4rem;" onclick="togglePlan('${u.id}','${u.email}','${u.plan||'free'}')">${u.plan==='pro'?'→ Free':'→ Pro'}</button>
         <button class="btn btn-red btn-sm" style="margin-left:0.4rem;" onclick="banUser('${u.id}','${u.email}')">${u.banned?'Unban':'Ban'}</button>
       </td>
     </tr>
@@ -1228,7 +1233,7 @@ window.filterUsers = function(q) {
 };
 
 window.togglePlan = async function(uid, email, currentPlan) {
-  const newPlan = currentPlan === 'pro' ? 'beta' : 'pro';
+  const newPlan = currentPlan === 'pro' ? 'free' : 'pro';
   if(!confirm(`Change ${email} plan from ${currentPlan.toUpperCase()} to ${newPlan.toUpperCase()}?`)) return;
   try {
     await updateDoc(doc(db,'studio_users',uid), {
@@ -1239,6 +1244,36 @@ window.togglePlan = async function(uid, email, currentPlan) {
     showToast(`✅ ${email} is now on ${newPlan.toUpperCase()} plan`, 'success');
     loadUsers();
   } catch(e) { showToast('Error: '+e.message,'error'); }
+};
+
+// One-time cleanup: users who signed up before the "beta" framing was
+// dropped from the app still carry plan:'beta' in Firestore — new signups
+// already get plan:'free' (see the signup code), this just catches
+// existing accounts. Safe to run more than once — it's a no-op once
+// nothing matches the query.
+window.migrateBetaPlans = async function() {
+  const btn = document.getElementById('migrate-beta-btn');
+  if (!confirm('Change every existing user still on plan:"beta" to plan:"free"? This only relabels the plan field — no credits, limits, or other data are touched.')) return;
+  if (btn) { btn.disabled = true; btn.textContent = 'Migrating…'; }
+  try {
+    const q = query(collection(db, 'studio_users'), where('plan', '==', 'beta'));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      showToast('No users on plan:"beta" — nothing to migrate.', 'success');
+      return;
+    }
+    let done = 0;
+    for (const d of snap.docs) {
+      await updateDoc(doc(db, 'studio_users', d.id), { plan: 'free', planUpdatedAt: serverTimestamp() });
+      done++;
+    }
+    showToast(`✅ Migrated ${done} user${done === 1 ? '' : 's'} from beta → free`, 'success');
+    loadUsers();
+  } catch (e) {
+    showToast('Migration error: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Migrate legacy "beta" plan labels'; }
+  }
 };
 
 window.banUser = async function(uid, email) {
@@ -1298,17 +1333,17 @@ async function checkWorkers() {
 }
 
 window.saveBetaLimit = async function() {
-  const val = parseInt(document.getElementById('beta-limit').value);
+  const val = parseInt(document.getElementById('usage-limit').value);
   try {
     await setDoc(doc(db,'admin','settings'), {betaLimit: val, updatedAt: serverTimestamp()}, {merge:true});
-    showToast('Beta limit saved: '+val+' videos','success');
+    showToast('Usage limit saved: '+val+' videos','success');
   } catch(e) { showToast('Error: '+e.message,'error'); }
 };
 
 window.saveSystemSettings = async function() {
   try {
-    const betaActive = document.getElementById('beta-toggle').checked;
-    const limit2 = parseInt(document.getElementById('beta-limit').value);
+    const betaActive = document.getElementById('usage-toggle').checked;
+    const limit2 = parseInt(document.getElementById('usage-limit').value);
     await setDoc(doc(db,'admin','settings'), {betaLimit:limit2, betaActive, updatedAt:serverTimestamp()}, {merge:true});
     showToast('Settings saved','success');
   } catch(e) { showToast('Error: '+e.message,'error'); }
@@ -2156,7 +2191,7 @@ function renderComposeUserList(users) {
           <div style="font-size:0.68rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);">${u.email||'—'}</div>
         </div>
       </div>
-      <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'beta'}</span>
+      <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'free'}</span>
     </div>
   `;
   }).join('');

@@ -115,8 +115,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .log-line.error{color:#CE2218;}
 .log-line.info{color:#9C5918;}
 
-/* AI INTAKE — the optional conversational brief builder, carried over from the Image
-   Generator. Same behaviour, same endpoint, re-skinned into this page's controls. */
+/* The Prompt Builder's launcher card in the sidebar, plus the shared chrome its modal uses. */
 .intake-box{border:1px solid rgba(23,20,15,0.1);border-radius:11px;padding:0.9rem;background:#F3EDE0;margin-top:0.9rem;}
 .intake-title{font-size:0.84rem;font-weight:800;margin-bottom:0.25rem;}
 .intake-step{font-size:0.66rem;font-family:'Space Mono',monospace;letter-spacing:1px;color:rgba(23,20,15,0.6);margin-bottom:0.5rem;}
@@ -128,6 +127,32 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .intake-error{font-size:0.8rem;color:#CE2218;}
 .intake-chip{margin-top:0.7rem;padding:0.55rem 0.7rem;border-radius:8px;background:rgba(224,138,46,0.12);border:1px solid rgba(224,138,46,0.35);font-size:0.76rem;line-height:1.5;}
 .intake-chip a{color:#8E5315;font-weight:700;text-decoration:none;cursor:pointer;}
+
+/* PROMPT BUILDER — a modal rather than a panel in the sidebar. A real transcript needs its
+   own scrolling height, and the sidebar column is already full and sticky next to the canvas;
+   folding a chat into it would either push the Generate button below the fold or squeeze the
+   conversation into a slot too small to read it in. */
+.pb-box{position:relative;width:100%;max-width:660px;max-height:88vh;display:flex;flex-direction:column;background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.4rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.pb-head{margin-bottom:0.9rem;padding-right:1.5rem;}
+.pb-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;}
+.pb-sub{font-size:0.78rem;line-height:1.5;color:rgba(23,20,15,0.62);margin-top:0.2rem;}
+.pb-site{padding-bottom:0.9rem;border-bottom:1px solid rgba(23,20,15,0.08);}
+/* The transcript. It only ever grows — every question and every answer stays on screen, which
+   is the difference between "a chat" and the old panel that overwrote itself each round and
+   so never showed the user what had actually been asked. */
+.pb-chat{flex:1 1 auto;min-height:170px;overflow-y:auto;padding:0.9rem 0.15rem;display:flex;flex-direction:column;gap:0.6rem;}
+.pb-msg{max-width:86%;padding:0.6rem 0.8rem;border-radius:12px;font-size:0.83rem;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;}
+.pb-msg.ai{align-self:flex-start;background:#F3EDE0;border:1px solid rgba(23,20,15,0.08);border-bottom-left-radius:4px;}
+.pb-msg.me{align-self:flex-end;background:rgba(224,138,46,0.16);border:1px solid rgba(224,138,46,0.32);border-bottom-right-radius:4px;}
+.pb-msg.err{align-self:flex-start;background:rgba(230,51,41,0.09);border:1px solid rgba(230,51,41,0.28);color:#AF3427;}
+.pb-who{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;color:rgba(23,20,15,0.45);margin-bottom:0.2rem;}
+.pb-compose{border-top:1px solid rgba(23,20,15,0.08);padding-top:0.8rem;}
+.pb-compose .form-textarea{min-height:64px;margin:0;}
+.pb-actions{display:flex;gap:0.45rem;margin-top:0.6rem;flex-wrap:wrap;}
+.pb-actions .btn{flex:1 1 140px;padding:0.6rem;font-size:0.76rem;}
+.pb-result{border-top:1px solid rgba(23,20,15,0.08);padding-top:0.85rem;}
+.pb-result .form-textarea{min-height:190px;font-size:0.8rem;line-height:1.6;}
+@media(max-width:620px){.pb-box{padding:1rem;max-height:94vh;}.pb-msg{max-width:94%;}}
 
 /* SELECTED-ELEMENT INSPECTOR — only meaningful once something on the canvas is picked. */
 #inspector{display:none;background:#FFF7EA;border:1px solid rgba(224,138,46,0.3);}
@@ -154,12 +179,6 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
 
 /* Generate stays reachable without hunting for the bottom of the form. */
 .gen-bar{position:sticky;bottom:0;z-index:35;padding:0.7rem 0 0.2rem;background:linear-gradient(to bottom,rgba(251,247,239,0) 0%,#FBF7EF 30%);}
-
-/* Collapsible — keeps the optional AI-brief block from eating 280px of the form by default. */
-.fold-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;background:none;border:none;padding:0;cursor:pointer;font-family:'Syne',sans-serif;text-align:left;color:#17140F;}
-.fold-btn .intake-title{margin:0;font-size:0.8rem;}
-.fold-caret{font-size:0.7rem;color:rgba(23,20,15,0.45);transition:transform 0.2s;flex-shrink:0;}
-.fold-btn[aria-expanded="true"] .fold-caret{transform:rotate(180deg);}
 
 /* ── STYLE VARIATIONS ─────────────────────────────────────────────────────────
    Three treatments of the SAME generated scene and the SAME parsed copy — a palette, a
@@ -263,32 +282,23 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
         <input type="text" id="gfx-tagline" class="form-input" placeholder="e.g. Freshly roasted, every morning">
         <label class="form-label" for="gfx-prompt" id="prompt-label">DESCRIBE IT</label>
         <textarea id="gfx-prompt" class="form-textarea" placeholder="e.g. Scholarship Session with Nsaingeh Bernadette, Saturday June 20 2026, 7PM CAT on Google Meet, register at youngafricansnetwork.org"></textarea>
-        <div class="form-hint" id="prompt-hint">Include the real facts — the event's actual name, dates, times, prices, the venue. Anything concrete you write here gets used verbatim instead of invented.</div>
+        <div class="form-hint" id="prompt-hint">Write it however you like — this exact text is what gets built. Include the real facts (the event's actual name, dates, times, prices, the venue) and, if you want, how it should look: "deep navy with gold accents", "type only, no photo". Anything concrete is used verbatim instead of invented.</div>
 
         <div id="exact-wording-row" style="margin-top:0.8rem;">
           <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;">
             <input type="checkbox" id="gfx-exact-wording" style="margin-top:3px;accent-color:#E08A2E;">
-            <span class="form-hint" style="margin:0;">Use my wording exactly as the headline (unchecked = let AI shape a punchy headline)</span>
+            <span class="form-hint" style="margin:0;">Use my wording exactly as the headline (unchecked = let AI shape a punchy headline). Either way the poster is still laid out in full — dates, highlights, notes and all.</span>
           </label>
         </div>
 
-        <!-- AI INTAKE — folded away by default; it is optional and it is tall. -->
+        <!-- PROMPT BUILDER LAUNCHER — the AI's only role before generation, and it is now
+             entirely optional and entirely visible. It writes a prompt INTO the box above;
+             it never sits invisibly between that box and the generator the way the old
+             "brief" did. Whatever ends up in the textarea is exactly what gets built. -->
         <div class="intake-box" id="intake-box">
-          <button type="button" class="fold-btn" id="intake-fold" aria-expanded="false" onclick="toggleIntake()">
-            <span class="intake-title">Not sure what to write?</span>
-            <span class="fold-caret">▼</span>
-          </button>
-          <div id="intake-body" style="display:none;margin-top:0.6rem;">
-            <div class="form-hint" style="margin:0 0 0.7rem;">Let AI read your description (and your website, if you have one), ask a couple of quick questions, then turn it into a proper brief you can edit before anything is generated. Entirely optional.</div>
-            <label class="form-label" style="margin-top:0;" for="gfx-website">YOUR WEBSITE (OPTIONAL)</label>
-            <input type="text" id="gfx-website" class="form-input" placeholder="e.g. amaracoffee.co.ke">
-            <button type="button" class="btn btn-outline btn-full" id="gfx-refine-btn" onclick="startIntake()" style="margin-top:0.7rem;">Refine with AI</button>
-            <div id="intake-panel" style="display:none;margin-top:0.85rem;"></div>
-          </div>
-          <div id="brief-chip" class="intake-chip" style="display:none;">
-            <span>Your AI brief is being used for this design.</span>
-            <a onclick="clearBrief()">Use my own description instead</a>
-          </div>
+          <div class="intake-title" style="margin-bottom:0.35rem;">Not sure what to write?</div>
+          <div class="form-hint" style="margin:0 0 0.7rem;">Talk it through with the AI — it asks a few questions, can read a link you give it, and writes you a full prompt covering the facts, the layout and the colours. You read it, edit it, and paste it above. Or just write your own; nothing here is required.</div>
+          <button type="button" class="btn btn-outline btn-full" id="gfx-refine-btn" onclick="openPromptBuilder()">Build my prompt with AI</button>
         </div>
       </div>
 
@@ -507,6 +517,46 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
   </div>
 </div>
 
+<!-- PROMPT BUILDER — a real, visible conversation.
+     The whole point of this panel is that nothing it does is hidden. The user sees every
+     question the AI asks, every answer they gave, and the finished prompt in full, as
+     editable text, before anything is generated. Its output goes into the description box
+     on the left, where the user can change it — it is never handed to the generator behind
+     their back. Skipping this entirely and typing your own description is equally valid. -->
+<div class="modal-overlay" id="pb-modal">
+  <div class="pb-box">
+    <button class="modal-close" onclick="closePromptBuilder()">✕</button>
+    <div class="pb-head">
+      <div>
+        <div class="pb-title">Prompt Builder</div>
+        <div class="pb-sub">A conversation, not a black box. Answer what you can, paste a link if you have one, and I'll write you a complete prompt you can edit.</div>
+      </div>
+    </div>
+    <div class="pb-site">
+      <label class="form-label" style="margin-top:0;" for="gfx-website">YOUR WEBSITE OR A LINK TO READ (OPTIONAL)</label>
+      <input type="text" id="gfx-website" class="form-input" placeholder="e.g. amaracoffee.co.ke — or paste any link in the chat">
+    </div>
+    <div class="pb-chat" id="pb-chat" role="log" aria-live="polite"></div>
+    <div class="pb-compose" id="pb-compose">
+      <textarea id="pb-input" class="form-textarea" placeholder="Type your answer, a link, or anything else you want on the poster…" onkeydown="pbKey(event)"></textarea>
+      <div class="pb-actions">
+        <button type="button" class="btn btn-gold" id="pb-send" onclick="pbSend()">Send</button>
+        <button type="button" class="btn btn-outline" id="pb-finish" onclick="pbFinish()">Write my prompt now</button>
+      </div>
+    </div>
+    <div class="pb-result" id="pb-result" style="display:none;">
+      <div class="control-label">YOUR PROMPT</div>
+      <div class="form-hint" style="margin:0 0 0.5rem;">Edit anything you like. This exact text is what the poster gets built from.</div>
+      <textarea id="pb-output" class="form-textarea"></textarea>
+      <div class="pb-actions" style="margin-top:0.6rem;">
+        <button type="button" class="btn btn-gold" onclick="pbUse()">Use this prompt</button>
+        <button type="button" class="btn btn-outline" onclick="pbCopy()">Copy</button>
+        <button type="button" class="btn btn-outline" onclick="pbKeepTalking()">Keep talking</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="login-modal">
   <div class="login-box">
@@ -603,6 +653,12 @@ window.doSignUp = async function() {
 };
 window.signOut = async function() { await fbSignOut(auth); };
 document.getElementById('login-modal').addEventListener('click', function(e) { if (e.target === this) hideLogin(); });
+// Closing the Prompt Builder never discards the conversation — reopening picks up where it
+// left off, so clicking outside it by accident costs nothing.
+document.getElementById('pb-modal').addEventListener('click', function(e) { if (e.target === this) closePromptBuilder(); });
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('pb-modal').classList.contains('active')) closePromptBuilder();
+});
 </script>
 
 <script src="limits.js"></script>
@@ -1627,7 +1683,7 @@ function makeVariants(d) {
 
 function renderVariantStrip() {
   document.getElementById('variant-row').innerHTML = variants.map((v, i) =>
-    `<button type="button" class="variant-card${i === activeVariant ? ' active' : ''}" onclick="applyVariant(${i})">
+    `<button type="button" class="variant-card${i === activeVariant ? ' active' : ''}" onclick="applyVariant(${i}, true)">
        <img src="${v.thumb}" alt="${esc(v.name)} style">
        <div class="variant-name">${esc(v.name)}</div>
      </button>`).join('');
@@ -1636,9 +1692,13 @@ function renderVariantStrip() {
 // Picking a style writes it into the real controls rather than holding it in a side channel,
 // so the palette swatches, typeface picker and style select all stay truthful afterwards and
 // the user can carry on tweaking from there.
-window.applyVariant = function(i) {
+// `userPicked` is false for the automatic applyVariant(0) at the end of makeVariants — that
+// is us choosing a default, not the user choosing a look, and counting it would mark the
+// controls "touched" on every single generation and permanently disable prompt-driven colour.
+window.applyVariant = function(i, userPicked) {
   const v = variants[i];
   if (!v || !layerData) return;
+  if (userPicked) markLookTouched();
   activeVariant = i;
   const idx = PALETTES.findIndex(p => p.bg === v.pal.bg && p.accent === v.pal.accent);
   if (idx >= 0) {
@@ -1767,7 +1827,18 @@ window.generate = async function() {
           orientation,
           bg_color: p.bg,
           accent_color: p.accent,
-          brief: confirmedBrief || undefined,
+          // `brief` is deliberately no longer sent. It was the invisible channel: a
+          // server-side rewrite of the user's words that sat between the description box and
+          // the generator, so what you typed was not what got built. Everything now goes
+          // through `prompt` — the literal contents of the description box — which the user
+          // can read and edit, whether they wrote it themselves or pasted it out of the
+          // Prompt Builder. The server still accepts `brief` for older cached clients.
+          //
+          // Art direction written into the description ("deep navy and gold", "type only")
+          // may override the swatch and style pickers — but only while the user has not
+          // touched those pickers by hand. A colour someone deliberately clicked is an
+          // explicit instruction and outranks one an LLM read out of a sentence.
+          respect_prompt_design: !lookTouched,
           // Ask for the bare scene + the parsed copy so the result can be rebuilt as editable
           // layers. Older backends simply ignore this and return {url} — handled below.
           return_layers: true,
@@ -1782,6 +1853,11 @@ window.generate = async function() {
       lastArtworkUrl = data.url;
       showEmbed(data.url);
       hideMotion();
+
+      // Applied BEFORE makeVariants: variantSpecs() reads palette() and currentTemplate() at
+      // call time, so setting these afterwards would leave all three thumbnails showing the
+      // old colours while the applied design showed the new ones.
+      if (cfg.pipeline === 'poster') applyPromptDesign(data);
 
       if (cfg.pipeline === 'poster' && data.copy && data.scene_url !== undefined) {
         busy(true, 'Laying it out as editable objects…');
@@ -1806,7 +1882,7 @@ window.generate = async function() {
         log('success', '[ok] generated — add text or shapes on top, then export');
       }
       saveGeneratedToStudio(data.url, cfg.pipeline === 'poster' ? 'poster' : 'brand', prompt,
-        confirmedBrief ? { businessName: business, brief: confirmedBrief } : { businessName: business });
+        { businessName: business });
     }
     document.getElementById('regen-hint').style.display = 'block';
   } catch (e) {
@@ -1862,101 +1938,178 @@ async function saveGeneratedToStudio(url, kind, prompt, extra) {
   } catch (e) { console.error('[Studio save] failed:', e); }
 }
 
-// ── AI intake (carried over from the Image Generator, unchanged in behaviour) ──
-let intakeHistory = [], intakeSite = '', intakeSiteChecked = false, intakeQuestions = [], confirmedBrief = '';
+// ── Prompt Builder ───────────────────────────────────────────────
+// Same server conversation the old hidden "brief" flow used (/poster-intake), asked for in
+// mode:'prompt' so it ends with a complete standalone PROMPT written as prose instead of a
+// labelled brief. Two things changed and both are the point:
+//   1. The transcript is VISIBLE and cumulative. The old renderIntake() overwrote its own
+//      panel each round, so the user never saw what had been asked or what they had said —
+//      it looked like the AI was doing something to their words in private. Every turn now
+//      stays on screen.
+//   2. Its output goes into the description box, as editable text, and the description box
+//      is the only thing generation ever reads. There is no longer any channel by which the
+//      AI can influence the poster without the user seeing and being able to change it.
+// The server is stateless, so `pbHistory` is carried back on every call. `questions: []` with
+// a `note` is a turn the user started themselves — the chat lets them say anything at any
+// point, not just answer what they were asked.
+let pbHistory = [], pbSite = '', pbSiteChecked = false, pbPending = [], pbBusy = false;
+const PB_MAX_ROUNDS = 4;
 
-function intakePanel() { return document.getElementById('intake-panel'); }
-function setIntakeBusy(msg) {
-  const p = intakePanel();
-  p.style.display = 'block';
-  p.innerHTML = `<div class="intake-busy"><div class="spinner"></div><span>${esc(msg)}</span></div>`;
-  document.getElementById('gfx-refine-btn').disabled = true;
+function pbChat() { return document.getElementById('pb-chat'); }
+function pbSay(who, text) {
+  const wrap = document.createElement('div');
+  wrap.className = 'pb-msg ' + who;
+  const label = who === 'me' ? 'You' : who === 'err' ? 'Something went wrong' : 'AI';
+  wrap.innerHTML = '<div class="pb-who">' + esc(label) + '</div>' + esc(text);
+  pbChat().appendChild(wrap);
+  pbChat().scrollTop = pbChat().scrollHeight;
+  return wrap;
 }
-function setIntakeError(msg) {
-  const p = intakePanel();
-  p.style.display = 'block';
-  p.innerHTML = `<div class="intake-error">${esc(msg)}</div>
-    <div class="intake-actions"><button type="button" class="btn btn-outline" onclick="startIntake()">Try again</button></div>`;
-  document.getElementById('gfx-refine-btn').disabled = false;
+function pbBusyOn(msg) {
+  pbBusy = true;
+  document.getElementById('pb-send').disabled = true;
+  document.getElementById('pb-finish').disabled = true;
+  const el = pbSay('ai', msg);
+  el.id = 'pb-thinking';
+  return el;
 }
-async function intakeCall(extra) {
+function pbBusyOff() {
+  pbBusy = false;
+  document.getElementById('pb-send').disabled = false;
+  document.getElementById('pb-finish').disabled = false;
+  const el = document.getElementById('pb-thinking');
+  if (el) el.remove();
+}
+
+async function pbCall(extra) {
   const res = await fetch(API + '/poster-intake', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(Object.assign({
+      mode: 'prompt', max_rounds: PB_MAX_ROUNDS,
       description: document.getElementById('gfx-prompt').value.trim(),
       business_name: document.getElementById('gfx-business').value.trim(),
       website: document.getElementById('gfx-website').value.trim(),
-      history: intakeHistory, site_context: intakeSite, site_context_checked: intakeSiteChecked,
+      history: pbHistory, site_context: pbSite, site_context_checked: pbSiteChecked,
     }, extra || {})),
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
-  if (data.site_context) intakeSite = data.site_context;
-  if (data.site_context_checked) intakeSiteChecked = true;
+  if (data.site_context) pbSite = data.site_context;
+  if (data.site_context_checked) pbSiteChecked = true;
   return data;
 }
-function renderIntake(data) {
-  document.getElementById('gfx-refine-btn').disabled = false;
-  const p = intakePanel();
-  p.style.display = 'block';
-  if (data.status === 'questions') {
-    intakeQuestions = data.questions || [];
-    p.innerHTML = `<div class="intake-step">STEP ${esc(data.round)} OF ${esc(data.max_rounds)} — QUICK QUESTIONS</div>` +
-      intakeQuestions.map((q, i) => `<div class="intake-q" style="margin-top:${i ? '0.8rem' : '0'};">${esc(q)}</div>
-        <textarea class="form-textarea" id="intake-a${i}" style="min-height:56px;" placeholder="Your answer — or leave blank to skip"></textarea>`).join('') +
-      `<div class="intake-actions">
-         <button type="button" class="btn btn-gold" onclick="submitIntakeAnswers()">Send answers</button>
-         <button type="button" class="btn btn-outline" onclick="skipToBrief()">Skip — build it now</button>
-       </div>`;
-    const first = document.getElementById('intake-a0');
-    if (first) first.focus();
+
+// One renderer for both server outcomes. Questions are appended as ordinary AI messages, so
+// the user answers them in the same box they use to say anything else.
+function pbRender(data) {
+  if (data.status === 'questions' && (data.questions || []).length) {
+    pbPending = data.questions;
+    pbPending.forEach(q => pbSay('ai', q));
+    const box = document.getElementById('pb-input');
+    box.placeholder = pbPending.length > 1
+      ? 'Answer both in one message — or just the part you know.'
+      : 'Your answer — or tell me to skip it.';
+    box.focus();
     return;
   }
-  p.innerHTML = `<div class="intake-step">YOUR BRIEF</div>
-     <div class="form-hint" style="margin:0 0 0.5rem;">Edit anything here before we generate — this is exactly what the design gets built from.</div>
-     <textarea class="form-textarea" id="brief-text" style="min-height:170px;font-size:0.8rem;line-height:1.6;"></textarea>
-     <div class="intake-actions">
-       <button type="button" class="btn btn-gold" onclick="confirmBrief()">Use this &amp; generate</button>
-       <button type="button" class="btn btn-outline" onclick="startIntake()">Start over</button>
-     </div>`;
-  document.getElementById('brief-text').value = data.brief || '';
+  pbPending = [];
+  const text = data.prompt || data.brief || '';
+  pbSay('ai', "Here's your prompt. Read it, change anything you like, then use it — or keep talking and I'll rewrite it.");
+  document.getElementById('pb-output').value = text;
+  document.getElementById('pb-result').style.display = 'block';
+  document.getElementById('pb-input').placeholder = 'Want something changed? Tell me and I will rewrite it.';
+  pbChat().scrollTop = pbChat().scrollHeight;
 }
-window.startIntake = async function() {
-  const description = document.getElementById('gfx-prompt').value.trim();
+
+window.openPromptBuilder = function() {
   const business = document.getElementById('gfx-business').value.trim();
-  if (!description) { alert('Write a line or two about your design first — even a few words is enough.'); return; }
-  if (!business) { alert('Please enter your business or organisation name.'); return; }
-  intakeHistory = []; intakeQuestions = []; intakeSite = ''; intakeSiteChecked = false;
-  setIntakeBusy(document.getElementById('gfx-website').value.trim() ? 'Reading your website and your description…' : 'Reading your description…');
-  try { renderIntake(await intakeCall({})); }
-  catch (e) { setIntakeError(e.message || 'Could not reach the AI just now.'); }
+  if (!business) { alert('Please enter your business or organisation name first — it anchors everything the AI writes.'); return; }
+  document.getElementById('pb-modal').classList.add('active');
+  // Only opens cold the first time; reopening keeps the conversation you already had.
+  if (!pbHistory.length && !pbChat().children.length) pbStart();
 };
-window.submitIntakeAnswers = async function() {
-  const answers = intakeQuestions.map((_, i) => { const el = document.getElementById('intake-a' + i); return el ? el.value.trim() : ''; });
-  intakeHistory = intakeHistory.concat([{ questions: intakeQuestions, answers }]);
-  const none = answers.every(a => !a);
-  setIntakeBusy(none ? 'Putting your brief together…' : 'Thinking about what you said…');
-  try { renderIntake(await intakeCall(none ? { force_brief: true } : {})); }
-  catch (e) { setIntakeError(e.message || 'Could not reach the AI just now.'); }
+window.closePromptBuilder = function() {
+  document.getElementById('pb-modal').classList.remove('active');
 };
-window.skipToBrief = async function() {
-  const answers = intakeQuestions.map((_, i) => { const el = document.getElementById('intake-a' + i); return el ? el.value.trim() : ''; });
-  if (intakeQuestions.length) intakeHistory = intakeHistory.concat([{ questions: intakeQuestions, answers }]);
-  setIntakeBusy('Putting your brief together…');
-  try { renderIntake(await intakeCall({ force_brief: true })); }
-  catch (e) { setIntakeError(e.message || 'Could not reach the AI just now.'); }
+
+async function pbStart() {
+  const description = document.getElementById('gfx-prompt').value.trim();
+  if (description) pbSay('me', description);
+  else pbSay('ai', 'Tell me about the poster you need — what it is announcing, and anything you already know: dates, a venue, a price, who it is for. A link works too.');
+  if (!description) return;
+  pbBusyOn(document.getElementById('gfx-website').value.trim()
+    ? 'Reading your website and what you wrote\u2026' : 'Reading what you wrote\u2026');
+  try { pbBusyOff(); pbRender(await pbCall({})); }
+  catch (e) { pbBusyOff(); pbSay('err', e.message || 'Could not reach the AI just now. Try again in a moment.'); }
+}
+
+window.pbKey = function(ev) {
+  // Enter sends, Shift+Enter is a newline — the convention every chat box uses.
+  if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); pbSend(); }
 };
-window.confirmBrief = function() {
-  const box = document.getElementById('brief-text');
-  confirmedBrief = box ? box.value.trim() : '';
-  intakePanel().style.display = 'none';
-  document.getElementById('brief-chip').style.display = confirmedBrief ? 'block' : 'none';
-  generate();
+
+window.pbSend = async function() {
+  if (pbBusy) return;
+  const box = document.getElementById('pb-input');
+  const text = box.value.trim();
+  if (!text) return;
+  // The very first message doubles as the description when the box on the left was empty —
+  // the server needs one, and making the user go back and fill in the textarea before they
+  // are allowed to talk would defeat the point of the tool.
+  const desc = document.getElementById('gfx-prompt');
+  if (!desc.value.trim() && !pbHistory.length) desc.value = text;
+  pbSay('me', text);
+  box.value = '';
+  // Answering pending questions is one shape of turn; volunteering something unprompted is
+  // the other. Both are recorded, only the first counts against the question-round cap.
+  pbHistory = pbHistory.concat([pbPending.length
+    ? { questions: pbPending, answers: [text] }
+    : { questions: [], note: text }]);
+  pbPending = [];
+  pbBusyOn(/https?:\/\//i.test(text) ? 'Reading that link\u2026' : 'Thinking\u2026');
+  try { pbBusyOff(); pbRender(await pbCall({})); }
+  catch (e) { pbBusyOff(); pbSay('err', e.message || 'Could not reach the AI just now. Try again in a moment.'); }
 };
-window.clearBrief = function() {
-  confirmedBrief = '';
-  document.getElementById('brief-chip').style.display = 'none';
-  intakePanel().style.display = 'none';
+
+window.pbFinish = async function() {
+  if (pbBusy) return;
+  const box = document.getElementById('pb-input');
+  const text = box.value.trim();
+  if (text) {
+    pbSay('me', text);
+    box.value = '';
+    pbHistory = pbHistory.concat([pbPending.length
+      ? { questions: pbPending, answers: [text] } : { questions: [], note: text }]);
+    pbPending = [];
+  }
+  if (!document.getElementById('gfx-prompt').value.trim() && !pbHistory.length) {
+    pbSay('ai', 'Tell me a little about the poster first — even a few words is enough to work from.');
+    return;
+  }
+  pbBusyOn('Writing your prompt\u2026');
+  try { pbBusyOff(); pbRender(await pbCall({ force_brief: true })); }
+  catch (e) { pbBusyOff(); pbSay('err', e.message || 'Could not reach the AI just now. Try again in a moment.'); }
+};
+
+window.pbUse = function() {
+  const text = document.getElementById('pb-output').value.trim();
+  if (!text) return;
+  document.getElementById('gfx-prompt').value = text;
+  closePromptBuilder();
+  log('success', '[ok] prompt written into your description \u2014 edit it there, then Generate');
+  const desc = document.getElementById('gfx-prompt');
+  desc.focus();
+  desc.scrollIntoView({ block: 'center', behavior: 'smooth' });
+};
+window.pbCopy = async function() {
+  const box = document.getElementById('pb-output');
+  try { await navigator.clipboard.writeText(box.value); }
+  catch (e) { box.select(); document.execCommand('copy'); }
+  log('success', '[ok] prompt copied');
+};
+window.pbKeepTalking = function() {
+  document.getElementById('pb-result').style.display = 'none';
+  document.getElementById('pb-input').focus();
 };
 
 // ── Steps ─────────────────────────────────────────────────────────────────────
@@ -1970,6 +2123,47 @@ window.setStep = function(s) {
 };
 // A filled-in "2" is the quiet nudge that there is now something worth going and editing.
 function markStepReady() { document.getElementById('step-edit').classList.add('ready'); }
+
+// ── Art direction the user wrote into their own description ───────────────────
+// True once the user has deliberately picked a palette or a style. Until then the controls
+// are showing defaults nobody chose, so a colour or layout the user actually asked for in
+// words should win. After it, they made an explicit choice with a click and we leave it be —
+// silently repainting a poster in colours someone did not pick is exactly the kind of
+// invisible AI decision this whole change exists to get rid of.
+let lookTouched = false;
+function markLookTouched() { lookTouched = true; }
+
+function applyPromptDesign(data) {
+  const d = data && data.design;
+  if (!d) return;
+  let applied = [];
+  if (!lookTouched && d.bg && d.accent) {
+    const idx = PALETTES.findIndex(p => p.bg.toUpperCase() === d.bg && p.accent.toUpperCase() === d.accent);
+    if (idx >= 0) {
+      paletteIdx = idx;
+      document.getElementById('custom-colors').style.display = 'none';
+    } else {
+      paletteIdx = -1;
+      document.getElementById('gfx-bg-color').value = d.bg;
+      document.getElementById('gfx-accent-color').value = d.accent;
+      document.getElementById('custom-colors').style.display = 'flex';
+    }
+    renderPalettes();
+    applied.push('colours');
+  }
+  // The server sends back the template it actually rendered with, which already reflects any
+  // layout word it found in the description — so the select is synced from that rather than
+  // re-deciding it here, and the control never disagrees with the result beside it.
+  if (!lookTouched && data.template) {
+    const sel = document.getElementById('gfx-template');
+    if (Array.prototype.some.call(sel.options, o => o.value === data.template)
+        && sel.value !== data.template) {
+      sel.value = data.template;
+      applied.push('layout');
+    }
+  }
+  if (applied.length) log('info', '// took the ' + applied.join(' and ') + ' from your description');
+}
 
 // ── The style select, honestly labelled ───────────────────────────────────────
 // In the portrait/square poster layout the photo is always a full-width header band, so
@@ -1992,12 +2186,6 @@ function syncTemplateOptions(preferred) {
   document.getElementById('template-label').textContent = side ? 'LAYOUT' : 'STYLE';
 }
 
-window.toggleIntake = function() {
-  const btn = document.getElementById('intake-fold');
-  const open = btn.getAttribute('aria-expanded') !== 'true';
-  btn.setAttribute('aria-expanded', String(open));
-  document.getElementById('intake-body').style.display = open ? 'block' : 'none';
-};
 
 // ── Mode / look controls ──────────────────────────────────────────────────────
 window.setMode = function(m) {
@@ -2026,7 +2214,7 @@ window.setMode = function(m) {
   document.getElementById('brief-label').textContent = 'YOUR ' + cfg.title.toUpperCase();
   document.getElementById('gfx-generate-btn').textContent = cfg.cta;
   document.getElementById('prompt-hint').textContent = isPoster
-    ? "Include the real facts — the event's actual name, dates, times, prices, the venue. Anything concrete you write here gets used verbatim instead of invented."
+    ? "Write it however you like — this exact text is what gets built. Include the real facts (the event's actual name, dates, times, prices, the venue) and, if you want, how it should look: “deep navy with gold accents”, “type only, no photo”. Anything concrete is used verbatim instead of invented."
     : isMotion ? 'A short, seamlessly looping living image — a slow zoom and gentle drift. Great for a website hero.'
     : 'Describe the photograph you want. We shoot it clean and add your name and tagline as real type.';
 
@@ -2055,10 +2243,11 @@ function syncOrientation() {
 // The style select changes how the copy is laid out, not what it says — so when a result is
 // already on the canvas it can be re-rendered on the spot instead of costing another generation.
 window.onTemplateChange = function() {
+  markLookTouched();
   if (layerData) { layerData.template = currentTemplate(); buildFromData(layerData); log('info', '// re-laid out'); }
   else log('info', '// style: ' + currentTemplate() + ' — press Generate to apply');
 };
-window.onCustomColor = function() { applyPalette(); };
+window.onCustomColor = function() { markLookTouched(); applyPalette(); };
 window.onHeadlineFontChange = function() {
   headlineFont = document.getElementById('gfx-headline-font').value;
   doc_.els.filter(e => e.role === 'headline').forEach(e => { e.font = headlineFont; });
@@ -2073,6 +2262,7 @@ function renderPalettes() {
     `<button type="button" class="swatch custom${paletteIdx === -1 ? ' active' : ''}" title="Custom" onclick="selectPalette(-1)">Custom</button>`;
 }
 window.selectPalette = function(i) {
+  markLookTouched();
   paletteIdx = i;
   document.getElementById('custom-colors').style.display = i === -1 ? 'flex' : 'none';
   renderPalettes();

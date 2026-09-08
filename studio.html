@@ -321,7 +321,7 @@ body{padding-top:70px;}
 .profile-section{margin-bottom:1.25rem;}
 .profile-section-title{font-size:0.6rem;color:#9B5B17;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
 .plan-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:700;}
-.plan-beta{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#925616;}
+.plan-free{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#925616;}
 .plan-pro{background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#7A623E;}
 .plan-dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
 .stat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(23,20,15,0.04);font-size:0.82rem;}
@@ -451,7 +451,7 @@ body::after{
           <div class="stat-card-label">TOTAL CREATIONS</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-value" id="stat-plan">Beta</div>
+          <div class="stat-card-value" id="stat-plan">Free</div>
           <div class="stat-card-label">PLAN</div>
         </div>
       </div>
@@ -608,7 +608,7 @@ onAuthStateChanged(auth, async (user) => {
       const snap = await getDoc(doc(db, 'studio_users', user.uid));
       if (snap.exists()) {
         const data = snap.data();
-        document.getElementById('stat-plan').textContent = (data.plan || 'beta').charAt(0).toUpperCase() + (data.plan || 'beta').slice(1);
+        document.getElementById('stat-plan').textContent = (data.plan || 'free').charAt(0).toUpperCase() + (data.plan || 'free').slice(1);
         const joined = data.createdAt?.toDate?.()?.toLocaleDateString('en-US',{year:'numeric',month:'short'}) || '—';
         document.getElementById('side-joined').textContent = joined;
       }
@@ -828,7 +828,7 @@ window.doSignUp = async function() {
     // (a rate-limited verification email previously left a real Auth account with no
     // studio_users doc, invisible everywhere the app reads from that collection).
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
-      name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'beta'
+      name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'free'
     });
     updateDoc(doc(db, 'public_stats', 'counts'), { userCount: increment(1) }).catch(() => {});
     try { await updateProfile(cred.user, { displayName: name }); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }

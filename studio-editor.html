@@ -155,6 +155,10 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 .btn{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius-md);padding:0.55rem 0.8rem;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;color:var(--text);transition:var(--transition);}
 .btn:hover{border-color:rgba(224,138,46,0.5);color:#A15C19;}
 .btn.danger:hover{border-color:var(--red);color:#CE2218;}
+.btn.primary{border-color:rgba(224,138,46,0.55);background:rgba(224,138,46,0.12);color:#8F5013;}
+.btn.primary:hover{border-color:var(--gold);box-shadow:var(--glow-gold);}
+.form-input.bad{border-color:var(--red);}
+.note-bad{color:#CE2218;font-weight:700;}
 .btn-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.6rem;}
 .cut-list{margin-top:0.7rem;display:flex;flex-direction:column;gap:0.35rem;max-height:120px;overflow:auto;}
 .cut-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:var(--radius-sm);padding:0.35rem 0.6rem;font-family:'Space Mono',monospace;font-size:0.72rem;}
@@ -347,12 +351,13 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 
         <span class="form-label">When it shows</span>
         <div class="btn-row">
-          <button class="btn" onclick="imgRangeFromSelection()">Use timeline selection</button>
+          <button class="btn primary" onclick="imgRangeFromSelection()">Drag the timeline, then use that</button>
           <button class="btn" onclick="imgRangeWholeVideo()">Whole video</button>
         </div>
-        <div class="slider-row">
-          <label>Start (s)</label><input class="form-input" type="number" id="img-start" min="0" step="0.1" value="0" style="margin-bottom:0;">
-          <label style="width:auto;flex:0 0 auto;">End (s)</label><input class="form-input" type="number" id="img-end" min="0" step="0.1" value="0" style="margin-bottom:0;">
+        <div class="card-note" style="margin-top:0.45rem;">Easiest way: drag across the timeline above to pick the stretch, then press the button. Or type the times below as <b>minutes:seconds</b>.</div>
+        <div class="slider-row" style="margin-top:0.5rem;">
+          <label>From</label><input class="form-input" type="text" id="img-start" inputmode="numeric" placeholder="0:30" value="0:00" style="margin-bottom:0;">
+          <label style="width:auto;flex:0 0 auto;">to</label><input class="form-input" type="text" id="img-end" inputmode="numeric" placeholder="0:40" value="0:00" style="margin-bottom:0;">
         </div>
         <div class="card-note" id="img-range-note" style="margin-top:0.5rem;">Showing for the whole video.</div>
       </div>
@@ -549,7 +554,7 @@ window.doSignUp = async function() {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
     await sendEmailVerification(cred.user);
-    await setDoc(doc(db, 'studio_users', cred.user.uid), { name, email, joinedAt: serverTimestamp(), plan: 'beta' });
+    await setDoc(doc(db, 'studio_users', cred.user.uid), { name, email, joinedAt: serverTimestamp(), plan: 'free' });
     hideLogin();
   } catch (e) { err.style.display = 'block'; err.textContent = '[!] ' + e.message.replace('Firebase: ', ''); }
 }
@@ -636,7 +641,8 @@ const S = {
     on: false, el: null, name: '',
     x: 0.5, y: 0.5,               // centre of the image, source frame fractions
     w: 0.30,                      // width as a fraction of the SOURCE frame width
-    start: 0, end: 0, whole: true,// visible window, in SOURCE seconds
+    start: 0, end: 0, whole: true,// visible window, in SOURCE seconds; null == unreadable
+    startRaw: null, endRaw: null, // exactly what is typed in the two fields, before parsing
   },
   beautify: false,
   beautifyPrev: null,             // the four settings as they were before Beautify overwrote them
@@ -1019,6 +1025,15 @@ function hexToRgb(h) {
 /* ═══ 3. SEGMENTATION (background + person tracking) ═══════════════════════ */
 let segmenter = null, segLoading = false, segCanvas = null, segCtx = null, segTs = 0;
 let personBox = null;                       // smoothed {x,y,w,h} in 0..1 source space
+// Real anatomical landmarks read off the same mask, in 0..1 source space, smoothed the same
+// way. A bounding box alone cannot tell you where a mouth is — the box's top is wherever the
+// tallest person-pixel happens to be (hair, a raised hand, a boom arm the segmenter counted
+// as person) and its bottom is the desk edge — so anything derived as "a fixed fraction of
+// box height" lands somewhere different on every shot. These are measured instead:
+//   headTop  first row that actually has person pixels in it
+//   chin     the narrowest row between the head and the shoulders — the neck
+//   base     the bottom of the person, where a floor stand's feet go
+let personLM = null;
 const SEG_W = 256;
 
 // Below this line (frame fraction from the top), the background swap NEVER touches the
@@ -1082,21 +1097,33 @@ function runSegOnce() {
   cm.close();
 }
 
-// Person bounding box straight off the mask (person == 0). Cheap: ~37k bytes a frame.
+// Person bounding box AND head landmarks, straight off the mask (person == 0).
+// Cheap: one pass over ~37k bytes a frame, plus a scan of the 144-entry row profile.
+//
+// The row profile is the whole trick. A talking-head mask, read row by row, has a shape you
+// can navigate: a few pixels of scalp, widening through the head, a distinct WAIST at the
+// neck, then a fast flare out to the shoulders and torso. So the narrowest row between the
+// top of the mask and the point where it first reaches half its widest is the neck — a real
+// measured landmark rather than a guessed fraction of a box that includes the person's desk.
 function trackPerson(data, w, h) {
   let x0 = w, y0 = h, x1 = -1, y1 = -1, n = 0;
+  const rowN = new Int32Array(h);
   for (let y = 0; y < h; y++) {
     const row = y * w;
+    let rn = 0;
     for (let x = 0; x < w; x++) {
       if (data[row + x] === 0) {
-        n++;
+        rn++;
         if (x < x0) x0 = x; if (x > x1) x1 = x;
         if (y < y0) y0 = y; if (y > y1) y1 = y;
       }
     }
+    rowN[y] = rn;
+    n += rn;
   }
   if (n < w * h * 0.01 || x1 < 0) return;           // no believable person in frame
   const box = { x: x0 / w, y: y0 / h, w: (x1 - x0) / w, h: (y1 - y0) / h };
+  const lm = headLandmarks(rowN, y0, y1, h);
   if (!personBox) personBox = box;
   else {
     const a = 0.22;                                  // EMA so the mic does not jitter
@@ -1105,16 +1132,68 @@ function trackPerson(data, w, h) {
       w: personBox.w + (box.w - personBox.w) * a, h: personBox.h + (box.h - personBox.h) * a,
     };
   }
-  recordMicAnchor();
+  const cur = { x: box.x + box.w * 0.5, w: box.w, headTop: lm.headTop, chin: lm.chin, base: lm.base };
+  if (!personLM) personLM = cur;
+  else {
+    const a = 0.22;
+    for (const k of ['x', 'w', 'headTop', 'chin', 'base']) {
+      personLM[k] = personLM[k] + (cur[k] - personLM[k]) * a;
+    }
+  }
+  recordLandmarks();
+}
+
+// headTop / chin / base, in 0..1 frame fractions, from the mask's per-row pixel counts.
+//
+// `chin` is the neck: the narrowest row between the head and the shoulders. It is found by
+// walking down from the top of the mask to the first row that reaches half the widest row in
+// the whole frame (which is always torso or desk, never head), and taking the minimum inside
+// that band — skipping the first quarter of it, because the very top of a head is naturally
+// the narrowest thing in the picture and would otherwise always win.
+//
+// If the shape has no such waist (a head cropped out of frame, a full-body wide shot where
+// the head is a handful of pixels, a mask that is mostly furniture) the scan is rejected and
+// the fallbacks below are proportions of the box — the old behaviour, but only as a fallback.
+function headLandmarks(rowN, y0, y1, h) {
+  const headTop = y0 / h, base = Math.min(0.99, (y1 + 1) / h);
+  let maxN = 0;
+  for (let y = y0; y <= y1; y++) if (rowN[y] > maxN) maxN = rowN[y];
+  const fallback = { headTop, base, chin: headTop + (base - headTop) * 0.28 };
+  if (maxN <= 0) return fallback;
+
+  let shoulder = -1;
+  for (let y = y0; y <= y1; y++) { if (rowN[y] >= maxN * 0.5) { shoulder = y; break; } }
+  // A waist needs room to exist: at least a dozen rows of head above the shoulder line, and
+  // the head must not already be more than three quarters of the person (which means we are
+  // looking at a mask with no shoulders in it at all).
+  const span = shoulder - y0;
+  if (shoulder < 0 || span < 12 || span > (y1 - y0) * 0.75) return fallback;
+
+  const from = y0 + Math.round(span * 0.25);
+  let chinRow = -1, chinN = Infinity;
+  for (let y = from; y <= shoulder; y++) { if (rowN[y] < chinN) { chinN = rowN[y]; chinRow = y; } }
+  if (chinRow < 0) return fallback;
+  // A real neck is distinctly narrower than the shoulders. If the "minimum" is barely below
+  // the shoulder width there is no neck in this shape and the row we picked means nothing.
+  if (chinN > maxN * 0.42) return fallback;
+  return { headTop, base, chin: chinRow / h };
 }
 
 /* ═══ 4. MIC OVERLAY ══════════════════════════════════════════════════════ */
 // Live preview tracks the person every frame. For EXPORT we send one stabilised anchor
 // (the median of everything seen), because a per-frame track would have to be transported
 // and replayed server-side for a 20-minute file — see the report note on this.
-const micSamples = { x: [], y: [], s: [], baseY: [] };
+//
+// What gets sampled is the LANDMARKS, never the finished anchor. Sampling the anchor meant
+// every position the mic had ever been drawn at went into the median — including every
+// position it held while the user was still dragging the Height slider around. Moving that
+// slider then barely moved the exported mic, because hundreds of samples taken at the old
+// setting outvoted the handful taken at the new one: the preview obeyed the slider and the
+// export ignored it. Landmarks do not depend on any slider, so the median is now a stable
+// measurement of the person, and the sliders are applied once, at the end, to that median.
+const lmSamples = { x: [], w: [], headTop: [], chin: [], base: [] };
 
-// personBox (and everything micAnchor()/medianAnchor() derive from it) is measured against
+// personLM (and everything micAnchor()/medianAnchor() derive from it) is measured against
 // the FULL, uncropped source frame (see trackPerson() — it segments the whole video frame,
 // crop or no crop). But both the live preview canvas and the exported video are sized to the
 // CROPPED frame. Without this remap, cropping to (say) a portrait ratio shifts and rescales
@@ -1131,48 +1210,64 @@ function anchorToFrame(a, crop) {
   };
 }
 
-function micAnchor() {
-  if (!personBox) return null;
-  const b = personBox;
-  // A real floor/desk stand plants its foot on the ground — where the legs are — and the
-  // arm reaches UP from there toward the mouth; it does not float at chest height. baseY is
-  // therefore the bottom of the detected person (feet), which never moves; the height slider
-  // only changes how far up the arm reaches from that fixed foot, toward mouthY (a rough
-  // chin/mouth height estimated as a fraction of the person's own box, so it adapts to both
-  // a tight head-and-shoulders shot and a full-body seated one).
-  const baseY = Math.min(0.99, b.y + b.h);
-  const mouthY = b.y + b.h * 0.13;
-  // The height slider's actual range is -50..50 (see #sl-michgt), not 0..100 — dividing by
-  // 100 alone meant even the slider's maximum only reached the halfway point of the intended
-  // reach, so the mic could never get anywhere near the mouth no matter how high it was set.
-  const heightNorm = Math.min(1, Math.max(0, (S.mic.height + 50) / 100));
-  const reachFrac = 0.35 + heightNorm * 0.62;
-  const y = baseY - (baseY - mouthY) * reachFrac;
-  const x = b.x + b.w * (0.5 + S.mic.side * 0.42);
-  // `s` is the mic's height as a fraction of the FRAME height, not the person's width —
-  // shoulders span most of the frame in a talking-head shot, which made a width-derived
-  // size balloon. Clamped so it always reads as a prop rather than a billboard.
-  const s = Math.min(0.42, Math.max(0.12, b.h * 0.34)) * S.mic.size;
+// Where the CAPSULE — the fat business end the viewer reads as "the microphone" — sits,
+// given the measured landmarks and the current sliders.
+//
+// The rule the placement follows is the one a person follows with a real mic: the top of the
+// capsule comes up TO the mouth, never past it. Anchoring the capsule's CENTRE at mouth
+// height (what this used to do) puts its whole upper half over the nose and top lip, which is
+// what "the mic escapes above the mouth" was: not a mic in the wrong place so much as a mic
+// measured by the wrong edge. mouth is estimated from the head's own height — top of head to
+// neck — rather than from the person's bounding box, whose bottom is a desk.
+function anchorFromLM(lm) {
+  if (!lm) return null;
+  const headTop = lm.headTop, chin = lm.chin, base = Math.max(lm.chin + 0.02, lm.base);
+  const headH = Math.max(0.02, chin - headTop);
+  const mouth = chin - headH * 0.14;
+
+  // Size follows the HEAD, not the bounding box. A desk mic is a little shorter than a head;
+  // deriving it from the box meant a full-body shot (box = the whole frame) got a mic taller
+  // than the person, and an oversized capsule is the other half of why it covered her face.
+  const s = Math.min(0.42, Math.max(0.08, headH * 0.85)) * S.mic.size;
+
+  // Height slider: 0 (the default, dead centre of -50..50) puts the capsule's top exactly on
+  // the mouth. Up from there it can rise a little — never above the nose. Down from there it
+  // drops toward the chest, where a desk stand naturally sits.
+  const t = Math.min(1, Math.max(0, (S.mic.height + 50) / 100));
+  const topAtMouth = mouth;
+  const topHighest = mouth - headH * 0.10;
+  const topLowest = mouth + (base - mouth) * 0.32;
+  const top = t >= 0.5
+    ? topAtMouth + (topHighest - topAtMouth) * ((t - 0.5) * 2)
+    : topLowest + (topAtMouth - topLowest) * (t * 2);
+
+  const y = top + s / 2;
+  const x = lm.x + lm.w * S.mic.side * 0.42;
   return {
     x: Math.min(0.97, Math.max(0.03, x)),
     y: Math.min(0.97, Math.max(0.03, y)),
-    baseY: Math.min(0.99, Math.max(0.03, baseY)),
+    baseY: Math.min(0.99, Math.max(0.03, base)),
     s,
   };
 }
 
-function recordMicAnchor() {
-  const a = micAnchor(); if (!a) return;
-  for (const [k, v] of [['x', a.x], ['y', a.y], ['s', a.s], ['baseY', a.baseY]]) {
-    micSamples[k].push(v);
-    if (micSamples[k].length > 600) micSamples[k].shift();
+function micAnchor() { return anchorFromLM(personLM); }
+
+function recordLandmarks() {
+  if (!personLM) return;
+  for (const k of ['x', 'w', 'headTop', 'chin', 'base']) {
+    lmSamples[k].push(personLM[k]);
+    if (lmSamples[k].length > 600) lmSamples[k].shift();
   }
 }
 
 function medianAnchor() {
   const med = (arr) => { if (!arr.length) return null; const s = [...arr].sort((p, q) => p - q); return s[s.length >> 1]; };
-  const x = med(micSamples.x), y = med(micSamples.y), s = med(micSamples.s), baseY = med(micSamples.baseY);
-  return (x == null) ? null : { x, y, s, baseY };
+  if (!lmSamples.x.length) return null;
+  return anchorFromLM({
+    x: med(lmSamples.x), w: med(lmSamples.w), headTop: med(lmSamples.headTop),
+    chin: med(lmSamples.chin), base: med(lmSamples.base),
+  });
 }
 
 // One drawing routine, used both for the live overlay and for the PNG shipped to the
@@ -1290,6 +1385,9 @@ function imgOvRect(crop, W, H) {
 function imgOvVisibleAt(t) {
   const o = S.imgOv;
   if (o.whole) return true;
+  // A window that cannot be read, or that ends before it starts, is not a window. Showing the
+  // image anyway would tell the user the range is fine when it isn't.
+  if (o.start == null || o.end == null || !(o.end > o.start)) return false;
   return t >= o.start - 0.001 && t <= o.end + 0.001;
 }
 
@@ -2007,7 +2105,7 @@ window.toggleImgOverlay = () => {
 
 window.imgRangeFromSelection = () => {
   if (!S.sel) {
-    $('img-range-note').textContent = 'Drag across the timeline above first, then press this.';
+    $('img-range-note').innerHTML = '<span class="note-bad">Drag across the timeline above first</span> — press and drag over the waveform to pick the stretch, then press this button.';
     return;
   }
   S.imgOv.whole = false;
@@ -2019,12 +2117,71 @@ window.imgRangeWholeVideo = () => {
   syncImgRangeUI(); updateSummary();
 };
 
+// "0:30" is thirty seconds, "1:05:20" is an hour five minutes twenty. A bare number is still
+// seconds, so nothing that used to work stops working — but the field is labelled and
+// formatted as minutes:seconds now, because it wasn't before and the cost of that was real:
+// someone typing "0.30" for "thirty seconds into the video" got three tenths of a second, an
+// overlay that flashed by unseen, and a note reading "Showing from 0:00 to 0:00" that looked
+// like a bug in the display rather than an answer about what they had actually asked for.
+function parseTimecode(str) {
+  const t = String(str == null ? '' : str).trim();
+  if (!t) return null;
+  if (!/^\d+(\.\d+)?(:\d+(\.\d+)?){0,2}$/.test(t)) return null;
+  const parts = t.split(':').map(Number);
+  if (parts.some(n => !isFinite(n) || n < 0)) return null;
+  // Only the last part may carry a fraction or exceed 59 — "0:75" is not a time.
+  if (parts.length > 1 && parts.slice(0, -1).some(n => !Number.isInteger(n))) return null;
+  if (parts.length > 1 && parts.slice(1).some(n => n >= 60)) return null;
+  return parts.reduce((acc, n) => acc * 60 + n, 0);
+}
+
+// fmtTime() rounds to whole seconds, which is right for a timeline and wrong for reading back
+// a value someone typed: a genuinely sub-second window has to be visibly sub-second, or the
+// display hides the very mistake it exists to reveal.
+function fmtTimeFine(s) {
+  if (s == null || !isFinite(s)) return '—';
+  return fmtClock(Math.max(0, s));
+}
+
+function imgRangeProblem() {
+  const o = S.imgOv;
+  if (o.whole) return null;
+  if (o.startRaw != null && o.start == null) return 'That start time isn\'t a time I can read. Try 0:30.';
+  if (o.endRaw != null && o.end == null) return 'That end time isn\'t a time I can read. Try 0:40.';
+  if (!(o.end > o.start)) return `The end time (${fmtTimeFine(o.end)}) is not after the start time (${fmtTimeFine(o.start)}) — the image would never be on screen.`;
+  if (S.duration && o.start >= S.duration) return `The start time (${fmtTimeFine(o.start)}) is past the end of the video (${fmtTime(S.duration)}).`;
+  return null;
+}
+
 function syncImgRangeUI() {
-  $('img-start').value = (S.imgOv.start || 0).toFixed(1);
-  $('img-end').value = (S.imgOv.end || 0).toFixed(1);
-  $('img-range-note').textContent = S.imgOv.whole
-    ? 'Showing for the whole video.'
-    : `Showing from ${fmtTime(S.imgOv.start)} to ${fmtTime(S.imgOv.end)}.`;
+  $('img-start').value = fmtClock(S.imgOv.start || 0);
+  $('img-end').value = fmtClock(S.imgOv.end || 0);
+  // The fields were just written FROM the state, so any earlier unparseable text the user had
+  // in them is gone and must not keep flagging itself as an error.
+  S.imgOv.startRaw = null; S.imgOv.endRaw = null;
+  paintImgRangeNote();
+}
+
+// The value written INTO the fields, so what the user reads back is in the same units the
+// field asks for.
+function fmtClock(s) {
+  s = Math.max(0, s || 0);
+  const whole = Math.floor(s), frac = s - whole;
+  const base = Math.floor(whole / 60) + ':' + String(whole % 60).padStart(2, '0');
+  return frac > 0.05 ? base + ('' + frac.toFixed(1)).slice(1) : base;
+}
+
+function paintImgRangeNote() {
+  const el = $('img-range-note');
+  if (S.imgOv.whole) { el.textContent = 'Showing for the whole video.'; el.classList.remove('note-bad'); }
+  else {
+    const bad = imgRangeProblem();
+    el.innerHTML = bad
+      ? '<span class="note-bad">' + bad + '</span>'
+      : `Showing from ${fmtTimeFine(S.imgOv.start)} to ${fmtTimeFine(S.imgOv.end)} — ${(S.imgOv.end - S.imgOv.start).toFixed(1)}s on screen.`;
+  }
+  $('img-start').classList.toggle('bad', !S.imgOv.whole && S.imgOv.start == null);
+  $('img-end').classList.toggle('bad', !S.imgOv.whole && (S.imgOv.end == null || !(S.imgOv.end > S.imgOv.start)));
 }
 
 // Typed edits update the state but deliberately do NOT rewrite the inputs' own values —
@@ -2032,13 +2189,16 @@ function syncImgRangeUI() {
 // jumps to the end after every keystroke.
 for (const id of ['img-start', 'img-end']) {
   $(id).addEventListener('input', () => {
-    const a = Math.max(0, Number($('img-start').value) || 0);
-    let b = Number($('img-end').value) || 0;
-    if (S.duration) b = Math.min(b, S.duration);
-    S.imgOv.start = a;
-    S.imgOv.end = Math.max(a, b);
-    S.imgOv.whole = false;
-    $('img-range-note').textContent = `Showing from ${fmtTime(S.imgOv.start)} to ${fmtTime(S.imgOv.end)}.`;
+    const o = S.imgOv;
+    o.startRaw = $('img-start').value;
+    o.endRaw = $('img-end').value;
+    // null, not a silent 0 or a silent max(a,b): an unreadable or backwards range is now
+    // carried as unreadable all the way to the note and to export, instead of being quietly
+    // turned into an empty window that the server then drops without telling anyone.
+    o.start = parseTimecode(o.startRaw);
+    o.end = parseTimecode(o.endRaw);
+    o.whole = false;
+    paintImgRangeNote();
     updateSummary();
   });
 }
@@ -2159,46 +2319,50 @@ function buildPlan() {
     const a = anchorToFrame(medianAnchor() || micAnchor(), S.crop);
     if (a) {
       const px = Math.max(24, Math.round(a.s * out.h));
-      // The canvas has to be tall enough to contain the base drawMic() draws below the
-      // capsule, or the pole and foot get clipped off the bottom edge and the exported mic
-      // renders as just a capsule with nothing holding it up — exactly what "floating"
-      // looks like. Sized from drawMic's own geometry (capsule is `size` tall, the fallback
-      // base sits size*2.4 below its centre) rather than a number that was only ever right
-      // for the old, shorter capsule shape.
       const capsuleTopPad = px * 0.15;
       const footMargin = px * 0.3;
-      const capsuleCy = capsuleTopPad + px / 2;
-      // baseY (canvas-local) is capsuleCy + px/2 + armReach, and the canvas must be at
-      // least baseY + footMargin tall or the foot clips — a prior version of this code
-      // computed canvasH one px/2 short of that, so the base rendered a hair past the
-      // bottom edge of its own snippet canvas even though the maths "looked" right.
-      const oy0 = Math.round(a.y * out.h - capsuleCy);
-      // The arm+base also has to fit inside the REAL video frame below the anchor point —
-      // an anchor placed low in frame (a person filling most of the shot) combined with a
-      // fixed reach can push the base past the bottom of the actual output video, which
-      // looks identical to a floating/clipped mic even though the snippet canvas itself is
-      // internally consistent. Shrink the reach (never below a stubby minimum) to fit.
-      const roomBelow = Math.max(px * 1.1, out.h - Math.max(0, oy0));
-      const desiredArmReach = px * 2.4;
-      const armReach = Math.max(px * 0.5, Math.min(desiredArmReach, roomBelow - capsuleCy - px / 2 - footMargin));
-      const baseY = capsuleCy + px / 2 + armReach;
-      const canvasH = Math.round(baseY + footMargin);
-      const c = document.createElement('canvas');
-      c.width = Math.round(px * 1.4); c.height = canvasH;
-      drawMic(c.getContext('2d'), c.width / 2, capsuleCy, px, S.mic.style, baseY);
-      plan.mic = {
-        x: +a.x.toFixed(4), y: +a.y.toFixed(4), style: S.mic.style,
-        // Top-left offset in output pixels, so the server never has to know how the
-        // artwork sits inside its own canvas — aligned so the CAPSULE (the actual tracked
-        // anchor point), not the canvas top, lands on the real (x,y) position.
-        ox: Math.round(a.x * out.w - c.width / 2),
-        oy: Math.min(oy0, Math.max(0, out.h - canvasH)),
-        w: c.width, h: c.height,
-        png_b64: c.toDataURL('image/png').split(',')[1],
+      // Everything below is in ABSOLUTE output-frame pixels — the same space the live
+      // preview's overlay canvas uses — and then the artwork is cut down to whatever part of
+      // that actually falls inside the frame.
+      //
+      // The old code did the opposite: it drew the mic into a snippet canvas sized to hold
+      // the whole stand, shrank the arm until the stand fit inside the output height, and
+      // clamped `oy` so the canvas could never hang off an edge. The stand therefore came out
+      // COMPLETE, tripod feet and all, no matter what the crop was — so a user who cropped
+      // the bottom of the frame specifically to cut the legs off got a shorter mic with its
+      // legs still fully in shot, while the preview (which draws at absolute coordinates and
+      // lets the canvas edge do the cutting) had shown them correctly cropped away. Crop is
+      // the user's last word on framing; the mic has to be subject to it like anything else.
+      const capsuleCyAbs = a.y * out.h;
+      // The stand runs down to the tracked ground point, wherever that is — off the bottom of
+      // a cropped frame included. Only a base that would end up ABOVE the capsule is nudged.
+      const baseAbs = Math.max(capsuleCyAbs + px * 1.0, a.baseY * out.h);
+      const halfW = Math.round(px * 1.4) / 2;
+      const rect = {
+        x0: Math.max(0, Math.floor(a.x * out.w - halfW)),
+        x1: Math.min(out.w, Math.ceil(a.x * out.w + halfW)),
+        y0: Math.max(0, Math.floor(capsuleCyAbs - px / 2 - capsuleTopPad)),
+        y1: Math.min(out.h, Math.ceil(baseAbs + footMargin)),
       };
+      // A mic whose every pixel is outside the crop is simply not in this video.
+      if (rect.x1 - rect.x0 >= 2 && rect.y1 - rect.y0 >= 2) {
+        const c = document.createElement('canvas');
+        c.width = rect.x1 - rect.x0; c.height = rect.y1 - rect.y0;
+        const cctx = c.getContext('2d');
+        cctx.translate(-rect.x0, -rect.y0);
+        drawMic(cctx, a.x * out.w, capsuleCyAbs, px, S.mic.style, baseAbs);
+        plan.mic = {
+          x: +a.x.toFixed(4), y: +a.y.toFixed(4), style: S.mic.style,
+          // Top-left of the visible piece, in output pixels. Always inside the frame now,
+          // because the artwork itself was cut to the frame rather than squeezed to fit it.
+          ox: rect.x0, oy: rect.y0,
+          w: c.width, h: c.height,
+          png_b64: c.toDataURL('image/png').split(',')[1],
+        };
+      }
     }
   }
-  if (S.imgOv.on && S.imgOv.el && S.imgOv.el.naturalWidth) {
+  if (S.imgOv.on && S.imgOv.el && S.imgOv.el.naturalWidth && !imgRangeProblem()) {
     const o = S.imgOv;
     // Same deal as the mic: the browser rasterises the artwork at exactly the pixel size the
     // export will show it at, so the server never has to reason about scaling — it just
@@ -2248,8 +2412,10 @@ function updateSummary() {
     : S.bg.mode === 'scene' ? (SCENES[S.bg.scene] || {}).label + ' backdrop' : 'Solid ' + S.bg.color + ' backdrop') + '</b>');
   if (S.mic.on) bits.push('<b>' + S.mic.style + ' mic</b>');
   if (S.imgOv.on && S.imgOv.el) {
+    const bad = imgRangeProblem();
     bits.push('<b>image on screen</b>' + (S.imgOv.whole ? ''
-      : ' (' + fmtTime(S.imgOv.start) + '–' + fmtTime(S.imgOv.end) + ')'));
+      : bad ? ' <span class="note-bad">(the time window needs fixing)</span>'
+        : ' (' + fmtTimeFine(S.imgOv.start) + '–' + fmtTimeFine(S.imgOv.end) + ')'));
   }
   if (S.beautify) bits.push('<b>beautify</b>');
   if (S.denoiseLevel > 0) bits.push('<b>noise reduction (' + (S.denoiseLevel === 2 ? 'max' : 'moderate') + ')</b>');
@@ -2300,6 +2466,12 @@ function setBar(p) { $('export-bar').style.width = Math.max(0, Math.min(100, p))
 async function runExport() {
   if (!S.file) { alert('Load a video first'); return; }
   if (!keepSegments().length) { setStatus('[x] Everything is cut — keep at least one piece of the video.', 'error'); return; }
+  // Exporting with a broken image window used to succeed and just quietly drop the image.
+  // Say it here instead, while the user can still fix it.
+  if (S.imgOv.on && S.imgOv.el) {
+    const bad = imgRangeProblem();
+    if (bad) { showTab('image'); setStatus('[x] ' + bad, 'error'); return; }
+  }
   if (!window.currentUser) { showLogin(); return; }
   if (window.checkAfriVidLimit && !await window.checkAfriVidLimit('studio_editor_export')) return;
 

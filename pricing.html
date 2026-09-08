@@ -10,384 +10,401 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pricing — AfriVid Studio</title>
-<meta name="description" content="AfriVid Studio pricing. Free forever plan and Pro at $5/month. Africa's most affordable AI video creation platform.">
+<meta name="description" content="AfriVid Studio pricing. Start free with 1,000 credits — about an hour of video. Pro is $5/month, or unlock a single tool for $1. Every limit stated up front.">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#F5A623">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AfriVid">
-  <link rel="apple-touch-icon" href="/images/logo.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#E08A2E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AfriVid">
+<link rel="apple-touch-icon" href="/images/logo.png">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Syne',sans-serif;background:#080808;color:#F8F9FC;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(245,166,35,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
-.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);}
-.navbar-logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;}
-.navbar-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#050A14;}
-.navbar-name{font-weight:800;font-size:1rem;color:#fff;}
-.navbar-name em{color:#F5A623;font-style:normal;}
-.back-btn{color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.82rem;font-family:'Space Mono',monospace;transition:color 0.2s;}
-.back-btn:hover{color:#F5A623;}
-.container{max-width:900px;margin:0 auto;padding:7rem 1.5rem 5rem;position:relative;z-index:1;}
-.hero{text-align:center;margin-bottom:4rem;}
-.page-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:3px;margin-bottom:0.75rem;}
-.page-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:0.75rem;}
-.page-title em{color:#F5A623;font-style:normal;}
-.page-sub{color:rgba(255,255,255,0.62);font-size:0.95rem;max-width:500px;margin:0 auto;}
-.plans{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:4rem;}
-@media(max-width:600px){.plans{grid-template-columns:1fr;}}
-.plan{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;position:relative;}
-.plan.featured{background:rgba(245,166,35,0.04);border-color:rgba(245,166,35,0.25);}
-.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;font-size:0.7rem;font-weight:900;padding:0.3rem 1rem;border-radius:20px;font-family:'Space Mono',monospace;white-space:nowrap;}
-.plan-name{font-size:0.65rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
-.plan-price{font-size:3rem;font-weight:900;margin-bottom:0.25rem;line-height:1;}
-.plan-price span{font-size:1rem;font-weight:400;color:rgba(255,255,255,0.6);}
-.plan-desc{color:rgba(255,255,255,0.6);font-size:0.82rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);}
-.feature-list{list-style:none;margin-bottom:2rem;}
-.feature-list li{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:0.75rem;}
-.feature-list li .check{color:#74C69D;font-size:0.9rem;flex-shrink:0;margin-top:0.1rem;}
-.feature-list li .cross{color:rgba(255,255,255,0.52);font-size:0.9rem;flex-shrink:0;margin-top:0.1rem;}
-.feature-list li.disabled{color:rgba(255,255,255,0.54);}
-.plan-btn{display:block;width:100%;padding:0.85rem;border-radius:10px;font-weight:900;font-size:0.95rem;cursor:pointer;text-align:center;text-decoration:none;font-family:'Syne',sans-serif;transition:all 0.2s;border:none;}
-.plan-btn.free{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.1);}
-.plan-btn.free:hover{background:rgba(255,255,255,0.1);}
-.plan-btn.pro{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
-.plan-btn.pro:hover{opacity:0.9;}
-.compare{margin-bottom:4rem;}
-.compare h2{font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:2rem;}
-.compare h2 em{color:#F5A623;font-style:normal;}
-table{width:100%;border-collapse:collapse;}
-th{padding:0.75rem 1rem;text-align:left;font-size:0.72rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,0.06);}
-td{padding:0.85rem 1rem;font-size:0.88rem;border-bottom:1px solid rgba(255,255,255,0.04);}
-td:first-child{color:rgba(255,255,255,0.7);}
-td:nth-child(2){color:rgba(255,255,255,0.58);text-align:center;}
-td:nth-child(3){color:#74C69D;text-align:center;font-weight:700;}
-tr:hover td{background:rgba(255,255,255,0.02);}
-.faq{margin-bottom:4rem;}
-.faq h2{font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:2rem;}
-.faq h2 em{color:#F5A623;font-style:normal;}
-.faq-item{border-bottom:1px solid rgba(255,255,255,0.06);padding:1.25rem 0;}
-.faq-q{font-weight:700;font-size:0.92rem;margin-bottom:0.5rem;cursor:pointer;}
-.faq-a{color:rgba(255,255,255,0.5);font-size:0.85rem;line-height:1.6;}
-.cta{text-align:center;background:rgba(245,166,35,0.04);border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:3rem 2rem;}
-.cta h2{font-size:1.8rem;font-weight:900;margin-bottom:0.75rem;}
-.cta h2 em{color:#F5A623;font-style:normal;}
-.cta p{color:rgba(255,255,255,0.62);margin-bottom:1.5rem;}
-.cta a{display:inline-block;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;padding:0.85rem 2rem;border-radius:10px;font-weight:900;text-decoration:none;font-size:0.95rem;transition:opacity 0.2s;}
-.cta a:hover{opacity:0.9;}
-footer{text-align:center;padding:2rem;color:rgba(255,255,255,0.52);font-size:0.75rem;font-family:'Space Mono',monospace;border-top:1px solid rgba(255,255,255,0.04);}
-footer a{color:rgba(255,255,255,0.56);text-decoration:none;margin:0 0.75rem;}
-footer a:hover{color:#F5A623;}
+/* AfriVid brand tokens — identical values to index.html, not a new language.
+   The site is a committed light/cream design with no dark variant anywhere
+   (no page carries a prefers-color-scheme block), so this page commits too. */
+:root{
+  --cream:#FBF7EF;
+  --ink:#17140F;
+  --ink-70:rgba(23,20,15,0.70);
+  --ink-64:rgba(23,20,15,0.64);
+  --ink-50:rgba(23,20,15,0.50);
+  --line:rgba(23,20,15,0.10);
+  --line-soft:rgba(23,20,15,0.06);
+  --card:#FFFFFF;
+  --amber:#E08A2E;
+  --amber-deep:#C4701E;
+  --amber-text:#9C5918;
+  --amber-wash:rgba(224,138,46,0.08);
+  --amber-line:rgba(224,138,46,0.30);
+  --good:#2F7D53;
+  --warn:#9A3F12;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+
+.navbar{position:sticky;top:0;z-index:500;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
+.navbar-brand{display:flex;align-items:center;gap:0.6rem;text-decoration:none;}
+.navbar-brand img{height:36px;width:auto;object-fit:contain;}
+.navbar-badge{font-weight:800;font-size:0.95rem;letter-spacing:-0.01em;}
+.navbar-actions{display:flex;align-items:center;gap:0.5rem;}
+.btn-nav-tool{font-size:0.82rem;font-weight:700;padding:0.5rem 0.85rem;border-radius:9px;text-decoration:none;color:var(--ink-70);border:1px solid transparent;transition:background 0.18s,color 0.18s;}
+.btn-nav-tool:hover{background:rgba(23,20,15,0.05);color:var(--ink);}
+.btn-nav-cta{font-size:0.82rem;font-weight:800;padding:0.5rem 1rem;border-radius:9px;text-decoration:none;background:var(--amber);color:#fff;border:none;transition:background 0.18s;}
+.btn-nav-cta:hover{background:var(--amber-deep);}
+@media(max-width:820px){.navbar{padding:0.8rem 1rem;}.navbar-actions .btn-nav-tool{display:none;}}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 1.5rem;}
+.hero{text-align:center;padding:4.5rem 0 3rem;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-text);margin-bottom:1rem;}
+h1{font-size:clamp(2.1rem,5vw,3.4rem);font-weight:800;letter-spacing:-0.02em;line-height:1.06;margin-bottom:1rem;}
+h1 em{font-style:normal;color:var(--amber-deep);}
+.hero p{color:var(--ink-64);font-size:1.02rem;line-height:1.65;max-width:600px;margin:0 auto;}
+
+/* The credit explainer — the single most important thing on the page, so it
+   sits above the plans rather than in a footnote. A price nobody can convert
+   into minutes is not a price. */
+.rate{margin:2.5rem auto 0;max-width:720px;background:var(--card);border:1px solid var(--amber-line);border-radius:18px;padding:1.6rem 1.8rem;}
+.rate-head{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--amber-text);margin-bottom:0.9rem;}
+.rate-eq{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;}
+.rate-eq b{color:var(--amber-deep);font-size:1.35rem;}
+.rate-eq span{color:var(--ink-50);font-weight:400;}
+.rate-note{margin-top:0.9rem;font-size:0.85rem;color:var(--ink-64);line-height:1.6;text-align:center;}
+
+section{padding:3.5rem 0;}
+h2{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.015em;margin-bottom:0.6rem;}
+h2 em{font-style:normal;color:var(--amber-deep);}
+.section-sub{color:var(--ink-64);font-size:0.95rem;line-height:1.6;margin-bottom:2rem;max-width:640px;}
+
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:start;}
+@media(max-width:900px){.plans{grid-template-columns:1fr;}}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.9rem 1.6rem;position:relative;display:flex;flex-direction:column;height:100%;}
+.plan.featured{border-color:var(--amber);box-shadow:0 14px 40px rgba(224,138,46,0.14);}
+.plan-badge{position:absolute;top:-11px;left:1.6rem;background:var(--amber);color:#fff;font-family:'Space Mono',monospace;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;padding:0.3rem 0.7rem;border-radius:6px;text-transform:uppercase;}
+.plan-name{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-50);margin-bottom:0.7rem;}
+.plan-price{font-size:2.6rem;font-weight:800;letter-spacing:-0.03em;line-height:1;margin-bottom:0.2rem;}
+.plan-price small{font-size:0.95rem;font-weight:400;color:var(--ink-50);letter-spacing:0;}
+.plan-desc{color:var(--ink-64);font-size:0.87rem;line-height:1.55;margin:0.7rem 0 1.3rem;padding-bottom:1.3rem;border-bottom:1px solid var(--line-soft);}
+.plan ul{list-style:none;margin-bottom:1.6rem;flex:1;}
+.plan li{display:flex;gap:0.6rem;font-size:0.87rem;color:var(--ink-70);line-height:1.5;margin-bottom:0.8rem;}
+.plan li .ic{flex-shrink:0;width:16px;height:16px;margin-top:0.15rem;}
+.plan li b{color:var(--ink);font-weight:700;}
+.plan li.muted{color:var(--ink-50);}
+.plan-btn{display:block;text-align:center;padding:0.8rem;border-radius:11px;font-family:'Syne',sans-serif;font-weight:800;font-size:0.92rem;text-decoration:none;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink);transition:background 0.18s,border-color 0.18s;width:100%;}
+.plan-btn:hover{background:rgba(23,20,15,0.04);}
+.plan-btn.primary{background:var(--amber);border-color:var(--amber);color:#fff;}
+.plan-btn.primary:hover{background:var(--amber-deep);border-color:var(--amber-deep);}
+
+/* Per-tool unlocks */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.9rem;margin-top:1.5rem;}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.2rem;}
+.tool-name{font-weight:800;font-size:0.95rem;margin-bottom:0.35rem;}
+.tool-window{font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--amber-text);font-weight:700;}
+.tool-note{font-size:0.8rem;color:var(--ink-50);margin-top:0.4rem;line-height:1.5;}
+
+/* The degraded state. Deliberately a full, prominent section with its own
+   heading — not fine print. A person should be able to read exactly what they
+   lose before they spend anything. */
+.degraded{background:#fff;border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:16px;padding:2rem 1.9rem;}
+.degraded h3{font-size:1.15rem;font-weight:800;margin-bottom:0.5rem;}
+.degraded > p{color:var(--ink-64);font-size:0.9rem;line-height:1.6;margin-bottom:1.4rem;max-width:620px;}
+.deg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.9rem 1.6rem;}
+.deg-item{display:flex;gap:0.65rem;align-items:flex-start;font-size:0.87rem;line-height:1.5;color:var(--ink-70);}
+.deg-item .ic{flex-shrink:0;width:16px;height:16px;margin-top:0.15rem;}
+.deg-item b{color:var(--ink);font-weight:700;}
+
+/* Comparison table */
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--card);}
+table{width:100%;border-collapse:collapse;min-width:640px;}
+th{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-50);text-align:left;padding:1rem 1.2rem;border-bottom:1px solid var(--line);font-weight:700;}
+th:not(:first-child),td:not(:first-child){text-align:center;}
+td{padding:0.9rem 1.2rem;font-size:0.87rem;color:var(--ink-70);border-bottom:1px solid var(--line-soft);}
+tbody tr:last-child td{border-bottom:none;}
+td:first-child{color:var(--ink);font-weight:600;}
+tbody tr:hover td{background:rgba(23,20,15,0.02);}
+.cell-yes{color:var(--good);font-weight:700;}
+.cell-no{color:var(--ink-50);}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid var(--line-soft);}
+.faq-q{width:100%;text-align:left;background:none;border:none;font-family:'Syne',sans-serif;font-size:0.98rem;font-weight:700;color:var(--ink);padding:1.15rem 2rem 1.15rem 0;cursor:pointer;position:relative;}
+.faq-q::after{content:'+';position:absolute;right:0.3rem;top:50%;transform:translateY(-50%);font-size:1.3rem;font-weight:400;color:var(--amber-deep);}
+.faq-item.open .faq-q::after{content:'\2212';}
+.faq-a{display:none;padding:0 0 1.3rem;color:var(--ink-64);font-size:0.89rem;line-height:1.7;max-width:720px;}
+.faq-item.open .faq-a{display:block;}
+
+.cta{text-align:center;background:var(--amber-wash);border:1px solid var(--amber-line);border-radius:22px;padding:3rem 2rem;}
+.cta h2{margin-bottom:0.6rem;}
+.cta p{color:var(--ink-64);margin-bottom:1.6rem;font-size:0.95rem;}
+.cta .plan-btn{display:inline-block;width:auto;padding:0.85rem 2.2rem;}
+
+footer{border-top:1px solid var(--line);margin-top:3rem;padding:2.2rem 1.5rem;text-align:center;}
+footer p{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--ink-50);}
+footer nav{margin-bottom:0.9rem;}
+footer nav a{font-size:0.82rem;color:var(--ink-64);text-decoration:none;margin:0 0.7rem;}
+footer nav a:hover{color:var(--amber-deep);}
 </style>
-  <meta property="og:image" content="https://afrivid.studio/images/logo.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:image" content="https://afrivid.studio/images/logo.png">
-  <meta property="twitter:title" content="AfriVid Studio — Africa's First AI Video Creation Platform">
-  <meta property="twitter:description" content="Create professional videos in minutes with AI. Built for Africa.">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="en_US">
-<meta property="og:site_name" content="AfriVid Studio">
-<meta property="og:url" content="https://afrivid.studio/pricing.html">
-<meta name="twitter:site" content="@afrividstudio">
-<meta name="twitter:creator" content="@afrividstudio">
-<link rel="canonical" href="https://afrivid.studio/pricing.html">
 </head>
 <body>
+
 <nav class="navbar">
-  <a href="index.html" class="navbar-logo">
-    <div class="navbar-icon">A</div>
-    <span class="navbar-name">Afri<em>Vid</em></span>
+  <a class="navbar-brand" href="index.html">
+    <img src="images/logo.png" alt="AfriVid Studio">
+    <div class="navbar-badge">AfriVid Studio</div>
   </a>
-  <a href="index.html" class="back-btn">← Back to Home</a>
+  <div class="navbar-actions">
+    <a href="create.html" class="btn-nav-tool">Create Video</a>
+    <a href="graphics.html" class="btn-nav-tool">Graphics and Images</a>
+    <a href="studio.html" class="btn-nav-tool">My Studio</a>
+    <a href="studio.html" class="btn-nav-cta">Start free</a>
+  </div>
 </nav>
 
-<div class="container">
-  <div class="hero">
-    <div class="page-label">PRICING</div>
-    <h1 class="page-title">Simple, honest <em>pricing</em><br>built for Africa</h1>
-    <p class="page-sub">No hidden fees. No dollar card required. Cancel anytime. Start free forever.</p>
-  </div>
+<div class="wrap">
 
-  <div class="plans">
-    <div class="plan">
-      <div class="plan-name">FREE FOREVER</div>
-      <div class="plan-price">$0<span>/month</span></div>
-      <div class="plan-desc">Everything you need to get started. No credit card required.</div>
-      <ul class="feature-list">
-        <li><span class="check">✓</span> 3 videos per month</li>
-        <li><span class="check">✓</span> Up to 2 minutes per video</li>
-        <li><span class="check">✓</span> AI script generation</li>
-        <li><span class="check">✓</span> 5 voice styles</li>
-        <li><span class="check">✓</span> Photo editor</li>
-        <li><span class="check">✓</span> Design studio</li>
-        <li><span class="check">✓</span> 3 AI editor sessions/month</li>
-        <li><span class="check">✓</span> 3 voice translations/month</li>
-        <li><span class="check">✓</span> 3 captions/week</li>
-        <li class="disabled"><span class="cross">✕</span> AfriVid watermark on videos</li>
-        <li class="disabled"><span class="cross">✕</span> Priority support</li>
-      </ul>
-      <a href="studio.html" class="plan-btn free">Get Started Free →</a>
-    </div>
+  <header class="hero">
+    <div class="eyebrow">Pricing</div>
+    <h1>Pay for what you <em>actually make</em>.</h1>
+    <p>AfriVid runs on credits. Credits buy generated video, and one credit means
+       the same thing on every plan. Everything below is what you get — including
+       what stops working when your free allowance is gone.</p>
 
-    <div class="plan featured">
-      <div class="plan-badge">⭐ MOST POPULAR</div>
-      <div class="plan-name">PRO</div>
-      <div class="plan-price">$5<span>/month</span></div>
-      <div class="plan-desc">For serious African creators, businesses and organizations.</div>
-      <ul class="feature-list">
-        <li><span class="check">✓</span> <strong>Unlimited videos</strong></li>
-        <li><span class="check">✓</span> <strong>Up to 20 minutes per video</strong></li>
-        <li><span class="check">✓</span> AI script generation</li>
-        <li><span class="check">✓</span> All voice styles</li>
-        <li><span class="check">✓</span> Photo editor</li>
-        <li><span class="check">✓</span> Design studio</li>
-        <li><span class="check">✓</span> <strong>Unlimited AI editor sessions</strong></li>
-        <li><span class="check">✓</span> <strong>Unlimited voice translations</strong></li>
-        <li><span class="check">✓</span> <strong>Unlimited captions</strong></li>
-        <li><span class="check">✓</span> <strong>No watermark</strong></li>
-        <li><span class="check">✓</span> <strong>Priority support</strong></li>
-      </ul>
-      <a href="#" onclick="showUpgradeForm();return false;" class="plan-btn pro">Upgrade to Pro →</a>
+    <div class="rate">
+      <div class="rate-head">The rate, in full</div>
+      <div class="rate-eq">
+        <b>1 minute</b> <span>of generated video</span> <span>=</span> <b>16 credits</b>
+      </div>
+      <p class="rate-note">
+        Charged by the second on the finished video, not on what you asked for — a
+        90&#8209;second video costs 24 credits, not a rounded-up minute. The same rate
+        applies on every plan.
+      </p>
     </div>
-  </div>
+  </header>
 
-  <div class="compare">
-    <h2>Compare <em>Free vs Pro</em></h2>
-    <table>
-      <tr>
-        <th>FEATURE</th>
-        <th>FREE</th>
-        <th>PRO $5/mo</th>
-      </tr>
-      <tr><td>Videos per month</td><td>3</td><td>Unlimited</td></tr>
-      <tr><td>Max video length</td><td>2 minutes</td><td>20 minutes</td></tr>
-      <tr><td>AI Video Creator</td><td>✓</td><td>✓</td></tr>
-      <tr><td>AI Video Editor</td><td>3/month</td><td>Unlimited</td></tr>
-      <tr><td>Viral Clips Generator</td><td>3/month</td><td>Unlimited</td></tr>
-      <tr><td>Voice Translation</td><td>3/month</td><td>Unlimited</td></tr>
-      <tr><td>Auto Captions</td><td>3/week</td><td>Unlimited</td></tr>
-      <tr><td>Highlight Reel</td><td>3/month</td><td>Unlimited</td></tr>
-      <tr><td>Noise Removal</td><td>3/month</td><td>Unlimited</td></tr>
-      <tr><td>Background Music</td><td>✓</td><td>✓</td></tr>
-      <tr><td>Thumbnail Generator</td><td>✓</td><td>✓</td></tr>
-      <tr><td>Brand Kit</td><td>✓</td><td>✓</td></tr>
-      <tr><td>Photo Editor</td><td>✓</td><td>✓</td></tr>
-      <tr><td>Design Studio</td><td>✓</td><td>✓</td></tr>
-      <tr><td>AfriVid Watermark</td><td>Yes</td><td>No</td></tr>
-      <tr><td>Support</td><td>Email</td><td>Priority Email</td></tr>
-    </table>
-  </div>
+  <section id="plans">
+    <h2>Three ways to <em>pay</em></h2>
+    <p class="section-sub">Start free. Move to Pro when you are making video every week,
+       or unlock the single tool you need for a dollar.</p>
 
-  <div class="faq">
-    <h2>Frequently Asked <em>Questions</em></h2>
-    <div class="faq-item">
-      <div class="faq-q">Do I need a dollar card to sign up?</div>
-      <div class="faq-a">No. The free plan requires no payment at all. For Pro, we are working on M-Pesa and MTN Mobile Money support. Currently you can pay via email arrangement.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Can I cancel my Pro subscription anytime?</div>
-      <div class="faq-a">Yes. Email us at afrividstudio@gmail.com and we'll cancel within 24 hours. No questions asked.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">What languages does AfriVid support?</div>
-      <div class="faq-a">AfriVid creates videos in English and can translate to Swahili, French, Yoruba, Hausa, Amharic and Portuguese. More African languages coming soon.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Who owns the videos I create?</div>
-      <div class="faq-a">You do. 100%. AfriVid does not claim ownership of any content you produce on our platform.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Is there a student or NGO discount?</div>
-      <div class="faq-a">Yes. Email us with proof of student status or NGO registration and we'll discuss special pricing. We believe in making AI accessible to all Africans.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">What happens when I hit my free limit?</div>
-      <div class="faq-a">You'll see a friendly upgrade prompt. Your existing work is never deleted. You can upgrade to Pro or wait until next month when limits reset.</div>
-    </div>
-  </div>
+    <div class="plans">
 
-  <div class="cta">
-    <h2>Ready to create? <em>Start free.</em></h2>
-    <p>Join African creators already using AfriVid Studio. No credit card needed.</p>
-    <a href="studio.html">Get Started Free →</a>
-  </div>
+      <!-- FREE -->
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0</div>
+        <p class="plan-desc">1,000 credits — about <b>62 minutes</b> of generated video,
+           shared across Ad Maker, Tutorial Maker and Short Videos. A one-time
+           allowance, not a monthly refill.</p>
+        <ul>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>1,000 credits</b> for video generation, one shared pool</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Video Editor</b> — every feature, for <b>30 days</b> from signup</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Graphics and Images</b> — every feature, for <b>3 months</b></span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Video Compressor</b> — no size or length limit, for <b>30 days</b></span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Developer API</b> — <b>30 minutes</b> of test video, total</span></li>
+          <li class="muted"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="rgba(23,20,15,0.4)" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span>Output is watermarked once the editor window closes</span></li>
+        </ul>
+        <a class="plan-btn" href="studio.html">Create a free account</a>
+      </div>
+
+      <!-- PRO SUBSCRIPTION -->
+      <div class="plan featured">
+        <div class="plan-badge">Most complete</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$5<small> / month</small></div>
+        <p class="plan-desc">4,800 credits every month — <b>300 minutes</b> of
+           generated video — plus every tool unlocked for as long as the
+           subscription is active.</p>
+        <ul>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>4,800 credits</b> a month — 300 minutes, at the same 16-per-minute rate</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span>Video Editor, Graphics and Images, and the Compressor all <b>unlocked</b></span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>No watermark.</b> No capped noise reduction, volume or captions</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Credit appeals</b> — if one of your own settings burned credits unfairly, file a review and a person reads it</span></li>
+          <li class="muted"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="rgba(23,20,15,0.4)" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span>The Developer API is metered separately and is not included</span></li>
+        </ul>
+        <a class="plan-btn primary" href="contact.html?plan=pro_subscription">Go Pro — $5/month</a>
+      </div>
+
+      <!-- PAY PER TOOL -->
+      <div class="plan">
+        <div class="plan-name">Per tool</div>
+        <div class="plan-price">$1<small> / tool</small></div>
+        <p class="plan-desc">One dollar unlocks one tool, in full, for a set window.
+           No subscription, nothing recurring. Buy only the thing you need today.</p>
+        <ul>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Video Compressor</b> — 1 month</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Graphics and Images</b> — 1 month</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Video Creation</b> — 1 more hour of generated video (960 credits)</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Video Editor</b> — every feature, 2 weeks</span></li>
+          <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Developer API</b> — 20 minutes of generation</span></li>
+        </ul>
+        <a class="plan-btn" href="#tools">See the tools</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="tools">
+    <h2>What <em>a dollar</em> buys</h2>
+    <p class="section-sub">Each unlock is independent. Buying the Video Editor does not
+       touch your credits; buying Video Creation does not extend the editor.</p>
+    <div class="tools">
+      <div class="tool">
+        <div class="tool-name">Video Compressor</div>
+        <div class="tool-window">1 month</div>
+        <p class="tool-note">Any file size, any length, every quality level, no watermark.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">Graphics and Images</div>
+        <div class="tool-window">1 month</div>
+        <p class="tool-note">Posters, flyers, brand images and photo tools, all features.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">Video Creation</div>
+        <div class="tool-window">1 hour of video</div>
+        <p class="tool-note">960 credits into your shared pool — Ad Maker, Tutorial Maker and Short Videos.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">Video Editor</div>
+        <div class="tool-window">2 weeks</div>
+        <p class="tool-note">Captions, mic overlay, full noise reduction and volume boost, no watermark.</p>
+      </div>
+      <div class="tool">
+        <div class="tool-name">Developer API</div>
+        <div class="tool-window">20 minutes</div>
+        <p class="tool-note">Our renderer as the engine inside your own product.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="limits">
+    <h2>When your free allowance <em>runs out</em></h2>
+    <p class="section-sub">Nothing here is hidden in a footnote. This is exactly what
+       the free account does once the credits are spent and the trial windows have
+       closed — and exactly what a $1 unlock or Pro turns back on.</p>
+
+    <div class="degraded">
+      <h3>The free account after its allowance</h3>
+      <p>Your account keeps working and your files stay yours. What changes is what
+         the tools will do:</p>
+      <div class="deg-grid">
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#9A3F12" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span><b>No new video can be generated.</b> Ad Maker, Tutorial Maker and Short Videos stop.</span></div>
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#9A3F12" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span><b>A watermark appears</b> on video you export.</span></div>
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#9A3F12" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span><b>Auto-captions stop working</b> — including cut-by-caption.</span></div>
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#9A3F12" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span><b>The mic overlay is disabled.</b></span></div>
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#9A3F12" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span><b>Noise reduction is capped</b> at its lowest level only.</span></div>
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#9A3F12" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span><b>Volume boost is capped</b> at its lowest level only.</span></div>
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#9A3F12" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span><b>The Developer API is not accessible.</b></span></div>
+        <div class="deg-item"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Compression still works</b> — at low quality, watermarked.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Side by <em>side</em></h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>&nbsp;</th><th>Free</th><th>Free, spent</th><th>Pro $5/mo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Video credits</td><td>1,000 once</td><td class="cell-no">0</td><td class="cell-yes">4,800 / month</td></tr>
+          <tr><td>Generate new video</td><td class="cell-yes">Yes</td><td class="cell-no">Blocked</td><td class="cell-yes">Yes</td></tr>
+          <tr><td>Watermark on output</td><td>None for 30 days</td><td class="cell-no">Yes</td><td class="cell-yes">None</td></tr>
+          <tr><td>Auto-captions &amp; cut-by-caption</td><td>30 days</td><td class="cell-no">Off</td><td class="cell-yes">Yes</td></tr>
+          <tr><td>Mic overlay</td><td>30 days</td><td class="cell-no">Off</td><td class="cell-yes">Yes</td></tr>
+          <tr><td>Noise reduction</td><td>All levels, 30 days</td><td class="cell-no">Lowest only</td><td class="cell-yes">All levels</td></tr>
+          <tr><td>Volume boost</td><td>All levels, 30 days</td><td class="cell-no">Lowest only</td><td class="cell-yes">All levels</td></tr>
+          <tr><td>Graphics and Images</td><td>3 months</td><td class="cell-no">Locked</td><td class="cell-yes">Yes</td></tr>
+          <tr><td>Video Compressor</td><td>Unlimited, 30 days</td><td class="cell-no">Low quality, watermarked</td><td class="cell-yes">Unlimited</td></tr>
+          <tr><td>Developer API</td><td>30 test minutes</td><td class="cell-no">No access</td><td class="cell-no">Metered separately</td></tr>
+          <tr><td>Credit appeal review</td><td class="cell-no">&mdash;</td><td class="cell-no">&mdash;</td><td class="cell-yes">Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Questions <em>worth asking</em></h2>
+    <div id="faq">
+      <div class="faq-item">
+        <button class="faq-q" type="button">How many credits does a video actually cost?</button>
+        <div class="faq-a">16 credits per minute of finished video, charged by the second.
+          A 30-second ad costs 8 credits. A 5-minute tutorial costs 80. You are charged on
+          the video that came out, measured after it renders — not on the length you asked
+          for, and not on failed jobs.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Do the three video tools have separate allowances?</button>
+        <div class="faq-a">No. Ad Maker, Tutorial Maker and Short Videos all draw on one
+          shared pool. Ten minutes of video costs the same 160 credits whichever of the
+          three made it.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Do the free 1,000 credits come back every month?</button>
+        <div class="faq-a">No. The free 1,000 is a one-time allowance for the account. The
+          30-day and 3-month tool windows also run once, from the day you sign up. Pro's
+          4,800 credits are the part that renews monthly.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Does editing a video cost credits?</button>
+        <div class="faq-a">No. Credits are for <em>generating</em> new video from a topic or
+          script. The Video Editor is sold by time instead — 30 days free, 2 weeks for $1,
+          or included with Pro — so re-cutting a long recording does not cost you the same
+          as generating a long video.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">What if a mistake in my settings burned credits?</button>
+        <div class="faq-a">Ask us to look at it. Pro accounts can file a credit appeal from
+          the studio; it goes to a person, not an automated rule, and we will reverse the
+          charge if the burn was not your fault. We do not auto-refund, because a credit
+          system that reverses on request is not really a credit system.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Why 4,800 credits and not a rounder number?</button>
+        <div class="faq-a">It is 300 minutes exactly, at the same 16-credits-a-minute rate
+          everything else on this page uses. We would rather the number match what the
+          system actually honours than print something rounder that does not.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">What happens to my videos if I stop paying?</button>
+        <div class="faq-a">They stay in your studio and stay downloadable. You drop back to
+          the free account's limits for making new ones — the list above under &ldquo;when your
+          free allowance runs out.&rdquo;</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="cta">
+      <h2>Start with the <em>free hour</em>.</h2>
+      <p>No card, no trial countdown on the credits. Make something and see if it is any good.</p>
+      <a class="plan-btn primary" href="studio.html">Create a free account</a>
+    </div>
+  </section>
+
 </div>
 
 <footer>
-  <div style="margin-bottom:0.75rem;">
+  <nav>
     <a href="index.html">Home</a>
-    <a href="privacy.html">Privacy</a>
-    <a href="terms.html">Terms</a>
-    <a href="pricing.html">Pricing</a>
+    <a href="create.html">Create</a>
+    <a href="api-docs.html">Developer API</a>
     <a href="contact.html">Contact</a>
-  </div>
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Facebook</a>
-      <span style="color:rgba(255,255,255,0.5);">·</span>
-      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Instagram</a>
-      <span style="color:rgba(255,255,255,0.5);">·</span>
-      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">TikTok</a>
-      <span style="color:rgba(255,255,255,0.5);">·</span>
-      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Twitter</a>
-      <span style="color:rgba(255,255,255,0.5);">·</span>
-      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">YouTube</a>
-    </div>
-    © 2026 AfriVid Studio · Built in Africa 🌍
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+  <p>&copy; 2026 AfriVid Studio. Built for Africa, by Africans.</p>
 </footer>
-<script src="chatbot.js"></script>
+
 <script>
-if('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then(r => console.log('[AfriVid] App ready ✅')).catch(e => console.log('[AfriVid] SW:', e));
+// FAQ accordion. Plain listeners rather than inline onclick so the page has no
+// global functions to collide with anything the shared scripts define.
+document.querySelectorAll('.faq-q').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    btn.parentElement.classList.toggle('open');
   });
-}
-</script>
-
-<!-- UPGRADE REQUEST MODAL -->
-<div id="upgrade-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:2rem;width:90%;max-width:460px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
-      <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">Fill the form below. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span> with payment details.</div>
-    </div>
-
-    <!-- Plan reminder -->
-    <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.6);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.6);font-size:0.78rem;">Unlimited videos · No watermark · Priority support</div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
-      <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
-        <input id="upg-name" type="text" placeholder="Regan Ayiecho" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-      </div>
-      <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
-        <input id="upg-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-      </div>
-      <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
-        <select id="upg-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-          <option value="">Select your country</option>
-          <option>Kenya</option>
-          <option>Rwanda</option>
-          <option>Nigeria</option>
-          <option>Uganda</option>
-          <option>Tanzania</option>
-          <option>Ghana</option>
-          <option>South Africa</option>
-          <option>Ethiopia</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
-        <select id="upg-payment" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;" onchange="togglePhone()">
-          <option value="">Select payment method</option>
-          <option value="mpesa">M-Pesa</option>
-          <option value="mtn">MTN Mobile Money</option>
-          <option value="airtel">Airtel Money</option>
-          <option value="card">Debit/Credit Card</option>
-          <option value="bank">Bank Transfer</option>
-        </select>
-      </div>
-      <div id="upg-phone-wrap">
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER (for Mobile Money)</label>
-        <input id="upg-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-      </div>
-      <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">MESSAGE (optional)</label>
-        <textarea id="upg-msg" placeholder="Any questions or special requests..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;outline:none;min-height:80px;resize:vertical;box-sizing:border-box;"></textarea>
-      </div>
-    </div>
-
-    <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-      <span style="color:#74C69D;font-size:1rem;">⏱</span>
-      <span style="color:rgba(255,255,255,0.6);font-size:0.78rem;">We will respond to your email within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</span>
-    </div>
-
-    <div style="display:flex;gap:0.5rem;">
-      <button onclick="document.getElementById('upgrade-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-      <button id="upg-submit-btn" onclick="submitUpgradeRequest()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Submit Request →</button>
-    </div>
-  </div>
-</div>
-
-<script>
-function showUpgradeForm() {
-  const modal = document.getElementById('upgrade-modal');
-  if(modal) { modal.style.display='flex'; }
-  // Pre-fill email if logged in
-  if(window.currentUser) {
-    const emailEl = document.getElementById('upg-email');
-    const nameEl = document.getElementById('upg-name');
-    if(emailEl) emailEl.value = window.currentUser.email || '';
-    if(nameEl) nameEl.value = window.currentUser.displayName || '';
-  }
-}
-
-function togglePhone() {
-  const payment = document.getElementById('upg-payment').value;
-  const phoneWrap = document.getElementById('upg-phone-wrap');
-  if(phoneWrap) {
-    phoneWrap.style.display = ['mpesa','mtn','airtel'].includes(payment) ? 'block' : 'none';
-  }
-}
-
-async function submitUpgradeRequest() {
-  const name = document.getElementById('upg-name')?.value?.trim();
-  const email = document.getElementById('upg-email')?.value?.trim();
-  const country = document.getElementById('upg-country')?.value;
-  const payment = document.getElementById('upg-payment')?.value;
-  const phone = document.getElementById('upg-phone')?.value?.trim();
-  const msg = document.getElementById('upg-msg')?.value?.trim();
-
-  if(!name || !email || !country || !payment) {
-    alert('Please fill all required fields');
-    return;
-  }
-
-  const btn = document.getElementById('upg-submit-btn');
-  if(btn) { btn.textContent='[..] Submitting...'; btn.disabled=true; }
-
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-
-    await addDoc(collection(db, 'upgrade_requests'), {
-      name, email, country, payment, phone, message: msg,
-      userId: window.currentUser?.uid || 'anonymous',
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-
-    // Show success
-    document.getElementById('upgrade-modal').innerHTML = `
-      <div style="background:#0D1117;border:1px solid rgba(116,198,157,0.3);border-radius:20px;padding:2.5rem;width:90%;max-width:400px;font-family:Syne,sans-serif;text-align:center;">
-        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
-        <div style="color:#74C69D;font-weight:900;font-size:1.2rem;margin-bottom:0.5rem;">Request Submitted!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">We received your upgrade request. Check your email <strong style="color:#fff;">${email}</strong> — we'll respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</div>
-        <button onclick="document.getElementById('upgrade-modal').style.display='none'" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Done</button>
-      </div>`;
-
-  } catch(e) {
-    if(btn) { btn.textContent='Submit Request →'; btn.disabled=false; }
-    alert('Failed: ' + e.message);
-  }
-}
-
-// Hide phone by default
-document.addEventListener('DOMContentLoaded', () => {
-  const pw = document.getElementById('upg-phone-wrap');
-  if(pw) pw.style.display='none';
 });
 </script>
 

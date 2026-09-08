@@ -224,7 +224,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
         const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
         if (!snap.exists()) return;
         const data = snap.data();
-        const plan = data.plan || 'beta';
+        const plan = data.plan || 'free';
         if (plan === 'pro') return; // Hide for Pro users
         const used = data.videosGenerated || 0;
         const limit = data.betaLimit || 3;
@@ -2079,7 +2079,7 @@ async function checkLimit(feature) {
     const snap = await getDoc(ref);
     if (!snap.exists()) return true;
     const data = snap.data();
-    const plan = data.plan || 'beta';
+    const plan = data.plan || 'free';
     if (plan === 'pro') return true; // Pro users unlimited
 
     const now = new Date();

@@ -453,7 +453,7 @@ onAuthStateChanged(auth, async (user) => {
     try {
       const snap = await getDoc(doc(db, 'studio_users', user.uid));
       const data = snap.data() || {};
-      const plan = data.plan || 'beta';
+      const plan = data.plan || 'free';
       const credits = data.comedy_credits || 0;
       const hasAccess = plan === 'pro' || plan === 'admin' || credits > 0;
       if (hasAccess) {

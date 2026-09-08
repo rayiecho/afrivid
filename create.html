@@ -603,6 +603,28 @@ function startRecording(){ if(window._startRecording) window._startRecording(); 
 function stopRecording(){ if(window._stopRecording) window._stopRecording(); }
 function makeAnother(){ if(window._makeAnother) { window._makeAnother(); return; } setTimeout(()=>{ if(window._makeAnother) window._makeAnother(); else window.location.reload(); },1000); }
 
+// Request headers that prove WHO is asking, for the server-side credit checks.
+//
+// The uid in the request body is a claim anyone can type; a Firebase ID token is
+// signed by Google and verified on the server against Google's public certs. So
+// without this, someone could mint themselves an endless supply of fresh
+// 1,000-credit accounts just by sending a random uid — the credit system would
+// be decorative. The body still carries user_id as a fallback for the moment
+// when getIdToken() fails (offline, clock skew), which the server records as an
+// unverified call rather than trusting silently.
+window.avAuthHeaders = async function () {
+  const headers = { 'Content-Type': 'application/json' };
+  const user = window.currentUser;
+  if (user && typeof user.getIdToken === 'function') {
+    try {
+      headers['Authorization'] = 'Bearer ' + (await user.getIdToken());
+    } catch (e) {
+      console.warn('[Auth] could not attach ID token:', e && e.message);
+    }
+  }
+  return headers;
+};
+
 window.generateOnServer = async function() {
   const user = window.currentUser;
   if (!user) { alert('Please sign in first'); return; }
@@ -622,7 +644,7 @@ window.generateOnServer = async function() {
     const voice = document.getElementById('voice-select')?.value || 'asteria';
     const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-video', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: await window.avAuthHeaders(),
       body: JSON.stringify({
         job_id: jobId,
         scenes: scenes.map(s => ({
@@ -1518,7 +1540,7 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('btn-signin').style.display = 'none';
     const ref = doc(db, 'studio_users', user.uid);
     const snap = await getDoc(ref);
-    userProfile = snap.exists() ? snap.data() : { videosGenerated: 0, plan: 'beta' };
+    userProfile = snap.exists() ? snap.data() : { videosGenerated: 0, plan: 'free' };
   } else {
     document.getElementById('btn-signin').style.display = 'block';
     document.getElementById('user-badge').style.display = 'none';
@@ -5071,7 +5093,7 @@ window._doSignUp = window.doSignUp = async function() {
     // invisible everywhere the app reads from studio_users (admin's Compose Email list,
     // stats, plan/quota), and stuck permanently ("email already in use" on any retry).
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
-      name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'beta'
+      name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'free'
     });
     updateDoc(doc(db, 'public_stats', 'counts'), { userCount: increment(1) }).catch(() => {});
     try { await updateProfile(cred.user, { displayName: name }); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
@@ -5117,7 +5139,7 @@ window._doSignUp = window.doSignUp = async function() {
 
 // ---- RESTORED FUNCTIONS ----
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5215,7 +5237,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5313,7 +5335,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5411,7 +5433,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5509,7 +5531,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5607,7 +5629,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5705,7 +5727,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5803,7 +5825,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -5901,7 +5923,7 @@ Make exactly ${scenes} scenes. Each voiceover should be natural, educational and
 }
 
 generateScript = async function() {
-  // Check beta limit
+  // Check usage limit
   if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit("creator_video"))) return;
 
   if (currentMode === 'own') {
@@ -6986,7 +7008,7 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
     // Step 2: Send to Fly.io for video generation
     const jobId = `tut_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
     const r = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-video', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
+      method: 'POST', headers: await window.avAuthHeaders(),
       body: JSON.stringify({
         job_id: jobId, scenes, style,
         language: tutorialLanguage, title: topic,
@@ -7119,7 +7141,7 @@ async function generateAd() {
   try {
     const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-ad', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: await window.avAuthHeaders(),
       body: JSON.stringify({
         job_id: jobId,
         business_name: businessName,

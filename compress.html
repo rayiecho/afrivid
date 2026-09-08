@@ -293,7 +293,7 @@ window.doSignUp = async function() {
     // updateProfile/sendEmailVerification below are best-effort and must never block this
     // (a rate-limited verification email previously left a real Auth account with no
     // studio_users doc, invisible everywhere the app reads from that collection).
-    await setDoc(doc(db, 'studio_users', cred.user.uid), { name, email, joinedAt: serverTimestamp(), plan: 'beta' });
+    await setDoc(doc(db, 'studio_users', cred.user.uid), { name, email, joinedAt: serverTimestamp(), plan: 'free' });
     try { await updateProfile(cred.user, { displayName: name }); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
     try { await sendEmailVerification(cred.user); } catch (e) { console.log('[Signup] sendEmailVerification failed (non-critical):', e); }
     hideLogin();
@@ -375,7 +375,12 @@ function setProgress(pct, text, isError) {
 // than bandwidth. Routes through our own server in small, individually-retried pieces instead.
 
 window.startCompress = async function() {
-  if (window.checkAfriVidLimit && !(await window.checkAfriVidLimit('video_compress'))) return;
+  // The old beta counter (limits.js: 15 compressions a month, counted in the
+  // browser) is deliberately no longer consulted here. It contradicts the
+  // published pricing — which sells the compressor as unlimited for 30 days,
+  // then degraded rather than blocked — and it was never enforceable anyway,
+  // since it both read and wrote the count client-side. /compress-video now
+  // decides, server-side, from this account's real grant.
   if (!chosenFile) return;
   const btn = document.getElementById('compress-btn');
   btn.disabled = true;
@@ -389,10 +394,32 @@ window.startCompress = async function() {
     }, (msg) => setProgress(2, msg));
     setProgress(42, 'Starting compression...');
 
+    // Identify the caller so the server can honour this account's compressor
+    // grant. Without it every request looks anonymous, and an anonymous request
+    // is served the degraded free-tier output (lowest quality + watermark) —
+    // which would silently downgrade paying and in-trial users alike.
+    //
+    // A real Firebase ID token is sent, not just the uid: the server verifies it
+    // against Google's public signing certs, so this account cannot be spoofed
+    // by typing someone else's uid into the request body.
+    const compressHeaders = { 'Content-Type': 'application/json' };
+    const compressBody = { input_url: uploadResult.public_url, level };
+    if (window.currentUser) {
+      compressBody.user_id = window.currentUser.uid;
+      compressBody.user_email = window.currentUser.email || '';
+      try {
+        compressHeaders['Authorization'] = 'Bearer ' + (await window.currentUser.getIdToken());
+      } catch (e) {
+        // Token refresh can fail offline. The uid fallback still identifies the
+        // account; it just is not cryptographically proven.
+        console.warn('[Compress] could not attach ID token:', e && e.message);
+      }
+    }
+
     const startRes = await fetch(`${API}/compress-video`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input_url: uploadResult.public_url, level }),
+      headers: compressHeaders,
+      body: JSON.stringify(compressBody),
     });
     const startData = await startRes.json();
     if (startData.error) throw new Error(startData.error);

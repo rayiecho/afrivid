@@ -558,7 +558,7 @@ body::after{
         const snap = await getDoc(doc(db, 'studio_users', window.currentUser.uid));
         if (!snap.exists()) return;
         const data = snap.data();
-        const plan = data.plan || 'beta';
+        const plan = data.plan || 'free';
         if (plan === 'pro') return; // Hide for Pro users
         const used = data.videosGenerated || 0;
         const limit = data.betaLimit || 3;
@@ -1404,7 +1404,7 @@ window.doSignUp = async function() {
     // updateProfile/sendEmailVerification below are best-effort and must never block this
     // (a rate-limited verification email previously left a real Auth account with no
     // studio_users doc, invisible everywhere the app reads from that collection).
-    await setDoc(doc(db,'studio_users',cred.user.uid),{name,email,videosGenerated:0,joinedAt:serverTimestamp(),plan:'beta'});
+    await setDoc(doc(db,'studio_users',cred.user.uid),{name,email,videosGenerated:0,joinedAt:serverTimestamp(),plan:'free'});
     try { await updateProfile(cred.user,{displayName:name}); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
     try { await sendEmailVerification(cred.user); } catch (e) { console.log('[Signup] sendEmailVerification failed (non-critical):', e); }
     hideLogin();

@@ -99,7 +99,7 @@
 <meta name="google-site-verification" content="mhwXBKBZsObcjLg3SMczOFU9p1OjF-5ckcSmFL2hb2M" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AfriVid Studio — Africa's Video Creation Platform</title>
-<meta name="description" content="Create, edit and enhance professional videos in minutes. Africa's first all-in-one smart video creation suite. Free during beta.">
+<meta name="description" content="Create, edit and enhance professional videos in minutes. Africa's first all-in-one smart video creation suite. Free to start.">
 <meta name="keywords" content="video creator Africa, free video editor, AI video maker, AfriVid, online video editor Africa, photo editor, design tool">
 <meta property="og:title" content="AfriVid Studio — Africa's Video Creation Platform">
   <meta property="og:image" content="https://afrivid.studio/images/logo.png">
@@ -534,7 +534,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       "name": "Is AfriVid Studio free?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. AfriVid Studio is free during beta. The free plan includes 3 AI videos per month, AI editor sessions, voice translation and unlimited photo and design tools. Pro plan is $5/month."
+        "text": "Yes. AfriVid Studio has a free plan: 1,000 credits — about an hour of generated video — plus 30 days of the full video editor and compressor, and 3 months of graphics and images. Pro is $5/month for 4,800 credits (300 minutes), or $1 unlocks a single tool."
       }
     },
     {
@@ -590,7 +590,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 <noscript>
 <div style="max-width:900px;margin:0 auto;padding:2rem;font-family:Arial,sans-serif;">
   <h1>AfriVid Studio — Africa's Video Creation Platform</h1>
-  <p>Create professional videos in minutes with AI. Type a topic, AfriVid writes the script, generates voice, builds slides and exports a complete MP4. Free during beta.</p>
+  <p>Create professional videos in minutes with AI. Type a topic, AfriVid writes the script, generates voice, builds slides and exports a complete MP4. Free to start.</p>
   <h2>Features</h2>
   <ul>
     <li>AI Video Creator — create videos from any topic in 6 African languages</li>
@@ -603,7 +603,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <h2>Languages Supported</h2>
   <p>Swahili, Yoruba, Hausa, French, Arabic, Portuguese</p>
   <h2>Pricing</h2>
-  <p>Free plan: 3 videos per month. Pro plan: $5/month unlimited.</p>
+  <p>Free plan: 1,000 credits (about an hour of generated video), plus 30 days of the full video editor and compressor and 3 months of graphics and images. Pro: $5/month for 4,800 credits (300 minutes). Single tools unlock for $1.</p>
   <p>Visit <a href="https://afrivid.studio">afrivid.studio</a></p>
 </div>
 </noscript>
@@ -741,7 +741,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         Is AfriVid Studio free?
         <span class="faq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
       </div>
-      <div class="faq-answer"><div class="faq-answer-inner">Yes. AfriVid Studio is free during beta. The free plan includes 3 AI videos per month, AI editor sessions, voice translation and unlimited photo and design tools. Pro plan is $5/month.</div></div>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes. AfriVid Studio has a free plan: 1,000 credits — about an hour of generated video — plus 30 days of the full video editor and compressor, and 3 months of graphics and images. Pro is $5/month for 4,800 credits (300 minutes), or $1 unlocks a single tool.</div></div>
     </div>
     <div class="faq-item reveal reveal-up" style="transition-delay:100ms;">
       <div class="faq-question" onclick="toggleFaq(this)">
@@ -884,7 +884,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.66);">Already have an account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#9C5918;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </form>
 
-      <div style="text-align:center;margin-top:1.25rem;font-size:0.72rem;color:rgba(23,20,15,0.62);font-family:'Space Mono',monospace;">Beta v1.0 · Free during testing</div>
+      <div style="text-align:center;margin-top:1.25rem;font-size:0.72rem;color:rgba(23,20,15,0.62);font-family:'Space Mono',monospace;">v1.0 · Free plan available</div>
     </div>
 
 <script type="module">
@@ -993,7 +993,7 @@ window.signUp = async function() {
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
       displayName: name, email,
       videosGenerated: 0, photosEdited: 0, designsCreated: 0,
-      createdAt: serverTimestamp(), lastActive: serverTimestamp(), plan: 'beta'
+      createdAt: serverTimestamp(), lastActive: serverTimestamp(), plan: 'free'
     });
     updateDoc(doc(db, 'public_stats', 'counts'), { userCount: increment(1) }).catch(() => {});
     try { await updateProfile(cred.user, { displayName: name }); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
@@ -1016,11 +1016,11 @@ window.signUp = async function() {
               <p style="color:rgba(255,255,255,0.8);line-height:1.7;">You've just joined Africa's Video Creation Platform, Powered by First Gen AI. We're excited to have you!</p>
               <div style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:1.5rem;margin:1.5rem 0;">
                 <h3 style="color:#F5A623;margin-top:0;">Your Free Plan Includes:</h3>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">3 AI videos per month</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">3 AI editor sessions per month</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">3 voice translations per month</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Photo editor — unlimited</p>
-                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Design studio — unlimited</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">1,000 video credits — about an hour of generated video</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Video Editor — every feature, 30 days</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Video Compressor — no size limit, 30 days</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Graphics and Images — every feature, 3 months</p>
+                <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Developer API — 30 minutes of test video</p>
               </div>
               <a href="https://afrivid.studio/create.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Create Your First Video →</a>
               <p style="color:rgba(255,255,255,0.52);font-size:0.85rem;margin-top:2rem;">Need help? Reply to this email or visit afrivid.studio</p>
