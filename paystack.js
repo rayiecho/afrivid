@@ -145,6 +145,28 @@
   var inlinePromise = null;
   var authPromise = null;
 
+  // Also cache the settled VALUES, not just the promises — this is what lets
+  // avStartCheckout() below open checkout with zero awaits on the common path.
+  // Real bug this fixes: a user reported checkout consistently failing (never
+  // reproduced in this sandbox's Chromium, which is lenient about it) while
+  // several genuine network awaits sat between their click and the
+  // .checkout() call — auth resolution, the public-key fetch, loading
+  // Paystack's script. Safari (mobile especially, WebKit's documented
+  // behaviour) revokes "this call came from a real user gesture" the moment
+  // code awaits real I/O, and Apple Pay/payment popups require that gesture
+  // to still be live at the moment checkout() is called. Fix: do all three
+  // lookups eagerly at page load via prewarm() below, so that by the time a
+  // real click happens they are already-resolved values — no I/O, no lost
+  // gesture. The old async chain is kept as a slow-path fallback only for the
+  // rare click that lands before prewarm finishes.
+  var cachedUser = null, cachedKey = null, cachedPop = null;
+
+  function prewarm() {
+    currentUser().then(function (u) { cachedUser = u; }).catch(function () {});
+    publicKey().then(function (k) { cachedKey = k; }).catch(function () {});
+    paystackInline().then(function (P) { cachedPop = P; }).catch(function () {});
+  }
+
   function publicKey() {
     if (!keyPromise) {
       keyPromise = fetch(API + '/config/paystack-public-key')
@@ -307,10 +329,16 @@
   window.avCloseCheckoutOverlay = hide;
 
   // ── After the money moves ───────────────────────────────────────────────────
-  async function confirmUpgrade(plan, user, before, reference, cur) {
+  async function confirmUpgrade(plan, user, beforePromise, reference, cur) {
     show('Payment received',
          'Confirming with our servers and upgrading your account. This takes a few seconds.',
          []);
+
+    // Awaited here, not before checkout() was called — this is a real network
+    // fetch, and the whole point of the fast path above is that nothing like
+    // it sits between the click and opening checkout. By the time payment has
+    // gone through, gesture concerns are irrelevant, so it's free to wait here.
+    var before = await beforePromise;
 
     var deadline = Date.now() + POLL_TIMEOUT_MS;
     while (Date.now() < deadline) {
@@ -337,47 +365,13 @@
           { label: 'Close', onClick: hide }]);
   }
 
-  // ── Entry point ─────────────────────────────────────────────────────────────
-  window.avStartCheckout = async function (planId) {
-    var plan = PLANS[planId];
-    if (!plan) { console.error('[Checkout] unknown plan', planId); return; }
-
-    var user = await currentUser();
-    if (!user) {
-      // Same gate every other paid action uses: sign in where the page knows how,
-      // otherwise send them to the page that signs people in.
-      if (typeof window.showLogin === 'function') { window.showLogin('Sign in to upgrade'); return; }
-      window.location.href = 'studio.html?upgrade=' + encodeURIComponent(planId);
-      return;
-    }
-    if (!user.email) {
-      show('We need your email', 'Your account has no email address on it, and Paystack ' +
-           'requires one to send a receipt. Add one in My Studio and try again.',
-           [{ label: 'Close', primary: true, onClick: hide }]);
-      return;
-    }
-
-    var key = await publicKey();
-    if (!key) {
-      show('Payments coming online shortly',
-           'Card payment is not switched on yet. Nothing was charged. Please check back soon.',
-           [{ label: 'Close', primary: true, onClick: hide }]);
-      return;
-    }
-
-    var Pop;
-    try { Pop = await paystackInline(); }
-    catch (e) {
-      show('Could not open checkout',
-           'We could not reach Paystack just now. Nothing was charged — please check your ' +
-           'connection and try again.',
-           [{ label: 'Close', primary: true, onClick: hide }]);
-      return;
-    }
-
-    // The "before" reading, taken while the user is still looking at the page, is
-    // what confirmUpgrade() later compares against to know the webhook landed.
-    var before = await entitlements(user);
+  // Shared by both paths below. Opens the real Paystack popup — called either
+  // with zero preceding awaits (the fast path) or after the slow path's own
+  // async lookups finished. `before` is a PROMISE, not a value — never awaited
+  // here, only inside confirmUpgrade(), well after the click's gesture window
+  // stops mattering.
+  function openCheckout(planId, plan, user, key, Pop) {
+    var beforePromise = entitlements(user);
 
     // Paystack accepts only alphanumerics and - . = in a reference, so the plan id's
     // underscores are flattened rather than passed through.
@@ -397,45 +391,111 @@
     var cur = currency();
     var amount = cur === 'KES' ? plan.kes : plan.amount;
 
-    try {
-      await new Pop().checkout({
-        key: key,
-        email: user.email,
-        amount: amount,
-        currency: cur,
-        ref: reference,
-        // The ONLY thing tying this payment back to an account. app.py's webhook
-        // reads uid and plan from here; without them the charge lands as "PAID BUT
-        // UNAPPLIED" and needs a human. Currency deliberately changes NOTHING in
-        // here — the webhook keys off plan, and the amount fallback it drops to
-        // when plan is missing is the thing that had to be made currency-aware,
-        // not this.
-        metadata: {
-          uid: user.uid,
-          plan: planId,
-          custom_fields: [
-            { display_name: 'Plan', variable_name: 'plan', value: planId },
-            { display_name: 'Account', variable_name: 'uid', value: user.uid },
-          ],
-        },
-        onSuccess: function (transaction) {
-          // Client-side only. Grants nothing — see the note at the top of this file.
-          var ref = (transaction && (transaction.reference || transaction.trxref)) || reference;
-          confirmUpgrade(planId, user, before, ref, cur);
-        },
-        onCancel: function () {
-          // Closing the Paystack window is not a failure and not a payment. Say
-          // nothing and leave the page as it was.
-        },
-      });
-    } catch (e) {
+    return new Pop().checkout({
+      key: key,
+      email: user.email,
+      amount: amount,
+      currency: cur,
+      ref: reference,
+      // The ONLY thing tying this payment back to an account. app.py's webhook
+      // reads uid and plan from here; without them the charge lands as "PAID BUT
+      // UNAPPLIED" and needs a human. Currency deliberately changes NOTHING in
+      // here — the webhook keys off plan, and the amount fallback it drops to
+      // when plan is missing is the thing that had to be made currency-aware,
+      // not this.
+      metadata: {
+        uid: user.uid,
+        plan: planId,
+        custom_fields: [
+          { display_name: 'Plan', variable_name: 'plan', value: planId },
+          { display_name: 'Account', variable_name: 'uid', value: user.uid },
+        ],
+      },
+      onSuccess: function (transaction) {
+        // Client-side only. Grants nothing — see the note at the top of this file.
+        var ref = (transaction && (transaction.reference || transaction.trxref)) || reference;
+        confirmUpgrade(planId, user, beforePromise, ref, cur);
+      },
+      onCancel: function () {
+        // Closing the Paystack window is not a failure and not a payment. Say
+        // nothing and leave the page as it was.
+      },
+    }).catch(function (e) {
       console.warn('[Checkout] v2 checkout failed:', e && e.message);
       show('Could not open checkout',
            'We could not start Paystack checkout just now. Nothing was charged — please ' +
            'try again in a moment.',
            [{ label: 'Close', primary: true, onClick: hide }]);
+    });
+  }
+
+  // The pre-checkout.checkout() gates — sign-in, email present, key configured,
+  // script loaded — shared by both paths so they give the exact same messages
+  // either way. Returns null (and has already shown whatever message applies)
+  // if checkout should not proceed.
+  function gate(user, key, Pop) {
+    if (!user) {
+      if (typeof window.showLogin === 'function') { window.showLogin('Sign in to upgrade'); return null; }
+      return 'redirect';
     }
+    if (!user.email) {
+      show('We need your email', 'Your account has no email address on it, and Paystack ' +
+           'requires one to send a receipt. Add one in My Studio and try again.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+      return null;
+    }
+    if (!key) {
+      show('Payments coming online shortly',
+           'Card payment is not switched on yet. Nothing was charged. Please check back soon.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+      return null;
+    }
+    if (!Pop) {
+      show('Could not open checkout',
+           'We could not reach Paystack just now. Nothing was charged — please check your ' +
+           'connection and try again.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+      return null;
+    }
+    return 'ok';
+  }
+
+  // ── Entry point ─────────────────────────────────────────────────────────────
+  // Two paths, same outcome. The fast path is the one that matters: by the time
+  // a real click happens, prewarm() (called at page load, see wire() below) has
+  // almost always already resolved user/key/Pop, so this branch calls
+  // checkout() with NO await between the click and opening it — preserving the
+  // browser's "this came from a real tap" state that Apple Pay and payment
+  // popups require. The slow path below is only a fallback for a click that
+  // somehow lands before prewarm finishes (a very fast click right after page
+  // load, or a first-ever click before this script warmed anything).
+  window.avStartCheckout = function (planId) {
+    var plan = PLANS[planId];
+    if (!plan) { console.error('[Checkout] unknown plan', planId); return; }
+
+    if (cachedUser && cachedKey && cachedPop) {
+      var g = gate(cachedUser, cachedKey, cachedPop);
+      if (g === 'redirect') { window.location.href = 'studio.html?upgrade=' + encodeURIComponent(planId); return; }
+      if (g !== 'ok') return;
+      openCheckout(planId, plan, cachedUser, cachedKey, cachedPop);
+      return;
+    }
+
+    slowStartCheckout(planId, plan);
   };
+
+  async function slowStartCheckout(planId, plan) {
+    var user = await currentUser();
+    var key = await publicKey();
+    var Pop = null;
+    try { Pop = await paystackInline(); } catch (e) { Pop = null; }
+
+    var g = gate(user, key, Pop);
+    if (g === 'redirect') { window.location.href = 'studio.html?upgrade=' + encodeURIComponent(planId); return; }
+    if (g !== 'ok') return;
+
+    openCheckout(planId, plan, user, key, Pop);
+  }
 
   // ── Fallback for the shared limit gate ──────────────────────────────────────
   // limits.js ends a blocked action with `if (window.showUpgradeModal)
@@ -497,6 +557,10 @@
 
     var els = document.querySelectorAll('[data-av-plan]');
     if (!els.length) return;
+
+    // Only worth warming on pages that actually have a checkout button — see
+    // the note above avStartCheckout's fast path for why this exists.
+    prewarm();
 
     els.forEach(function (el) {
       if (el.dataset.avWired) return;
