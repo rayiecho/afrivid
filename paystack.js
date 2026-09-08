@@ -22,18 +22,118 @@
   // Apple Pay requires v2.
   var INLINE_JS = 'https://js.paystack.co/v2/inline.js';
 
-  // Amounts are USD cents — the smallest unit, which is what Paystack expects and
+  // ── CURRENCY ────────────────────────────────────────────────────────────────
+  // Why this exists: the merchant account's default currency is KES, and Paystack
+  // only offers Mobile Money (M-Pesa) and Bank Transfer on KES-denominated
+  // charges. A USD charge shows Card and nothing else. Charging every Kenyan
+  // buyer in dollars therefore hides the two methods most of them actually use.
+  //
+  // The buyer picks, explicitly, on pricing.html. Deliberately NOT geo-IP: a VPN
+  // or a traveller gets guessed wrong, and a silent wrong guess about what
+  // currency someone is being charged in is a bad way to be wrong.
+  //
+  // The rate is a plain constant on purpose. Checkout must never depend on a live
+  // FX call — a rate API timing out would turn "open checkout" into a failure
+  // mode this flow does not have today, and a rate that is a few percent stale is
+  // a far smaller problem than an Upgrade button that does not work.
+  //
+  // Rate checked 2026-09-08 against two independent sources, which agreed:
+  //   open.er-api.com (exchangerate-api.com)  1 USD = 129.4475 KES
+  //   @fawazahmed0/currency-api via jsDelivr  1 USD = 129.4300 KES
+  // Set to 130: about 0.4% over mid-market, which is well inside a card network's
+  // own spread, and it lands the shown prices on clean figures (KSh 650, KSh 130).
+  //
+  // TO REFRESH: check mid-market USD/KES, change the number, update the date and
+  // sources on this comment, and update PAYSTACK_AMOUNT_PLANS['KES'] in app.py
+  // (afrivid-processor) so the webhook's amount fallback keeps telling the truth.
+  var USD_TO_KES_RATE = 130;
+
+  var CURRENCY_KEY = 'av_currency';
+  var SUPPORTED = { USD: true, KES: true };
+
+  // USD is the default so that anyone who never touches the toggle gets exactly
+  // today's behaviour. The choice is remembered because it is made on
+  // pricing.html but spent on the tool pages, where the upgrade prompt appears.
+  function currency() {
+    try {
+      var v = localStorage.getItem(CURRENCY_KEY);
+      if (v && SUPPORTED[v]) return v;
+    } catch (e) { /* private windows throw on localStorage — fall through */ }
+    return 'USD';
+  }
+  window.avGetCurrency = currency;
+
+  window.avSetCurrency = function (cur) {
+    cur = String(cur || '').toUpperCase();
+    if (!SUPPORTED[cur]) return currency();
+    try { localStorage.setItem(CURRENCY_KEY, cur); } catch (e) {}
+    renderPrices();
+    try {
+      document.dispatchEvent(new CustomEvent('av:currency', { detail: { currency: cur } }));
+    } catch (e) {}
+    return cur;
+  };
+
+  // `amount` is USD cents — the smallest unit, which is what Paystack expects and
   // what PAYSTACK_AMOUNT_PLANS in app.py maps back from if metadata is ever lost.
   // These must stay in step with apply_upgrade()'s plan ids in credits.py.
   var PLANS = {
-    pro_subscription: { amount: 500, label: 'Pro — $5/month' },
-    tool_compressor:  { amount: 100, label: 'Video Compressor — $1' },
-    tool_graphics:    { amount: 100, label: 'Graphics and Images — $1' },
-    tool_editor:      { amount: 100, label: 'Video Editor — $1' },
-    tool_video:       { amount: 100, label: 'Video Creation — $1' },
-    tool_api:         { amount: 100, label: 'Developer API — $1' },
+    pro_subscription: { amount: 500, label: 'Pro', period: '/month' },
+    tool_compressor:  { amount: 100, label: 'Video Compressor', period: '' },
+    tool_graphics:    { amount: 100, label: 'Graphics and Images', period: '' },
+    tool_editor:      { amount: 100, label: 'Video Editor', period: '' },
+    tool_video:       { amount: 100, label: 'Video Creation', period: '' },
+    tool_api:         { amount: 100, label: 'Developer API', period: '' },
   };
+
+  // Rounded to the whole shilling, not to a "nice" number: KES has a cent subunit
+  // Paystack counts in, but nobody prices in cents here, and rounding $1 up to the
+  // nearest ten shillings would be a double-digit percentage markup on the cheap
+  // plans. At 130 this is exact anyway — 650 and 130.
+  Object.keys(PLANS).forEach(function (id) {
+    var p = PLANS[id];
+    p.shillings = Math.round((p.amount / 100) * USD_TO_KES_RATE);
+    p.kes = p.shillings * 100; // KES cents — Paystack's smallest unit, same as USD
+  });
   window.AFRIVID_PLANS = PLANS;
+  window.AFRIVID_USD_TO_KES = USD_TO_KES_RATE;
+
+  // "$5" / "KSh 650". One owner for every price string on the site.
+  function price(planId, cur) {
+    var p = PLANS[planId];
+    if (!p) return '';
+    if ((cur || currency()) === 'KES') return 'KSh ' + p.shillings.toLocaleString('en-US');
+    return '$' + (p.amount / 100);
+  }
+  window.avPrice = price;
+
+  // "Pro — $5/month", for the success overlay and anywhere else naming a purchase.
+  function planLabel(planId, cur) {
+    var p = PLANS[planId];
+    if (!p) return '';
+    return p.label + ' — ' + price(planId, cur) + p.period;
+  }
+  window.avPlanLabel = planLabel;
+
+  // Live price text, so no page hardcodes a figure that the toggle then contradicts.
+  //   data-av-price="pro_subscription"                     -> "$5"
+  //   data-av-price-alt="pro_subscription"                 -> the OTHER currency
+  //   data-av-price-tpl="Go Pro — {price}/month"           -> templated
+  // Elements the disabled-state path below has taken over are left alone.
+  function renderPrices() {
+    var cur = currency();
+    var other = cur === 'KES' ? 'USD' : 'KES';
+    var els = document.querySelectorAll('[data-av-price],[data-av-price-alt]');
+    Array.prototype.forEach.call(els, function (el) {
+      if (el.getAttribute('aria-disabled') === 'true') return;
+      var alt = el.hasAttribute('data-av-price-alt');
+      var id = el.getAttribute(alt ? 'data-av-price-alt' : 'data-av-price');
+      if (!PLANS[id]) return;
+      var tpl = el.getAttribute('data-av-price-tpl') || '{price}';
+      el.textContent = tpl.replace('{price}', price(id, alt ? other : cur));
+    });
+  }
+  window.avRenderPrices = renderPrices;
 
   var POLL_INTERVAL_MS = 2000;
   var POLL_TIMEOUT_MS = 20000;
@@ -207,7 +307,7 @@
   window.avCloseCheckoutOverlay = hide;
 
   // ── After the money moves ───────────────────────────────────────────────────
-  async function confirmUpgrade(plan, user, before, reference) {
+  async function confirmUpgrade(plan, user, before, reference, cur) {
     show('Payment received',
          'Confirming with our servers and upgrading your account. This takes a few seconds.',
          []);
@@ -218,7 +318,7 @@
       var after = await entitlements(user);
       if (applied(plan, before, after)) {
         show('You are upgraded',
-             (PLANS[plan] ? PLANS[plan].label + ' is active on your account.' : 'Your upgrade is active.') +
+             (PLANS[plan] ? planLabel(plan, cur) + ' is active on your account.' : 'Your upgrade is active.') +
              ' Everything it unlocks is available now.',
              [{ label: 'Continue', primary: true, onClick: function () { window.location.reload(); } }]);
         return;
@@ -290,16 +390,26 @@
     // offer per device automatically, so nothing else here needs to branch on
     // device. Same payload shape as before; only the calling convention and the
     // two callback names (onSuccess/onCancel replacing callback/onClose) changed.
+    // Both amounts are in their currency's smallest unit — USD cents and KES
+    // cents — which is the one convention Paystack takes, so this is a swap of
+    // two numbers and nothing else. Read once, here, so the amount and the
+    // currency label can never come from two different reads of the toggle.
+    var cur = currency();
+    var amount = cur === 'KES' ? plan.kes : plan.amount;
+
     try {
       await new Pop().checkout({
         key: key,
         email: user.email,
-        amount: plan.amount,
-        currency: 'USD',
+        amount: amount,
+        currency: cur,
         ref: reference,
         // The ONLY thing tying this payment back to an account. app.py's webhook
         // reads uid and plan from here; without them the charge lands as "PAID BUT
-        // UNAPPLIED" and needs a human.
+        // UNAPPLIED" and needs a human. Currency deliberately changes NOTHING in
+        // here — the webhook keys off plan, and the amount fallback it drops to
+        // when plan is missing is the thing that had to be made currency-aware,
+        // not this.
         metadata: {
           uid: user.uid,
           plan: planId,
@@ -311,7 +421,7 @@
         onSuccess: function (transaction) {
           // Client-side only. Grants nothing — see the note at the top of this file.
           var ref = (transaction && (transaction.reference || transaction.trxref)) || reference;
-          confirmUpgrade(planId, user, before, ref);
+          confirmUpgrade(planId, user, before, ref, cur);
         },
         onCancel: function () {
           // Closing the Paystack window is not a failure and not a payment. Say
@@ -343,9 +453,12 @@
         studio_editor_export: 'You have used your free editor exports for this month.',
         editor_captions: 'You have used your free captions for this week.',
       }[reason] || 'You have reached the free limit for this tool.';
+      var pro = price('pro_subscription');
+      var one = price('tool_editor'); // every tool unlock is the same price
       show('Upgrade to keep going',
-           why + ' Pro is $5 a month and unlocks everything, or $1 unlocks this one tool.',
-           [{ label: 'Go Pro — $5/month', primary: true,
+           why + ' Pro is ' + pro + ' a month and unlocks everything, or ' + one +
+           ' unlocks this one tool.',
+           [{ label: 'Go Pro — ' + pro + '/month', primary: true,
               onClick: function () { hide(); window.avStartCheckout('pro_subscription'); } },
             { label: 'See the $1 unlocks',
               onClick: function () { window.location.href = 'pricing.html#tools'; } },
@@ -378,6 +491,9 @@
   // the buttons say so instead of failing on click.
   function wire() {
     upgradeStyle();
+    // Before the button wiring, and unconditionally: a page can show prices
+    // without carrying a checkout button (the comparison table, for one).
+    renderPrices();
 
     var els = document.querySelectorAll('[data-av-plan]');
     if (!els.length) return;

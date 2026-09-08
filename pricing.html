@@ -77,14 +77,34 @@ h2{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.015em;ma
 h2 em{font-style:normal;color:var(--amber-deep);}
 .section-sub{color:var(--ink-64);font-size:0.95rem;line-height:1.6;margin-bottom:2rem;max-width:640px;}
 
+/* Currency switch. Two real buttons in a group rather than a styled checkbox:
+   the choice has two named sides, neither is an "off", and each side needs a
+   line of its own explaining what it actually gets you. */
+.cur{margin:-0.6rem 0 2rem;}
+.cur-set{display:inline-flex;gap:0.35rem;padding:0.35rem;border:1px solid var(--line);border-radius:14px;background:var(--card);flex-wrap:wrap;}
+.cur-opt{display:block;text-align:left;padding:0.6rem 1rem;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--ink-64);font-family:'Syne',sans-serif;cursor:pointer;transition:background 0.18s,color 0.18s,border-color 0.18s;}
+.cur-opt:hover{background:rgba(23,20,15,0.04);}
+.cur-opt .cur-lead{display:block;font-weight:800;font-size:0.88rem;color:var(--ink);}
+.cur-opt .cur-sub{display:block;font-family:'Space Mono',monospace;font-size:0.63rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-50);margin-top:0.22rem;}
+.cur-opt[aria-pressed="true"]{background:var(--amber-wash);border-color:var(--amber-line);}
+.cur-opt[aria-pressed="true"] .cur-lead{color:var(--amber-text);}
+.cur-opt[aria-pressed="true"] .cur-sub{color:var(--amber-text);}
+.cur-note{margin-top:0.8rem;font-size:0.82rem;line-height:1.6;color:var(--ink-64);max-width:640px;}
+/* The price in the currency NOT selected, so switching never reveals a figure
+   the buyer had not already seen. */
+.plan-alt{font-size:0.82rem;color:var(--ink-50);margin-bottom:0.2rem;}
+
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:start;}
 @media(max-width:900px){.plans{grid-template-columns:1fr;}}
 .plan{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.9rem 1.6rem;position:relative;display:flex;flex-direction:column;height:100%;}
 .plan.featured{border-color:var(--amber);box-shadow:0 14px 40px rgba(224,138,46,0.14);}
 .plan-badge{position:absolute;top:-11px;left:1.6rem;background:var(--amber);color:#fff;font-family:'Space Mono',monospace;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;padding:0.3rem 0.7rem;border-radius:6px;text-transform:uppercase;}
 .plan-name{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-50);margin-bottom:0.7rem;}
-.plan-price{font-size:2.6rem;font-weight:800;letter-spacing:-0.03em;line-height:1;margin-bottom:0.2rem;}
-.plan-price small{font-size:0.95rem;font-weight:400;color:var(--ink-50);letter-spacing:0;}
+/* flex + wrap rather than inline text: "KSh 650" is wider than "$5", and inline
+   flow broke the period off onto its own line as "KSh 650 /" + "month". As flex
+   items each part wraps whole or not at all. */
+.plan-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:0.4rem;font-size:2.6rem;font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.2rem;}
+.plan-price small{font-size:0.95rem;font-weight:400;color:var(--ink-50);letter-spacing:0;white-space:nowrap;}
 .plan-desc{color:var(--ink-64);font-size:0.87rem;line-height:1.55;margin:0.7rem 0 1.3rem;padding-bottom:1.3rem;border-bottom:1px solid var(--line-soft);}
 .plan ul{list-style:none;margin-bottom:1.6rem;flex:1;}
 .plan li{display:flex;gap:0.6rem;font-size:0.87rem;color:var(--ink-70);line-height:1.5;margin-bottom:0.8rem;}
@@ -193,12 +213,31 @@ footer nav a:hover{color:var(--amber-deep);}
     <p class="section-sub">Start free. Move to Pro when you are making video every week,
        or unlock the single tool you need for a dollar.</p>
 
+    <!-- Currency. You pick — we do not guess from your IP address, because a VPN
+         or a plane ticket makes that guess wrong and there is nothing worse to be
+         quietly wrong about than what currency someone is being charged in.
+         Every price and button below follows this, live. -->
+    <div class="cur">
+      <div class="cur-set" role="group" aria-label="Choose the currency you pay in">
+        <button type="button" class="cur-opt" data-cur="USD" aria-pressed="true">
+          <span class="cur-lead">Pay in US dollars</span>
+          <span class="cur-sub">Card</span>
+        </button>
+        <button type="button" class="cur-opt" data-cur="KES" aria-pressed="false">
+          <span class="cur-lead">Pay in Kenyan shillings</span>
+          <span class="cur-sub">M&#8209;Pesa &middot; Bank transfer &middot; Card</span>
+        </button>
+      </div>
+      <p class="cur-note" id="curNote"></p>
+    </div>
+
     <div class="plans">
 
       <!-- FREE -->
       <div class="plan">
         <div class="plan-name">Free</div>
         <div class="plan-price">$0</div>
+        <div class="plan-alt">in any currency</div>
         <p class="plan-desc">1,000 credits — about <b>62 minutes</b> of generated video,
            shared across Ad Maker, Tutorial Maker and Short Videos. A one-time
            allowance, not a monthly refill.</p>
@@ -217,7 +256,8 @@ footer nav a:hover{color:var(--amber-deep);}
       <div class="plan featured">
         <div class="plan-badge">Most complete</div>
         <div class="plan-name">Pro</div>
-        <div class="plan-price">$5<small> / month</small></div>
+        <div class="plan-price"><span data-av-price="pro_subscription">$5</span><small>/ month</small></div>
+        <div class="plan-alt">or <span data-av-price-alt="pro_subscription">KSh 650</span> / month</div>
         <p class="plan-desc">4,800 credits every month — <b>300 minutes</b> of
            generated video — plus every tool unlocked for as long as the
            subscription is active.</p>
@@ -228,15 +268,17 @@ footer nav a:hover{color:var(--amber-deep);}
           <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Credit appeals</b> — if one of your own settings burned credits unfairly, file a review and a person reads it</span></li>
           <li class="muted"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="rgba(23,20,15,0.4)" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span>The Developer API is metered separately and is not included</span></li>
         </ul>
-        <button type="button" class="plan-btn primary" data-av-plan="pro_subscription">Go Pro — $5/month</button>
+        <button type="button" class="plan-btn primary" data-av-plan="pro_subscription" data-av-price="pro_subscription" data-av-price-tpl="Go Pro — {price}/month">Go Pro — $5/month</button>
       </div>
 
       <!-- PAY PER TOOL -->
       <div class="plan">
         <div class="plan-name">Per tool</div>
-        <div class="plan-price">$1<small> / tool</small></div>
-        <p class="plan-desc">One dollar unlocks one tool, in full, for a set window.
-           No subscription, nothing recurring. Buy only the thing you need today.</p>
+        <div class="plan-price"><span data-av-price="tool_editor">$1</span><small>/ tool</small></div>
+        <div class="plan-alt">or <span data-av-price-alt="tool_editor">KSh 130</span> / tool</div>
+        <p class="plan-desc"><span data-av-price="tool_editor">$1</span> unlocks one tool, in full,
+           for a set window. No subscription, nothing recurring. Buy only the thing
+           you need today.</p>
         <ul>
           <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Video Compressor</b> — 1 month</span></li>
           <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Graphics and Images</b> — 1 month</span></li>
@@ -259,31 +301,31 @@ footer nav a:hover{color:var(--amber-deep);}
         <div class="tool-name">Video Compressor</div>
         <div class="tool-window">1 month</div>
         <p class="tool-note">Any file size, any length, every quality level, no watermark.</p>
-        <button type="button" class="tool-btn" data-av-plan="tool_compressor">Unlock for $1</button>
+        <button type="button" class="tool-btn" data-av-plan="tool_compressor" data-av-price="tool_compressor" data-av-price-tpl="Unlock for {price}">Unlock for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Graphics and Images</div>
         <div class="tool-window">1 month</div>
         <p class="tool-note">Posters, flyers, brand images and photo tools, all features.</p>
-        <button type="button" class="tool-btn" data-av-plan="tool_graphics">Unlock for $1</button>
+        <button type="button" class="tool-btn" data-av-plan="tool_graphics" data-av-price="tool_graphics" data-av-price-tpl="Unlock for {price}">Unlock for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Video Creation</div>
         <div class="tool-window">1 hour of video</div>
         <p class="tool-note">960 credits into your shared pool — Ad Maker, Tutorial Maker and Short Videos.</p>
-        <button type="button" class="tool-btn" data-av-plan="tool_video">Buy an hour for $1</button>
+        <button type="button" class="tool-btn" data-av-plan="tool_video" data-av-price="tool_video" data-av-price-tpl="Buy an hour for {price}">Buy an hour for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Video Editor</div>
         <div class="tool-window">2 weeks</div>
         <p class="tool-note">Captions, mic overlay, full noise reduction and volume boost, no watermark.</p>
-        <button type="button" class="tool-btn" data-av-plan="tool_editor">Unlock for $1</button>
+        <button type="button" class="tool-btn" data-av-plan="tool_editor" data-av-price="tool_editor" data-av-price-tpl="Unlock for {price}">Unlock for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Developer API</div>
         <div class="tool-window">20 minutes</div>
         <p class="tool-note">Our renderer as the engine inside your own product.</p>
-        <button type="button" class="tool-btn" data-av-plan="tool_api">Buy 20 minutes for $1</button>
+        <button type="button" class="tool-btn" data-av-plan="tool_api" data-av-price="tool_api" data-av-price-tpl="Buy 20 minutes for {price}">Buy 20 minutes for $1</button>
       </div>
     </div>
   </section>
@@ -292,7 +334,7 @@ footer nav a:hover{color:var(--amber-deep);}
     <h2>When your free allowance <em>runs out</em></h2>
     <p class="section-sub">Nothing here is hidden in a footnote. This is exactly what
        the free account does once the credits are spent and the trial windows have
-       closed — and exactly what a $1 unlock or Pro turns back on.</p>
+       closed — and exactly what a <span data-av-price="tool_editor">$1</span> unlock or Pro turns back on.</p>
 
     <div class="degraded">
       <h3>The free account after its allowance</h3>
@@ -316,7 +358,7 @@ footer nav a:hover{color:var(--amber-deep);}
     <div class="table-scroll">
       <table>
         <thead>
-          <tr><th>&nbsp;</th><th>Free</th><th>Free, spent</th><th>Pro $5/mo</th></tr>
+          <tr><th>&nbsp;</th><th>Free</th><th>Free, spent</th><th>Pro <span data-av-price="pro_subscription" data-av-price-tpl="{price}/mo">$5/mo</span></th></tr>
         </thead>
         <tbody>
           <tr><td>Video credits</td><td>1,000 once</td><td class="cell-no">0</td><td class="cell-yes">4,800 / month</td></tr>
@@ -421,6 +463,43 @@ document.querySelectorAll('.faq-q').forEach(function (btn) {
 <!-- Checkout. Every [data-av-plan] button on this page is wired by this one file;
      the page itself holds no payment logic. See paystack.js. -->
 <script src="paystack.js"></script>
+
+<script>
+// The currency switch. paystack.js owns the rate, the amounts and every price
+// string on the page (each [data-av-price] element); this only moves the
+// pressed state and the explanatory line under it, so there is no second place
+// where a figure could disagree with what the buyer is actually charged.
+(function () {
+  var NOTES = {
+    USD: 'Charged in US dollars, by card. Switch to shillings if you want to pay ' +
+         'with M-Pesa or a bank transfer.',
+    KES: 'Charged in Kenyan shillings, at KSh ' + (window.AFRIVID_USD_TO_KES || 130) +
+         ' to the dollar. This is what unlocks M-Pesa and bank transfer at ' +
+         'checkout — Paystack only offers them on shilling payments. Card still works.',
+  };
+
+  function sync() {
+    var cur = (window.avGetCurrency && window.avGetCurrency()) || 'USD';
+    document.querySelectorAll('.cur-opt').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-cur') === cur ? 'true' : 'false');
+    });
+    var note = document.getElementById('curNote');
+    if (note) note.textContent = NOTES[cur] || '';
+  }
+
+  document.querySelectorAll('.cur-opt').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (window.avSetCurrency) window.avSetCurrency(b.getAttribute('data-cur'));
+      sync();
+    });
+  });
+
+  // Runs after paystack.js's own DOMContentLoaded handler, which is where the
+  // prices are first painted — so the note and the prices land together.
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync);
+  else sync();
+})();
+</script>
 
 </body>
 </html>
