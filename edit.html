@@ -302,6 +302,14 @@ body{padding-top:70px;}
   /* Tool tabs wrap */
   .photo-tool-tabs{flex-wrap:wrap;}
   .photo-tool-tab{font-size:0.68rem;padding:0.35rem 0.6rem;}
+
+  /* This page has no footer, so on a short phone screen the last row of
+     content scrolled all the way to the bottom sits directly under the
+     chatbot bubble (chatbot.js, fixed bottom-left) and the Contact button
+     (fixed bottom-right) — both permanently obscuring/blocking it with no
+     way to scroll past. Reserve room for the taller of the two (chat: 52px
+     button + 2rem gap) plus a margin. */
+  body{padding-bottom:6.5rem;}
 }
 
 @media(max-width:480px){

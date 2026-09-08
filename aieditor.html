@@ -80,6 +80,15 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .topbar-logo span{font-weight:900;font-size:1rem;color:#fff;}
 .topbar-logo span em{color:var(--gold);font-style:normal;}
 .topbar-right{display:flex;align-items:center;gap:0.75rem;}
+/* Sign In + Upgrade were being clipped off the right edge on phones — this
+   topbar has three flex children (links, logo, actions) on one row that never
+   wrapped. "Dashboard" duplicates "← Home" so it's dropped first to buy back
+   width; if that's still not enough, topbar-right wraps to its own row. */
+@media(max-width:480px){
+  .topbar{flex-wrap:wrap;row-gap:0.5rem;padding:0.65rem 1rem;}
+  .topbar-links a:nth-of-type(2){display:none;}
+  .topbar-right{flex:1 1 100%;justify-content:flex-end;}
+}
 .user-badge{font-size:0.72rem;color:var(--green);font-family:var(--mono);background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;}
 .back-btn{color:rgba(255,255,255,0.54);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s;}
 .back-btn:hover{color:#fff;}
@@ -167,6 +176,14 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
   .features-grid{grid-template-columns:repeat(2,1fr);}
   .prompt-wrap{flex-direction:column;}
   .prompt-btn{width:100%;}
+
+  /* This page has no footer, so on a short phone screen the last row of
+     Quick Tools cards scrolled all the way down sits directly under the
+     chatbot bubble (chatbot.js, fixed bottom-left) and the Contact button
+     (fixed bottom-right) — both permanently obscuring/blocking it with no
+     way to scroll past. Reserve room for the taller of the two (chat: 52px
+     button + 2rem gap) plus a margin. */
+  body{padding-bottom:6.5rem;}
 }
 </style>
   <meta property="og:image" content="https://afrivid.studio/images/logo.png">
@@ -247,7 +264,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div style="display:flex;align-items:center;gap:1rem;">
+  <div class="topbar-links" style="display:flex;align-items:center;gap:1rem;">
   <a href="index.html" class="back-btn">← Home</a>
   <a href="index.html" class="back-btn">Dashboard</a>
   </div>

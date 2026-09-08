@@ -286,6 +286,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .stat-cards{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:768px){
+  /* This page renders both the marketing .navbar and the tool .topbar right
+     after each other in the markup (same pattern create.html/edit.html
+     already fix on mobile). Left unfixed, that's two full nav bars stacked
+     before any content — hide the marketing one and keep the topbar. */
+  .navbar{display:none !important;}
+  body{padding-top:0 !important;}
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 5rem;}
   .content-grid{grid-template-columns:1fr 1fr;}

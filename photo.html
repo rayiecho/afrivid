@@ -207,8 +207,12 @@ body{padding-top:70px;}
   /* Typography */
   body{font-size:14px;}
   
-  /* Navbar */
-  .navbar{padding:0.6rem 1rem;}
+  /* Navbar — this page renders both the marketing .navbar and the tool
+     .topbar right after each other (same pattern create.html/edit.html
+     already fix). On mobile that's two full nav bars stacked before any
+     content; hide the marketing one and keep the topbar, same as those. */
+  .navbar{display:none !important;}
+  body{padding-top:0 !important;}
   .navbar-badge{display:none;}
   .topbar{padding:0.6rem 1rem;flex-wrap:wrap;gap:0.5rem;}
   .topbar-title{font-size:0.85rem;}
@@ -292,6 +296,14 @@ body{padding-top:70px;}
   /* Tool tabs wrap */
   .photo-tool-tabs{flex-wrap:wrap;}
   .photo-tool-tab{font-size:0.68rem;padding:0.35rem 0.6rem;}
+
+  /* This page has no footer, so on a short phone screen the last row of
+     content scrolled all the way to the bottom sits directly under the
+     chatbot bubble (chatbot.js, fixed bottom-left) and the Contact button
+     (fixed bottom-right) — both permanently obscuring/blocking it with no
+     way to scroll past. Reserve room for the taller of the two (chat: 52px
+     button + 2rem gap) plus a margin. */
+  body{padding-bottom:6.5rem;}
 }
 
 @media(max-width:480px){

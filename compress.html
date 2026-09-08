@@ -51,6 +51,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .topbar-title{font-size:1rem;font-weight:800;color:var(--text);}
 .topbar-title span{color:#9B5B17;}
 .topbar-right{display:flex;align-items:center;gap:1rem;}
+/* Sign In + Upgrade were being clipped off the right edge on phones (topbar
+   never wrapped, body has overflow-x:hidden) — dropping topbar-right to its
+   own row keeps both reachable instead of invisible past the viewport. */
+@media(max-width:480px){.topbar{flex-wrap:wrap;row-gap:0.5rem;}.topbar-right{flex:1 1 100%;justify-content:flex-end;}}
 .user-name{font-size:0.82rem;font-weight:700;color:var(--text);cursor:pointer;}
 .btn-signin{background:transparent;border:1px solid rgba(224,138,46,0.4);color:#9B5B17;padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-signin:hover{box-shadow:var(--glow-gold);}
