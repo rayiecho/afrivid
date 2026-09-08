@@ -278,32 +278,47 @@
     var reference = 'av-' + planId.replace(/_/g, '-') + '-' + Date.now() + '-' +
                     String(user.uid || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 6);
 
-    Pop.setup({
-      key: key,
-      email: user.email,
-      amount: plan.amount,
-      currency: 'USD',
-      ref: reference,
-      // The ONLY thing tying this payment back to an account. app.py's webhook
-      // reads uid and plan from here; without them the charge lands as "PAID BUT
-      // UNAPPLIED" and needs a human.
-      metadata: {
-        uid: user.uid,
-        plan: planId,
-        custom_fields: [
-          { display_name: 'Plan', variable_name: 'plan', value: planId },
-          { display_name: 'Account', variable_name: 'uid', value: user.uid },
-        ],
-      },
-      callback: function (response) {
-        // Client-side only. Grants nothing — see the note at the top of this file.
-        confirmUpgrade(planId, user, before, (response && response.reference) || reference);
-      },
-      onClose: function () {
-        // Closing the Paystack window is not a failure and not a payment. Say
-        // nothing and leave the page as it was.
-      },
-    }).openIframe();
+    // InlineJS v2 (the `new PaystackPop().checkout()` object form) rather than the
+    // older static `PaystackPop.setup({...}).openIframe()` — Apple Pay only renders
+    // on v2, and Paystack picks which payment methods (card / Apple Pay / etc.) to
+    // offer per device automatically, so nothing else here needs to branch on
+    // device. Same payload shape as before; only the calling convention and the
+    // two callback names (onSuccess/onCancel replacing callback/onClose) changed.
+    try {
+      await new Pop().checkout({
+        key: key,
+        email: user.email,
+        amount: plan.amount,
+        currency: 'USD',
+        ref: reference,
+        // The ONLY thing tying this payment back to an account. app.py's webhook
+        // reads uid and plan from here; without them the charge lands as "PAID BUT
+        // UNAPPLIED" and needs a human.
+        metadata: {
+          uid: user.uid,
+          plan: planId,
+          custom_fields: [
+            { display_name: 'Plan', variable_name: 'plan', value: planId },
+            { display_name: 'Account', variable_name: 'uid', value: user.uid },
+          ],
+        },
+        onSuccess: function (transaction) {
+          // Client-side only. Grants nothing — see the note at the top of this file.
+          var ref = (transaction && (transaction.reference || transaction.trxref)) || reference;
+          confirmUpgrade(planId, user, before, ref);
+        },
+        onCancel: function () {
+          // Closing the Paystack window is not a failure and not a payment. Say
+          // nothing and leave the page as it was.
+        },
+      });
+    } catch (e) {
+      console.warn('[Checkout] v2 checkout failed:', e && e.message);
+      show('Could not open checkout',
+           'We could not start Paystack checkout just now. Nothing was charged — please ' +
+           'try again in a moment.',
+           [{ label: 'Close', primary: true, onClick: hide }]);
+    }
   };
 
   // ── Fallback for the shared limit gate ──────────────────────────────────────
