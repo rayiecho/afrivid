@@ -268,6 +268,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .stat-card-value{font-size:1.7rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
 .stat-card-label{font-size:0.66rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:0.35rem;}
 
+/* BILLING & USAGE — the real credits/tier ledger (credits.py, a different
+   Firestore project than studio_users above; see credits.py's own docstring
+   for why). stat-plan up top stays wired to studio_users.plan for legacy
+   pages that still read it, but this panel is the actual source of truth for
+   what a user has unlocked, and the one place to recover a payment that a
+   missed webhook never applied. */
+.billing-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.4rem;margin-bottom:2rem;}
+.billing-panel-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.billing-tier{font-size:1.15rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
+.billing-tier .tag{display:inline-block;margin-left:0.5rem;font-size:0.62rem;font-family:'Space Mono',monospace;letter-spacing:1px;padding:0.15rem 0.5rem;border-radius:20px;background:rgba(224,138,46,0.12);color:#9C5918;vertical-align:middle;}
+.billing-credits-text{font-size:0.84rem;color:rgba(23,20,15,0.68);margin-top:0.2rem;}
+.billing-sync-btn{font-size:0.78rem;font-weight:700;font-family:'Syne',sans-serif;background:transparent;border:1px solid rgba(224,138,46,0.4);color:#9C5918;padding:0.5rem 1rem;border-radius:9px;cursor:pointer;white-space:nowrap;}
+.billing-sync-btn:hover{background:rgba(224,138,46,0.08);}
+.billing-grants{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.9rem;}
+.billing-grant-pill{font-size:0.72rem;font-family:'Space Mono',monospace;background:rgba(47,125,83,0.08);color:#2F7D53;border:1px solid rgba(47,125,83,0.2);padding:0.3rem 0.7rem;border-radius:20px;}
+.billing-sync-box{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);}
+.billing-sync-box input{font-family:'Space Mono',monospace;font-size:0.8rem;padding:0.5rem 0.7rem;border:1px solid var(--border);border-radius:8px;width:100%;max-width:320px;margin-right:0.5rem;}
+.billing-sync-msg{font-size:0.8rem;margin-top:0.6rem;}
+.billing-sync-msg.ok{color:#2F7D53;}
+.billing-sync-msg.err{color:#9A3F12;}
+
 /* MAIN GRID: file list + side panels */
 .studio-main-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;}
 .side-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem;}
@@ -463,6 +484,27 @@ body::after{
         </div>
       </div>
 
+      <!-- BILLING & USAGE — real credits/tier status, and recovery for a
+           payment that went through on Paystack but never reflected here
+           (the webhook that should apply it can fail to fire; this lets a
+           user ask us to go check directly instead of waiting on it). -->
+      <div class="billing-panel" id="billing-panel" style="display:none;">
+        <div class="billing-panel-head">
+          <div>
+            <div class="billing-tier" id="billing-tier">Free<span class="tag" id="billing-tier-tag" style="display:none;"></span></div>
+            <div class="billing-credits-text" id="billing-credits-text">Loading your usage…</div>
+          </div>
+          <button class="billing-sync-btn" type="button" id="billing-sync-btn" onclick="avSyncPayment()">Paid but it's not showing? Sync now</button>
+        </div>
+        <div class="billing-grants" id="billing-grants"></div>
+        <div class="billing-sync-box" id="billing-sync-box" style="display:none;">
+          <div style="font-size:0.8rem;color:rgba(23,20,15,0.68);margin-bottom:0.5rem;">Couldn't find it automatically. Paste the reference from your Paystack receipt email:</div>
+          <input type="text" id="billing-sync-ref" placeholder="e.g. av-tool-compressor-1788... or the Paystack reference">
+          <button class="billing-sync-btn" type="button" onclick="avSyncPayment(true)">Try this reference</button>
+        </div>
+        <div class="billing-sync-msg" id="billing-sync-msg" style="display:none;"></div>
+      </div>
+
       <div class="studio-main-grid">
         <!-- MAIN LIST -->
         <div class="studio-main-col">
@@ -610,6 +652,7 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('side-email').textContent = user.email;
     // Load user files
     await loadUserFiles(user.uid);
+    loadBilling(user);
     // Account panel: plan + member-since
     try {
       const snap = await getDoc(doc(db, 'studio_users', user.uid));
@@ -637,9 +680,130 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('side-email').textContent = '—';
     document.getElementById('side-joined').textContent = '—';
     document.getElementById('stat-plan').textContent = '—';
+    document.getElementById('billing-panel').style.display = 'none';
     loadUserFiles(null);
   }
 });
+
+// ── BILLING & USAGE ─────────────────────────────────────────────────────────
+// The real credits/tier ledger (credits.py, afrivid-processor's own Firestore
+// — a deliberately different project than studio_users above; see credits.py's
+// own docstring). Not the same source as stat-plan up top, which is legacy.
+const BILLING_API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+let billingUser = null;
+
+async function billingAuthHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (billingUser) {
+    try { headers['Authorization'] = 'Bearer ' + (await billingUser.getIdToken()); }
+    catch (e) { console.warn('[Billing] no ID token:', e && e.message); }
+  }
+  return headers;
+}
+
+const GRANT_LABELS = {
+  editor_expires: 'Video Editor',
+  graphics_expires: 'Graphics and Images',
+  compressor_expires: 'Compressor',
+};
+
+function fmtExpiry(unixSeconds) {
+  if (!unixSeconds) return null;
+  const d = new Date(unixSeconds * 1000);
+  if (d.getTime() < Date.now()) return null; // expired — don't show a stale grant as active
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+async function loadBilling(user) {
+  billingUser = user;
+  const panel = document.getElementById('billing-panel');
+  panel.style.display = 'block';
+  try {
+    const headers = await billingAuthHeaders();
+    const r = await fetch(BILLING_API + '/credits', { headers });
+    const ent = await r.json();
+    if (!r.ok || !ent || ent.error) {
+      document.getElementById('billing-credits-text').textContent =
+        'Could not load your billing status right now.';
+      return;
+    }
+    const tier = ent.tier || 'free';
+    const tierLabel = tier === 'pro_subscription' ? 'Pro' : (tier.charAt(0).toUpperCase() + tier.slice(1));
+    document.getElementById('billing-tier').firstChild.textContent = tierLabel;
+    const tag = document.getElementById('billing-tier-tag');
+    if (tier === 'pro_subscription') { tag.textContent = 'ACTIVE'; tag.style.display = 'inline-block'; }
+    else { tag.style.display = 'none'; }
+
+    const remaining = typeof ent.credits_remaining === 'number' ? ent.credits_remaining : null;
+    const total = typeof ent.credits_granted_total === 'number' ? ent.credits_granted_total : null;
+    document.getElementById('billing-credits-text').textContent = remaining !== null
+      ? `${remaining.toLocaleString()} credits remaining${total ? ` of ${total.toLocaleString()}` : ''} — 16 credits per minute of generated video`
+      : 'Usage data unavailable right now.';
+
+    const grantsEl = document.getElementById('billing-grants');
+    grantsEl.innerHTML = '';
+    Object.keys(GRANT_LABELS).forEach((field) => {
+      const until = fmtExpiry(ent[field]);
+      if (!until) return;
+      const pill = document.createElement('span');
+      pill.className = 'billing-grant-pill';
+      pill.textContent = `${GRANT_LABELS[field]} until ${until}`;
+      grantsEl.appendChild(pill);
+    });
+    if (ent.api_seconds_left) {
+      const pill = document.createElement('span');
+      pill.className = 'billing-grant-pill';
+      pill.textContent = `${Math.round(ent.api_seconds_left / 60)} min Developer API testing left`;
+      grantsEl.appendChild(pill);
+    }
+  } catch (e) {
+    console.error('[Billing] load failed:', e);
+    document.getElementById('billing-credits-text').textContent = 'Could not load your billing status right now.';
+  }
+}
+
+// Self-serve recovery for a real payment that went through on Paystack but
+// never showed up here — the exact situation a missed/never-registered
+// webhook causes. First click searches by the signed-in account's own email;
+// if that finds nothing, reveals a box to paste the reference from the
+// Paystack receipt email and try again with that specific transaction.
+window.avSyncPayment = async function (useRef) {
+  const msg = document.getElementById('billing-sync-msg');
+  const box = document.getElementById('billing-sync-box');
+  msg.style.display = 'none';
+  if (!billingUser) {
+    msg.className = 'billing-sync-msg err'; msg.textContent = 'Sign in first.'; msg.style.display = 'block';
+    return;
+  }
+  const body = {};
+  if (useRef) {
+    const ref = (document.getElementById('billing-sync-ref').value || '').trim();
+    if (!ref) return;
+    body.reference = ref;
+  }
+  msg.className = 'billing-sync-msg'; msg.textContent = 'Checking with Paystack…'; msg.style.display = 'block';
+  try {
+    const headers = await billingAuthHeaders();
+    const r = await fetch(BILLING_API + '/sync-payment', { method: 'POST', headers, body: JSON.stringify(body) });
+    const data = await r.json();
+    if (r.ok && data.ok) {
+      msg.className = 'billing-sync-msg ok';
+      msg.textContent = data.message || 'Payment synced — your account is updated.';
+      box.style.display = 'none';
+      loadBilling(billingUser);
+    } else if (data.code === 'not_found' && !useRef) {
+      // No luck by email — offer the reference box instead of a dead end.
+      msg.style.display = 'none';
+      box.style.display = 'block';
+    } else {
+      msg.className = 'billing-sync-msg err';
+      msg.textContent = data.error || 'Could not sync that payment.';
+    }
+  } catch (e) {
+    msg.className = 'billing-sync-msg err';
+    msg.textContent = 'Could not reach the server. Try again shortly.';
+  }
+};
 
 // Fetches a collection matching either `userId` or `uid` as the owner field — different
 // pages in the app write different field names for the same purpose, so querying only one
