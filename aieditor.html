@@ -207,7 +207,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <span style="color:#F5A623;font-size:0.85rem;">⚡</span>
     <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-family:'Syne',sans-serif;">You're on the <strong style="color:#fff;">Free Plan</strong> — <span id="banner-usage">3 videos left</span> this month</span>
   </div>
-  <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.4rem 1.25rem;border-radius:20px;font-weight:900;text-decoration:none;font-size:0.78rem;font-family:'Syne',sans-serif;white-space:nowrap;">Upgrade to Pro $5/mo →</a>
+  <a href="#" onclick="showUpgradeModal('videos');return false;" style="background:#F5A623;color:#050A14;padding:0.4rem 1.25rem;border-radius:20px;font-weight:900;text-decoration:none;font-size:0.78rem;font-family:'Syne',sans-serif;white-space:nowrap;" data-av-price="pro_subscription" data-av-price-tpl="Upgrade to Pro {price}/mo →">Upgrade to Pro $5/mo →</a>
 </div>
 <script>
 // Show banner for free users
@@ -2388,10 +2388,10 @@ function showUpgradeForm() {
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.54);font-size:0.82rem;">Pay by card and the upgrade is active immediately.</div>
+      <div id="gum-reason" style="color:rgba(255,255,255,0.54);font-size:0.82rem;">The upgrade is active the moment your payment clears.</div>
     </div>
     <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.54);">/month</span></div>
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;"><span data-av-price="pro_subscription">$5</span><span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.54);">/month</span></div>
       <div style="color:rgba(255,255,255,0.54);font-size:0.78rem;">300 minutes of video a month · No watermark · Editor, Graphics and Compressor unlocked</div>
     </div>
     <div id="gum-form">
@@ -2403,9 +2403,9 @@ function showUpgradeForm() {
            trade-off — it is just a worse product. -->
       <div style="display:flex;gap:0.5rem;">
         <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Not now</button>
-        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Go Pro &mdash; $5/month</button>
+        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;" data-av-price="pro_subscription" data-av-price-tpl="Go Pro — {price}/month">Go Pro &mdash; $5/month</button>
       </div>
-      <a href="pricing.html#tools" style="display:block;text-align:center;margin-top:0.85rem;color:rgba(255,255,255,0.5);font-size:0.78rem;font-family:Syne,sans-serif;text-decoration:underline;">Or unlock just one tool for $1</a>
+      <a href="pricing.html#tools" style="display:block;text-align:center;margin-top:0.85rem;color:rgba(255,255,255,0.5);font-size:0.78rem;font-family:Syne,sans-serif;text-decoration:underline;" data-av-price="tool_editor" data-av-price-tpl="Or unlock just one tool for {price}">Or unlock just one tool for $1</a>
     </div>
   </div>
 </div>
