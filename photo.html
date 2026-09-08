@@ -585,6 +585,7 @@ body::after{
   </a>
   <div class="navbar-actions">
     <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+    <a href="pricing.html#plans" class="av-upgrade">Upgrade</a>
   </div>
 </nav>
 
@@ -2432,55 +2433,24 @@ if('serviceWorker' in navigator) {
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.56);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
+      <div id="gum-reason" style="color:rgba(255,255,255,0.56);font-size:0.82rem;">Pay by card and the upgrade is active immediately.</div>
     </div>
     <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
       <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.56);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.56);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
+      <div style="color:rgba(255,255,255,0.56);font-size:0.78rem;">300 minutes of video a month · No watermark · Editor, Graphics and Compressor unlocked</div>
     </div>
     <div id="gum-form">
-      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
-          <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
-          <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
-          <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select your country</option>
-            <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
-            <option>Uganda</option><option>Tanzania</option><option>Ghana</option>
-            <option>South Africa</option><option>Ethiopia</option><option>Other</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
-          <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
-            <option value="">Select payment method</option>
-            <option value="mpesa">M-Pesa</option>
-            <option value="mtn">MTN Mobile Money</option>
-            <option value="airtel">Airtel Money</option>
-            <option value="card">Debit/Credit Card</option>
-            <option value="bank">Bank Transfer</option>
-          </select>
-        </div>
-        <div id="gum-phone-wrap" style="display:none;">
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
-          <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
-        </div>
-      </div>
-      <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-        <span style="color:#74C69D;">⏱</span>
-        <span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">We respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</span>
-      </div>
+      <!-- Real checkout, not a request form. This used to collect a name, country
+           and "preferred payment method" and write an upgrade_requests row for a
+           human to answer within an hour. Card checkout now exists, and the
+           signature-verified webhook in app.py applies the upgrade the moment the
+           payment clears, so making someone fill a form and wait is no longer a
+           trade-off — it is just a worse product. -->
       <div style="display:flex;gap:0.5rem;">
-        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
-        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send Request →</button>
+        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Not now</button>
+        <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Go Pro &mdash; $5/month</button>
       </div>
+      <a href="pricing.html#tools" style="display:block;text-align:center;margin-top:0.85rem;color:rgba(255,255,255,0.5);font-size:0.78rem;font-family:Syne,sans-serif;text-decoration:underline;">Or unlock just one tool for $1</a>
     </div>
   </div>
 </div>
@@ -2500,14 +2470,7 @@ function showUpgradeModal(reason) {
     default: 'This feature requires a Pro account.'
   };
   const reasonEl = document.getElementById('gum-reason');
-  if (reasonEl) reasonEl.textContent = (reasons[reason] || reasons.default) + ' Upgrade to Pro — we respond within 1 hour.';
-  // Pre-fill email if logged in
-  if (window.currentUser) {
-    const emailEl = document.getElementById('gum-email');
-    const nameEl = document.getElementById('gum-name');
-    if (emailEl && !emailEl.value) emailEl.value = window.currentUser.email || '';
-    if (nameEl && !nameEl.value) nameEl.value = window.currentUser.displayName || '';
-  }
+  if (reasonEl) reasonEl.textContent = (reasons[reason] || reasons.default) + ' Upgrade and it is active immediately.';
   modal.style.display = 'flex';
 }
 
@@ -2516,50 +2479,19 @@ function closeUpgradeModal() {
   if (modal) modal.style.display = 'none';
 }
 
-async function submitGlobalUpgrade() {
-  const name = document.getElementById('gum-name')?.value?.trim();
-  const email = document.getElementById('gum-email')?.value?.trim();
-  const country = document.getElementById('gum-country')?.value;
-  const payment = document.getElementById('gum-payment')?.value;
-  const phone = document.getElementById('gum-phone')?.value?.trim();
-
-  if (!name || !email || !country || !payment) {
-    alert('Please fill all required fields');
-    return;
-  }
-
-  const btn = document.getElementById('gum-submit-btn');
-  if (btn) { btn.textContent = '[..] Sending...'; btn.disabled = true; }
-
-  try {
-    const {initializeApp, getApps} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getFirestore, collection, addDoc, serverTimestamp} = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-    const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
-    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-    const db = getFirestore(app);
-
-    await addDoc(collection(db, 'upgrade_requests'), {
-      name, email, country, payment, phone,
-      page: window.location.pathname,
-      userId: window.currentUser?.uid || 'anonymous',
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-
-    // Show success
-    document.getElementById('gum-form').innerHTML = `
-      <div style="text-align:center;padding:1rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
-        <div style="color:#74C69D;font-weight:900;font-size:1.1rem;margin-bottom:0.5rem;">Request Submitted!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">Check your email <strong style="color:#fff;">${email}</strong> — we'll respond within <strong style="color:#74C69D;">1 hour</strong> with payment instructions.</div>
-        <button onclick="closeUpgradeModal()" style="background:#F5A623;border:none;color:#050A14;padding:0.75rem 2rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;">Done</button>
-      </div>`;
-  } catch(e) {
-    if (btn) { btn.textContent = 'Send Request →'; btn.disabled = false; }
-    alert('Failed: ' + e.message);
+// Hands off to the shared checkout in paystack.js. Nothing is granted here or
+// anywhere else in the browser — paystack.js polls /credits until the server's
+// webhook has actually applied the plan.
+function submitGlobalUpgrade() {
+  closeUpgradeModal();
+  if (typeof window.avStartCheckout === 'function') {
+    window.avStartCheckout('pro_subscription');
+  } else {
+    window.location.href = 'pricing.html#plans';
   }
 }
 </script>
+<script src="paystack.js"></script>
 </body>
 </html>
 <script>

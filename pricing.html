@@ -102,6 +102,11 @@ h2 em{font-style:normal;color:var(--amber-deep);}
 .tool-name{font-weight:800;font-size:0.95rem;margin-bottom:0.35rem;}
 .tool-window{font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--amber-text);font-weight:700;}
 .tool-note{font-size:0.8rem;color:var(--ink-50);margin-top:0.4rem;line-height:1.5;}
+.tool{display:flex;flex-direction:column;}
+.tool-note{flex:1;}
+.tool-btn{margin-top:0.9rem;width:100%;padding:0.6rem;border-radius:9px;border:1px solid var(--amber);background:transparent;color:var(--amber-text);font-family:'Syne',sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;transition:background 0.18s,color 0.18s;}
+.tool-btn:hover{background:var(--amber);color:#fff;}
+.tool-btn[aria-disabled="true"]:hover{background:transparent;color:var(--amber-text);}
 
 /* The degraded state. Deliberately a full, prominent section with its own
    heading — not fine print. A person should be able to read exactly what they
@@ -223,7 +228,7 @@ footer nav a:hover{color:var(--amber-deep);}
           <li><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="#2F7D53" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg><span><b>Credit appeals</b> — if one of your own settings burned credits unfairly, file a review and a person reads it</span></li>
           <li class="muted"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="rgba(23,20,15,0.4)" stroke-width="2"><path d="M4 4l8 8M12 4l-8 8"/></svg><span>The Developer API is metered separately and is not included</span></li>
         </ul>
-        <a class="plan-btn primary" href="contact.html?plan=pro_subscription">Go Pro — $5/month</a>
+        <button type="button" class="plan-btn primary" data-av-plan="pro_subscription">Go Pro — $5/month</button>
       </div>
 
       <!-- PAY PER TOOL -->
@@ -254,26 +259,31 @@ footer nav a:hover{color:var(--amber-deep);}
         <div class="tool-name">Video Compressor</div>
         <div class="tool-window">1 month</div>
         <p class="tool-note">Any file size, any length, every quality level, no watermark.</p>
+        <button type="button" class="tool-btn" data-av-plan="tool_compressor">Unlock for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Graphics and Images</div>
         <div class="tool-window">1 month</div>
         <p class="tool-note">Posters, flyers, brand images and photo tools, all features.</p>
+        <button type="button" class="tool-btn" data-av-plan="tool_graphics">Unlock for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Video Creation</div>
         <div class="tool-window">1 hour of video</div>
         <p class="tool-note">960 credits into your shared pool — Ad Maker, Tutorial Maker and Short Videos.</p>
+        <button type="button" class="tool-btn" data-av-plan="tool_video">Buy an hour for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Video Editor</div>
         <div class="tool-window">2 weeks</div>
         <p class="tool-note">Captions, mic overlay, full noise reduction and volume boost, no watermark.</p>
+        <button type="button" class="tool-btn" data-av-plan="tool_editor">Unlock for $1</button>
       </div>
       <div class="tool">
         <div class="tool-name">Developer API</div>
         <div class="tool-window">20 minutes</div>
         <p class="tool-note">Our renderer as the engine inside your own product.</p>
+        <button type="button" class="tool-btn" data-av-plan="tool_api">Buy 20 minutes for $1</button>
       </div>
     </div>
   </section>
@@ -407,6 +417,10 @@ document.querySelectorAll('.faq-q').forEach(function (btn) {
   });
 });
 </script>
+
+<!-- Checkout. Every [data-av-plan] button on this page is wired by this one file;
+     the page itself holds no payment logic. See paystack.js. -->
+<script src="paystack.js"></script>
 
 </body>
 </html>
