@@ -146,40 +146,40 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .topbar-left{display:flex;align-items:center;gap:1rem;}
 .back-btn{display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
-.back-btn:hover{color:var(--gold);}
+.back-btn:hover{color:#9B5B17;}
 .back-btn svg{width:16px;height:16px;}
 .topbar-divider{width:1px;height:20px;background:var(--border);}
 .topbar-title{font-size:1rem;font-weight:800;color:var(--text);}
-.topbar-title span{color:var(--gold);}
+.topbar-title span{color:#9B5B17;}
 .topbar-right{display:flex;align-items:center;gap:1rem;}
 .user-info{text-align:right;}
 .user-name{font-size:0.82rem;font-weight:700;color:var(--text);}
-.user-plan{font-size:0.68rem;color:var(--green);font-family:'Space Mono',monospace;}
-.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:var(--gold);padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.user-plan{font-size:0.68rem;color:#7D6440;font-family:'Space Mono',monospace;}
+.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#9B5B17;padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-signin:hover{box-shadow:var(--glow-gold);}
-.btn-signout{background:none;border:1px solid var(--border);color:var(--text-faint);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
-.btn-signout:hover{border-color:var(--red);color:var(--red);}
+.btn-signout{background:none;border:1px solid var(--border);color:rgba(23,20,15,0.68);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout:hover{border-color:var(--red);color:#CE2218;}
 
 /* MAIN */
 .main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 2rem 4rem;}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:2.5rem;}
-.page-label{font-size:0.68rem;color:var(--green);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
+.page-label{font-size:0.68rem;color:#7D6440;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
 .page-title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:var(--text);margin-bottom:0.5rem;}
-.page-sub{font-size:0.9rem;color:var(--text-faint);}
+.page-sub{font-size:0.9rem;color:rgba(23,20,15,0.68);}
 
 /* FILTER TABS */
 .filter-tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
-.filter-tab{padding:0.5rem 1.1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:var(--text-faint);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
-.filter-tab.active{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:var(--gold);box-shadow:var(--glow-gold);}
+.filter-tab{padding:0.5rem 1.1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:rgba(23,20,15,0.68);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
+.filter-tab.active{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:#925616;box-shadow:var(--glow-gold);}
 .filter-tab:hover:not(.active){border-color:rgba(23,20,15,0.18);color:var(--text-muted);}
 
 /* SECTION */
 .studio-section{margin-bottom:3rem;animation:slideUp 0.3s ease both;}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
-.section-label{font-size:0.68rem;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:2px;}
-.section-count{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
+.section-label{font-size:0.68rem;color:#9B5B17;font-family:'Space Mono',monospace;letter-spacing:2px;}
+.section-count{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;}
 
 /* GRID */
 .content-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1.25rem;}
@@ -190,26 +190,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .card-thumb.photo{aspect-ratio:4/3;}
 .thumb-icon{opacity:0.3;}
 .card-type-badge{position:absolute;top:8px;left:8px;font-size:0.6rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:var(--radius-sm);font-family:'Space Mono',monospace;letter-spacing:0.5px;}
-.badge-video{background:rgba(245,166,35,0.2);color:var(--gold);border:1px solid rgba(245,166,35,0.3);}
-.badge-photo{background:rgba(116,198,157,0.2);color:var(--green);border:1px solid rgba(116,198,157,0.3);}
-.badge-design{background:rgba(99,153,255,0.2);color:#6399ff;border:1px solid rgba(99,153,255,0.3);}
+.badge-video{background:rgba(245,166,35,0.2);color:#8E5315;border:1px solid rgba(245,166,35,0.3);}
+.badge-photo{background:rgba(116,198,157,0.2);color:#735C3B;border:1px solid rgba(116,198,157,0.3);}
+.badge-design{background:rgba(99,153,255,0.2);color:#004EE2;border:1px solid rgba(99,153,255,0.3);}
 .badge-sample{background:rgba(23,20,15,0.12);color:var(--text-muted);border:1px solid rgba(23,20,15,0.12);}
 .card-body{padding:1rem;}
 .card-title{font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-meta{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
+.card-meta{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;}
 .card-actions{display:flex;gap:0.5rem;margin-top:0.75rem;}
 .card-btn{flex:1;padding:0.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
-.card-btn:hover{border-color:rgba(245,166,35,0.3);color:var(--gold);}
-.card-btn.primary{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.2);color:var(--gold);}
+.card-btn:hover{border-color:rgba(245,166,35,0.3);color:#9B5B17;}
+.card-btn.primary{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.2);color:#925616;}
 .card-btn.primary:hover{background:rgba(245,166,35,0.2);}
-.card-btn.danger:hover{border-color:rgba(230,51,41,0.4);color:var(--red);}
+.card-btn.danger:hover{border-color:rgba(230,51,41,0.4);color:#CE2218;}
 
 /* EMPTY STATE */
 .empty-state{text-align:center;padding:4rem 2rem;background:rgba(23,20,15,0.03);border:1px dashed var(--border);border-radius:var(--radius-lg);}
 .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.4;}
 .empty-title{font-size:1rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;}
-.empty-sub{font-size:0.82rem;color:var(--text-faint);margin-bottom:1.5rem;}
-.empty-btn{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:var(--gold);padding:0.75rem 1.5rem;border-radius:var(--radius-md);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;text-decoration:none;display:inline-block;transition:var(--transition);}
+.empty-sub{font-size:0.82rem;color:rgba(23,20,15,0.68);margin-bottom:1.5rem;}
+.empty-btn{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#925616;padding:0.75rem 1.5rem;border-radius:var(--radius-md);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;text-decoration:none;display:inline-block;transition:var(--transition);}
 .empty-btn:hover{background:rgba(245,166,35,0.2);box-shadow:var(--glow-gold);}
 
 /* SKELETON (loading state) */
@@ -221,8 +221,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* LOGIN PROMPT BANNER */
 .login-banner{background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(116,198,157,0.05));border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
 .login-banner-text{font-size:0.88rem;color:var(--text-muted);}
-.login-banner-text strong{color:var(--gold);}
-.btn-login-banner{background:var(--gradient-gold);color:var(--bg);border:none;padding:0.6rem 1.5rem;border-radius:var(--radius-sm);font-weight:800;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.login-banner-text strong{color:#9B5B17;}
+.btn-login-banner{background:var(--gradient-gold);color:#17140F;border:none;padding:0.6rem 1.5rem;border-radius:var(--radius-sm);font-weight:800;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-login-banner:hover{box-shadow:var(--glow-gold);}
 
 /* LOGIN MODAL */
@@ -230,20 +230,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .modal-overlay.active{display:flex;}
 .login-box{position:relative;z-index:1;width:100%;max-width:420px;animation:slideUp 0.3s ease both;}
 .login-header{text-align:center;margin-bottom:2rem;}
-.login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:var(--bg);margin:0 auto 1rem;}
+.login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#17140F;margin:0 auto 1rem;}
 .login-title{font-size:1.4rem;font-weight:800;color:var(--text);}
-.login-title span{color:var(--gold);}
+.login-title span{color:#9B5B17;}
 .login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
 .auth-tabs{display:flex;background:rgba(23,20,15,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
-.auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
-.auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
-.form-label{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
+.auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(23,20,15,0.68);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.auth-tab.active{background:var(--gradient-gold);color:#17140F;}
+.form-label{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
 .form-input{width:100%;background:rgba(23,20,15,0.04);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
 .form-input:focus{border-color:rgba(245,166,35,0.5);}
-.btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-auth{width:100%;background:var(--gradient-gold);color:#17140F;border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-auth:hover{box-shadow:var(--glow-gold);}
-.login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:var(--text-faint);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#C20000;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(23,20,15,0.68);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
 
 /* TOOL QUICK ACCESS — 2 tools right now (Create, Design) while others are paused */
 .quick-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;margin-bottom:2.5rem;max-width:420px;}
@@ -257,22 +257,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .studio-sidebar{position:sticky;top:6rem;display:flex;flex-direction:column;gap:1.5rem;}
 .studio-nav{display:flex;flex-direction:column;gap:0.35rem;}
 .studio-nav-link{padding:0.7rem 1rem;border-radius:var(--radius-sm);color:var(--text-muted);font-weight:700;font-size:0.85rem;text-decoration:none;font-family:'Syne',sans-serif;transition:var(--transition);white-space:nowrap;}
-.studio-nav-link:hover:not(.active){background:rgba(245,166,35,0.08);color:var(--gold);}
-.studio-nav-link.active{background:var(--gradient-gold);color:var(--bg);box-shadow:var(--glow-gold);}
-.btn-signout-sidebar{width:100%;background:none;border:1px solid var(--border);color:var(--text-faint);padding:0.65rem;border-radius:var(--radius-sm);font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
-.btn-signout-sidebar:hover{border-color:var(--red);color:var(--red);}
+.studio-nav-link:hover:not(.active){background:rgba(245,166,35,0.08);color:#925616;}
+.studio-nav-link.active{background:var(--gradient-gold);color:#17140F;box-shadow:var(--glow-gold);}
+.btn-signout-sidebar{width:100%;background:none;border:1px solid var(--border);color:rgba(23,20,15,0.68);padding:0.65rem;border-radius:var(--radius-sm);font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout-sidebar:hover{border-color:var(--red);color:#CE2218;}
 
 /* STAT CARDS */
 .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;}
 .stat-card-value{font-size:1.7rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
-.stat-card-label{font-size:0.66rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:0.35rem;}
+.stat-card-label{font-size:0.66rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:0.35rem;}
 
 /* MAIN GRID: file list + side panels */
 .studio-main-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;}
 .side-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem;}
-.side-panel-title{font-size:0.66rem;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.9rem;}
-.side-panel-action{display:block;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);color:var(--gold);padding:0.7rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.82rem;text-decoration:none;margin-bottom:0.6rem;transition:var(--transition);}
+.side-panel-title{font-size:0.66rem;color:#9B5B17;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.9rem;}
+.side-panel-action{display:block;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);color:#925616;padding:0.7rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.82rem;text-decoration:none;margin-bottom:0.6rem;transition:var(--transition);}
 .side-panel-action:last-child{margin-bottom:0;}
 .side-panel-action:hover{background:rgba(245,166,35,0.15);box-shadow:var(--glow-gold);}
 
@@ -302,9 +302,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 .navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
-.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:var(--gold);padding:0.2rem 0.6rem;border-radius:var(--radius-full);font-family:'Space Mono',monospace;letter-spacing:1px;}
-.btn-nav-tool{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.35);color:var(--gold);padding:0.5rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.8rem;font-family:'Syne',sans-serif;transition:var(--transition);}
-.btn-nav-tool:hover{background:var(--gold);color:var(--bg);border-color:var(--gold);}
+.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#925616;padding:0.2rem 0.6rem;border-radius:var(--radius-full);font-family:'Space Mono',monospace;letter-spacing:1px;}
+.btn-nav-tool{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.35);color:#925616;padding:0.5rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.8rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-nav-tool:hover{background:var(--gold);color:#17140F;border-color:var(--gold);}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
 
@@ -313,33 +313,33 @@ body{padding-top:70px;}
 .profile-overlay.active{display:flex;}
 .profile-modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:420px;max-width:95vw;overflow:hidden;animation:slideUp 0.3s ease both;}
 .profile-header{background:linear-gradient(135deg,var(--bg),var(--surface-2));padding:1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);}
-.profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:var(--bg);flex-shrink:0;}
+.profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#17140F;flex-shrink:0;}
 .profile-info{flex:1;}
 .profile-name{font-size:1rem;font-weight:700;}
-.profile-email{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;margin-top:0.2rem;}
+.profile-email{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;margin-top:0.2rem;}
 .profile-body{padding:1.25rem;}
 .profile-section{margin-bottom:1.25rem;}
-.profile-section-title{font-size:0.6rem;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.profile-section-title{font-size:0.6rem;color:#9B5B17;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
 .plan-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:700;}
-.plan-beta{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--gold);}
-.plan-pro{background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:var(--green);}
+.plan-beta{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#925616;}
+.plan-pro{background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#7A623E;}
 .plan-dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
 .stat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(23,20,15,0.04);font-size:0.82rem;}
 .stat-row:last-child{border-bottom:none;}
-.stat-row-label{color:var(--text-faint);}
+.stat-row-label{color:rgba(23,20,15,0.68);}
 .stat-row-value{font-weight:600;font-family:'Space Mono',monospace;font-size:0.75rem;}
 .profile-input{width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.65rem 0.9rem;border-radius:var(--radius-sm);font-size:0.85rem;font-family:'Syne',sans-serif;outline:none;margin-top:0.4rem;transition:var(--transition);}
 .profile-input:focus{border-color:rgba(245,166,35,0.4);}
 .profile-actions{display:flex;gap:0.75rem;padding:1rem 1.25rem;border-top:1px solid var(--border);}
-.btn-profile-save{flex:1;background:var(--gold);color:var(--bg);border:none;padding:0.65rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-profile-save{flex:1;background:var(--gold);color:#17140F;border:none;padding:0.65rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-profile-save:hover{box-shadow:var(--glow-gold);}
-.btn-profile-close{background:transparent;border:1px solid var(--border);color:var(--text-faint);padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
-.btn-signout-profile{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:var(--red);padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-profile-close{background:transparent;border:1px solid var(--border);color:rgba(23,20,15,0.68);padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-signout-profile{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#BC1F16;padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
 .upgrade-box{background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:var(--radius-md);padding:1rem;margin-top:0.75rem;}
-.upgrade-price{font-size:1.5rem;font-weight:800;color:var(--green);}
-.upgrade-price span{font-size:0.75rem;color:var(--text-faint);font-weight:400;}
+.upgrade-price{font-size:1.5rem;font-weight:800;color:#7D6440;}
+.upgrade-price span{font-size:0.75rem;color:rgba(23,20,15,0.68);font-weight:400;}
 .user-name{cursor:pointer;}
-.user-name:hover{color:var(--gold);}
+.user-name:hover{color:#9B5B17;}
 
 /* African background images */
 body::after{
@@ -381,7 +381,7 @@ body::after{
   <div class="navbar-actions" style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
     <a href="index.html" class="btn-nav-tool" style="text-decoration:none;">Home</a>
     <a href="create.html" class="btn-nav-tool" style="text-decoration:none;">Create Video</a>
-    <a href="design.html" class="btn-nav-tool" style="text-decoration:none;">Design Studio</a>
+    <a href="graphics.html" class="btn-nav-tool" style="text-decoration:none;">Graphics and Images</a>
     <a href="studio.html" class="btn-nav-tool" style="text-decoration:none;">My Studio</a>
   </div>
 </nav>
@@ -416,7 +416,7 @@ body::after{
       <nav class="studio-nav">
         <a href="studio.html" class="studio-nav-link active">My Studio</a>
         <a href="create.html" class="studio-nav-link">Create Video</a>
-        <a href="design.html" class="studio-nav-link">Design Studio</a>
+        <a href="graphics.html" class="studio-nav-link">Graphics and Images</a>
         <a href="index.html" class="studio-nav-link">Home</a>
       </nav>
       <button class="btn-signout-sidebar" id="sidebar-signout" style="display:none;" onclick="signOut()">Sign Out</button>
@@ -481,7 +481,7 @@ body::after{
           <div class="side-panel">
             <div class="side-panel-title">QUICK ACTIONS</div>
             <a href="create.html" class="side-panel-action">+ New Video</a>
-            <a href="design.html" class="side-panel-action">+ New Design</a>
+            <a href="graphics.html" class="side-panel-action">+ New Design</a>
           </div>
           <div class="side-panel">
             <div class="side-panel-title">ACCOUNT</div>
@@ -514,7 +514,7 @@ body::after{
         <label class="form-label">PASSWORD</label>
         <input type="password" id="login-password" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.45);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#E08A2E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#9B5B17;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="form-label">FULL NAME</label>
@@ -523,16 +523,16 @@ body::after{
         <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.74);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
-          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#E08A2E;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#E08A2E;text-decoration:none;">Privacy Policy</a></label>
+          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.74);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
-          <label for="afribrain-consent">Help build <span style="color:#8B6F47;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#8B6F47;text-decoration:none;">Learn more</a></label>
+          <label for="afribrain-consent">Help build <span style="color:#7D6440;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#7D6440;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.45);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#E08A2E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#9B5B17;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </form>
       <div class="login-error" id="login-error">
       </div>
@@ -705,8 +705,8 @@ let cachedDesigns = [];
 // correctly saving to studio_photos but had nowhere in this UI to show up.
 const STUDIO_TAB_META = {
   video:  { collection: 'studio_videos',  label: 'VIDEOS CREATED',  emptyNoun: 'videos',  createHref: 'create.html', createLabel: 'Create Your First Video →' },
-  photo:  { collection: 'studio_photos',  label: 'IMAGES CREATED',  emptyNoun: 'images',  createHref: 'images.html', createLabel: 'Create Your First Image →' },
-  design: { collection: 'studio_designs', label: 'DESIGNS CREATED', emptyNoun: 'designs', createHref: 'design.html', createLabel: 'Start Designing →' },
+  photo:  { collection: 'studio_photos',  label: 'IMAGES CREATED',  emptyNoun: 'images',  createHref: 'graphics.html', createLabel: 'Create Your First Image →' },
+  design: { collection: 'studio_designs', label: 'DESIGNS CREATED', emptyNoun: 'designs', createHref: 'graphics.html', createLabel: 'Start Designing →' },
 };
 function cachedItemsFor(tab) {
   return tab === 'video' ? cachedVideos : tab === 'photo' ? cachedPhotos : cachedDesigns;
@@ -772,7 +772,7 @@ async function loadUserFiles(uid) {
     renderStudioTab();
   } catch(e) {
     console.error('Error loading files:', e);
-    grid.innerHTML = `<div style="color:rgba(23,20,15,0.4);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
+    grid.innerHTML = `<div style="color:rgba(23,20,15,0.68);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
   }
 }
 
@@ -952,25 +952,25 @@ window._saveProfileName = async function() {
   <div style="background:#111;border-radius:16px;padding:1.5rem;border:1px solid rgba(23,20,15,0.1);width:90%;max-width:480px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <h3 id="vinfo-title" style="color:#E08A2E;font-weight:800;font-size:1rem;"></h3>
-      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:none;border:none;color:#17140F;font-size:1.2rem;cursor:pointer;"></button>
+      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:none;border:none;color:#F8F9FC;font-size:1.2rem;cursor:pointer;"></button>
     </div>
     <div style="background:#F3EDE0;border-radius:12px;padding:1rem;margin-bottom:1rem;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
         <div>
-          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DATE</div>
+          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DATE</div>
           <div id="vinfo-date" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DURATION</div>
+          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DURATION</div>
           <div id="vinfo-duration" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">SIZE</div>
+          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">SIZE</div>
           <div id="vinfo-size" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">STATUS</div>
-          <div style="color:#8B6F47;font-size:0.85rem;font-weight:600;">Saved</div>
+          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">STATUS</div>
+          <div style="color:#775F3D;font-size:0.85rem;font-weight:600;">Saved</div>
         </div>
       </div>
     </div>
@@ -1011,13 +1011,13 @@ window.playStudioVideo = function(id, title, videoUrl, dataURL) {
     <div style="max-width:860px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid rgba(23,20,15,0.1);">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(23,20,15,0.08);">
         <span style="color:#17140F;font-weight:700;font-family:Syne,sans-serif;">${title}</span>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(23,20,15,0.5);font-size:1.4rem;cursor:pointer;"></button>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(23,20,15,0.72);font-size:1.4rem;cursor:pointer;"></button>
       </div>
       <video src="${src}" controls autoplay style="width:100%;max-height:70vh;background:#000;display:block;"></video>
       <div style="padding:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
         <button onclick="downloadStudioItem('${src}','${title}','video')" style="background:#E08A2E;border:none;color:#17140F;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">Download</button>
         <button onclick="useTemplate('${title}')" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Recreate</button>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.5);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Close</button>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.72);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Close</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
@@ -1047,7 +1047,7 @@ window.openDesignInEditor = function(id, dataURL) {
       }));
     } catch(e) {}
   }
-  window.location.href = 'design.html';
+  window.location.href = 'graphics.html';
 }
 
 // Download any item
@@ -1076,17 +1076,17 @@ function showToast(msg, type) {
 window._showToast = showToast;
 </script>
 
-<div style="text-align:center;padding:2rem;color:rgba(23,20,15,0.18);font-size:0.7rem;font-family:'Space Mono',monospace;">
+<div style="text-align:center;padding:2rem;color:rgba(23,20,15,0.64);font-size:0.7rem;font-family:'Space Mono',monospace;">
   <a href="admin.html" style="color:rgba(23,20,15,0.04);text-decoration:none;user-select:none;">·</a>     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Facebook</a>
-      <span style="color:rgba(23,20,15,0.12);">·</span>
-      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Instagram</a>
-      <span style="color:rgba(23,20,15,0.12);">·</span>
-      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">TikTok</a>
-      <span style="color:rgba(23,20,15,0.12);">·</span>
-      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Twitter</a>
-      <span style="color:rgba(23,20,15,0.12);">·</span>
-      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(23,20,15,0.4);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">YouTube</a>
+      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Facebook</a>
+      <span style="color:rgba(23,20,15,0.62);">·</span>
+      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Instagram</a>
+      <span style="color:rgba(23,20,15,0.62);">·</span>
+      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">TikTok</a>
+      <span style="color:rgba(23,20,15,0.62);">·</span>
+      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Twitter</a>
+      <span style="color:rgba(23,20,15,0.62);">·</span>
+      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">YouTube</a>
     </div>
     © 2026 AfriVid Studio
 </div>
@@ -1103,8 +1103,8 @@ if('serviceWorker' in navigator) {
 <div id="video-player-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;" onclick="if(event.target===this)closeVideoPlayer()">
   <div style="width:90%;max-width:800px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <div id="vp-title" style="color:#17140F;font-weight:800;font-size:1rem;font-family:'Syne',sans-serif;"></div>
-      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(23,20,15,0.6);font-size:1.5rem;cursor:pointer;"></button>
+      <div id="vp-title" style="color:#F8F9FC;font-weight:800;font-size:1rem;font-family:'Syne',sans-serif;"></div>
+      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(248,249,252,0.6);font-size:1.5rem;cursor:pointer;"></button>
     </div>
     <video id="vp-video" controls style="width:100%;border-radius:12px;background:#000;max-height:70vh;"></video>
     <div style="display:flex;gap:0.75rem;margin-top:1rem;">
@@ -1138,8 +1138,8 @@ function closeVideoPlayer() {
 <div id="photo-viewer-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;" onclick="if(event.target===this)closePhotoViewer()">
   <div style="width:90%;max-width:700px;text-align:center;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <div style="color:#17140F;font-weight:800;font-family:'Syne',sans-serif;">Edited Photo</div>
-      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(23,20,15,0.6);font-size:1.5rem;cursor:pointer;"></button>
+      <div style="color:#F8F9FC;font-weight:800;font-family:'Syne',sans-serif;">Edited Photo</div>
+      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(248,249,252,0.6);font-size:1.5rem;cursor:pointer;"></button>
     </div>
     <img id="pv-image" style="max-width:100%;max-height:70vh;border-radius:12px;object-fit:contain;">
     <div style="display:flex;gap:0.75rem;margin-top:1rem;justify-content:center;">
@@ -1283,13 +1283,13 @@ document.addEventListener('DOMContentLoaded', () => {
   <div style="background:#FFFFFF;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(23,20,15,0.5);font-size:0.8rem;">Tell us what's going on — we read every message</div>
+      <div style="color:rgba(23,20,15,0.72);font-size:0.8rem;">Tell us what's going on — we read every message</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
-      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Problem</button>
-      <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#E08A2E;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:900;opacity:1;">Feedback</button>
-      <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Support</button>
-      <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#8B6F47;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Join Us</button>
+      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#BC1F16;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Problem</button>
+      <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#925616;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:900;opacity:1;">Feedback</button>
+      <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#0054F2;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Support</button>
+      <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#7A623E;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Join Us</button>
     </div>
     <input type="hidden" id="feedback-type" value="feedback">
     <div id="fb-apply-fields" style="display:none;">
@@ -1301,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.6);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.32);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.66);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
   </div>
 </div>
 </body>

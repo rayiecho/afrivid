@@ -153,13 +153,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .topbar-left{display:flex;align-items:center;gap:1rem;}
 .back-btn{display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;}
-.back-btn:hover{color:var(--gold);}
+.back-btn:hover{color:#9B5B17;}
 .topbar-divider{width:1px;height:20px;background:var(--border);}
 .topbar-title{font-size:1rem;font-weight:800;color:var(--text);}
-.topbar-title span{color:var(--gold);}
+.topbar-title span{color:#9B5B17;}
 .topbar-right{display:flex;align-items:center;gap:1rem;}
-.user-badge{font-size:0.72rem;color:var(--green);font-family:'Space Mono',monospace;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:var(--radius-full);}
-.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:var(--gold);padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.user-badge{font-size:0.72rem;color:#7A623E;font-family:'Space Mono',monospace;background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:var(--radius-full);}
+.btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#9B5B17;padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-signin:hover{box-shadow:var(--glow-gold);}
 
 /* MAIN LAYOUT */
@@ -167,8 +167,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .create-layout{display:grid;grid-template-columns:180px 1fr;gap:1.5rem;align-items:start;}
 .dstabs{display:flex;flex-direction:column;gap:0.5rem;position:sticky;top:1rem;}
 .dstab{width:100%;text-align:left;padding:0.7rem 1rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:var(--transition);white-space:nowrap;}
-.dstab:hover:not(.active){border-color:rgba(245,166,35,0.4);color:var(--gold);}
-.dstab.active{background:var(--gradient-gold);color:var(--bg);border-color:transparent;box-shadow:var(--glow-gold);}
+.dstab:hover:not(.active){border-color:rgba(245,166,35,0.4);color:#A05E18;}
+.dstab.active{background:var(--gradient-gold);color:#17140F;border-color:transparent;box-shadow:var(--glow-gold);}
 @media(max-width:900px){
   .create-layout{grid-template-columns:1fr;}
   .dstabs{flex-direction:row;flex-wrap:wrap;position:static;}
@@ -178,22 +178,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* STEPS */
 .steps-bar{display:flex;gap:8px;margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
 .steps-bar::-webkit-scrollbar{display:none;}
-.step-pill{display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:var(--text-faint);font-size:0.78rem;font-weight:700;white-space:nowrap;flex-shrink:0;transition:var(--transition);font-family:'Syne',sans-serif;cursor:default;}
-.step-pill.active{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.1);color:var(--gold);box-shadow:var(--glow-gold);}
-.step-pill.done{border-color:rgba(116,198,157,0.3);background:rgba(116,198,157,0.08);color:var(--green);}
+.step-pill{display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:rgba(23,20,15,0.66);font-size:0.78rem;font-weight:700;white-space:nowrap;flex-shrink:0;transition:var(--transition);font-family:'Syne',sans-serif;cursor:default;}
+.step-pill.active{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.1);color:#925616;box-shadow:var(--glow-gold);}
+.step-pill.done{border-color:rgba(116,198,157,0.3);background:rgba(116,198,157,0.08);color:#7A623E;}
 .step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
-.step-pill.active .step-dot{background:var(--gold);color:var(--bg);}
+.step-pill.active .step-dot{background:var(--gold);color:#17140F;}
 .step-pill.done .step-dot{background:var(--green);color:var(--bg);}
-.step-pill:not(.active):not(.done) .step-dot{background:rgba(23,20,15,0.08);color:rgba(23,20,15,0.45);}
+.step-pill:not(.active):not(.done) .step-dot{background:rgba(23,20,15,0.08);color:rgba(23,20,15,0.68);}
 
 /* PANELS */
 .panel{display:none;}
 .panel.active{display:block;}
 
-/* TOOL TABS (Video Creator / Slides / Tutorial / Ad Maker switcher) */
+/* TOOL TABS (Tutorial Maker / Ad Maker / Short Videos switcher) */
 .tool-tab{flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);padding:0.6rem;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;transition:var(--transition);}
-.tool-tab:hover{border-color:var(--border-gold);color:var(--gold);}
-.tool-tab.active{background:var(--gradient-gold);border-color:transparent;color:var(--bg);font-weight:900;box-shadow:var(--glow-gold);}
+.tool-tab:hover{border-color:var(--border-gold);color:#925616;}
+.tool-tab.active{background:var(--gradient-gold);border-color:transparent;color:#17140F;font-weight:900;box-shadow:var(--glow-gold);}
 
 /* CARD */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem;}
@@ -204,19 +204,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
 .form-group{display:flex;flex-direction:column;gap:0.5rem;}
 .form-group.full{grid-column:span 2;}
-.form-label{font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-family:'Space Mono',monospace;}
+.form-label{font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#9B5B17;font-family:'Space Mono',monospace;}
 .form-input,.form-select,.form-textarea{background:var(--surface-2);border:1px solid var(--border-gold);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;transition:var(--transition);width:100%;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(245,166,35,0.5);}
 .form-textarea{resize:vertical;min-height:120px;line-height:1.6;}
 .form-select option{background:var(--surface-2);}
-.form-hint{font-size:0.7rem;color:var(--text-faint);font-family:'Space Mono',monospace;}
+.form-hint{font-size:0.7rem;color:rgba(23,20,15,0.66);font-family:'Space Mono',monospace;}
 
 /* BUTTONS */
 .btn{padding:0.85rem 2rem;border-radius:var(--radius-md);font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;border:none;transition:var(--transition);display:inline-flex;align-items:center;gap:0.5rem;}
-.btn-gold{background:var(--gradient-gold);color:var(--bg);}
+.btn-gold{background:var(--gradient-gold);color:#17140F;}
 .btn-gold:hover{transform:translateY(-2px);box-shadow:var(--glow-gold);}
 .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
-.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:var(--gold);}
+.btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#9B5B17;}
 .btn-green{background:#2D8A5E;color:#fff;}
 .btn-green:hover{background:var(--green);transform:translateY(-2px);box-shadow:var(--glow-green);}
 .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
@@ -225,10 +225,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* SCRIPT SCENES */
 .script-scene{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin-bottom:1rem;position:relative;transition:var(--transition);}
 .script-scene:hover{border-color:var(--border-gold);}
-.scene-num{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
+.scene-num{font-family:'Space Mono',monospace;font-size:0.65rem;color:#9B5B17;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
 .scene-title{font-size:0.95rem;font-weight:700;margin-bottom:0.5rem;color:var(--text);}
 .scene-text{font-size:0.85rem;color:var(--text-muted);line-height:1.7;}
-.scene-duration{position:absolute;top:1rem;right:1rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text-faint);background:rgba(255,255,255,0.05);padding:0.2rem 0.6rem;border-radius:var(--radius-sm);}
+.scene-duration{position:absolute;top:1rem;right:1rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:rgba(23,20,15,0.66);background:rgba(255,255,255,0.05);padding:0.2rem 0.6rem;border-radius:var(--radius-sm);}
 
 /* CANVAS */
 #canvas-container{background:#000;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:16/9;position:relative;border:1px solid var(--border);margin-bottom:1.5rem;}
@@ -236,36 +236,36 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .crop-selection{position:absolute;border:2px solid var(--gold);box-shadow:0 0 0 9999px rgba(0,0,0,0.5);pointer-events:none;z-index:11;}
 .crop-ratio-btns{display:flex;gap:0.4rem;flex-wrap:wrap;}
 .crop-ratio-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);padding:0.35rem 0.65rem;border-radius:var(--radius-sm);font-size:0.7rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
-.crop-ratio-btn:hover,.crop-ratio-btn.active{border-color:rgba(245,166,35,0.4);color:var(--gold);background:rgba(245,166,35,0.08);}
+.crop-ratio-btn:hover,.crop-ratio-btn.active{border-color:rgba(245,166,35,0.4);color:#925616;background:rgba(245,166,35,0.08);}
 #video-canvas{width:100%;height:100%;display:block;}
 .canvas-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);flex-direction:column;gap:1rem;}
 .canvas-overlay-icon{font-size:2.5rem;}
 
 /* PROGRESS */
 .progress-wrap{margin-bottom:1.5rem;}
-.progress-labels{display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:var(--text-faint);margin-bottom:0.5rem;}
+.progress-labels{display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(23,20,15,0.66);margin-bottom:0.5rem;}
 .progress-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--gradient-accent);border-radius:2px;transition:width 0.3s;width:0%;}
 
 /* LOG */
 .status-log{max-height:120px;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem 1.25rem;font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.9;}
 .log-line{display:block;}
-.log-line.success{color:var(--green);}
-.log-line.error{color:var(--red);}
-.log-line.info{color:var(--gold);}
+.log-line.success{color:#7D6440;}
+.log-line.error{color:#CE2218;}
+.log-line.info{color:#9B5B17;}
 .log-line.active{animation:pulse 1.4s ease-in-out infinite;}
 
 /* DOWNLOAD CARD */
 .download-card{background:linear-gradient(135deg,rgba(27,67,50,0.4),rgba(45,138,94,0.1));border:1px solid rgba(45,138,94,0.3);border-radius:var(--radius-lg);padding:2rem;text-align:center;margin-bottom:1.5rem;}
 .download-icon{font-size:2.5rem;margin-bottom:0.75rem;}
-.download-title{font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:0.4rem;}
+.download-title{font-size:1.1rem;font-weight:700;color:#7D6440;margin-bottom:0.4rem;}
 .download-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem;}
 
 /* LOGIN GATE */
 .login-gate{background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(116,198,157,0.05));border:1px solid var(--border-gold);border-radius:var(--radius-lg);padding:2rem;text-align:center;margin-bottom:1.25rem;}
 .login-gate-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;}
 .login-gate-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.7;}
-.btn-gate{background:var(--gradient-gold);color:var(--bg);border:none;padding:0.85rem 2rem;border-radius:var(--radius-md);font-weight:800;font-size:0.9rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-gate{background:var(--gradient-gold);color:#17140F;border:none;padding:0.85rem 2rem;border-radius:var(--radius-md);font-weight:800;font-size:0.9rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-gate:hover{box-shadow:var(--glow-gold);transform:translateY(-2px);}
 
 /* DURATION WARNING */
@@ -276,20 +276,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .modal-overlay.active{display:flex;}
 .login-box{position:relative;z-index:1;width:100%;max-width:420px;animation:slideUp 0.3s ease both;}
 .login-header{text-align:center;margin-bottom:2rem;}
-.login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:var(--bg);margin:0 auto 1rem;}
+.login-icon{width:52px;height:52px;border-radius:var(--radius-md);background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#17140F;margin:0 auto 1rem;}
 .login-title{font-size:1.4rem;font-weight:800;color:var(--text);}
-.login-title span{color:var(--gold);}
+.login-title span{color:#9B5B17;}
 .login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
 .auth-tabs{display:flex;background:rgba(23,20,15,0.05);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
-.auth-tab{flex:1;padding:0.65rem;background:transparent;color:var(--text-faint);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
-.auth-tab.active{background:var(--gradient-gold);color:var(--bg);}
-.form-label-m{font-size:0.72rem;color:var(--text-faint);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
+.auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(23,20,15,0.66);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.auth-tab.active{background:var(--gradient-gold);color:#17140F;}
+.form-label-m{font-size:0.72rem;color:rgba(23,20,15,0.66);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
 .form-input-m{width:100%;background:rgba(23,20,15,0.03);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
 .form-input-m:focus{border-color:rgba(224,138,46,0.6);}
-.btn-auth{width:100%;background:var(--gradient-gold);color:var(--bg);border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-auth{width:100%;background:var(--gradient-gold);color:#17140F;border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-auth:hover{box-shadow:var(--glow-gold);}
 .login-error-m{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(200,45,35,0.08);border:1px solid rgba(200,45,35,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#B23A2E;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:var(--text-faint);font-size:1.5rem;cursor:pointer;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(23,20,15,0.66);font-size:1.5rem;cursor:pointer;}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -304,14 +304,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .loading-state{display:none;text-align:center;padding:3rem 2rem;}
 .loading-spinner{width:48px;height:48px;border-radius:50%;border:3px solid rgba(245,166,35,0.2);border-top-color:var(--gold);animation:spin 0.8s linear infinite;margin:0 auto 1.5rem;}
 .loading-text{font-size:1rem;color:var(--text-muted);font-family:'Space Mono',monospace;margin-bottom:0.5rem;}
-.loading-sub{font-size:0.78rem;color:var(--text-faint);font-family:'Space Mono',monospace;animation:pulse 1.6s ease-in-out infinite;}
+.loading-sub{font-size:0.78rem;color:rgba(23,20,15,0.66);font-family:'Space Mono',monospace;animation:pulse 1.6s ease-in-out infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 .navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .navbar-brand{display:flex;align-items:center;gap:10px;}
-.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:var(--gold);padding:0.2rem 0.6rem;border-radius:var(--radius-full);font-family:'Space Mono',monospace;letter-spacing:1px;}
-.btn-nav-tool{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.35);color:var(--gold);padding:0.5rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.8rem;font-family:'Syne',sans-serif;transition:var(--transition);}
-.btn-nav-tool:hover{background:var(--gold);color:var(--bg);border-color:var(--gold);}
+.navbar-badge{font-size:0.6rem;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#925616;padding:0.2rem 0.6rem;border-radius:var(--radius-full);font-family:'Space Mono',monospace;letter-spacing:1px;}
+.btn-nav-tool{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.35);color:#925616;padding:0.5rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.8rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-nav-tool:hover{background:var(--gold);color:#17140F;border-color:var(--gold);}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}
 body{padding-top:70px;}
 
@@ -580,7 +580,7 @@ body::after{
   <div class="navbar-actions" style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
     <a href="index.html" class="btn-nav-tool" style="text-decoration:none;">Home</a>
     <a href="create.html" class="btn-nav-tool" style="text-decoration:none;">Create Video</a>
-    <a href="design.html" class="btn-nav-tool" style="text-decoration:none;">Design Studio</a>
+    <a href="graphics.html" class="btn-nav-tool" style="text-decoration:none;">Graphics and Images</a>
     <a href="studio.html" class="btn-nav-tool" style="text-decoration:none;">My Studio</a>
   </div>
 </nav>
@@ -829,105 +829,38 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
 
   <!-- MODE SWITCHER -->
   <div class="dstabs" id="mode-tabs">
-    <button id="mode-video-tab" onclick="switchCreateMode('video')" class="dstab active">Video Creator</button>
-    <button id="mode-slides-tab" onclick="switchCreateMode('slides')" class="dstab">Slides Generator</button>
-    <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" class="dstab">Tutorial Maker</button>
+    <button id="mode-tutorial-tab" onclick="switchCreateMode('tutorial')" class="dstab active">Tutorial Maker</button>
     <button id="mode-ad-tab" onclick="switchCreateMode('ad')" class="dstab">Ad Maker</button>
+    <button id="mode-video-tab" onclick="switchCreateMode('video')" class="dstab">Short Videos</button>
   </div>
 
   <div>
 
   <!-- STEPS -->
-  <div class="steps-bar">
+  <div class="steps-bar" style="display:none;">
     <div class="step-pill active" id="step-1"><div class="step-dot">1</div>Setup</div>
     <div class="step-pill" id="step-2"><div class="step-dot">2</div>Script</div>
     <div class="step-pill" id="step-3"><div class="step-dot">3</div>Record</div>
     <div class="step-pill" id="step-4"><div class="step-dot">4</div>Export</div>
   </div>
 
-  <!-- SLIDES GENERATOR PANEL -->
-  <div id="slides-generator-panel" style="display:none;padding:0;">
-    <div class="card">
-      <div class="card-title"><div class="card-title-icon"></div>AI Slides Generator</div>
-      <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">TOPIC OR TITLE *</div>
-        <input id="slides-topic" type="text" placeholder="e.g. Climate Change in Africa, Financial Literacy, Digital Skills for Youth" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
-        <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDES</div>
-          <select id="slides-count" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
-            <option value="5">5 slides</option>
-            <option value="8" selected>8 slides</option>
-            <option value="10">10 slides</option>
-            <option value="15">15 slides</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">STYLE</div>
-          <select id="slides-style" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
-            <option value="dark">Dark (AfriVid)</option>
-            <option value="light">Light (Clean)</option>
-            <option value="green">Green (Nature)</option>
-            <option value="blue">Blue (Corporate)</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
-          <select id="slides-lang" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
-            <option value="English">English</option>
-            <option value="French">French</option>
-            <option value="Swahili">Swahili</option>
-            <option value="Arabic">Arabic</option>
-            <option value="Portuguese">Portuguese</option>
-          </select>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
-        <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">ORG NAME (shows on slides)</div>
-          <input id="slides-org" type="text" placeholder="e.g. AfriVid Studio" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box;">
-        </div>
-        <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LOGO (optional)</div>
-          <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(23,20,15,0.18);border-radius:8px;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;">
-            <span id="slides-logo-name">Upload logo</span>
-            <input type="file" accept="image/*" style="display:none;" onchange="loadSlidesLogo(this)">
-          </label>
-        </div>
-      </div>
-      <button onclick="generateSlides()" id="slides-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">Generate Slides</button>
-      <div id="slides-status" style="display:none;text-align:center;padding:1rem;">
-        <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.8rem;" id="slides-status-text">Generating slides...</div>
-        <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:4px;margin-top:0.75rem;">
-          <div id="slides-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
-        </div>
-      </div>
-    </div>
-    <!-- SLIDES PREVIEW -->
-    <div id="slides-preview" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <div style="color:#F5A623;font-family:'Space Mono',monospace;font-size:0.75rem;" id="slides-preview-label">8 SLIDES GENERATED</div>
-        <div style="display:flex;gap:0.5rem;">
-          <button onclick="downloadAllSlides()" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Download All (ZIP)</button>
-          <button onclick="downloadSlidesAsPDF()" style="background:rgba(116,198,157,0.1);border:1px solid #74C69D;color:#74C69D;padding:0.5rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">PDF</button>
-        </div>
-      </div>
-      <div id="slides-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;"></div>
-    </div>
-  </div>
+  <!-- SLIDES GENERATOR MODE REMOVED (2026-09-08): the tab, panel and generation
+       logic (generateSlides/renderSlidesPreview/buildSlideHTML/etc., previously
+       defined right after switchCreateMode) were cleanly self-contained and not
+       shared with the other three modes, so they were deleted outright rather
+       than just hidden. -->
 
   <!-- TUTORIAL MAKER PANEL -->
-  <div id="tutorial-maker-panel" style="display:none;padding:0;">
+  <div id="tutorial-maker-panel" style="padding:0;">
     <div class="card">
       <div class="card-title"><div class="card-title-icon"></div>AI Tutorial Maker</div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
         <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
           <select id="tutorial-duration" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="1">1 minute</option>
             <option value="2">2 minutes</option>
@@ -938,7 +871,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
           <select id="tutorial-style" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="classic">Classic (AfriVid)</option>
             <option value="cameroon_slide">Cameroon Slide</option>
@@ -947,7 +880,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
           <select id="tutorial-level" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
@@ -955,7 +888,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
           <select id="tutorial-language" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="English">English</option>
             <option value="French">French</option>
@@ -966,37 +899,37 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </div>
       </div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
           <button onclick="setTutorialMode('concept')" id="tmode-concept" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Concept Slides</button>
           <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Browser Demo</button>
         </div>
       </div>
       <div id="tutorial-url-row" style="display:none;margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
         <input id="tutorial-url" type="text" placeholder="e.g. https://docs.google.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">Generate Tutorial Video</button>
       <div id="tutorial-status" style="display:none;">
         <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Generating Tutorial...</div>
-            <div id="tutorial-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+            <div style="color:#307653;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Generating Tutorial...</div>
+            <div id="tutorial-pct" style="color:#925D07;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
           <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:6px;margin-bottom:0.75rem;">
             <div id="tutorial-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
           </div>
           <div id="tutorial-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Starting...</div>
           <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem;margin-bottom:1rem;">
-            <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">We will email you when ready!</div>
-            <div style="color:rgba(23,20,15,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
+            <div style="color:#8D5A06;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">We will email you when ready!</div>
+            <div style="color:rgba(23,20,15,0.7);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
             <div id="tutorial-dashboard-btn" style="display:none;margin-top:0.75rem;">
-              <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
-              <div style="color:rgba(23,20,15,0.4);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">Processing started — safe to leave</div>
+              <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#8D5A06;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
+              <div style="color:rgba(23,20,15,0.66);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">Processing started — safe to leave</div>
             </div>
           </div>
           <div id="tutorial-download" style="display:none;">
-            <div style="color:#74C69D;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Tutorial ready!</div>
+            <div style="color:#307653;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Tutorial ready!</div>
             <video id="tutorial-video-player" controls style="width:100%;max-width:640px;border-radius:12px;margin-bottom:0.75rem;background:#000;display:block;"></video>
             <button id="tutorial-download-link" onclick="downloadTutorialVideo()" data-url="" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Download Tutorial</button>
             <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#17140F;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;margin-left:0.5rem;">▶ Upload to YouTube</button>
@@ -1014,19 +947,19 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <div style="font-weight:800;font-size:1rem;">AI Video Ad Maker</div>
       </div>
       <div style="margin-bottom:1rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS NAME *</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS NAME *</label>
         <input id="ad-business-name" type="text" placeholder="e.g. Mama Tomato Fresh Produce" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="margin-bottom:1rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">DESCRIBE YOUR PRODUCT/SERVICE *</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">DESCRIBE YOUR PRODUCT/SERVICE *</label>
         <textarea id="ad-description" placeholder="e.g. We sell fresh farm tomatoes in Nairobi. Delivery within 2 hours. Ksh 200 per kg. Best quality direct from Limuru farms. Call 0722000000." style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;height:100px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
         <input id="ad-url" type="text" placeholder="e.g. https://yourwebsite.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">LANGUAGE</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">LANGUAGE</label>
         <select id="ad-language" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
           <option value="English">English</option>
           <option value="French">French</option>
@@ -1036,13 +969,13 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </select>
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.5);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
         <div style="display:flex;align-items:center;gap:1rem;">
           <input type="file" id="ad-logo-input" accept="image/*" onchange="previewAdLogo(this)" style="display:none;">
           <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Upload Logo</button>
           <div id="ad-logo-preview" style="display:none;align-items:center;gap:0.5rem;">
             <img id="ad-logo-img" style="height:40px;border-radius:4px;object-fit:contain;background:rgba(23,20,15,0.12);padding:4px;">
-            <button onclick="clearAdLogo()" style="background:none;border:none;color:rgba(255,100,100,0.7);cursor:pointer;font-size:0.8rem;">Remove</button>
+            <button onclick="clearAdLogo()" style="background:none;border:none;color:rgba(141,0,0,0.7);cursor:pointer;font-size:0.8rem;">Remove</button>
           </div>
         </div>
       </div>
@@ -1051,18 +984,18 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:1rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
             <div id="ad-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;">Starting...</div>
-            <div id="ad-pct" style="color:#F5A623;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+            <div id="ad-pct" style="color:#925D07;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
           <div style="background:rgba(23,20,15,0.04);border-radius:4px;height:6px;">
             <div id="ad-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
           </div>
-          <div style="color:rgba(245,166,35,0.7);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">We will email you when ready! You can close this tab safely.</div>
+          <div style="color:rgba(23,20,15,0.68);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">We will email you when ready! You can close this tab safely.</div>
         </div>
       </div>
       <div id="ad-result" style="display:none;margin-top:1rem;">
         <video id="ad-video" controls style="width:100%;border-radius:10px;margin-bottom:0.75rem;"></video>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <a id="ad-download" href="#" style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#F5A623;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;cursor:pointer;">Download</a>
+          <a id="ad-download" href="#" style="flex:1;text-align:center;background:rgba(245,166,35,0.1);border:1px solid #F5A623;border-radius:8px;padding:0.6rem;color:#8D5A06;font-size:0.8rem;font-family:'Space Mono',monospace;text-decoration:none;cursor:pointer;">Download</a>
           <button onclick="uploadAdToYouTube()" class="btn" style="flex:1;background:#FF0000;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">▶ YouTube</button>
         </div>
       </div>
@@ -1071,7 +1004,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
   <!-- END AD MAKER PANEL -->
 
   <!-- PANEL 1: INPUT -->
-    <div class="panel active" id="panel-1">
+    <div class="panel" id="panel-1">
       <div class="card">
         <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">AfriVid AI Video Creator — Create Professional Videos in Minutes</h1>
         <div class="card-title"><div class="card-title-icon"></div>Video Creator</div>
@@ -1179,7 +1112,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
 
           <!-- RIGHT: SETTINGS SIDEBAR -->
           <div class="creator-right" style="display:flex;flex-direction:column;gap:0.75rem;position:sticky;top:80px;max-height:calc(100vh - 120px);overflow-y:auto;padding-right:6px;">
-            <div style="font-size:0.6rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.25rem;">VIDEO SETTINGS</div>
+            <div style="font-size:0.6rem;color:#9B5B17;font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.25rem;">VIDEO SETTINGS</div>
 
             <div class="form-group">
               <label class="form-label">ASPECT RATIO</label>
@@ -1257,11 +1190,11 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
 
             <!-- SCENE ASSETS -->
             <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0;"></div>
-            <div style="font-size:0.6rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.5rem;">SCENE ASSETS</div>
+            <div style="font-size:0.6rem;color:#9B5B17;font-family:var(--font-mono);letter-spacing:2px;margin-bottom:0.5rem;">SCENE ASSETS</div>
             <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem;">Upload images to display on slides — logos, products, photos</div>
 
             <input type="file" id="scene-assets-input" accept="image/*" multiple style="display:none" onchange="loadSceneAssets(event)">
-            <button onclick="document.getElementById('scene-assets-input').click()" style="width:100%;background:var(--navy3);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.55rem 0.75rem;border-radius:8px;font-size:0.75rem;cursor:pointer;text-align:left;font-weight:600;">+ Upload Images</button>
+            <button onclick="document.getElementById('scene-assets-input').click()" style="width:100%;background:var(--navy3);border:1px solid rgba(245,166,35,0.2);color:#925D07;padding:0.55rem 0.75rem;border-radius:8px;font-size:0.75rem;cursor:pointer;text-align:left;font-weight:600;">+ Upload Images</button>
 
             <div id="scene-assets-list" style="margin-top:0.5rem;display:flex;flex-wrap:wrap;gap:0.4rem;"></div>
 
@@ -1435,23 +1368,23 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <!-- SERVER PROCESSING STATUS -->
         <div id="server-gen-status" style="display:none;margin-top:1rem;background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-            <div style="color:#8B6F47;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">AfriVid Cloud Generating...</div>
-            <div id="server-gen-pct" style="color:#C4701E;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
+            <div style="color:#7D6440;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">AfriVid Cloud Generating...</div>
+            <div id="server-gen-pct" style="color:#9C5918;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
           <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:6px;margin-bottom:0.75rem;">
             <div id="server-gen-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#E08A2E,#8B6F47);border-radius:6px;transition:width 0.5s;"></div>
           </div>
           <div id="server-gen-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Starting...</div>
           <div style="background:rgba(224,138,46,0.08);border:1px solid rgba(224,138,46,0.25);border-radius:8px;padding:0.75rem 1rem;">
-            <div style="color:#C4701E;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">Your video is being generated!</div>
-            <div style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;">We'll email you at <span id="server-gen-email" style="color:#8B6F47;">your email</span> when ready.</div>
+            <div style="color:#935417;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">Your video is being generated!</div>
+            <div style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;">We'll email you at <span id="server-gen-email" style="color:#7A623E;">your email</span> when ready.</div>
             <div id="server-gen-dashboard-btn" style="display:none;margin-top:0.75rem;flex-wrap:wrap;align-items:center;gap:0.5rem;">
-              <a href="index.html" style="background:rgba(224,138,46,0.1);border:1px solid rgba(224,138,46,0.35);color:#C4701E;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
-              <div style="color:rgba(23,20,15,0.4);font-size:0.72rem;font-family:'Space Mono',monospace;">Processing started — safe to leave</div>
+              <a href="index.html" style="background:rgba(224,138,46,0.1);border:1px solid rgba(224,138,46,0.35);color:#935417;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
+              <div style="color:rgba(23,20,15,0.66);font-size:0.72rem;font-family:'Space Mono',monospace;">Processing started — safe to leave</div>
             </div>
           </div>
           <div id="server-gen-download" style="display:none;margin-top:1rem;">
-            <div style="color:#8B6F47;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Video ready!</div>
+            <div style="color:#7D6440;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Video ready!</div>
             <button id="server-gen-link" onclick="(async()=>{const btn=document.getElementById('server-gen-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='Download Video';btn.disabled=false;})()" data-url="" style="background:#8B6F47;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">Download Video</button>
           </div>
         </div>
@@ -1468,7 +1401,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <div class="btn-row" style="justify-content:center;">
           <button class="btn btn-green" id="btn-download" onclick="downloadVideo()">Download WebM</button>
           <button class="btn btn-gold" onclick="downloadMP4()">Download MP4</button>
-          <button class="btn btn-outline" onclick="handleSaveToStudio()" style="background:rgba(116,198,157,0.1);border-color:#74C69D;color:#74C69D;">Save to Studio</button>
+          <button class="btn btn-outline" onclick="handleSaveToStudio()" style="background:rgba(116,198,157,0.1);border-color:#74C69D;color:#2F7251;">Save to Studio</button>
           <button class="btn btn-outline" onclick="shareWhatsApp()" style="background:#25D366;border-color:#25D366;color:#fff;">Share on WhatsApp</button>
           <button class="btn btn-outline" onclick="uploadToYouTube()" style="background:#FF0000;border-color:#FF0000;color:#fff;">▶ Upload to YouTube</button>
           <button class="btn btn-outline" onclick="makeAnother()">+ Make Another Video</button>
@@ -1507,7 +1440,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <label class="form-label-m">PASSWORD</label>
         <input type="password" id="login-password" class="form-input-m" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.5);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#C4701E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#9C5918;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="form-label-m">FULL NAME</label>
@@ -1516,16 +1449,16 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <input type="email" id="signup-email" class="form-input-m" placeholder="you@example.com">
         <label class="form-label-m">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input-m" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.72);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
-          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#C4701E;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#C4701E;text-decoration:none;">Privacy Policy</a></label>
+          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#9C5918;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#9C5918;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.55);line-height:1.5;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.72);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
-          <label for="afribrain-consent">Help build <span style="color:#8B6F47;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#8B6F47;text-decoration:none;">Learn more</a></label>
+          <label for="afribrain-consent">Help build <span style="color:#7D6440;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#7D6440;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.5);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#C4701E;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#9C5918;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </form>
       <div class="login-error-m" id="login-error"></div>
     </div>
@@ -1704,7 +1637,7 @@ Create exactly ${sceneCount} scenes. Each scene must have AT LEAST ${Math.floor(
     }
     // Render script
     const out = document.getElementById('script-output');
-    out.innerHTML = `<div style="margin-bottom:1rem;padding:0.75rem 1rem;background:rgba(116,198,157,0.08);border:1px solid rgba(116,198,157,0.2);border-radius:10px;font-size:0.85rem;color:#74C69D;font-family:'Space Mono',monospace;">[ok] ${scriptData.scenes.length} scenes · ${duration}s · ${language}</div>`;
+    out.innerHTML = `<div style="margin-bottom:1rem;padding:0.75rem 1rem;background:rgba(116,198,157,0.08);border:1px solid rgba(116,198,157,0.2);border-radius:10px;font-size:0.85rem;color:#2F7251;font-family:'Space Mono',monospace;">[ok] ${scriptData.scenes.length} scenes · ${duration}s · ${language}</div>`;
   // Save to AfriBrain
   if (window.saveToAfriBrain && scriptData) {
     const fullText = (scriptData.scenes||[]).map(s=>(s.title||'')+' '+(s.content||'')).join(' ');
@@ -2115,8 +2048,18 @@ function drawCameroonSlide(canvas, scene, progress, currentWord = -1) {
     ctx.fillText(scene.slideSubtitle, titleX, afterTitle + H*0.06);
   }
 
-  // Bullet points
-  if (scene.voiceover) {
+  // Bullet points — real scene.points first (progressive, icon list); only fall back to
+  // slicing the voiceover into sentences when the scene has no points at all.
+  const cameroonPointsY = afterTitle + H * 0.09;
+  const drewPoints = drawScenePoints(ctx, scene, currentWord, progress, {
+    x: titleX, y: cameroonPointsY, w: panelW - titleX - W * 0.03, h: Math.max(1, H * 0.90 - cameroonPointsY),
+    accent: '#F5A623',
+    textColor: '#0A0F1E',
+    dimTextColor: '#0A0F1E',
+    detailColor: 'rgba(10,15,30,0.6)',
+    font: 'Syne, Arial, sans-serif'
+  });
+  if (!drewPoints && scene.voiceover) {
     const sentences = scene.voiceover.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 8).slice(0, 4);
     const totalWords = scene.voiceover.split(' ').length;
     const wordsPerSentence = Math.max(1, totalWords / sentences.length);
@@ -2217,15 +2160,23 @@ function drawKaribuCharacter(ctx, x, y, scale, gender, state, frame, prop) {
   // Walking animation offset
   const walkCycle = Math.sin(frame * 0.15) * (state === 'walking' ? s*0.04 : 0);
   const legSwing = state === 'walking' ? Math.sin(frame * 0.15) * 0.3 : 0;
-  const bodyBob = state === 'walking' ? Math.abs(Math.sin(frame * 0.15)) * s * 0.02 : 0;
+  // Subtle always-on "breathing" sway so she is never a frozen statue while narrating.
+  // Much slower and much smaller than the walking bob; applies in every state.
+  const idleBob = Math.sin(frame * 0.04) * s * 0.013;
+  const walkBob = state === 'walking' ? Math.abs(Math.sin(frame * 0.15)) * s * 0.02 : 0;
+  // Everything above the hips breathes; the legs stay planted so the shoes never
+  // float off the ground shadow.
+  const bodyBob = walkBob + idleBob;
 
   // ── LEGS ──
   // Left leg
   ctx.save();
-  ctx.translate(-s*0.1, s*0.55 - bodyBob);
+  ctx.translate(-s*0.1, s*0.55 - walkBob);
   ctx.rotate(legSwing);
   ctx.fillStyle = c.cloth1;
-  ctx.fillRect(-s*0.09, 0, s*0.16, s*0.38);
+  ctx.beginPath();
+  ctx.roundRect(-s*0.09, 0, s*0.16, s*0.38, s*0.06);
+  ctx.fill();
   // Left shoe
   ctx.fillStyle = '#1A0A00';
   ctx.beginPath();
@@ -2235,10 +2186,12 @@ function drawKaribuCharacter(ctx, x, y, scale, gender, state, frame, prop) {
 
   // Right leg
   ctx.save();
-  ctx.translate(s*0.1, s*0.55 - bodyBob);
+  ctx.translate(s*0.1, s*0.55 - walkBob);
   ctx.rotate(-legSwing);
   ctx.fillStyle = c.cloth1;
-  ctx.fillRect(-s*0.09, 0, s*0.16, s*0.38);
+  ctx.beginPath();
+  ctx.roundRect(-s*0.09, 0, s*0.16, s*0.38, s*0.06);
+  ctx.fill();
   // Right shoe
   ctx.fillStyle = '#1A0A00';
   ctx.beginPath();
@@ -2253,7 +2206,12 @@ function drawKaribuCharacter(ctx, x, y, scale, gender, state, frame, prop) {
   ctx.roundRect(-s*0.22, -s*0.05 - bodyBob, s*0.44, s*0.62, s*0.06);
   ctx.fill();
 
-  // Kente pattern on torso
+  // Kente pattern on torso — clipped to the torso's rounded silhouette so the square
+  // stripe ends can't poke out past the rounded corners.
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(-s*0.22, -s*0.05 - bodyBob, s*0.44, s*0.62, s*0.06);
+  ctx.clip();
   ctx.fillStyle = c.cloth1;
   for(let i = 0; i < 3; i++) {
     ctx.fillRect(-s*0.22 + i*s*0.15, -s*0.05 - bodyBob, s*0.06, s*0.62);
@@ -2261,6 +2219,7 @@ function drawKaribuCharacter(ctx, x, y, scale, gender, state, frame, prop) {
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
   ctx.fillRect(-s*0.22, s*0.1 - bodyBob, s*0.44, s*0.06);
   ctx.fillRect(-s*0.22, s*0.25 - bodyBob, s*0.44, s*0.04);
+  ctx.restore();
 
   // Collar
   ctx.fillStyle = c.cloth3;
@@ -2380,7 +2339,10 @@ function drawKaribuCharacter(ctx, x, y, scale, gender, state, frame, prop) {
   ctx.fill();
 
   // ── HEAD ──
-  const headBob = state === 'walking' ? Math.sin(frame * 0.15) * s * 0.015 : 0;
+  // Head follows bodyBob (which already carries the idle sway); this adds a small
+  // out-of-phase nod so the head isn't rigidly locked to the torso.
+  const headBob = (state === 'walking' ? Math.sin(frame * 0.15) * s * 0.015 : 0)
+                + Math.sin(frame * 0.04 + 0.9) * s * 0.006;
   const headY = -s*0.52 - bodyBob - headBob;
 
   // Hair/Head shape
@@ -2824,7 +2786,17 @@ function drawUniteSlide(canvas, scene, progress, currentWord) {
   }
 
   // ── BULLET POINTS (left side) ──
-  if (scene.voiceover) {
+  // Real scene.points win; sentence-slicing the voiceover is only the fallback.
+  const unitePointsY = divY + H * 0.04;
+  const uniteDrewPoints = drawScenePoints(ctx, scene, currentWord, progress, {
+    x: titleX, y: unitePointsY, w: W * 0.52, h: Math.max(1, H * 0.92 - unitePointsY),
+    accent: t.accent,
+    textColor: t.text,
+    dimTextColor: t.text,
+    detailColor: t.sub,
+    font: 'Syne, Arial, sans-serif'
+  });
+  if (!uniteDrewPoints && scene.voiceover) {
     const sentences = scene.voiceover.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 8).slice(0, 4);
     const totalWords = scene.voiceover.split(' ').length;
     const wordsPerSentence = Math.max(1, totalWords / sentences.length);
@@ -3325,8 +3297,355 @@ function drawCinematicScene(canvas, scene, progress, currentWord = -1) {
   }
 }
 
+// ═══════════════════════════════════════
+// SCENE POINTS — on-screen bullet list
+// scene.points is either an array of plain strings (toc / summary scenes) or an
+// array of {text, icon, detail} objects (content scenes). When a scene has points
+// we show them as a real, legible list in the open area of the slide, revealed one
+// at a time as the narration moves through the scene — instead of dumping the whole
+// voiceover into a dense caption bar. Caption-only is the documented exception.
+// ═══════════════════════════════════════
+
+function normalizeScenePoints(scene) {
+  const raw = scene && scene.points;
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  for (const p of raw) {
+    if (typeof p === 'string') {
+      const t = p.trim();
+      if (t) out.push({ text: t, icon: '', detail: '' });
+    } else if (p && typeof p === 'object') {
+      const t = String(p.text || p.title || '').trim();
+      if (t) out.push({ text: t, icon: String(p.icon || '').trim(), detail: String(p.detail || '').trim() });
+    }
+  }
+  return out;
+}
+
+// Map narration position -> how much of the list should be on screen right now.
+// currentWord is scene-local (playSceneAudio resets it to 0 per scene), so it is a
+// far better clock than `progress`, which is whole-video progress in the render loop.
+function scenePointReveal(scene, currentWord, progress) {
+  const points = normalizeScenePoints(scene);
+  if (!points.length) return { points, revealed: 0, activeIdx: -1, activeFrac: 0 };
+  if (currentWord < 0) {
+    // Static/editor preview with no narration clock: show the finished list.
+    return { points, revealed: points.length, activeIdx: points.length - 1, activeFrac: 1 };
+  }
+  const words = String(scene.voiceover || '').trim().split(/\s+/).filter(Boolean).length;
+  let frac;
+  if (words > 0) frac = (currentWord + 1) / words;
+  else frac = Number.isFinite(progress) ? progress : 0;
+  frac = Math.max(0, Math.min(0.9999, frac));
+  const exact = frac * points.length;
+  const activeIdx = Math.max(0, Math.min(points.length - 1, Math.floor(exact)));
+  return { points, revealed: activeIdx + 1, activeIdx, activeFrac: Math.max(0, Math.min(1, exact - activeIdx)) };
+}
+
+// Compact vector glyphs for the 17 icon names the script generator is allowed to use.
+// Drawn as strokes/fills inside a circle of radius r centred on (cx, cy) — no emoji,
+// so they render identically in the browser and in any headless capture.
+function drawPointIcon(ctx, cx, cy, r, icon, color) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = Math.max(1.2, r * 0.16);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  // Point arrays below are already in r-scaled units, so P must not scale again.
+  const P = (pts) => {
+    ctx.beginPath();
+    pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]));
+    ctx.stroke();
+  };
+  switch (icon) {
+    case 'idea': // bulb + filament base
+      ctx.beginPath(); ctx.arc(0, -r*0.18, r*0.5, 0, Math.PI*2); ctx.stroke();
+      P([[-r*0.24, r*0.42],[r*0.24, r*0.42]]);
+      P([[-r*0.16, r*0.68],[r*0.16, r*0.68]]);
+      break;
+    case 'time': // clock
+      ctx.beginPath(); ctx.arc(0, 0, r*0.72, 0, Math.PI*2); ctx.stroke();
+      P([[0,-r*0.4],[0,0],[r*0.36,r*0.12]]);
+      break;
+    case 'growth': // rising line + arrow head
+      P([[-r*0.7, r*0.5],[-r*0.2, -r*0.05],[r*0.1, r*0.22],[r*0.68, -r*0.5]]);
+      P([[r*0.24,-r*0.5],[r*0.68,-r*0.5],[r*0.68,-r*0.08]]);
+      break;
+    case 'money': // coin with slash
+      ctx.beginPath(); ctx.arc(0, 0, r*0.72, 0, Math.PI*2); ctx.stroke();
+      P([[0,-r*0.5],[0,r*0.5]]);
+      P([[r*0.26,-r*0.24],[-r*0.06,-r*0.24],[-r*0.26,-r*0.02],[r*0.26,r*0.02],[r*0.06,r*0.26],[-r*0.26,r*0.26]]);
+      break;
+    case 'security': // shield
+      ctx.beginPath();
+      ctx.moveTo(0, -r*0.72); ctx.lineTo(r*0.6, -r*0.42);
+      ctx.lineTo(r*0.6, r*0.12); ctx.lineTo(0, r*0.74);
+      ctx.lineTo(-r*0.6, r*0.12); ctx.lineTo(-r*0.6, -r*0.42);
+      ctx.closePath(); ctx.stroke();
+      break;
+    case 'speed': // gauge needle
+      ctx.beginPath(); ctx.arc(0, r*0.2, r*0.68, Math.PI, 0); ctx.stroke();
+      P([[0, r*0.2],[r*0.4, -r*0.24]]);
+      break;
+    case 'communication': // speech bubble
+      ctx.beginPath();
+      ctx.roundRect(-r*0.7, -r*0.6, r*1.4, r*1.0, r*0.24); ctx.stroke();
+      P([[-r*0.24, r*0.4],[-r*0.34, r*0.76],[r*0.06, r*0.4]]);
+      break;
+    case 'target': // concentric target
+      ctx.beginPath(); ctx.arc(0, 0, r*0.72, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 0, r*0.36, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 0, r*0.1, 0, Math.PI*2); ctx.fill();
+      break;
+    case 'warning': // triangle + bang
+      ctx.beginPath();
+      ctx.moveTo(0, -r*0.7); ctx.lineTo(r*0.74, r*0.6); ctx.lineTo(-r*0.74, r*0.6);
+      ctx.closePath(); ctx.stroke();
+      P([[0,-r*0.18],[0,r*0.16]]);
+      ctx.beginPath(); ctx.arc(0, r*0.4, r*0.09, 0, Math.PI*2); ctx.fill();
+      break;
+    case 'check': // tick
+      P([[-r*0.6, r*0.02],[-r*0.18, r*0.46],[r*0.64, -r*0.5]]);
+      break;
+    case 'people': // two heads + shoulders
+      ctx.beginPath(); ctx.arc(-r*0.26, -r*0.28, r*0.26, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(r*0.36, -r*0.2, r*0.2, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(-r*0.26, r*0.62, r*0.52, Math.PI, 0); ctx.stroke();
+      ctx.beginPath(); ctx.arc(r*0.36, r*0.62, r*0.4, Math.PI*1.15, Math.PI*1.9); ctx.stroke();
+      break;
+    case 'learning': // graduation cap
+      ctx.beginPath();
+      ctx.moveTo(0, -r*0.56); ctx.lineTo(r*0.8, -r*0.16); ctx.lineTo(0, r*0.24); ctx.lineTo(-r*0.8, -r*0.16);
+      ctx.closePath(); ctx.stroke();
+      P([[r*0.46, r*0.0],[r*0.46, r*0.5]]);
+      P([[-r*0.42, r*0.04],[-r*0.42, r*0.44],[r*0.42, r*0.44]]);
+      break;
+    case 'tools': // wrench
+      ctx.beginPath(); ctx.arc(-r*0.34, -r*0.34, r*0.32, Math.PI*0.35, Math.PI*1.85); ctx.stroke();
+      P([[-r*0.14, -r*0.12],[r*0.6, r*0.62]]);
+      break;
+    case 'global': // globe
+      ctx.beginPath(); ctx.arc(0, 0, r*0.72, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, 0, r*0.3, r*0.72, 0, 0, Math.PI*2); ctx.stroke();
+      P([[-r*0.7, -r*0.22],[r*0.7, -r*0.22]]);
+      P([[-r*0.7, r*0.22],[r*0.7, r*0.22]]);
+      break;
+    case 'health': // heart + pulse
+      ctx.beginPath();
+      ctx.moveTo(0, r*0.62);
+      ctx.bezierCurveTo(-r*1.0, -r*0.06, -r*0.44, -r*0.82, 0, -r*0.22);
+      ctx.bezierCurveTo(r*0.44, -r*0.82, r*1.0, -r*0.06, 0, r*0.62);
+      ctx.closePath(); ctx.stroke();
+      break;
+    case 'document': // page + lines
+      ctx.beginPath(); ctx.roundRect(-r*0.5, -r*0.7, r*1.0, r*1.4, r*0.12); ctx.stroke();
+      P([[-r*0.26, -r*0.3],[r*0.26, -r*0.3]]);
+      P([[-r*0.26, r*0.0],[r*0.26, r*0.0]]);
+      P([[-r*0.26, r*0.3],[r*0.06, r*0.3]]);
+      break;
+    case 'star': {
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const rad = i % 2 === 0 ? r*0.74 : r*0.32;
+        const a = -Math.PI/2 + i * Math.PI/5;
+        const px = Math.cos(a)*rad, py = Math.sin(a)*rad;
+        i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+      }
+      ctx.closePath(); ctx.stroke();
+      break;
+    }
+    default: // no/unknown icon -> solid dot, still reads as a bullet
+      ctx.beginPath(); ctx.arc(0, 0, r*0.34, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.beginPath(); // never leave a live path behind for the caller to stroke
+  ctx.restore();
+}
+
+// Wrap `text` to `maxW` and return the lines (does not draw).
+function measureWrappedLines(ctx, text, maxW) {
+  const words = String(text || '').split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = w; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+// "flow" layout: 2-4 short step labels as connected nodes across the panel.
+function drawScenePointsFlow(ctx, reveal, opts) {
+  const { x, y, w, h, accent, textColor, font } = opts;
+  const pts = reveal.points;
+  const n = pts.length;
+  const gap = w * 0.05;
+  const nodeW = (w - gap * (n - 1)) / n;
+  const nodeH = Math.min(h * 0.5, nodeW * 0.62);
+  const cy = y + h * 0.4;
+  for (let i = 0; i < n; i++) {
+    if (i >= reveal.revealed) break;
+    const isActive = i === reveal.activeIdx;
+    const appear = isActive ? Math.min(1, reveal.activeFrac / 0.22) : 1;
+    const nx = x + i * (nodeW + gap);
+    ctx.save();
+    ctx.globalAlpha = isActive ? appear : 0.55;
+    // connector from the previous node
+    if (i > 0) {
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = Math.max(2, h * 0.008);
+      ctx.beginPath();
+      ctx.moveTo(nx - gap * 0.92, cy);
+      ctx.lineTo(nx - gap * 0.16, cy);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(nx - gap * 0.16, cy);
+      ctx.lineTo(nx - gap * 0.42, cy - gap * 0.2);
+      ctx.lineTo(nx - gap * 0.42, cy + gap * 0.2);
+      ctx.closePath();
+      ctx.fillStyle = accent;
+      ctx.fill();
+    }
+    // node
+    ctx.beginPath();
+    ctx.roundRect(nx, cy - nodeH / 2, nodeW, nodeH, nodeH * 0.16);
+    ctx.fillStyle = isActive ? 'rgba(245,166,35,0.16)' : 'rgba(245,166,35,0.07)';
+    ctx.fill();
+    ctx.strokeStyle = isActive ? accent : 'rgba(245,166,35,0.35)';
+    ctx.lineWidth = Math.max(1.5, h * 0.006);
+    ctx.stroke();
+    // step number
+    const numSize = Math.max(10, nodeH * 0.18);
+    ctx.fillStyle = accent;
+    ctx.font = `700 ${numSize}px ${font}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(String(i + 1), nx + nodeW / 2, cy - nodeH * 0.22);
+    // label
+    const labelSize = Math.max(12, nodeH * 0.2);
+    ctx.font = `700 ${labelSize}px ${font}`;
+    ctx.fillStyle = textColor;
+    const lines = measureWrappedLines(ctx, pts[i].text, nodeW * 0.84).slice(0, 3);
+    const startY = cy + nodeH * 0.06 - ((lines.length - 1) * labelSize * 1.2) / 2 + labelSize * 0.35;
+    lines.forEach((ln, li) => ctx.fillText(ln, nx + nodeW / 2, startY + li * labelSize * 1.2));
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+  ctx.textBaseline = 'alphabetic';
+}
+
+/**
+ * Draw scene.points as a progressive on-screen list inside the box {x,y,w,h}.
+ * Returns true if it drew anything (i.e. the caller should skip its caption bar).
+ */
+function drawScenePoints(ctx, scene, currentWord, progress, opts) {
+  const o = opts || {};
+  const reveal = scenePointReveal(scene, currentWord, progress);
+  if (!reveal.points.length) return false;
+
+  const x = o.x, y = o.y, w = o.w, h = o.h;
+  if (!(w > 0 && h > 0)) return false;
+  const accent = o.accent || '#F5A623';
+  const textColor = o.textColor || '#0A0F1E';
+  const detailColor = o.detailColor || 'rgba(10,15,30,0.62)';
+  const font = o.font || 'Syne, sans-serif';
+
+  ctx.save();
+  ctx.textBaseline = 'alphabetic';
+
+  if (String(scene.layout || '') === 'flow' && reveal.points.length <= 4) {
+    drawScenePointsFlow(ctx, reveal, { x, y, w, h, accent, textColor, font });
+    ctx.restore();
+    return true;
+  }
+
+  const n = reveal.points.length;
+  const cols = n > 5 ? 2 : 1;
+  const rows = Math.ceil(n / cols);
+  const colGap = cols > 1 ? w * 0.05 : 0;
+  const colW = (w - colGap * (cols - 1)) / cols;
+  const rowH = h / rows;
+
+  // Type scale derived from the row box so 3 points read big and 8 still fit.
+  const textSize = Math.max(11, Math.min(rowH * 0.34, colW * 0.062, h * 0.11));
+  const detailSize = Math.max(9, textSize * 0.62);
+  const iconR = textSize * 0.72;
+  const badgeR = iconR * 1.5;
+  const textX0 = badgeR * 2 + textSize * 0.55;
+
+  for (let i = 0; i < n; i++) {
+    if (i >= reveal.revealed) break;
+    const p = reveal.points[i];
+    const col = Math.floor(i / rows);
+    const row = i % rows;
+    const bx = x + col * (colW + colGap);
+    const byTop = y + row * rowH;
+
+    const isActive = i === reveal.activeIdx;
+    // newest point slides in from the left and fades up over the first slice of its turn
+    const appear = isActive ? Math.min(1, reveal.activeFrac / 0.2) : 1;
+    const slide = (1 - appear) * textSize * 0.9;
+
+    ctx.save();
+    ctx.globalAlpha = isActive ? appear : 0.5;
+    ctx.translate(bx - slide, byTop);
+
+    ctx.font = `700 ${textSize}px ${font}`;
+    ctx.textAlign = 'left';
+    const maxTextW = colW - textX0;
+    const lines = measureWrappedLines(ctx, p.text, maxTextW).slice(0, 3);
+    const textBlockH = lines.length * textSize * 1.22;
+
+    // Detail only for the point being spoken about right now, so the list keeps
+    // moving while the narrator elaborates instead of sitting frozen.
+    let detailLines = [];
+    if (isActive && p.detail) {
+      ctx.font = `400 ${detailSize}px ${font}`;
+      detailLines = measureWrappedLines(ctx, p.detail, maxTextW).slice(0, 2);
+    }
+    const detailBlockH = detailLines.length * detailSize * 1.3;
+    const blockH = textBlockH + (detailBlockH ? detailSize * 0.5 + detailBlockH : 0);
+    const topPad = Math.max(0, (rowH - blockH) / 2);
+    const firstBaseline = topPad + textSize * 0.92;
+
+    // Icon badge
+    const badgeCy = firstBaseline - textSize * 0.32;
+    ctx.beginPath();
+    ctx.arc(badgeR, badgeCy, badgeR, 0, Math.PI * 2);
+    ctx.fillStyle = isActive ? 'rgba(245,166,35,0.22)' : 'rgba(245,166,35,0.10)';
+    ctx.fill();
+    if (isActive) {
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = Math.max(1.2, badgeR * 0.12);
+      ctx.stroke();
+    }
+    drawPointIcon(ctx, badgeR, badgeCy, iconR, p.icon, accent);
+
+    // Point text
+    ctx.font = `700 ${textSize}px ${font}`;
+    ctx.fillStyle = isActive ? textColor : o.dimTextColor || textColor;
+    lines.forEach((ln, li) => ctx.fillText(ln, textX0, firstBaseline + li * textSize * 1.22));
+
+    // Detail
+    if (detailLines.length) {
+      ctx.font = `400 ${detailSize}px ${font}`;
+      ctx.fillStyle = detailColor;
+      const dTop = firstBaseline + textBlockH + detailSize * 0.35;
+      detailLines.forEach((ln, li) => ctx.fillText(ln, textX0, dTop + li * detailSize * 1.3));
+    }
+    ctx.restore();
+  }
+
+  ctx.globalAlpha = 1;
+  ctx.restore();
+  return true;
+}
+
 function drawScene(canvas, scene, progress, currentWord = -1) {
-  const style = document.getElementById('video-style') ? 
+  const style = document.getElementById('video-style') ?
     document.getElementById('video-visual-style') ? document.getElementById('video-visual-style').value : document.getElementById('video-style') ? document.getElementById('video-style').value : 'slides_dark' : 'slides';
   // Auto-detect scene type for smart rendering
   const sceneType = detectSceneType((scene.voiceover || '') + ' ' + (scene.slideTitle || ''));
@@ -3407,7 +3726,8 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   ctx.fillText(`SCENE ${scene.sceneNumber}`, W-40, 22);
 
   // Show title small at top, rolling text takes main area
-  if (currentWord < 0) {
+  const hasPoints = normalizeScenePoints(scene).length > 0;
+  if (currentWord < 0 && !hasPoints) {
     // No words yet - show full title centered
     const titleY = H * 0.42;
     ctx.fillStyle = colors.text;
@@ -3423,12 +3743,13 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
     ctx.moveTo(W/2 - 40, H * 0.72);
     ctx.lineTo(W/2 + 40, H * 0.72);
     ctx.stroke();
-  } else {
-    // Words revealing - show small title at very top
+  } else if (!hasPoints) {
+    // Words revealing - small title, clear of the brand lockup above it and of the
+    // rolling caption below it (it used to sit at y=78, on top of both).
     ctx.fillStyle = colors.accent;
     ctx.font = 'bold 15px Space Mono, monospace';
     ctx.textAlign = 'left';
-    ctx.fillText(scene.slideTitle.toUpperCase(), W * 0.05, 78);
+    ctx.fillText(String(scene.slideTitle || '').toUpperCase(), W * 0.05, 108);
   }
 
   // Bottom tag always visible
@@ -3441,13 +3762,37 @@ function drawScene(canvas, scene, progress, currentWord = -1) {
   ctx.fillText('CREATE. ENHANCE. SHARE.', W/2, H*0.91 + 18);
   drawPresenterPhoto(ctx, W, H);
 
+  // When the scene carries real points, show them as a proper on-screen list in the
+  // open middle of the slide (revealed as the narration advances) instead of dumping
+  // the whole voiceover into the dense rolling-caption block below.
+  if (hasPoints) {
+    // Sit clear of the AfriVid brand lockup in the top-left corner (which runs to ~y=70).
+    const ptTitleY = Math.max(112, H * 0.155);
+    ctx.fillStyle = colors.text;
+    ctx.font = `bold ${W > 900 ? 30 : 22}px Syne, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText(String(scene.slideTitle || ''), W * 0.07, ptTitleY);
+    ctx.fillStyle = colors.accent;
+    ctx.fillRect(W * 0.07, ptTitleY + 14, W * 0.07, 3);
+    drawScenePoints(ctx, scene, currentWord, progress, {
+      x: W * 0.07, y: ptTitleY + 40, w: W * 0.86, h: H * 0.855 - (ptTitleY + 40),
+      accent: colors.accent,
+      textColor: colors.text,
+      dimTextColor: colors.text,
+      detailColor: 'rgba(255,255,255,0.66)',
+      font: 'Syne, sans-serif'
+    });
+  }
+
   // Rolling text reveal - TOP of slide, scrolls down then up
-  if (scene.voiceover && currentWord >= 0) {
+  else if (scene.voiceover && currentWord >= 0) {
     const words = scene.voiceover.split(' ');
     const wordsPerLine = 5;
     const lineHeight = 44;
-    const maxVisibleLines = Math.floor((H * 0.78) / lineHeight);
-    const topPadding = 85;
+    // Start below the scene title (y=108) instead of on top of it, and size the visible
+    // window to the space that actually remains above the bottom tag.
+    const topPadding = 152;
+    const maxVisibleLines = Math.max(1, Math.floor((H * 0.88 - topPadding) / lineHeight));
 
     // Group into lines
     const allLines = [];
@@ -3996,9 +4341,11 @@ window._startRecording = async function startRecording() {
 
   window.currentWord = 0;
   window.wordTimer = null;
-  drawScene(canvas, scriptData.scenes[0], 0, 0);
+  try { drawScene(canvas, scriptData.scenes[0], 0, 0); }
+  catch(e) { addLog('error', 'First-frame draw error (recovered): ' + e.message); console.error('[drawScene first frame]', e); }
   playSceneAudio(0);
 
+  window._renderErrCount = 0;
   function renderLoop() {
     if (!isRecording) return;
     const now = Date.now();
@@ -4010,6 +4357,12 @@ window._startRecording = async function startRecording() {
     document.getElementById('progress-pct').textContent = pct + '%';
     document.getElementById('progress-label-text').textContent = `Scene ${sceneIndex + 1} of ${scriptData.scenes.length}`;
     const _theme = (document.getElementById('video-visual-style')||{value:'slides_dark'}).value;
+    // A throw anywhere in the per-frame draw used to escape renderLoop, which meant the
+    // trailing requestAnimationFrame() never ran: the loop died silently and the canvas
+    // froze on a half-drawn (background-only) frame for the rest of the recording — the
+    // "screen goes blank partway through" report. Contain it so one bad scene costs one
+    // frame, not the whole video, and so scene advance / stop logic below still runs.
+    try {
     if(_theme === 'splitflow') {
       window.drawSplitFlowScene(canvas, scriptData.scenes[sceneIndex], totalProgress, window.currentWord||0, sceneIndex, null);
       // Trigger image generation for current and next scene
@@ -4048,6 +4401,13 @@ window._startRecording = async function startRecording() {
         _ctx.drawImage(a.img,ax,ay,aw,ah);
         _ctx.globalAlpha=1;
       });
+    }
+    } catch(err) {
+      window._renderErrCount = (window._renderErrCount || 0) + 1;
+      if (window._renderErrCount <= 3) {
+        console.error('[renderLoop draw error, recovered]', err);
+        addLog('error', 'Frame draw error (recovered): ' + (err && err.message));
+      }
     }
     // Scene advances only when audio finishes (set by playSceneAudio)
     if (window._sceneAudioDone && sceneIndex < scriptData.scenes.length - 1) {
@@ -4278,7 +4638,7 @@ function renderLibrary() {
     grid.innerHTML = `<div style="text-align:center;color:var(--muted);padding:4rem;grid-column:span 3;">
       <div style="font-size:3rem;margin-bottom:1rem;">[books]</div>
       <div style="font-family:var(--font-mono);font-size:0.82rem;">// Your library is empty</div>
-      <div style="font-size:0.78rem;margin-top:0.5rem;color:rgba(23,20,15,0.35);">Generated videos, designs and edited videos will appear here</div>
+      <div style="font-size:0.78rem;margin-top:0.5rem;color:rgba(23,20,15,0.64);">Generated videos, designs and edited videos will appear here</div>
     </div>`;
     return;
   }
@@ -4305,8 +4665,8 @@ function renderLibrary() {
         <div style="font-size:0.7rem;color:var(--muted);font-family:var(--font-mono);">${v.date} · ${v.size}</div>
         <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
           <button onclick="downloadFromLibrary(${v.id})" style="flex:1;background:var(--gold);color:var(--navy);border:none;padding:0.5rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:var(--font-display);">Download</button>
-          ${v.type !== 'design' ? `<button onclick="sendLibraryToEditor(${v.id})" style="background:rgba(116,198,157,0.15);color:#74C69D;border:1px solid rgba(116,198,157,0.3);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.75rem;cursor:pointer;">Edit</button>` : ''}
-          <button onclick="deleteFromLibrary(${v.id})" style="background:rgba(230,51,41,0.1);color:var(--red);border:1px solid rgba(230,51,41,0.3);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.75rem;cursor:pointer;">[del]</button>
+          ${v.type !== 'design' ? `<button onclick="sendLibraryToEditor(${v.id})" style="background:rgba(116,198,157,0.15);color:#2D6F4E;border:1px solid rgba(116,198,157,0.3);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.75rem;cursor:pointer;">Edit</button>` : ''}
+          <button onclick="deleteFromLibrary(${v.id})" style="background:rgba(230,51,41,0.1);color:#BC1F16;border:1px solid rgba(230,51,41,0.3);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.75rem;cursor:pointer;">[del]</button>
         </div>
       </div>
     </div>
@@ -4739,8 +5099,8 @@ window._doSignUp = window.doSignUp = async function() {
                 <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Design studio — unlimited</p>
               </div>
               <a href="https://afrivid.studio/create.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Create Your First Video →</a>
-              <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:2rem;">Need help? Reply to this email or visit afrivid.studio</p>
-              <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;">AfriVid Studio · afrivid.studio · Built for Africa</p>
+              <p style="color:rgba(255,255,255,0.52);font-size:0.85rem;margin-top:2rem;">Need help? Reply to this email or visit afrivid.studio</p>
+              <p style="color:rgba(255,255,255,0.5);font-size:0.75rem;">AfriVid Studio · afrivid.studio · Built for Africa</p>
             </div>
           `
         })
@@ -5823,7 +6183,7 @@ function checkResumePrompt() {
     if (age < 3600000) { // Less than 1 hour old
       const resumeDiv = document.createElement('div');
       resumeDiv.style.cssText = 'padding:0.75rem 1rem;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:8px;margin-bottom:1rem;font-size:0.82rem;display:flex;justify-content:space-between;align-items:center;';
-      resumeDiv.innerHTML = `<span style="color:var(--gold);">[r] Resume: "${data.title}" (${data.sceneCount} scenes)</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;">[x]</button>`;
+      resumeDiv.innerHTML = `<span style="color:#9B5B17;">[r] Resume: "${data.title}" (${data.sceneCount} scenes)</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;">[x]</button>`;
       const form = document.querySelector('#panel-1 .card');
       if (form) form.prepend(resumeDiv);
     }
@@ -5890,7 +6250,7 @@ window._loadSceneAssets = function(event) {
         const thumb = document.createElement('div');
         thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(23,20,15,0.12);';
         thumb.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">
-          <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
+          <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#F6B6B2;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
         list.appendChild(thumb);
         addLog('info', `[+] Asset loaded: ${file.name}`);
       };
@@ -5910,7 +6270,7 @@ window.removeSceneAsset = function(id) {
     const thumb = document.createElement('div');
     thumb.style.cssText = 'position:relative;width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid rgba(23,20,15,0.12);';
     thumb.innerHTML = `<img src="${asset.src}" style="width:100%;height:100%;object-fit:cover;">
-      <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#E63329;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
+      <button onclick="removeSceneAsset('${asset.id}')" style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.7);border:none;color:#F6B6B2;cursor:pointer;font-size:0.65rem;padding:1px 3px;"></button>`;
     list.appendChild(thumb);
   });
 };
@@ -6241,6 +6601,22 @@ function wrapTextSplit(ctx, text, x, y, maxWidth, fontSize) {
   return lines;
 }
 
+// Debug/test surface: this file's renderers live in a module scope, so nothing here is
+// reachable from the console or from an automated visual check. Expose the pure drawing
+// entry points (no side effects beyond the canvas they are handed).
+window.__afrividRender = {
+  drawScene,
+  drawKaribuCharacter,
+  drawCameroonSlide,
+  drawUniteSlide,
+  drawAdvertSlide,
+  drawScenePoints,
+  drawPointIcon,
+  normalizeScenePoints,
+  scenePointReveal,
+  getKaribuColors
+};
+
 </script>
 
 
@@ -6306,13 +6682,13 @@ window.convertAndDownloadMP4 = async function() {
   <div style="background:#FFFFFF;box-shadow:0 20px 60px rgba(0,0,0,0.35);border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(23,20,15,0.5);font-size:0.8rem;">Tell us what's going on — we read every message</div>
+      <div style="color:rgba(23,20,15,0.7);font-size:0.8rem;">Tell us what's going on — we read every message</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
-      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Problem</button>
-      <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:1;">Feedback</button>
-      <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Support</button>
-      <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Join Us</button>
+      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#BC1F16;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Problem</button>
+      <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#8D5A06;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:1;">Feedback</button>
+      <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#0054F2;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Support</button>
+      <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#2F7251;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Join Us</button>
     </div>
     <input type="hidden" id="feedback-type" value="feedback">
     <div id="fb-apply-fields" style="display:none;">
@@ -6321,10 +6697,10 @@ window.convertAndDownloadMP4 = async function() {
     </div>
     <textarea id="feedback-msg" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
     <div style="display:flex;gap:0.5rem;">
-      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.55);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.72);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.35);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.64);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
   </div>
 </div>
 
@@ -6672,13 +7048,11 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
 window.switchCreateMode = function(mode) {
   const panels = {
     video: document.getElementById('panel-1'),
-    slides: document.getElementById('slides-generator-panel'),
     tutorial: document.getElementById('tutorial-maker-panel'),
     ad: document.getElementById('ad-maker-panel'),
   };
   const tabs = {
     video: document.getElementById('mode-video-tab'),
-    slides: document.getElementById('mode-slides-tab'),
     tutorial: document.getElementById('mode-tutorial-tab'),
     ad: document.getElementById('mode-ad-tab'),
   };
@@ -6688,362 +7062,6 @@ window.switchCreateMode = function(mode) {
   Object.entries(tabs).forEach(([key, el]) => { if (el) el.classList.toggle('active', key === mode); });
   if (mode !== 'video') document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   if (stepsBar) stepsBar.style.display = mode === 'video' ? 'flex' : 'none';
-};
-
-window._generatedSlides = [];
-window._slidesLogo = null;
-
-window.loadSlidesLogo = function(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    window._slidesLogo = e.target.result;
-    document.getElementById('slides-logo-name').textContent = file.name.slice(0,15);
-  };
-  reader.readAsDataURL(file);
-};
-
-window.generateSlides = async function() {
-  const topic = document.getElementById('slides-topic')?.value?.trim();
-  if (!topic) { alert('Please enter a topic'); return; }
-  const count = document.getElementById('slides-count')?.value || 8;
-  const style = document.getElementById('slides-style')?.value || 'dark';
-  const lang = document.getElementById('slides-lang')?.value || 'English';
-  const btn = document.getElementById('slides-generate-btn');
-  const status = document.getElementById('slides-status');
-  const statusText = document.getElementById('slides-status-text');
-  const bar = document.getElementById('slides-progress-bar');
-  btn.disabled = true; btn.textContent = 'Generating...';
-  status.style.display = 'block';
-  statusText.textContent = 'Asking AI to create your slides...';
-  bar.style.width = '20%';
-  try {
-    const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001', max_tokens: 2000,
-        messages: [{role:'user', content:`Create ${count} presentation slides about "${topic}" in ${lang}.
-Return ONLY a JSON array like this:
-[{"title":"Slide Title","subtitle":"Optional subtitle","points":["Point 1","Point 2","Point 3"],"type":"intro"},...]
-Types: intro (first slide), content (regular), stat (with big number), quote, conclusion (last slide).
-For stat slides add "stat":"75%" and "stat_label":"of Africans...".
-For quote slides add "quote":"The quote text" and "author":"Name".
-Make it educational, impactful and relevant to Africa. Return ONLY the JSON array.`}]
-      })
-    });
-    bar.style.width = '60%';
-    statusText.textContent = 'Rendering slides...';
-    const data = await res.json();
-    const text = data.content[0].text;
-    const match = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
-    if (!match) throw new Error('No slides data');
-    const slides = JSON.parse(match[0]);
-    window._generatedSlides = slides;
-    bar.style.width = '90%';
-    renderSlidesPreview(slides, style, topic);
-    bar.style.width = '100%';
-    statusText.textContent = `${slides.length} slides ready!`;
-    document.getElementById('slides-preview').style.display = 'block';
-    document.getElementById('slides-preview-label').textContent = slides.length + ' SLIDES GENERATED';
-    btn.textContent = 'Regenerate Slides';
-  } catch(e) {
-    statusText.textContent = 'Error: ' + e.message;
-  }
-  btn.disabled = false;
-};
-
-const SLIDE_THEMES = {
-  dark:  {bg:'#050A14', bg2:'#0D1F35', text:'#ffffff', sub:'rgba(255,255,255,0.6)', accent:'#F5A623', accent2:'#74C69D'},
-  light: {bg:'#F5F0E8', bg2:'#ffffff', text:'#050A14', sub:'rgba(0,0,0,0.5)', accent:'#F5A623', accent2:'#E8950F'},
-  green: {bg:'#0D2B1A', bg2:'#1a3a2a', text:'#ffffff', sub:'rgba(255,255,255,0.6)', accent:'#74C69D', accent2:'#F5A623'},
-  blue:  {bg:'#0a1628', bg2:'#0D1F35', text:'#ffffff', sub:'rgba(255,255,255,0.6)', accent:'#6399ff', accent2:'#F5A623'}
-};
-
-function renderSlidesPreview(slides, style, topic) {
-  const t = SLIDE_THEMES[style] || SLIDE_THEMES.dark;
-  const grid = document.getElementById('slides-grid');
-  grid.innerHTML = '';
-  slides.forEach((slide, i) => {
-    const div = document.createElement('div');
-    div.style.cssText = 'border-radius:8px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);cursor:pointer;';
-    div.innerHTML = buildSlideHTML(slide, i, t, topic);
-    div.onclick = () => previewSlide(slide, i, t, topic);
-    grid.appendChild(div);
-  });
-}
-
-function buildSlideHTML(slide, i, t, topic) {
-  const org = document.getElementById('slides-org')?.value?.trim() || '';
-  const logo = window._slidesLogo || '';
-  const total = window._generatedSlides.length;
-  const num = String(i+1).padStart(2,'0');
-
-  // Header with logo + org (top of every slide)
-  const header = `<div style="position:absolute;top:0;left:0;right:0;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.15);">
-    <div style="display:flex;align-items:center;gap:8px;">
-      ${logo?`<img src="${logo}" style="height:22px;object-fit:contain;border-radius:3px;">`:''}
-      <span style="color:${t.accent};font-size:8px;font-family:monospace;letter-spacing:2px;font-weight:700;">${org.toUpperCase()}</span>
-    </div>
-    <span style="color:${t.sub};font-size:8px;font-family:monospace;">${num} / ${total}</span>
-  </div>`;
-
-  // Footer (bottom)
-  const footer = `<div style="position:absolute;bottom:0;left:0;right:0;padding:5px 16px;display:flex;align-items:center;justify-content:flex-end;border-top:1px solid rgba(255,255,255,0.06);">
-    <span style="color:${t.sub};font-size:7px;font-family:monospace;opacity:0.5;">Created with AfriVid Studio</span>
-  </div>`;
-
-  // Decorative circle (top right)
-  const deco = `<div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:${t.accent};opacity:0.08;"></div>
-  <div style="position:absolute;bottom:30px;left:-20px;width:60px;height:60px;border-radius:50%;background:${t.accent2};opacity:0.06;"></div>`;
-
-  if (slide.type === 'intro') {
-    return `<div style="background:linear-gradient(135deg,${t.bg} 0%,${t.bg2} 100%);padding:32px 28px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
-      ${deco}
-      ${header}
-      <div style="position:relative;">
-        ${logo?`<img src="${logo}" style="height:28px;object-fit:contain;margin-bottom:12px;display:block;">`:''}
-        <div style="color:${t.accent};font-size:9px;letter-spacing:3px;font-family:monospace;margin-bottom:10px;text-transform:uppercase;">${org || topic}</div>
-        <div style="color:${t.text};font-size:22px;font-weight:900;line-height:1.15;margin-bottom:10px;">${slide.title}</div>
-        ${slide.subtitle?`<div style="color:${t.sub};font-size:11px;line-height:1.5;max-width:80%;">${slide.subtitle}</div>`:''}
-        <div style="margin-top:16px;height:3px;background:${t.accent};width:50px;border-radius:2px;"></div>
-      </div>
-    </div>`;
-  }
-
-  if (slide.type === 'conclusion') {
-    return `<div style="background:linear-gradient(135deg,${t.bg2} 0%,${t.bg} 100%);padding:32px 28px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Arial,sans-serif;position:relative;overflow:hidden;text-align:center;">
-      <div style="position:absolute;inset:0;background:radial-gradient(circle at center,${t.accent}15,transparent 70%);"></div>
-      ${header}
-      <div style="position:relative;">
-        <div style="font-size:2rem;margin-bottom:10px;"></div>
-        <div style="color:${t.accent};font-size:9px;letter-spacing:3px;font-family:monospace;margin-bottom:8px;">THANK YOU</div>
-        <div style="color:${t.text};font-size:20px;font-weight:900;line-height:1.2;margin-bottom:8px;">${slide.title}</div>
-        ${slide.subtitle?`<div style="color:${t.sub};font-size:10px;">${slide.subtitle}</div>`:''}
-        ${logo?`<img src="${logo}" style="height:24px;object-fit:contain;margin-top:12px;display:block;margin-left:auto;margin-right:auto;">`:''}
-      </div>
-    </div>`;
-  }
-
-  if (slide.type === 'stat') {
-    return `<div style="background:${t.bg};padding:20px 24px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
-      ${header}
-      <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:${t.accent};opacity:0.06;"></div>
-      <div style="color:${t.accent};font-size:9px;letter-spacing:2px;font-family:monospace;">${slide.title.toUpperCase()}</div>
-      <div style="text-align:center;padding:10px 0;">
-        <div style="color:${t.accent};font-size:3.5rem;font-weight:900;line-height:1;">${slide.stat||''}</div>
-        <div style="color:${t.sub};font-size:10px;margin-top:6px;line-height:1.4;">${slide.stat_label||''}</div>
-      </div>
-      <div style="height:2px;background:linear-gradient(90deg,${t.accent},transparent);width:60px;border-radius:2px;"></div>
-      ${footer}
-    </div>`;
-  }
-
-  if (slide.type === 'quote') {
-    return `<div style="background:linear-gradient(135deg,${t.bg2},${t.bg});padding:24px 28px 40px;min-height:200px;display:flex;flex-direction:column;justify-content:center;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:10px;left:16px;font-size:4rem;color:${t.accent};opacity:0.2;font-family:serif;line-height:1;">"</div>
-      <div style="position:relative;padding-left:16px;border-left:3px solid ${t.accent};">
-        <div style="color:${t.text};font-size:12px;font-style:italic;line-height:1.6;margin-bottom:10px;">${slide.quote||slide.title}</div>
-        <div style="color:${t.accent};font-size:9px;font-weight:700;letter-spacing:1px;">— ${slide.author||'Unknown'}</div>
-      </div>
-      ${footer}
-    </div>`;
-  }
-
-  // Regular content slide
-  const slideImg = slide.image || '';
-  const points = (slide.points||[]).slice(0,5);
-  const icons = ['01','02','03','04','05'];
-  return `<div style="background:${t.bg};padding:20px 24px 40px;min-height:200px;font-family:Arial,sans-serif;position:relative;overflow:hidden;">
-    ${header}
-    <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:${t.accent};opacity:0.05;"></div>
-    <div style="color:${t.accent};font-size:8px;letter-spacing:2px;font-family:monospace;margin-bottom:6px;">${num} / ${total}</div>
-    <div style="color:${t.text};font-size:14px;font-weight:900;margin-bottom:12px;line-height:1.2;padding-right:20px;">${slide.title}</div>
-    ${slideImg ? `<img src="${slideImg}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;margin-bottom:8px;">` : ''}
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      ${points.map((p,j)=>`<div style="display:flex;gap:8px;align-items:flex-start;">
-        <div style="min-width:16px;height:16px;border-radius:3px;background:${t.accent};display:flex;align-items:center;justify-content:center;margin-top:1px;">
-          <span style="color:#050A14;font-size:7px;font-weight:900;font-family:monospace;">${icons[j]}</span>
-        </div>
-        <div style="color:${t.sub};font-size:10px;line-height:1.5;">${(p && typeof p === 'object') ? p.text : p}</div>
-      </div>`).join('')}
-    </div>
-    ${footer}
-  </div>`;
-}
-
-function previewSlide(slide, i, t, topic) {
-  const style = document.getElementById('slides-style')?.value || 'dark';
-
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;';
-  overlay.id = 'slide-edit-overlay';
-
-  overlay.innerHTML = `
-  <div style="display:flex;gap:1.5rem;align-items:flex-start;max-width:1100px;width:95%;padding:1rem;">
-    <!-- LEFT: PREVIEW -->
-    <div style="flex:1;">
-      <div style="color:rgba(23,20,15,0.5);font-size:0.7rem;font-family:monospace;margin-bottom:0.5rem;">PREVIEW (click slide to close)</div>
-      <div id="slide-preview-box" style="border-radius:10px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.8);cursor:pointer;" onclick="document.getElementById('slide-edit-overlay').remove()">
-        ${buildSlideHTML(slide, i, t, topic)}
-      </div>
-      <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
-        <button onclick="slideEditApply(${i})" style="flex:1;background:#F5A623;border:none;color:#17140F;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">Apply Changes</button>
-        <button onclick="document.getElementById('slide-edit-overlay').remove()" style="background:rgba(23,20,15,0.1);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:sans-serif;font-size:0.85rem;">Close</button>
-      </div>
-    </div>
-
-    <!-- RIGHT: EDIT PANEL -->
-    <div style="width:320px;background:#FFFFFF;border:1px solid rgba(23,20,15,0.12);border-radius:12px;padding:1rem;max-height:80vh;overflow-y:auto;">
-      <div style="color:#F5A623;font-family:monospace;font-size:0.7rem;letter-spacing:1px;margin-bottom:0.75rem;">EDIT SLIDE ${i+1}</div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TYPE</div>
-        <select id="edit-type" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;">
-          <option value="intro" ${slide.type==='intro'?'selected':''}>Intro</option>
-          <option value="content" ${slide.type==='content'?'selected':''}>Content</option>
-          <option value="stat" ${slide.type==='stat'?'selected':''}>Statistic</option>
-          <option value="quote" ${slide.type==='quote'?'selected':''}>Quote</option>
-          <option value="conclusion" ${slide.type==='conclusion'?'selected':''}>Conclusion</option>
-        </select>
-      </div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">TITLE</div>
-        <input id="edit-title" type="text" value="${(slide.title||'').replace(/"/g,'&quot;')}" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
-      </div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">SUBTITLE / TAGLINE</div>
-        <input id="edit-subtitle" type="text" value="${(slide.subtitle||'').replace(/"/g,'&quot;')}" placeholder="Optional subtitle" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
-      </div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">BULLET POINTS (one per line)</div>
-        <textarea id="edit-points" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:100px;resize:vertical;">${(slide.points||[]).map(p=>(p && typeof p === 'object') ? p.text : p).join('')}</textarea>
-
-        <div style="color:rgba(23,20,15,0.3);font-size:0.6rem;font-family:monospace;margin-top:2px;">Up to 5 points. Press Enter for new line.</div>
-      </div>
-
-      <div style="margin-bottom:0.75rem;" id="edit-stat-group">
-        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">STAT NUMBER (e.g. 85%)</div>
-        <input id="edit-stat" type="text" value="${(slide.stat||'').replace(/"/g,'&quot;')}" placeholder="e.g. 85%" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;">
-        <input id="edit-stat-label" type="text" value="${(slide.stat_label||'').replace(/"/g,'&quot;')}" placeholder="Stat description" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
-      </div>
-
-      <div style="margin-bottom:0.75rem;" id="edit-quote-group">
-        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">QUOTE TEXT</div>
-        <textarea id="edit-quote" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.78rem;outline:none;box-sizing:border-box;min-height:70px;resize:vertical;">${slide.quote||''}</textarea>
-        <input id="edit-author" type="text" value="${(slide.author||'').replace(/"/g,'&quot;')}" placeholder="Author name" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem;border-radius:6px;font-family:sans-serif;font-size:0.8rem;outline:none;box-sizing:border-box;margin-top:0.3rem;">
-      </div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="color:rgba(23,20,15,0.5);font-size:0.65rem;font-family:monospace;margin-bottom:0.3rem;">ADD IMAGE (optional)</div>
-        <label style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.04);border:1px dashed rgba(23,20,15,0.18);border-radius:6px;padding:0.5rem;cursor:pointer;font-size:0.7rem;color:rgba(23,20,15,0.5);font-family:monospace;">
-          <span id="edit-img-name">Upload image for this slide</span>
-          <input type="file" accept="image/*" style="display:none;" onchange="loadSlideImage(this, ${i})">
-        </label>
-      </div>
-    </div>
-  </div>`;
-
-  document.body.appendChild(overlay);
-  window._currentEditSlideIndex = i;
-  window._currentEditTheme = t;
-  window._currentEditTopic = topic;
-}
-
-window.loadSlideImage = function(input, idx) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    window._generatedSlides[idx].image = e.target.result;
-    document.getElementById('edit-img-name').textContent = file.name.slice(0,20);
-    // Update preview
-    const box = document.getElementById('slide-preview-box');
-    const t = window._currentEditTheme;
-    const topic = window._currentEditTopic;
-    if (box) box.innerHTML = buildSlideHTML(window._generatedSlides[idx], idx, t, topic);
-  };
-  reader.readAsDataURL(file);
-};
-
-window.slideEditApply = function(i) {
-  const slide = window._generatedSlides[i];
-  slide.type = document.getElementById('edit-type')?.value || slide.type;
-  slide.title = document.getElementById('edit-title')?.value || slide.title;
-  slide.subtitle = document.getElementById('edit-subtitle')?.value || '';
-  const pointsRaw = document.getElementById('edit-points')?.value || '';
-  slide.points = pointsRaw.split(String.fromCharCode(10)).map(p=>p.trim()).filter(Boolean);
-
-  slide.stat = document.getElementById('edit-stat')?.value || '';
-  slide.stat_label = document.getElementById('edit-stat-label')?.value || '';
-  slide.quote = document.getElementById('edit-quote')?.value || '';
-  slide.author = document.getElementById('edit-author')?.value || '';
-
-  // Re-render the grid
-  const style = document.getElementById('slides-style')?.value || 'dark';
-  const topic = document.getElementById('slides-topic')?.value || '';
-  const t = SLIDE_THEMES[style];
-  renderSlidesPreview(window._generatedSlides, style, topic);
-  document.getElementById('slide-edit-overlay')?.remove();
-};
-
-window.downloadAllSlides = async function() {
-  alert('Downloading slides as images — this may take a moment');
-};
-
-window.downloadSlidesAsPDF = async function() {
-  if (!window._generatedSlides || !window._generatedSlides.length) { alert('Generate slides first'); return; }
-  const style = document.getElementById('slides-style')?.value || 'dark';
-  const topic = document.getElementById('slides-topic')?.value || 'Slides';
-  const t = SLIDE_THEMES[style];
-
-  // Load jsPDF
-  if (!window.jspdf) {
-    await new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-      s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [640, 360] });
-
-  // Load html2canvas if needed
-  if (!window.html2canvas) {
-    await new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-      s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-
-  const btn = document.querySelector('[onclick="downloadSlidesAsPDF()"]');
-  if (btn) { btn.textContent = 'Building PDF...'; btn.disabled = true; }
-
-  for (let i = 0; i < window._generatedSlides.length; i++) {
-    const slide = window._generatedSlides[i];
-    // Create temp div
-    const div = document.createElement('div');
-    div.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:640px;height:360px;';
-    div.innerHTML = buildSlideHTML(slide, i, t, topic);
-    // Make slide fill the div
-    div.firstChild.style.minHeight = '360px';
-    div.firstChild.style.height = '360px';
-    document.body.appendChild(div);
-    await new Promise(r => setTimeout(r, 100));
-    const canvas = await html2canvas(div, { width: 640, height: 360, scale: 1.5, backgroundColor: t.bg });
-    document.body.removeChild(div);
-    if (i > 0) pdf.addPage();
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 640, 360);
-  }
-
-  pdf.save(topic.replace(/[^a-z0-9]/gi, '_') + '_slides.pdf');
-  if (btn) { btn.textContent = 'PDF'; btn.disabled = false; }
 };
 
 if('serviceWorker' in navigator) {

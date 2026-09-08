@@ -34,21 +34,21 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .page-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:3px;margin-bottom:0.75rem;}
 .page-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:0.75rem;}
 .page-title em{color:#F5A623;font-style:normal;}
-.page-sub{color:rgba(255,255,255,0.45);font-size:0.95rem;max-width:500px;margin:0 auto;}
+.page-sub{color:rgba(255,255,255,0.62);font-size:0.95rem;max-width:500px;margin:0 auto;}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:4rem;}
 @media(max-width:600px){.plans{grid-template-columns:1fr;}}
 .plan{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;position:relative;}
 .plan.featured{background:rgba(245,166,35,0.04);border-color:rgba(245,166,35,0.25);}
 .plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;font-size:0.7rem;font-weight:900;padding:0.3rem 1rem;border-radius:20px;font-family:'Space Mono',monospace;white-space:nowrap;}
-.plan-name{font-size:0.65rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
+.plan-name{font-size:0.65rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
 .plan-price{font-size:3rem;font-weight:900;margin-bottom:0.25rem;line-height:1;}
-.plan-price span{font-size:1rem;font-weight:400;color:rgba(255,255,255,0.4);}
-.plan-desc{color:rgba(255,255,255,0.4);font-size:0.82rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+.plan-price span{font-size:1rem;font-weight:400;color:rgba(255,255,255,0.6);}
+.plan-desc{color:rgba(255,255,255,0.6);font-size:0.82rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);}
 .feature-list{list-style:none;margin-bottom:2rem;}
 .feature-list li{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.88rem;color:rgba(255,255,255,0.7);margin-bottom:0.75rem;}
 .feature-list li .check{color:#74C69D;font-size:0.9rem;flex-shrink:0;margin-top:0.1rem;}
-.feature-list li .cross{color:rgba(255,255,255,0.2);font-size:0.9rem;flex-shrink:0;margin-top:0.1rem;}
-.feature-list li.disabled{color:rgba(255,255,255,0.25);}
+.feature-list li .cross{color:rgba(255,255,255,0.52);font-size:0.9rem;flex-shrink:0;margin-top:0.1rem;}
+.feature-list li.disabled{color:rgba(255,255,255,0.54);}
 .plan-btn{display:block;width:100%;padding:0.85rem;border-radius:10px;font-weight:900;font-size:0.95rem;cursor:pointer;text-align:center;text-decoration:none;font-family:'Syne',sans-serif;transition:all 0.2s;border:none;}
 .plan-btn.free{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.1);}
 .plan-btn.free:hover{background:rgba(255,255,255,0.1);}
@@ -58,10 +58,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .compare h2{font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:2rem;}
 .compare h2 em{color:#F5A623;font-style:normal;}
 table{width:100%;border-collapse:collapse;}
-th{padding:0.75rem 1rem;text-align:left;font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,0.06);}
+th{padding:0.75rem 1rem;text-align:left;font-size:0.72rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,0.06);}
 td{padding:0.85rem 1rem;font-size:0.88rem;border-bottom:1px solid rgba(255,255,255,0.04);}
 td:first-child{color:rgba(255,255,255,0.7);}
-td:nth-child(2){color:rgba(255,255,255,0.35);text-align:center;}
+td:nth-child(2){color:rgba(255,255,255,0.58);text-align:center;}
 td:nth-child(3){color:#74C69D;text-align:center;font-weight:700;}
 tr:hover td{background:rgba(255,255,255,0.02);}
 .faq{margin-bottom:4rem;}
@@ -73,11 +73,11 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .cta{text-align:center;background:rgba(245,166,35,0.04);border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:3rem 2rem;}
 .cta h2{font-size:1.8rem;font-weight:900;margin-bottom:0.75rem;}
 .cta h2 em{color:#F5A623;font-style:normal;}
-.cta p{color:rgba(255,255,255,0.45);margin-bottom:1.5rem;}
+.cta p{color:rgba(255,255,255,0.62);margin-bottom:1.5rem;}
 .cta a{display:inline-block;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;padding:0.85rem 2rem;border-radius:10px;font-weight:900;text-decoration:none;font-size:0.95rem;transition:opacity 0.2s;}
 .cta a:hover{opacity:0.9;}
-footer{text-align:center;padding:2rem;color:rgba(255,255,255,0.2);font-size:0.75rem;font-family:'Space Mono',monospace;border-top:1px solid rgba(255,255,255,0.04);}
-footer a{color:rgba(255,255,255,0.3);text-decoration:none;margin:0 0.75rem;}
+footer{text-align:center;padding:2rem;color:rgba(255,255,255,0.52);font-size:0.75rem;font-family:'Space Mono',monospace;border-top:1px solid rgba(255,255,255,0.04);}
+footer a{color:rgba(255,255,255,0.56);text-decoration:none;margin:0 0.75rem;}
 footer a:hover{color:#F5A623;}
 </style>
   <meta property="og:image" content="https://afrivid.studio/images/logo.png">
@@ -225,15 +225,15 @@ footer a:hover{color:#F5A623;}
     <a href="contact.html">Contact</a>
   </div>
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Facebook</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Instagram</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">TikTok</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Twitter</a>
-      <span style="color:rgba(255,255,255,0.1);">·</span>
-      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">YouTube</a>
+      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Facebook</a>
+      <span style="color:rgba(255,255,255,0.5);">·</span>
+      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Instagram</a>
+      <span style="color:rgba(255,255,255,0.5);">·</span>
+      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">TikTok</a>
+      <span style="color:rgba(255,255,255,0.5);">·</span>
+      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Twitter</a>
+      <span style="color:rgba(255,255,255,0.5);">·</span>
+      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(255,255,255,0.56);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">YouTube</a>
     </div>
     © 2026 AfriVid Studio · Built in Africa 🌍
 </footer>
@@ -252,26 +252,26 @@ if('serviceWorker' in navigator) {
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form below. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span> with payment details.</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">Fill the form below. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span> with payment details.</div>
     </div>
 
     <!-- Plan reminder -->
     <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · Priority support</div>
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.6);">/month</span></div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.78rem;">Unlimited videos · No watermark · Priority support</div>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
       <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
         <input id="upg-name" type="text" placeholder="Regan Ayiecho" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
       </div>
       <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
         <input id="upg-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
       </div>
       <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
         <select id="upg-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
           <option value="">Select your country</option>
           <option>Kenya</option>
@@ -286,7 +286,7 @@ if('serviceWorker' in navigator) {
         </select>
       </div>
       <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
         <select id="upg-payment" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;" onchange="togglePhone()">
           <option value="">Select payment method</option>
           <option value="mpesa">M-Pesa</option>
@@ -297,11 +297,11 @@ if('serviceWorker' in navigator) {
         </select>
       </div>
       <div id="upg-phone-wrap">
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER (for Mobile Money)</label>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER (for Mobile Money)</label>
         <input id="upg-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
       </div>
       <div>
-        <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">MESSAGE (optional)</label>
+        <label style="font-size:0.7rem;color:rgba(255,255,255,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">MESSAGE (optional)</label>
         <textarea id="upg-msg" placeholder="Any questions or special requests..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;outline:none;min-height:80px;resize:vertical;box-sizing:border-box;"></textarea>
       </div>
     </div>

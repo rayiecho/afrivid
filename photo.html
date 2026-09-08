@@ -125,7 +125,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .page-header{margin-bottom:2rem;}
 .page-label{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
 .page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#fff;margin-bottom:0.4rem;}
-.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.4);}
+.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.56);}
 .card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;}
 .card-title{font-size:0.95rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;color:#fff;}
 .card-icon{width:32px;height:32px;border-radius:8px;background:rgba(245,166,35,0.12);display:flex;align-items:center;justify-content:center;}
@@ -133,7 +133,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .upload-zone:hover{border-color:rgba(245,166,35,0.5);background:rgba(245,166,35,0.05);}
 .upload-icon{font-size:2.5rem;margin-bottom:1rem;}
 .upload-text{font-size:1rem;font-weight:600;color:#fff;margin-bottom:0.4rem;}
-.upload-sub{font-size:0.8rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;}
+.upload-sub{font-size:0.8rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;}
 .editor-layout{display:grid;grid-template-columns:1fr 300px;gap:1.25rem;}
 .canvas-wrap{background:#1a1a1a;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:320px;border:1px solid rgba(255,255,255,0.06);position:relative;}
 #photo-canvas{max-width:100%;max-height:500px;display:block;}
@@ -156,7 +156,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
 .btn-green{background:#2D8A5E;color:#fff;}
 .btn-green:hover{background:#40916C;}
-.btn-red{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;}
+.btn-red{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E94D44;}
 .btn:disabled{opacity:0.4;cursor:not-allowed;}
 .btn-row{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;}
 .btn-full{width:100%;justify-content:center;}
@@ -166,7 +166,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .crop-ratio-btns{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;}
 .crop-ratio-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.35rem 0.65rem;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
 .crop-ratio-btn:hover,.crop-ratio-btn.active{border-color:rgba(245,166,35,0.4);color:#F5A623;background:rgba(245,166,35,0.08);}
-.photo-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;font-family:'Space Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.4);max-height:90px;overflow-y:auto;margin-top:1rem;line-height:1.9;}
+.photo-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;font-family:'Space Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.56);max-height:90px;overflow-y:auto;margin-top:1rem;line-height:1.9;}
 .log-line{display:block;}
 .log-line.success{color:#74C69D;}
 .log-line.error{color:#E63329;}
@@ -180,14 +180,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .login-title span{color:#F5A623;}
 .login-card{background:rgba(17,17,17,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;}
 .auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.5rem;}
-.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.56);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
 .auth-tab.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
-.flabel{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
+.flabel{font-size:0.72rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
 .finput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:border-color 0.2s;}
 .finput:focus{border-color:rgba(245,166,35,0.5);}
 .btn-auth{width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;}
 .ferror{display:none;margin-top:0.85rem;padding:0.7rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.5rem;cursor:pointer;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.56);font-size:1.5rem;cursor:pointer;}
 @media(max-width:768px){
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 6rem;}
@@ -584,7 +584,7 @@ body::after{
     <div class="navbar-badge">AfriVid Studio</div>
   </a>
   <div class="navbar-actions">
-    <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+    <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
   </div>
 </nav>
 
@@ -610,7 +610,7 @@ body::after{
 
 <div class="main">
 </a>
-    <a href="index.html" style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+    <a href="index.html" style="font-size:0.7rem;color:rgba(255,255,255,0.52);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
   </div>
 <div class="page-header">
     <div class="page-label">PHOTO EDITOR</div>
@@ -643,7 +643,7 @@ body::after{
       .photo-panel{display:none;background:#0d1520;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;}
       .photo-panel.active{display:block;}
       .p-slider-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;}
-      .p-slider-row label{font-size:0.68rem;color:rgba(255,255,255,0.4);width:75px;flex-shrink:0;}
+      .p-slider-row label{font-size:0.68rem;color:rgba(255,255,255,0.56);width:75px;flex-shrink:0;}
       .p-slider-row input[type=range]{flex:1;}
       .p-slider-row span{font-size:0.68rem;color:#F5A623;width:38px;text-align:right;font-family:'Space Mono',monospace;}
       @media(max-width:768px){.photo-studio{grid-template-columns:1fr;}}
@@ -683,13 +683,13 @@ body::after{
           <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.3rem 0;"></div>
           <button class="photo-quick-btn" onclick="downloadPhoto()" style="color:#F5A623;">⬇ Download</button>
           <button class="photo-quick-btn" onclick="handleSaveToStudio()" style="color:#74C69D;">💾 Save</button>
-          <button class="photo-quick-btn" onclick="resetPhotoEditor()" style="color:rgba(230,51,41,0.7);">✕ New Photo</button>
+          <button class="photo-quick-btn" onclick="resetPhotoEditor()" style="color:rgba(243,155,151,0.7);">✕ New Photo</button>
         </div>
 
         <!-- Enhance Tab -->
         <div id="stab-enhance-content" style="display:none;">
           <button class="photo-quick-btn" onclick="enhancePhoto('professional')" style="color:#F5A623;">✨ Professional</button>
-          <button class="photo-quick-btn" onclick="enhancePhoto('skin')" style="color:#8B5E3C;">🌿 Skin Tone</button>
+          <button class="photo-quick-btn" onclick="enhancePhoto('skin')" style="color:#AB744A;">🌿 Skin Tone</button>
           <button class="photo-quick-btn" onclick="enhancePhoto('sharpen')" style="color:#4CC9F0;">🔍 Sharpen</button>
           <button class="photo-quick-btn" onclick="enhancePhoto('denoise')" style="color:#74C69D;">🔇 Denoise</button>
         </div>
@@ -703,17 +703,17 @@ body::after{
 
         <!-- Flags Tab -->
         <div id="stab-flags-content" style="display:none;">
-          <button class="photo-quick-btn" onclick="addFlagOverlay('ke')" style="color:#006600;">🇰🇪 Kenya</button>
-          <button class="photo-quick-btn" onclick="addFlagOverlay('ng')" style="color:#008751;">🇳🇬 Nigeria</button>
-          <button class="photo-quick-btn" onclick="addFlagOverlay('rw')" style="color:#20603D;">🇷🇼 Rwanda</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('ke')" style="color:#009900;">🇰🇪 Kenya</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('ng')" style="color:#00965A;">🇳🇬 Nigeria</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('rw')" style="color:#31925D;">🇷🇼 Rwanda</button>
           <button class="photo-quick-btn" onclick="addFlagOverlay('gh')" style="color:#FCD116;">🇬🇭 Ghana</button>
           <button class="photo-quick-btn" onclick="addFlagOverlay('ug')" style="color:#FCDC04;">🇺🇬 Uganda</button>
           <button class="photo-quick-btn" onclick="addFlagOverlay('tz')" style="color:#1EB53A;">🇹🇿 Tanzania</button>
-          <button class="photo-quick-btn" onclick="addFlagOverlay('za')" style="color:#007A4D;">🇿🇦 S.Africa</button>
-          <button class="photo-quick-btn" onclick="addFlagOverlay('et')" style="color:#078930;">🇪🇹 Ethiopia</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('za')" style="color:#00945D;">🇿🇦 S.Africa</button>
+          <button class="photo-quick-btn" onclick="addFlagOverlay('et')" style="color:#089835;">🇪🇹 Ethiopia</button>
         </div>
         <div id="bg-remove-status" style="font-size:0.62rem;color:#F5A623;font-family:'Space Mono',monospace;margin-top:0.3rem;"></div>
-        <span id="photo-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;word-break:break-all;margin-top:0.3rem;"></span>
+        <span id="photo-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.52);font-family:'Space Mono',monospace;word-break:break-all;margin-top:0.3rem;"></span>
       </div>
 
       <!-- CENTER -->
@@ -754,7 +754,7 @@ body::after{
 
         <!-- AI EDIT PANEL -->
         <div class="photo-panel" id="photo-tab-ai">
-          <p style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;">Describe what you want to change</p>
+          <p style="font-size:0.78rem;color:rgba(255,255,255,0.56);margin-bottom:0.75rem;">Describe what you want to change</p>
           <textarea id="photo-ai-instructions" class="form-textarea" style="min-height:80px;font-size:0.82rem;" placeholder="e.g. Make it look like iPhone photo, brighten it up, add warm filter..."></textarea>
           <button onclick="applyAIEdit()" class="btn btn-gold" style="width:100%;margin-top:0.75rem;">✦ Apply Smart Edit</button>
         </div>
@@ -807,7 +807,7 @@ body::after{
         </div>
 
         <!-- LOG -->
-        <div id="photo-log" style="font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);max-height:80px;overflow-y:auto;"></div>
+        <div id="photo-log" style="font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.56);max-height:80px;overflow-y:auto;"></div>
 
       </div><!-- end photo-center -->
     </div><!-- end photo-studio -->
@@ -843,11 +843,11 @@ body::after{
         <input type="email" id="signup-email" class="finput" placeholder="you@example.com">
         <label class="flabel">PASSWORD</label>
         <input type="password" id="signup-password" class="finput" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(255,255,255,0.58);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#F5A623;flex-shrink:0;" required>
           <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#F5A623;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#F5A623;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.58);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#74C69D;flex-shrink:0;" checked>
           <label for="afribrain-consent">✅ Help build <span style="color:#74C69D;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#74C69D;text-decoration:none;">Learn more</a></label>
         </div>
@@ -2017,7 +2017,7 @@ function startCollage(type) {
   for (let i = 0; i < collageSlotCount; i++) {
     slots.innerHTML += `<div style="flex:1;min-width:120px;">
       <div style="background:#1a1a1a;border:1px dashed rgba(245,166,35,0.3);border-radius:8px;padding:0.5rem;text-align:center;cursor:pointer;" onclick="document.getElementById('collage-input-${i}').click()">
-        <div id="collage-preview-${i}" style="height:80px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:0.75rem;">+ Photo ${i+1}</div>
+        <div id="collage-preview-${i}" style="height:80px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.52);font-size:0.75rem;">+ Photo ${i+1}</div>
       </div>
       <input type="file" id="collage-input-${i}" accept="image/*" style="display:none" onchange="loadCollageImage(${i}, this)">
     </div>`;
@@ -2295,10 +2295,10 @@ function resetPassword() {
   <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
+      <div style="color:rgba(255,255,255,0.56);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
-      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
+      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E94D44;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
       <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:1;">💬 Feedback</button>
       <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🛟 Support</button>
       <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🚀 Join Us</button>
@@ -2313,7 +2313,7 @@ function resetPassword() {
       <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.5);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
   </div>
 </div>
 
@@ -2432,24 +2432,24 @@ if('serviceWorker' in navigator) {
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
+      <div id="gum-reason" style="color:rgba(255,255,255,0.56);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
     </div>
     <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.56);">/month</span></div>
+      <div style="color:rgba(255,255,255,0.56);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
     </div>
     <div id="gum-form">
       <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
           <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
           <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
           <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
             <option value="">Select your country</option>
             <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
@@ -2458,7 +2458,7 @@ if('serviceWorker' in navigator) {
           </select>
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
           <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
             <option value="">Select payment method</option>
             <option value="mpesa">M-Pesa</option>
@@ -2469,7 +2469,7 @@ if('serviceWorker' in navigator) {
           </select>
         </div>
         <div id="gum-phone-wrap" style="display:none;">
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
           <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
       </div>

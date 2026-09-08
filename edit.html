@@ -104,7 +104,7 @@
 <meta property="og:image" content="https://afrivid.studio/images/logo.png">
 <meta name="twitter:card" content="summary_large_image">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AfriVid Studio  -  Video Editor</title>
+<title>AfriVid Studio - Classic Editor</title>
 
 
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -125,7 +125,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .page-header{margin-bottom:2rem;}
 .page-label{font-size:0.68rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
 .page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:#fff;margin-bottom:0.4rem;}
-.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.4);}
+.page-sub{font-size:0.88rem;color:rgba(255,255,255,0.58);}
 .card{background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;}
 .card-title{font-size:0.95rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;color:#fff;}
 .card-icon{width:32px;height:32px;border-radius:8px;background:rgba(245,166,35,0.12);display:flex;align-items:center;justify-content:center;}
@@ -133,11 +133,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .upload-zone:hover{border-color:rgba(245,166,35,0.5);background:rgba(245,166,35,0.05);}
 .upload-icon{font-size:2.5rem;margin-bottom:1rem;}
 .upload-text{font-size:1rem;font-weight:600;color:#fff;margin-bottom:0.4rem;}
-.upload-sub{font-size:0.8rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;}
+.upload-sub{font-size:0.8rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;}
 .editor-layout{display:grid;grid-template-columns:1fr 320px;gap:1.25rem;}
 .preview-area{background:#000;border-radius:12px;aspect-ratio:16/9;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.06);}
 .preview-area video{width:100%;height:100%;object-fit:contain;}
-.preview-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);font-size:0.85rem;font-family:'Space Mono',monospace;}
+.preview-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:0.85rem;font-family:'Space Mono',monospace;}
 .controls-panel{display:flex;flex-direction:column;gap:1rem;}
 .control-group{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;}
 .control-label{font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
@@ -149,7 +149,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .preset-btn{background:#111;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.5rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;text-align:center;}
 .preset-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
 .mode-toggle{display:flex;gap:0;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin-bottom:1.25rem;}
-.mode-btn{flex:1;padding:0.7rem;background:transparent;border:none;color:rgba(255,255,255,0.4);font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.mode-btn{flex:1;padding:0.7rem;background:transparent;border:none;color:rgba(255,255,255,0.58);font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
 .mode-btn.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
 .btn{padding:0.8rem 1.5rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
 .btn-gold{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
@@ -158,10 +158,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-outline:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
 .btn-green{background:#2D8A5E;color:#fff;}
 .btn-green:hover{background:#40916C;}
-.btn-red{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E63329;}
+.btn-red{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);color:#E94D44;}
 .btn:disabled{opacity:0.4;cursor:not-allowed;}
 .btn-row{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;}
-.status-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;font-family:'Space Mono',monospace;font-size:0.72rem;color:rgba(255,255,255,0.4);max-height:100px;overflow-y:auto;margin-top:1rem;line-height:1.9;}
+.status-log{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem 1rem;font-family:'Space Mono',monospace;font-size:0.72rem;color:rgba(255,255,255,0.58);max-height:100px;overflow-y:auto;margin-top:1rem;line-height:1.9;}
 .log-line{display:block;}
 .log-line.success{color:#74C69D;}
 .log-line.error{color:#E63329;}
@@ -184,14 +184,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .login-title span{color:#F5A623;}
 .login-card{background:rgba(17,17,17,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;}
 .auth-tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;margin-bottom:1.5rem;}
-.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(255,255,255,0.58);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:all 0.2s;}
 .auth-tab.active{background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;}
-.flabel{font-size:0.72rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
+.flabel{font-size:0.72rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.4rem;}
 .finput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:0.85rem;transition:border-color 0.2s;}
 .finput:focus{border-color:rgba(245,166,35,0.5);}
 .btn-auth{width:100%;background:linear-gradient(135deg,#F5A623,#E8931A);color:#050A14;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;}
 .ferror{display:none;margin-top:0.85rem;padding:0.7rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#ff6b6b;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.5rem;cursor:pointer;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(255,255,255,0.58);font-size:1.5rem;cursor:pointer;}
 @media(max-width:768px){
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 6rem;}
@@ -470,7 +470,7 @@ body::after{
      removed. Delete this one block to bring the tool back. -->
 <div style="position:fixed;inset:0;z-index:999999;background:#050A14;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;font-family:'Syne',sans-serif;">
   <div style="font-size:2.5rem;margin-bottom:1rem;">🛠️</div>
-  <h1 style="color:#fff;font-size:1.6rem;font-weight:800;margin:0 0 0.75rem;">Video Editor is getting a redesign</h1>
+  <h1 style="color:#fff;font-size:1.6rem;font-weight:800;margin:0 0 0.75rem;">Classic Editor is getting a redesign</h1>
   <p style="color:rgba(255,255,255,0.6);font-size:0.95rem;max-width:420px;line-height:1.6;margin:0 0 1.75rem;">We've paused this tool for a bit while we rebuild it. It'll be back soon, better than before.</p>
   <a href="studio.html" style="background:#F5A623;color:#050A14;padding:0.8rem 1.75rem;border-radius:10px;font-weight:800;text-decoration:none;font-size:0.9rem;">Go to My Studio →</a>
 </div>
@@ -524,7 +524,7 @@ body::after{
     <div class="navbar-badge">AfriVid Studio</div>
   </a>
   <div class="navbar-actions">
-    <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+    <a href="index.html" style="font-size:0.72rem;color:rgba(255,255,255,0.56);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
   </div>
 </nav>
 
@@ -550,7 +550,7 @@ body::after{
 
 <div class="main">
 </a>
-    <a href="index.html" style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
+    <a href="index.html" style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;text-decoration:none;">← Dashboard</a>
   </div>
 <div class="page-header">
     <div class="page-label">VIDEO EDITOR</div>
@@ -596,7 +596,7 @@ body::after{
       .quick-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);padding:0.5rem 0.6rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;width:100%;text-align:left;transition:all 0.2s;font-family:'Syne',sans-serif;margin-bottom:0.35rem;display:block;}
       .quick-btn:hover{border-color:rgba(245,166,35,0.3);color:#F5A623;}
       .slider-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;}
-      .slider-row label{font-size:0.68rem;color:rgba(255,255,255,0.4);width:75px;flex-shrink:0;}
+      .slider-row label{font-size:0.68rem;color:rgba(255,255,255,0.58);width:75px;flex-shrink:0;}
       .slider-row input[type=range]{flex:1;}
       .slider-row span{font-size:0.68rem;color:#F5A623;width:38px;text-align:right;font-family:'Space Mono',monospace;}
       @media(max-width:768px){.studio-layout{grid-template-columns:1fr;}}
@@ -619,14 +619,14 @@ body::after{
         <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0;"></div>
         <button class="quick-btn" onclick="toggleCrop()">⬚ Crop</button>
         <button class="quick-btn" onclick="fastExport()" id="btn-export" style="color:#F5A623;border-color:rgba(245,166,35,0.3);">▶ Export</button>
-        <button class="quick-btn" onclick="resetEnhancer()" style="color:rgba(230,51,41,0.7);">✕ New Video</button>
+        <button class="quick-btn" onclick="resetEnhancer()" style="color:rgba(243,155,151,0.7);">✕ New Video</button>
         <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0;"></div>
         <div id="enhance-export-btns" style="display:none;">
           <button class="quick-btn" onclick="downloadEnhanced()" style="color:#74C69D;border-color:rgba(116,198,157,0.3);">⬇ Download</button>
           <button class="quick-btn" onclick="shareEnhancedWhatsApp()">💬 WhatsApp</button>
           <button class="quick-btn" onclick="uploadEnhancedToYouTube()">▶ YouTube</button>
         </div>
-        <span id="enhance-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;word-break:break-all;"></span>
+        <span id="enhance-filename" style="font-size:0.62rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;word-break:break-all;"></span>
       </div>
 
       <!-- CENTER -->
@@ -686,7 +686,7 @@ body::after{
             <div id="timeline-segment" style="position:absolute;height:100%;background:rgba(245,166,35,0.15);left:0;right:0;border:1px solid rgba(245,166,35,0.3);"></div>
             <div id="timeline-playhead" style="position:absolute;height:100%;width:2px;background:#F5A623;left:0;"></div>
           </div>
-          <div id="timeline-time" style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-top:0.4rem;text-align:center;">0:00 — 0:00</div>
+          <div id="timeline-time" style="font-size:0.65rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;margin-top:0.4rem;text-align:center;">0:00 — 0:00</div>
         </div>
 
 
@@ -791,14 +791,14 @@ body::after{
           <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;">
             <div style="font-size:0.65rem;color:#F5A623;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;">⊞ COMBINE VIDEOS</div>
             <div class="upload-zone" onclick="document.getElementById('combine-input').click()" style="padding:0.75rem;margin-bottom:0.5rem;cursor:pointer;border:1px dashed rgba(255,255,255,0.1);border-radius:8px;text-align:center;">
-              <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">➕ Add videos to combine</div>
+              <div style="color:rgba(255,255,255,0.58);font-size:0.78rem;">➕ Add videos to combine</div>
             </div>
             <input type="file" id="combine-input" accept="video/*" multiple style="display:none;" onchange="addCombineFiles(event)">
             <div class="combine-list" id="combine-list"></div>
             <button class="btn btn-outline" style="width:100%;margin-top:0.5rem;" onclick="handleCombine()">⊞ Combine & Export</button>
           </div>
           <div id="progress-wrap" style="display:none;margin-top:1rem;">
-            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);margin-bottom:0.4rem;">
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.58);margin-bottom:0.4rem;">
               <span id="progress-label">Processing...</span><span id="progress-pct">0%</span>
             </div>
             <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;">
@@ -853,7 +853,7 @@ body::after{
         <label class="flabel">PASSWORD</label>
         <input type="password" id="login-password" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.56);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </div>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="flabel">FULL NAME</label>
@@ -862,16 +862,16 @@ body::after{
         <input type="email" id="signup-email" class="finput" placeholder="you@example.com">
         <label class="flabel">PASSWORD</label>
         <input type="password" id="signup-password" class="finput" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#F5A623;flex-shrink:0;" required>
           <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#F5A623;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#F5A623;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.5;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#74C69D;flex-shrink:0;" checked>
           <label for="afribrain-consent">✅ Help build <span style="color:#74C69D;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#74C69D;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(255,255,255,0.56);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#F5A623;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </div>
       <div class="ferror" id="login-error"></form>
       </div>
@@ -1512,11 +1512,11 @@ async function finishEnhancing() {
     banner.innerHTML = `
       <div style="flex:1;">
         <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">✅ Video Ready! ${sizeMB}MB</div>
-        <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:0.2rem;">Your AI edited video is ready</div>
+        <div style="color:rgba(255,255,255,0.58);font-size:0.72rem;margin-top:0.2rem;">Your AI edited video is ready</div>
       </div>
       <button onclick="downloadEnhanced()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;white-space:nowrap;">⬇ Download</button>
       <button onclick="shareEnhancedWhatsApp()" style="background:#25D366;border:none;color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">💬</button>
-      <button onclick="document.getElementById('edit-success-banner').remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;padding:0 0.25rem;">✕</button>
+      <button onclick="document.getElementById('edit-success-banner').remove()" style="background:none;border:none;color:rgba(255,255,255,0.54);font-size:1.2rem;cursor:pointer;padding:0 0.25rem;">✕</button>
     `;
     document.body.appendChild(banner);
   }
@@ -1862,7 +1862,7 @@ function renderVideoList() {
       <div style="display:flex;gap:4px;">
         ${i > 0 ? `<button onclick="moveVideo(${i},-1)" style="background:var(--border2);border:none;color:var(--white);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">[up]</button>` : ''}
         ${i < multiVideos.length-1 ? `<button onclick="moveVideo(${i},1)" style="background:var(--border2);border:none;color:var(--white);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">[dn]</button>` : ''}
-        <button onclick="removeVideo(${i})" style="background:rgba(230,51,41,0.15);border:none;color:#E63329;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">[x]</button>
+        <button onclick="removeVideo(${i})" style="background:rgba(230,51,41,0.15);border:none;color:#EA564E;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.8rem;">[x]</button>
       </div>
     </div>
   `).join('') + `
@@ -2775,7 +2775,7 @@ const editMobPanels = {
     html: `<div style="padding:0.5rem 0;">
       <button class="mob-btn" style="width:100%;margin-bottom:0.5rem;grid-column:span 4;background:rgba(245,166,35,0.15);color:#F5A623;" onclick="generateCaptions()">✦ Generate Auto-Captions</button>
       <div style="margin-top:0.5rem;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);margin-bottom:0.4rem;">STYLE</div>
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.58);margin-bottom:0.4rem;">STYLE</div>
         <div class="mob-btn-grid">
           <button class="mob-btn" onclick="setCaptionStyle('classic')">Classic</button>
           <button class="mob-btn" onclick="setCaptionStyle('bold')">Bold</button>
@@ -3032,24 +3032,24 @@ if('serviceWorker' in navigator) {
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
+      <div id="gum-reason" style="color:rgba(255,255,255,0.58);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
     </div>
     <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.58);">/month</span></div>
+      <div style="color:rgba(255,255,255,0.58);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
     </div>
     <div id="gum-form">
       <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
           <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
           <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
           <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
             <option value="">Select your country</option>
             <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
@@ -3058,7 +3058,7 @@ if('serviceWorker' in navigator) {
           </select>
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
           <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
             <option value="">Select payment method</option>
             <option value="mpesa">M-Pesa</option>
@@ -3069,7 +3069,7 @@ if('serviceWorker' in navigator) {
           </select>
         </div>
         <div id="gum-phone-wrap" style="display:none;">
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
           <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
       </div>
@@ -3204,10 +3204,10 @@ setTimeout(() => clearInterval(_eUsageCheck), 10000);
   <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
+      <div style="color:rgba(255,255,255,0.58);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
-      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
+      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E94D44;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
       <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:1;">💬 Feedback</button>
       <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🛟 Support</button>
       <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🚀 Join Us</button>
@@ -3222,7 +3222,7 @@ setTimeout(() => clearInterval(_eUsageCheck), 10000);
       <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.52);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
   </div>
 </div>
 </body>
@@ -3690,11 +3690,11 @@ window.translateVideo = async function(targetLang) {
     banner.innerHTML = `
       <div style="flex:1;">
         <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">✅ Translated to ${langName}!</div>
-        <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:0.2rem;">"${translatedText.slice(0,60)}..."</div>
+        <div style="color:rgba(255,255,255,0.58);font-size:0.72rem;margin-top:0.2rem;">"${translatedText.slice(0,60)}..."</div>
       </div>
       <button onclick="(new Audio('${translatedAudioUrl}')).play()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play</button>
       <button onclick="const a=document.createElement('a');a.href='${translatedAudioUrl}';a.download='AfriVid-${langName}-audio.mp3';a.click();" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
-      <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.54);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
 
@@ -3931,7 +3931,7 @@ window.generateThumbnail = async function() {
       preview.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
           <span style="color:#F5A623;font-weight:800;font-size:0.85rem;">🖼 Thumbnail Ready</span>
-          <button onclick="document.getElementById('thumb-preview').remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:1.2rem;">✕</button>
+          <button onclick="document.getElementById('thumb-preview').remove()" style="background:none;border:none;color:rgba(255,255,255,0.58);cursor:pointer;font-size:1.2rem;">✕</button>
         </div>
         <img src="${thumbUrl}" style="width:100%;border-radius:8px;margin-bottom:0.75rem;">
         <div style="display:flex;gap:0.5rem;">
@@ -4053,24 +4053,24 @@ formats: "shorts" (YouTube), "reels" (Instagram), "tiktok"`;
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
         <div>
           <div style="color:#F5A623;font-weight:900;font-size:1rem;">✦ ${viralClips.length} Viral Clips Found</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:0.2rem;">Click to export each clip</div>
+          <div style="color:rgba(255,255,255,0.58);font-size:0.72rem;margin-top:0.2rem;">Click to export each clip</div>
         </div>
-        <button onclick="document.getElementById('viral-clips-panel').remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+        <button onclick="document.getElementById('viral-clips-panel').remove()" style="background:none;border:none;color:rgba(255,255,255,0.58);font-size:1.4rem;cursor:pointer;">✕</button>
       </div>
       ${viralClips.map((clip, i) => `
         <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
             <div style="flex:1;">
               <div style="color:#fff;font-weight:700;font-size:0.88rem;">${formatIcon(clip.format)} ${clip.title || 'Clip '+(i+1)}</div>
-              <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;margin-top:0.2rem;">${clip.reason || ''}</div>
+              <div style="color:rgba(255,255,255,0.58);font-size:0.7rem;margin-top:0.2rem;">${clip.reason || ''}</div>
             </div>
             <div style="text-align:right;margin-left:1rem;">
               <div style="color:${scoreColor(clip.score)};font-weight:900;font-size:1.1rem;">${clip.score || '--'}</div>
-              <div style="color:rgba(255,255,255,0.3);font-size:0.6rem;">VIRAL SCORE</div>
+              <div style="color:rgba(255,255,255,0.54);font-size:0.6rem;">VIRAL SCORE</div>
             </div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;font-family:'Space Mono',monospace;">${formatTime(clip.start)} → ${formatTime(clip.end)} · ${Math.round(clip.end-clip.start)}s · ${(clip.format||'shorts').toUpperCase()}</div>
+            <div style="color:rgba(255,255,255,0.58);font-size:0.72rem;font-family:'Space Mono',monospace;">${formatTime(clip.start)} → ${formatTime(clip.end)} · ${Math.round(clip.end-clip.start)}s · ${(clip.format||'shorts').toUpperCase()}</div>
             <div style="display:flex;gap:0.4rem;">
               <button onclick="previewViralClip(${clip.start},${clip.end})" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:Syne,sans-serif;">▶ Preview</button>
               <button onclick="exportViralClip(${clip.start},${clip.end},'${(clip.title||'clip').replace(/'/g,'')}','${clip.format||'shorts'}')" style="background:#F5A623;border:none;color:#050A14;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Export</button>
@@ -4276,10 +4276,10 @@ window.removeNoise = async function() {
     banner.innerHTML = `
       <div style="flex:1;">
         <div style="color:#74C69D;font-weight:800;">✅ Noise Removed!</div>
-        <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">Clean audio preview playing</div>
+        <div style="color:rgba(255,255,255,0.58);font-size:0.72rem;">Clean audio preview playing</div>
       </div>
       <button onclick="const a=document.createElement('a');a.href='${cleanUrl}';a.download='clean-audio.wav';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
-      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.54);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
 

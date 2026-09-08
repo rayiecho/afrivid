@@ -81,7 +81,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .topbar-logo span em{color:var(--gold);font-style:normal;}
 .topbar-right{display:flex;align-items:center;gap:0.75rem;}
 .user-badge{font-size:0.72rem;color:var(--green);font-family:var(--mono);background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;}
-.back-btn{color:var(--muted);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s;}
+.back-btn{color:rgba(255,255,255,0.54);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s;}
 .back-btn:hover{color:#fff;}
 
 /* HERO */
@@ -89,7 +89,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .hero-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:3px;margin-bottom:0.75rem;}
 .hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;margin-bottom:0.75rem;line-height:1.1;}
 .hero-title em{color:var(--gold);font-style:normal;}
-.hero-sub{color:var(--muted);font-size:0.95rem;max-width:500px;margin:0 auto;}
+.hero-sub{color:rgba(255,255,255,0.54);font-size:0.95rem;max-width:500px;margin:0 auto;}
 
 /* DROP ZONE */
 .drop-zone{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
@@ -97,7 +97,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .drop-area:hover,.drop-area.dragover{border-color:var(--gold);background:rgba(245,166,35,0.05);}
 .drop-icon{font-size:2.5rem;margin-bottom:0.75rem;}
 .drop-title{font-weight:800;font-size:1.1rem;margin-bottom:0.4rem;}
-.drop-sub{color:var(--muted);font-size:0.82rem;}
+.drop-sub{color:rgba(255,255,255,0.54);font-size:0.82rem;}
 .drop-input{position:absolute;inset:0;opacity:0;cursor:pointer;}
 
 /* VIDEO PREVIEW */
@@ -105,9 +105,9 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .video-wrap{position:relative;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
 #ai-video{width:100%;max-height:400px;display:block;}
 .video-info{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:var(--navy);border-top:1px solid var(--border);}
-.video-name{font-size:0.82rem;color:var(--muted);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.video-name{font-size:0.82rem;color:rgba(255,255,255,0.54);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
 .video-duration{font-size:0.82rem;color:var(--gold);font-family:var(--mono);}
-.change-video-btn{background:none;border:1px solid var(--border2);color:var(--muted);padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--font);}
+.change-video-btn{background:none;border:1px solid var(--border2);color:rgba(255,255,255,0.54);padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--font);}
 .change-video-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
 
 /* AI PROMPT */
@@ -118,7 +118,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .prompt-btn{background:var(--gold);border:none;color:#050A14;padding:0.85rem 1.5rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all 0.2s;}
 .prompt-btn:hover{background:#e09520;}
 .prompt-examples{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem;}
-.example-chip{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;font-family:var(--font);}
+.example-chip{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:rgba(255,255,255,0.54);padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;font-family:var(--font);}
 .example-chip:hover{color:#fff;border-color:var(--border2);}
 
 /* FEATURES GRID */
@@ -146,13 +146,13 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .btn{padding:0.6rem 1.1rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
 .btn-gold{background:var(--gold);color:#050A14;}
 .btn-gold:hover{background:#e09520;}
-.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--muted);}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:rgba(255,255,255,0.54);}
 .btn-outline:hover{border-color:rgba(245,166,35,0.3);color:var(--gold);}
 .btn-green{background:var(--green);color:#050A14;}
 .form-input{width:100%;background:#111;border:1px solid var(--border2);color:#fff;padding:0.6rem 0.75rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;outline:none;margin-bottom:0.5rem;}
 
 /* LOG */
-.ai-log{background:#0d0d0d;border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);max-height:100px;overflow-y:auto;line-height:1.9;margin-top:0.75rem;}
+.ai-log{background:#0d0d0d;border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:var(--mono);font-size:0.72rem;color:rgba(255,255,255,0.54);max-height:100px;overflow-y:auto;line-height:1.9;margin-top:0.75rem;}
 
 /* RESULT BANNER */
 .result-banner{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:9999;background:var(--navy2);border:1px solid rgba(116,198,157,0.4);border-radius:14px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:var(--font);min-width:320px;max-width:90vw;}
@@ -256,7 +256,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <span>Afri<em>Vid</em> AI Editor</span>
   </a>
   <div class="topbar-right">
-    <span id="ai-usage-badge" style="display:none;font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.8rem;border-radius:20px;"></span>
+    <span id="ai-usage-badge" style="display:none;font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.54);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.8rem;border-radius:20px;"></span>
     <span class="user-badge" id="user-badge" style="display:none;" onclick="window.location.href='studio.html?profile=1'">Loading...</span>
     <button class="btn btn-outline" id="btn-signin" onclick="showLogin()" style="font-size:0.78rem;padding:0.4rem 0.9rem;">Sign In</button>
   </div>
@@ -303,12 +303,12 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
         <button onclick="cancelCrop()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Cancel</button>
       </div>
     </div>
-    <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Click and drag on the video to select the area to keep</div>
+    <div style="color:rgba(255,255,255,0.54);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Click and drag on the video to select the area to keep</div>
     <div style="position:relative;display:inline-block;width:100%;">
       <canvas id="crop-canvas" style="width:100%;cursor:crosshair;border-radius:8px;display:block;"></canvas>
       <div id="crop-selection-box" style="display:none;position:absolute;border:2px solid #F5A623;background:rgba(245,166,35,0.1);pointer-events:none;"></div>
     </div>
-    <div id="crop-coords" style="color:rgba(255,255,255,0.3);font-size:0.7rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
+    <div id="crop-coords" style="color:rgba(255,255,255,0.52);font-size:0.7rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
   </div>
 </div>
 <!-- PHASE 2 STATUS -->
@@ -328,13 +328,13 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when ready.</div>
       <div id="phase2-dashboard-btn" style="display:none;margin-top:0.75rem;display:none;gap:0.5rem;flex-wrap:wrap;">
         <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
-        <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
+        <div style="color:rgba(255,255,255,0.52);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
       </div>
     </div>
     <div id="phase2-action-btns" style="display:none;gap:0.5rem;flex-wrap:wrap;">
       <a href="index.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
       <a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Dashboard</a>
-      <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
+      <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.54);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
     </div>
     <div id="phase2-download" style="display:none;margin-top:1rem;">
       <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
@@ -392,7 +392,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
      immediately visible rather than buried among the existing grid. -->
 <div class="features-section">
   <div class="features-label">🎬 STUDIO UPGRADE — SERVER AI</div>
-  <p style="color:rgba(255,255,255,0.45);font-size:0.78rem;margin:-0.5rem 0 0.85rem;">These run on our servers (real AI models, not the browser) — clicking starts a job that takes a few minutes, not seconds. You'll see live progress below each one.</p>
+  <p style="color:rgba(255,255,255,0.56);font-size:0.78rem;margin:-0.5rem 0 0.85rem;">These run on our servers (real AI models, not the browser) — clicking starts a job that takes a few minutes, not seconds. You'll see live progress below each one.</p>
   <div class="features-grid">
 
     <div class="feature-card" onclick="togglePanel('su-noise')">
@@ -592,7 +592,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <button class="btn btn-gold" onclick="runFeature('bgremove','white')">⬜ White</button>
       <button class="btn btn-gold" onclick="runFeature('bgremove','green')">💚 Green Screen</button>
     </div>
-    <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;">⚠ Browser processing — works on short clips. Pro users get server-quality removal.</div>
+    <div style="color:rgba(255,255,255,0.52);font-size:0.72rem;">⚠ Browser processing — works on short clips. Pro users get server-quality removal.</div>
     <div class="ai-log" id="log-bgremove"></div>
   </div>
 </div>
@@ -707,7 +707,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <input class="form-input" id="brand-name" placeholder="Your brand name e.g. AfriVid Studio">
     <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;">
       <input type="color" id="brand-color" value="#F5A623" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer;">
-      <label style="flex:1;background:#111;border:1px solid var(--border2);color:var(--muted);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font);">
+      <label style="flex:1;background:#111;border:1px solid var(--border2);color:rgba(255,255,255,0.54);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font);">
         📁 Upload Logo <input type="file" accept="image/*" onchange="loadBrandLogoAI(this)" style="display:none;">
       </label>
       <img id="brand-logo-preview" style="display:none;width:36px;height:36px;border-radius:6px;object-fit:contain;">
@@ -728,7 +728,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 0.75rem;">A</div>
       <div style="font-size:1.2rem;font-weight:900;">Sign in to AfriVid</div>
-      <div style="color:var(--muted);font-size:0.82rem;margin-top:0.3rem;">Continue to AI Editor</div>
+      <div style="color:rgba(255,255,255,0.54);font-size:0.82rem;margin-top:0.3rem;">Continue to AI Editor</div>
     </div>
     <input id="login-email" type="email" placeholder="Email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:0.75rem;">
     <input id="login-password" type="password" placeholder="Password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:1rem;">
@@ -1454,7 +1454,7 @@ async function exportClips(clips, filename, bitrate) {
               <p style="color:rgba(255,255,255,0.8);">AfriVid AI has finished processing <strong>${videoName}</strong>.</p>
               <p style="color:rgba(255,255,255,0.6);">Your edited video has been downloaded automatically. Check your downloads folder.</p>
               <a href="https://afrivid.studio/aieditor.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Edit Another Video →</a>
-              <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:2rem;">AfriVid Studio · afrivid.studio</p>
+              <p style="color:rgba(255,255,255,0.52);font-size:0.75rem;margin-top:2rem;">AfriVid Studio · afrivid.studio</p>
             </div>
           `
         })
@@ -1497,10 +1497,10 @@ function showResultBanner(msg, blob, filename) {
   banner.innerHTML = `
     <div style="flex:1;">
       <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">${msg}</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:0.2rem;">Ready to download</div>
+      <div style="color:rgba(255,255,255,0.54);font-size:0.72rem;margin-top:0.2rem;">Ready to download</div>
     </div>
     <button onclick="const a=document.createElement('a');a.href='${url}';a.download='${filename}.webm';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
-    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.52);font-size:1.2rem;cursor:pointer;">✕</button>
   `;
   document.body.appendChild(banner);
 }
@@ -1646,22 +1646,22 @@ function showViralClipsUI(clips) {
   panel.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <div style="color:#F5A623;font-weight:900;">✦ ${clips.length} Viral Clips</div>
-      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.54);font-size:1.4rem;cursor:pointer;">✕</button>
     </div>
     ${clips.map((c,i) => `
       <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
         <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
           <div style="flex:1;">
             <div style="color:#fff;font-weight:700;font-size:0.88rem;">${fi(c.format)} ${c.title||'Clip '+(i+1)}</div>
-            <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${c.reason||''}</div>
+            <div style="color:rgba(255,255,255,0.54);font-size:0.7rem;">${c.reason||''}</div>
           </div>
           <div style="text-align:right;margin-left:1rem;">
             <div style="color:${sc(c.score)};font-weight:900;font-size:1.1rem;">${c.score||'--'}</div>
-            <div style="color:rgba(255,255,255,0.3);font-size:0.6rem;">SCORE</div>
+            <div style="color:rgba(255,255,255,0.52);font-size:0.6rem;">SCORE</div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="color:rgba(255,255,255,0.4);font-size:0.7rem;font-family:Space Mono,monospace;">${formatTime(c.start)} → ${formatTime(c.end)} · ${Math.round(c.end-c.start)}s</div>
+          <div style="color:rgba(255,255,255,0.54);font-size:0.7rem;font-family:Space Mono,monospace;">${formatTime(c.start)} → ${formatTime(c.end)} · ${Math.round(c.end-c.start)}s</div>
           <div style="display:flex;gap:0.4rem;">
             <button onclick="document.getElementById('ai-video').currentTime=${c.start};document.getElementById('ai-video').play();setTimeout(()=>document.getElementById('ai-video').pause(),${(c.end-c.start)*1000})" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:Syne,sans-serif;">▶</button>
             <button onclick="exportClips([{start:${c.start},end:${c.end}}],'${(c.title||'clip').replace(/'/g,'')}')" style="background:#F5A623;border:none;color:#050A14;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇</button>
@@ -1729,11 +1729,11 @@ async function doTranslate(lang) {
     const banner = document.createElement('div');
     banner.className = 'result-banner';
     banner.innerHTML = `
-      <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
+      <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.54);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
       <button id="play-translated-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play Synced</button>
       <button id="export-translated-btn" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Video</button>
       <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio Only</button>
-      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.52);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
     document.getElementById('play-translated-btn').onclick = playSynced;
@@ -2141,10 +2141,10 @@ function resetPassword() {
   <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
+      <div style="color:rgba(255,255,255,0.54);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
-      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#E63329;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
+      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#EA5149;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
       <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:1;">💬 Feedback</button>
       <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#6399ff;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🛟 Support</button>
       <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#74C69D;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🚀 Join Us</button>
@@ -2159,7 +2159,7 @@ function resetPassword() {
       <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.25);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.5);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
   </div>
 </div>
 
@@ -2306,8 +2306,8 @@ window.showLimitsUX = async function() {
     panel.innerHTML = `
       <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.52);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
         </div>
         
         <div style="margin-bottom:0.6rem;">
@@ -2383,24 +2383,24 @@ function showUpgradeForm() {
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
+      <div id="gum-reason" style="color:rgba(255,255,255,0.54);font-size:0.82rem;">Fill the form. We respond within <span style="color:#74C69D;font-weight:700;">1 hour</span>.</div>
     </div>
     <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;">$5<span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.54);">/month</span></div>
+      <div style="color:rgba(255,255,255,0.54);font-size:0.78rem;">Unlimited videos · No watermark · AI Chatbot · Priority support</div>
     </div>
     <div id="gum-form">
       <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">YOUR NAME *</label>
           <input id="gum-name" type="text" placeholder="Your full name" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">EMAIL ADDRESS *</label>
           <input id="gum-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">COUNTRY *</label>
           <select id="gum-country" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
             <option value="">Select your country</option>
             <option>Kenya</option><option>Rwanda</option><option>Nigeria</option>
@@ -2409,7 +2409,7 @@ function showUpgradeForm() {
           </select>
         </div>
         <div>
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PREFERRED PAYMENT *</label>
           <select id="gum-payment" onchange="document.getElementById('gum-phone-wrap').style.display=['mpesa','mtn','airtel'].includes(this.value)?'block':'none'" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;">
             <option value="">Select payment method</option>
             <option value="mpesa">M-Pesa</option>
@@ -2420,7 +2420,7 @@ function showUpgradeForm() {
           </select>
         </div>
         <div id="gum-phone-wrap" style="display:none;">
-          <label style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
+          <label style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.3rem;">PHONE NUMBER</label>
           <input id="gum-phone" type="tel" placeholder="+254 7XX XXX XXX" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
         </div>
       </div>
@@ -2566,17 +2566,17 @@ setTimeout(() => clearInterval(_usageCheck), 10000);
     </div>
     <div style="display:flex;justify-content:space-between;margin-bottom:2rem;">
       <span id="proc-pct" style="font-size:0.75rem;color:#F5A623;font-family:'Space Mono',monospace;">0%</span>
-      <span id="proc-time" style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;"></span>
+      <span id="proc-time" style="font-size:0.75rem;color:rgba(255,255,255,0.52);font-family:'Space Mono',monospace;"></span>
     </div>
 
     <!-- Steps -->
     <div id="proc-steps" style="text-align:left;background:rgba(255,255,255,0.03);border-radius:12px;padding:1rem;">
     </div>
 
-    <div style="margin-top:1.5rem;color:rgba(255,255,255,0.25);font-size:0.75rem;font-family:'Space Mono',monospace;">
+    <div style="margin-top:1.5rem;color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">
       You can keep this tab open or close it — we'll notify you when done.
     </div>
-    <button onclick="hideProcessingOverlay();location.reload();" style="margin-top:1rem;background:rgba(230,51,41,0.15);border:1px solid rgba(230,51,41,0.3);color:#E63329;padding:0.5rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Cancel Processing</button>
+    <button onclick="hideProcessingOverlay();location.reload();" style="margin-top:1rem;background:rgba(230,51,41,0.15);border:1px solid rgba(230,51,41,0.3);color:#EA564E;padding:0.5rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Cancel Processing</button>
   </div>
 </div>
 

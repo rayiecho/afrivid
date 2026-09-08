@@ -11,8 +11,7 @@ TOOLS (each is its own page, linked from the homepage/nav):
 - Manual Editor (edit.html): frame-by-frame manual video editing.
 - Tutorial Maker (create.html, Tutorial Maker tab): explain any concept as narrated slides, or auto-record a live walkthrough of any website.
 - Ad Maker (create.html, Ad Maker tab): turns a business description into a short branded video ad.
-- Design Studio (design.html): AI-fill flyers, posters, banners, logos from a short description.
-- Image Generator (images.html): branded photorealistic images for a business, or "living" images with subtle motion for a website.
+- Graphics and Images (graphics.html): posters, flyers, banners, social graphics, logos and certificates. AI shoots the artwork and writes the headline/bullets, then the user can move, retype and recolour every piece on a canvas. Also makes branded photorealistic business images and "living" images with subtle motion for a website. Replaces the old Design Studio and Image Generator, which are both retired.
 - Photo Editor (photo.html): background removal, African flag overlays, AI photo enhancement.
 - Slides Generator (create.html, Slides Generator tab): a topic into a full slide deck, downloadable as images or PDF.
 - Video Compressor (compress.html): shrink a video's file size, balancing size vs. quality.

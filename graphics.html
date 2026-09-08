@@ -1,0 +1,2540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Design posters, flyers, banners, social graphics, logos and certificates — AI shoots the artwork and writes the words as real, legible type, then hands you a canvas to finish it on.">
+<meta property="og:title" content="AfriVid Studio — Graphics and Images | Africa">
+<meta property="og:description" content="Design posters, flyers, banners, social graphics, logos and certificates — AI shoots the artwork and writes the words as real, legible type, then hands you a canvas to finish it on.">
+<meta property="og:url" content="https://afrivid.studio/graphics.html">
+<meta property="og:image" content="https://afrivid.studio/images/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://afrivid.studio/graphics.html">
+<title>AfriVid Studio — Graphics and Images</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Anton&family=Archivo+Black&family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Syne',sans-serif;background:#FBF7EF;color:#17140F;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(23,20,15,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(23,20,15,0.05) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,20,15,0.1);}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(23,20,15,0.6);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;}
+.back-btn:hover{color:#9C5918;}
+.back-btn svg{width:17px;height:17px;}
+.topbar-divider{width:1px;height:20px;background:rgba(23,20,15,0.12);}
+.topbar-title{font-size:1rem;font-weight:800;color:#17140F;}
+.topbar-title span{color:#9B5B17;}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.user-name{font-size:0.82rem;font-weight:700;color:#17140F;cursor:pointer;}
+.btn-signin{background:transparent;border:1px solid rgba(224,138,46,0.5);color:#9C5918;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
+.btn-signout{background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.62);padding:0.4rem 0.9rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-signout:hover{border-color:#E63329;color:#CE2218;}
+
+.main{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:1.25rem 2rem 3rem;}
+.page-label{font-size:0.68rem;color:#9C5918;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.35rem;}
+.page-title{font-size:clamp(1.4rem,2.4vw,1.8rem);font-weight:800;margin-bottom:0.25rem;}
+.page-sub{font-size:0.84rem;color:rgba(23,20,15,0.66);margin-bottom:1.1rem;max-width:820px;line-height:1.5;}
+
+.gfx-layout{display:grid;grid-template-columns:158px 330px 1fr;gap:1.1rem;align-items:start;}
+@media (max-width:1180px){.gfx-layout{grid-template-columns:158px 1fr;}.canvas-panel{grid-column:1/-1;position:static!important;}}
+@media (max-width:760px){.gfx-layout{grid-template-columns:1fr;}.gfxtabs{flex-direction:row!important;overflow-x:auto;position:static!important;}}
+
+.gfxtabs{display:flex;flex-direction:column;gap:0.5rem;position:sticky;top:5rem;}
+.gfxtab{width:100%;text-align:left;padding:0.7rem 1rem;border-radius:10px;border:1px solid rgba(23,20,15,0.12);background:#FFF;color:rgba(23,20,15,0.6);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.gfxtab:hover:not(.active){border-color:rgba(224,138,46,0.4);color:#A15C19;}
+.gfxtab.active{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border-color:transparent;box-shadow:0 6px 16px rgba(224,138,46,0.3);}
+
+.sidebar-panel{display:flex;flex-direction:column;gap:0.85rem;min-width:0;}
+/* The result stays pinned while the controls scroll underneath it. Before this, reaching the
+   Generate button pushed the canvas completely off the top of the screen — you were adjusting
+   a design you could no longer see. */
+.canvas-panel{display:flex;flex-direction:column;gap:0.8rem;min-width:0;position:sticky;top:4.6rem;align-self:start;}
+.card{background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.25rem;}
+.control-label{font-size:0.65rem;color:#9C5918;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.7rem;}
+.form-label{font-size:0.65rem;color:rgba(23,20,15,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin:0.9rem 0 0.35rem;}
+.form-label:first-child{margin-top:0;}
+.form-input,.form-textarea,.form-select{width:100%;background:#F3EDE0;border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.65rem 0.8rem;border-radius:9px;font-family:'Syne',sans-serif;font-size:0.84rem;outline:none;box-sizing:border-box;transition:border-color 0.2s;}
+.form-textarea{resize:vertical;min-height:82px;line-height:1.5;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:rgba(224,138,46,0.5);}
+.form-hint{font-size:0.72rem;color:rgba(23,20,15,0.58);margin-top:0.35rem;line-height:1.5;}
+
+.btn{padding:0.7rem 1.1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.84rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:0.45rem;}
+.btn-gold{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;font-weight:800;}
+.btn-gold:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(224,138,46,0.35);}
+.btn-outline{background:transparent;border:1px solid rgba(23,20,15,0.15);color:rgba(23,20,15,0.65);}
+.btn-outline:hover:not(:disabled){border-color:rgba(224,138,46,0.45);color:#9C5918;}
+.btn-green{background:#8B6F47;color:#FFF;}
+.btn-green:hover:not(:disabled){background:#75603D;}
+.btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-full{width:100%;}
+.btn-row{display:flex;gap:0.45rem;flex-wrap:wrap;}
+.btn-row .btn{flex:1 1 auto;padding:0.55rem 0.7rem;font-size:0.76rem;}
+
+.seg{display:flex;gap:4px;background:#F3EDE0;padding:4px;border-radius:10px;}
+.seg button{flex:1;padding:0.5rem 0.4rem;background:transparent;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.75rem;color:rgba(23,20,15,0.6);cursor:pointer;transition:all 0.2s;}
+.seg button.active{background:#FFF;color:#17140F;box-shadow:0 2px 6px rgba(23,20,15,0.08);}
+
+.swatches{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;padding:0;border:2px solid transparent;transition:transform 0.15s;}
+.swatch:hover{transform:scale(1.1);}
+.swatch.active{border-color:#E08A2E;}
+.swatch.custom{background:#F3EDE0;color:rgba(23,20,15,0.6);font-size:0.55rem;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;}
+
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;}
+.template-btn{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);color:rgba(23,20,15,0.68);padding:0.55rem 0.4rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.template-btn:hover{border-color:rgba(224,138,46,0.45);color:#935417;background:rgba(224,138,46,0.07);}
+
+.canvas-wrap{background:#F3EDE0;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:1rem;padding:0.9rem;border:1px solid rgba(23,20,15,0.1);min-height:260px;position:relative;overflow:hidden;}
+.canvas-stage{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;}
+.canvas-holder{position:relative;display:inline-flex;max-width:100%;}
+/* The ceiling here is only a first paint / no-JS fallback — fitCanvas() measures the rest of
+   the sticky column (styles strip, hint, export row, status) and sets the real max-height, so
+   the whole column always fits one screen and the result never scrolls out of sight. */
+#gfx-canvas{max-width:100%;max-height:min(620px,calc(100vh - 24.5rem));display:block;border-radius:4px;box-shadow:0 10px 40px rgba(23,20,15,0.18);cursor:default;touch-action:none;}
+#gfx-canvas.hovering{cursor:pointer;}
+#gfx-canvas.dragging{cursor:grabbing;}
+#gfx-canvas.cropping{cursor:crosshair;}
+@media (max-width:1180px){#gfx-canvas,#motion-frame{max-height:620px;}}
+#motion-frame{display:none;max-width:100%;max-height:min(620px,calc(100vh - 24.5rem));border-radius:8px;box-shadow:0 10px 40px rgba(23,20,15,0.18);}
+.canvas-busy{position:absolute;inset:0;background:rgba(251,247,239,0.9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;z-index:20;border-radius:14px;}
+.canvas-busy.active{display:flex;}
+.spinner{width:34px;height:34px;border:3px solid rgba(224,138,46,0.22);border-top-color:#E08A2E;border-radius:50%;animation:spin 0.8s linear infinite;}
+.busy-text{font-family:'Space Mono',monospace;font-size:0.78rem;color:rgba(23,20,15,0.66);text-align:center;max-width:280px;line-height:1.6;}
+.crop-box{position:absolute;border:2px solid #E08A2E;box-shadow:0 0 0 9999px rgba(23,20,15,0.55);pointer-events:none;z-index:15;display:none;}
+
+.gfx-log{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);border-radius:10px;padding:0.45rem 0.8rem;font-family:'Space Mono',monospace;font-size:0.68rem;color:rgba(23,20,15,0.68);max-height:44px;overflow-y:auto;line-height:1.85;}
+.log-line{display:block;}
+.log-line.success{color:#7A6039;}
+.log-line.error{color:#CE2218;}
+.log-line.info{color:#9C5918;}
+
+/* AI INTAKE — the optional conversational brief builder, carried over from the Image
+   Generator. Same behaviour, same endpoint, re-skinned into this page's controls. */
+.intake-box{border:1px solid rgba(23,20,15,0.1);border-radius:11px;padding:0.9rem;background:#F3EDE0;margin-top:0.9rem;}
+.intake-title{font-size:0.84rem;font-weight:800;margin-bottom:0.25rem;}
+.intake-step{font-size:0.66rem;font-family:'Space Mono',monospace;letter-spacing:1px;color:rgba(23,20,15,0.6);margin-bottom:0.5rem;}
+.intake-q{font-size:0.82rem;font-weight:700;line-height:1.4;margin-bottom:0.35rem;}
+.intake-actions{display:flex;gap:0.45rem;margin-top:0.7rem;flex-wrap:wrap;}
+.intake-actions .btn{flex:1 1 130px;padding:0.55rem;font-size:0.74rem;}
+.intake-busy{display:flex;align-items:center;gap:0.6rem;font-size:0.8rem;color:rgba(23,20,15,0.66);}
+.intake-busy .spinner{width:19px;height:19px;border-width:2px;flex-shrink:0;}
+.intake-error{font-size:0.8rem;color:#CE2218;}
+.intake-chip{margin-top:0.7rem;padding:0.55rem 0.7rem;border-radius:8px;background:rgba(224,138,46,0.12);border:1px solid rgba(224,138,46,0.35);font-size:0.76rem;line-height:1.5;}
+.intake-chip a{color:#8E5315;font-weight:700;text-decoration:none;cursor:pointer;}
+
+/* SELECTED-ELEMENT INSPECTOR — only meaningful once something on the canvas is picked. */
+#inspector{display:none;background:#FFF7EA;border:1px solid rgba(224,138,46,0.3);}
+.insp-row{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.6rem;flex-wrap:wrap;}
+.insp-row label{font-size:0.7rem;color:rgba(23,20,15,0.6);font-weight:600;}
+input[type=color]{width:38px;height:30px;border:1px solid rgba(23,20,15,0.12);border-radius:6px;cursor:pointer;background:none;padding:2px;}
+input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
+.file-row{display:flex;align-items:center;gap:0.6rem;margin-top:0.35rem;}
+.file-name{font-size:0.72rem;color:rgba(23,20,15,0.55);font-family:'Space Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.embed-row{display:flex;gap:0.45rem;margin-top:0.6rem;}
+.embed-row input{font-family:'Space Mono',monospace;font-size:0.72rem;}
+
+/* ── STEP TABS ────────────────────────────────────────────────────────────────
+   The controls used to be one 1350px stack: brief, look, add-to-canvas, inspector. Split
+   into two panes so only the half you are actually working in is on screen, and so there is
+   an obvious line between "set this up" and "now change the result". */
+.stepseg{display:flex;gap:5px;background:#F3EDE0;padding:5px;border-radius:12px;position:sticky;top:4.6rem;z-index:40;box-shadow:0 4px 14px rgba(23,20,15,0.06);}
+.stepseg button{flex:1;padding:0.6rem 0.4rem;background:transparent;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;color:rgba(23,20,15,0.55);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
+.stepseg button.active{background:#FFF;color:#17140F;box-shadow:0 2px 6px rgba(23,20,15,0.1);}
+.stepseg button:disabled{opacity:0.45;cursor:not-allowed;}
+.step-num{width:17px;height:17px;border-radius:50%;background:rgba(23,20,15,0.14);color:rgba(23,20,15,0.6);font-size:0.62rem;font-family:'Space Mono',monospace;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stepseg button.active .step-num{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;}
+.stepseg button.ready:not(.active) .step-num{background:rgba(224,138,46,0.45);color:#17140F;}
+
+/* Generate stays reachable without hunting for the bottom of the form. */
+.gen-bar{position:sticky;bottom:0;z-index:35;padding:0.7rem 0 0.2rem;background:linear-gradient(to bottom,rgba(251,247,239,0) 0%,#FBF7EF 30%);}
+
+/* Collapsible — keeps the optional AI-brief block from eating 280px of the form by default. */
+.fold-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;background:none;border:none;padding:0;cursor:pointer;font-family:'Syne',sans-serif;text-align:left;color:#17140F;}
+.fold-btn .intake-title{margin:0;font-size:0.8rem;}
+.fold-caret{font-size:0.7rem;color:rgba(23,20,15,0.45);transition:transform 0.2s;flex-shrink:0;}
+.fold-btn[aria-expanded="true"] .fold-caret{transform:rotate(180deg);}
+
+/* ── STYLE VARIATIONS ─────────────────────────────────────────────────────────
+   Three treatments of the SAME generated scene and the SAME parsed copy — a palette, a
+   headline face and a type-weight swap re-rendered locally. No extra AI calls: the artwork
+   and the words are already paid for, only the layout is recomputed. */
+.variant-strip{display:none;flex:0 0 auto;background:#FFF;border:1px solid rgba(224,138,46,0.35);border-radius:12px;padding:0.55rem;width:104px;}
+/* Capped below whatever fitCanvas() can give the canvas, so the picker can never be the
+   thing that makes the column taller than the screen. */
+.variant-strip.show{display:flex;flex-direction:column;gap:0.45rem;max-height:calc(100vh - 26rem);overflow-y:auto;animation:slideUp 0.3s ease both;}
+.variant-strip .control-label{margin:0 0 0.1rem;font-size:0.6rem;letter-spacing:1.4px;}
+.variant-note{font-size:0.64rem;color:rgba(23,20,15,0.52);line-height:1.4;margin-top:0.15rem;}
+.variant-row{display:flex;flex-direction:column;gap:0.45rem;}
+.variant-card{background:none;border:2px solid transparent;border-radius:9px;padding:3px;cursor:pointer;transition:all 0.18s;font-family:'Syne',sans-serif;}
+.variant-card:hover{border-color:rgba(224,138,46,0.45);}
+.variant-card.active{border-color:#E08A2E;background:rgba(224,138,46,0.1);}
+.variant-card img{display:block;width:100%;height:auto;border-radius:5px;box-shadow:0 3px 10px rgba(23,20,15,0.16);}
+.variant-name{font-size:0.68rem;font-weight:700;color:rgba(23,20,15,0.62);margin-top:0.15rem;text-align:center;}
+.variant-card.active .variant-name{color:#9C5918;}
+
+/* ── EDIT AFFORDANCE ──────────────────────────────────────────────────────────
+   The single thing the result was not saying about itself: it is not a picture. */
+.edit-hint{display:none;align-items:flex-start;gap:0.5rem;background:rgba(224,138,46,0.11);border:1px solid rgba(224,138,46,0.4);border-radius:9px;padding:0.45rem 0.6rem;margin-bottom:0.6rem;font-size:0.75rem;line-height:1.45;color:rgba(23,20,15,0.78);}
+.edit-hint.show{display:flex;animation:slideUp 0.3s ease both;}
+.edit-hint svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;color:#9C5918;}
+.edit-hint strong{font-weight:800;color:#17140F;}
+.hint-x{margin-left:auto;background:none;border:none;color:rgba(23,20,15,0.4);font-size:0.9rem;cursor:pointer;line-height:1;padding:0 0 0 0.4rem;flex-shrink:0;}
+.hint-x:hover{color:#17140F;}
+.edit-badge{position:absolute;top:0.55rem;left:0.55rem;z-index:12;display:none;align-items:center;gap:0.35rem;background:rgba(23,20,15,0.82);color:#FFF;border-radius:20px;padding:0.3rem 0.65rem;font-size:0.68rem;font-weight:700;pointer-events:none;backdrop-filter:blur(6px);}
+.edit-badge.show{display:flex;}
+.edit-badge svg{width:12px;height:12px;}
+
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(15,12,9,0.82);backdrop-filter:blur(10px);padding:2rem;}
+.modal-overlay.active{display:flex;}
+.login-box{position:relative;width:100%;max-width:420px;animation:slideUp 0.3s ease both;}
+.login-header{text-align:center;margin-bottom:1.75rem;}
+.login-icon{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#E08A2E,#C4701E);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#17140F;margin:0 auto 1rem;}
+.login-title{font-size:1.4rem;font-weight:800;color:#FFF;}
+.login-title span{color:#E8A54C;}
+.login-card{background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.75rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.auth-tabs{display:flex;background:#F3EDE0;border-radius:10px;padding:3px;margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(23,20,15,0.6);border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.84rem;font-family:'Syne',sans-serif;}
+.auth-tab.active{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;}
+.btn-auth{width:100%;background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;margin-top:1.1rem;}
+.login-error{display:none;margin-top:0.9rem;padding:0.7rem 0.9rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#AF3427;font-family:'Space Mono',monospace;}
+.modal-close{position:absolute;top:-38px;right:0;background:none;border:none;color:rgba(255,255,255,0.7);font-size:1.5rem;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Home
+    </a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">AfriVid <span>Studio</span></div>
+  </div>
+  <div class="topbar-right">
+    <div class="user-name" id="user-name" style="display:none;" onclick="location.href='studio.html?profile=1'"></div>
+    <button class="btn-signin" id="btn-signin" onclick="showLogin()">Sign In</button>
+    <button class="btn-signout" id="btn-signout" style="display:none;" onclick="signOut()">Sign Out</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-label">GRAPHICS AND IMAGES</div>
+  <h1 class="page-title">Graphics and Images</h1>
+  <p class="page-sub">Describe what you need. AfriVid photographs the artwork, writes the words as real legible type, and hands you three styles to choose from — every piece of which stays editable.</p>
+
+  <div class="gfx-layout">
+
+    <!-- WHAT ARE YOU MAKING -->
+    <div class="gfxtabs" id="gfx-tabs">
+      <button class="gfxtab active" data-mode="poster" onclick="setMode('poster')">Poster</button>
+      <button class="gfxtab" data-mode="flyer" onclick="setMode('flyer')">Flyer</button>
+      <button class="gfxtab" data-mode="banner" onclick="setMode('banner')">Banner</button>
+      <button class="gfxtab" data-mode="social" onclick="setMode('social')">Social Post</button>
+      <button class="gfxtab" data-mode="brand" onclick="setMode('brand')">Brand Image</button>
+      <button class="gfxtab" data-mode="motion" onclick="setMode('motion')">Motion Image</button>
+      <button class="gfxtab" data-mode="canvas" onclick="setMode('canvas')">Blank Canvas</button>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="sidebar-panel">
+
+      <!-- WHICH HALF OF THE JOB ARE YOU ON -->
+      <div class="stepseg" id="step-seg">
+        <button type="button" id="step-setup" class="active" onclick="setStep('setup')"><span class="step-num">1</span>Set up</button>
+        <button type="button" id="step-edit" onclick="setStep('edit')"><span class="step-num">2</span>Edit</button>
+      </div>
+
+      <div id="pane-setup" style="display:flex;flex-direction:column;gap:0.85rem;">
+
+      <!-- BRIEF -->
+      <div class="card" id="brief-card">
+        <div class="control-label" id="brief-label">YOUR POSTER</div>
+        <label class="form-label" for="gfx-business">BUSINESS OR ORGANISATION</label>
+        <input type="text" id="gfx-business" class="form-input" placeholder="e.g. Amara Coffee Co.">
+        <label class="form-label" for="gfx-tagline" id="tagline-label">TAGLINE (OPTIONAL)</label>
+        <input type="text" id="gfx-tagline" class="form-input" placeholder="e.g. Freshly roasted, every morning">
+        <label class="form-label" for="gfx-prompt" id="prompt-label">DESCRIBE IT</label>
+        <textarea id="gfx-prompt" class="form-textarea" placeholder="e.g. Scholarship Session with Nsaingeh Bernadette, Saturday June 20 2026, 7PM CAT on Google Meet, register at youngafricansnetwork.org"></textarea>
+        <div class="form-hint" id="prompt-hint">Include the real facts — the event's actual name, dates, times, prices, the venue. Anything concrete you write here gets used verbatim instead of invented.</div>
+
+        <div id="exact-wording-row" style="margin-top:0.8rem;">
+          <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;">
+            <input type="checkbox" id="gfx-exact-wording" style="margin-top:3px;accent-color:#E08A2E;">
+            <span class="form-hint" style="margin:0;">Use my wording exactly as the headline (unchecked = let AI shape a punchy headline)</span>
+          </label>
+        </div>
+
+        <!-- AI INTAKE — folded away by default; it is optional and it is tall. -->
+        <div class="intake-box" id="intake-box">
+          <button type="button" class="fold-btn" id="intake-fold" aria-expanded="false" onclick="toggleIntake()">
+            <span class="intake-title">Not sure what to write?</span>
+            <span class="fold-caret">▼</span>
+          </button>
+          <div id="intake-body" style="display:none;margin-top:0.6rem;">
+            <div class="form-hint" style="margin:0 0 0.7rem;">Let AI read your description (and your website, if you have one), ask a couple of quick questions, then turn it into a proper brief you can edit before anything is generated. Entirely optional.</div>
+            <label class="form-label" style="margin-top:0;" for="gfx-website">YOUR WEBSITE (OPTIONAL)</label>
+            <input type="text" id="gfx-website" class="form-input" placeholder="e.g. amaracoffee.co.ke">
+            <button type="button" class="btn btn-outline btn-full" id="gfx-refine-btn" onclick="startIntake()" style="margin-top:0.7rem;">Refine with AI</button>
+            <div id="intake-panel" style="display:none;margin-top:0.85rem;"></div>
+          </div>
+          <div id="brief-chip" class="intake-chip" style="display:none;">
+            <span>Your AI brief is being used for this design.</span>
+            <a onclick="clearBrief()">Use my own description instead</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOOK -->
+      <div class="card" id="look-card">
+        <div class="control-label">THE LOOK</div>
+
+        <div id="orientation-row">
+          <label class="form-label" style="margin-top:0;">SHAPE</label>
+          <div class="seg" id="orient-seg">
+            <button type="button" data-o="portrait" onclick="setOrientation('portrait')">Portrait</button>
+            <button type="button" data-o="square" onclick="setOrientation('square')">Square</button>
+            <button type="button" data-o="landscape" onclick="setOrientation('landscape')">Landscape</button>
+          </div>
+        </div>
+
+        <!-- Options are rewritten per shape by syncTemplateOptions(): in the portrait/square
+             poster layout these values only change type weight and whether there is a photo,
+             so calling them "photo on the left/right" there was simply untrue. -->
+        <div id="template-row">
+          <label class="form-label" for="gfx-template" id="template-label">STYLE</label>
+          <select id="gfx-template" class="form-select" onchange="onTemplateChange()"></select>
+        </div>
+
+        <div id="palette-row">
+          <label class="form-label">COLOURS</label>
+          <div class="swatches" id="palette-swatches"></div>
+          <div id="custom-colors" style="display:none;gap:1rem;margin-top:0.7rem;">
+            <div><div class="form-hint" style="margin:0 0 0.25rem;">Background</div><input type="color" id="gfx-bg-color" value="#080E1C" onchange="onCustomColor()"></div>
+            <div><div class="form-hint" style="margin:0 0 0.25rem;">Accent</div><input type="color" id="gfx-accent-color" value="#F5A623" onchange="onCustomColor()"></div>
+          </div>
+        </div>
+
+        <div id="font-row">
+          <label class="form-label" for="gfx-headline-font">HEADLINE TYPEFACE</label>
+          <select id="gfx-headline-font" class="form-select" onchange="onHeadlineFontChange()">
+            <option value="Anton">Anton — tall condensed</option>
+            <option value="Archivo Black">Archivo Black — heavy grotesque</option>
+            <option value="Bebas Neue">Bebas Neue — narrow caps</option>
+            <option value="Montserrat" selected>Montserrat — clean geometric</option>
+            <option value="Playfair Display">Playfair Display — editorial serif</option>
+            <option value="Syne">Syne — the AfriVid face</option>
+          </select>
+        </div>
+
+        <div id="upload-row">
+          <label class="form-label">YOUR OWN PHOTO (OPTIONAL)</label>
+          <div class="file-row">
+            <button class="btn btn-outline" style="padding:0.45rem 0.8rem;font-size:0.75rem;" onclick="document.getElementById('gfx-photo-input').click()">Choose</button>
+            <span class="file-name" id="gfx-photo-name">We'll photograph one for you</span>
+          </div>
+          <input type="file" id="gfx-photo-input" accept="image/*" style="display:none;" onchange="onPhotoChange(event)">
+
+          <label class="form-label">LOGO (OPTIONAL)</label>
+          <div class="file-row">
+            <button class="btn btn-outline" style="padding:0.45rem 0.8rem;font-size:0.75rem;" onclick="document.getElementById('gfx-logo-input').click()">Choose</button>
+            <span class="file-name" id="gfx-logo-name">No file chosen</span>
+          </div>
+          <input type="file" id="gfx-logo-input" accept="image/*" style="display:none;" onchange="onLogoChange(event)">
+        </div>
+        <div class="form-hint" id="regen-hint" style="display:none;margin-top:0.8rem;">Changing the colours, typeface or shape above and pressing Generate again re-runs the same brief.</div>
+      </div>
+
+      <!-- BLANK CANVAS TEMPLATES -->
+      <div class="card" id="canvas-card" style="display:none;">
+        <div class="control-label">START FROM A TEMPLATE</div>
+        <div class="template-grid" id="template-grid"></div>
+        <label class="form-label" for="gfx-canvas-size">CANVAS SIZE</label>
+        <select id="gfx-canvas-size" class="form-select" onchange="resizeDoc(this.value)">
+          <option value="1080x1350">Portrait 1080×1350</option>
+          <option value="1080x1080">Square 1080×1080</option>
+          <option value="1600x900">Landscape 1600×900</option>
+          <option value="1080x1920">Story 1080×1920</option>
+          <option value="1240x1754">A4 1240×1754</option>
+        </select>
+      </div>
+
+      <div class="gen-bar" id="gen-bar">
+        <button class="btn btn-gold btn-full" id="gfx-generate-btn" onclick="generate()">Generate Poster</button>
+      </div>
+
+      </div><!-- /pane-setup -->
+
+      <div id="pane-edit" style="display:none;flex-direction:column;gap:0.85rem;">
+
+      <div class="card" id="edit-intro">
+        <div class="control-label">EDITING YOUR DESIGN</div>
+        <div class="form-hint" style="margin:0;">Click anything on the design — the headline, a date, an icon, the button — and its controls appear here. Drag to move it, double-click text to retype it, arrow keys nudge.</div>
+      </div>
+
+      <!-- ADD ELEMENTS -->
+      <div class="card" id="add-card">
+        <div class="control-label">ADD TO THE CANVAS</div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="addText()">Text</button>
+          <button class="btn btn-outline" onclick="addShape('rect')">Rect</button>
+          <button class="btn btn-outline" onclick="addShape('circle')">Circle</button>
+        </div>
+        <div class="btn-row" style="margin-top:0.45rem;">
+          <button class="btn btn-outline" onclick="document.getElementById('gfx-add-image').click()">Image</button>
+          <button class="btn btn-outline" onclick="undo()">Undo</button>
+          <button class="btn btn-outline" onclick="clearCanvas()">Clear</button>
+        </div>
+        <input type="file" id="gfx-add-image" accept="image/*" style="display:none;" onchange="addImageElement(event)">
+      </div>
+
+      <!-- SELECTED ELEMENT -->
+      <div class="card" id="inspector">
+        <div class="control-label">SELECTED ELEMENT</div>
+        <div id="insp-text-wrap">
+          <label class="form-label" style="margin-top:0;" for="insp-text">TEXT</label>
+          <textarea id="insp-text" class="form-textarea" style="min-height:60px;" oninput="inspSet('text', this.value)"></textarea>
+        </div>
+        <div class="insp-row" id="insp-font-wrap">
+          <label>Font</label>
+          <select id="insp-font" class="form-select" style="flex:1;padding:0.4rem 0.5rem;font-size:0.78rem;" onchange="inspSet('font', this.value)">
+            <option>Anton</option><option>Archivo Black</option><option>Bebas Neue</option>
+            <option>Montserrat</option><option>Playfair Display</option><option>Syne</option><option>Space Mono</option>
+          </select>
+        </div>
+        <div class="insp-row" id="insp-size-wrap">
+          <label>Size</label>
+          <input type="range" id="insp-size" min="10" max="240" oninput="inspSet('size', parseInt(this.value,10))">
+          <span class="file-name" id="insp-size-val">—</span>
+        </div>
+        <div class="insp-row">
+          <label>Colour</label>
+          <input type="color" id="insp-color" onchange="inspSet('color', this.value)">
+          <label style="margin-left:0.4rem;">Align</label>
+          <div class="seg" style="flex:1;min-width:130px;">
+            <button type="button" onclick="inspSet('align','left')">L</button>
+            <button type="button" onclick="inspSet('align','center')">C</button>
+            <button type="button" onclick="inspSet('align','right')">R</button>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="inspLayer(1)">Bring forward</button>
+          <button class="btn btn-outline" onclick="inspLayer(-1)">Send back</button>
+        </div>
+        <div class="btn-row" style="margin-top:0.45rem;">
+          <button class="btn btn-outline" onclick="inspDuplicate()">Duplicate</button>
+          <button class="btn btn-outline" style="color:#C01F16;border-color:rgba(230,51,41,0.35);" onclick="inspDelete()">Delete</button>
+        </div>
+        <div class="form-hint">Drag it on the canvas to move it. Arrow keys nudge, Delete removes.</div>
+      </div>
+
+      </div><!-- /pane-edit -->
+
+    </div>
+
+    <!-- CANVAS -->
+    <div class="canvas-panel">
+
+      <div class="card" style="padding:0.9rem;">
+        <div class="edit-hint" id="edit-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          <span><strong>This is a live design, not a flat picture.</strong> Click any part to edit it, drag to move, double-click text to retype.</span>
+          <button class="hint-x" title="Got it" onclick="dismissEditHint()">✕</button>
+        </div>
+        <div class="canvas-wrap" id="canvas-wrap">
+
+          <!-- THREE STYLES OF THE SAME RESULT — parked in the empty margin a portrait design
+               leaves beside itself, so choosing costs no vertical room at all. -->
+          <div class="variant-strip" id="variant-strip">
+            <div class="control-label">PICK A STYLE</div>
+            <div class="variant-row" id="variant-row"></div>
+            <div class="variant-note">Same words, same artwork — three treatments.</div>
+          </div>
+
+          <div class="canvas-stage">
+            <div class="canvas-holder">
+              <canvas id="gfx-canvas" width="1080" height="1350"></canvas>
+              <img id="motion-frame" alt="Generated motion image">
+              <div class="edit-badge" id="edit-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                <span>Editable — click anything</span>
+              </div>
+            </div>
+          </div>
+          <div class="crop-box" id="crop-box"></div>
+          <div class="canvas-busy" id="canvas-busy">
+            <div class="spinner"></div>
+            <div class="busy-text" id="busy-text">Working…</div>
+          </div>
+        </div>
+        <div id="crop-controls" style="display:none;margin-top:0.75rem;background:#F3EDE0;border:1px solid rgba(224,138,46,0.25);border-radius:10px;padding:0.8rem;">
+          <div class="control-label" style="margin-bottom:0.5rem;">DRAG A BOX ON THE CANVAS, THEN APPLY</div>
+          <div class="btn-row">
+            <button class="btn btn-gold" onclick="applyCrop()">Apply crop</button>
+            <button class="btn btn-outline" onclick="toggleCrop()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0.9rem;">
+        <div class="control-label" style="margin-bottom:0.5rem;">DOWNLOAD &amp; SAVE</div>
+        <div class="btn-row">
+          <button class="btn btn-gold" onclick="downloadDesign('png',1)">PNG</button>
+          <button class="btn btn-outline" onclick="downloadDesign('jpeg',1)">JPEG</button>
+          <button class="btn btn-outline" onclick="downloadDesign('png',2)">2× HD</button>
+          <button class="btn btn-outline" onclick="downloadSVG()">SVG</button>
+          <button class="btn btn-green" onclick="saveToStudio()">Save to Studio</button>
+          <button class="btn btn-outline" onclick="toggleCrop()">Crop</button>
+          <button class="btn btn-outline" id="btn-embed" style="display:none;" onclick="toggleEmbed()">Link</button>
+        </div>
+        <div class="embed-row" id="embed-row" style="display:none;">
+          <input type="text" class="form-input" id="embed-input" readonly onclick="this.select()">
+          <button class="btn btn-outline" style="flex-shrink:0;" onclick="copyEmbed()">Copy link</button>
+        </div>
+        <div class="form-hint" id="embed-hint" style="display:none;">The AI artwork is already hosted — paste this straight into an &lt;img src="…"&gt; tag.</div>
+      </div>
+
+      <div class="gfx-log" id="gfx-log"><span class="log-line info">// Pick what you're making, describe it, then press Generate.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="login-box">
+    <button class="modal-close" onclick="hideLogin()">✕</button>
+    <div class="login-header">
+      <div class="login-icon">A</div>
+      <div class="login-title">AfriVid <span>Studio</span></div>
+    </div>
+    <div class="login-card">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tab-signin" onclick="showAuthTab('signin')">Sign In</button>
+        <button class="auth-tab active" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
+      </div>
+      <form id="form-signin" onsubmit="doSignIn();return false;" style="display:none;">
+        <label class="form-label" for="login-email">EMAIL</label>
+        <input type="email" id="login-email" class="form-input" placeholder="you@example.com">
+        <label class="form-label" for="login-password">PASSWORD</label>
+        <input type="password" id="login-password" class="form-input" placeholder="••••••••">
+        <button class="btn-auth" type="submit">Sign In →</button>
+      </form>
+      <form id="form-signup" onsubmit="doSignUp();return false;">
+        <label class="form-label" for="signup-name">FULL NAME</label>
+        <input type="text" id="signup-name" class="form-input" placeholder="Your full name">
+        <label class="form-label" for="signup-email">EMAIL</label>
+        <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
+        <label class="form-label" for="signup-password">PASSWORD</label>
+        <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.9rem 0 0;font-size:0.75rem;color:rgba(23,20,15,0.64);line-height:1.5;">
+          <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
+          <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Privacy Policy</a></label>
+        </div>
+        <button class="btn-auth" type="submit">Create Account →</button>
+      </form>
+      <div class="login-error" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
+  authDomain: "afrivid-studio.firebaseapp.com",
+  projectId: "afrivid-studio",
+  storageBucket: "afrivid-studio.appspot.com",
+  messagingSenderId: "957196729758",
+  appId: "1:957196729758:web:0a46ed103675f741e22a8f"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+window.db = getFirestore(app);
+
+onAuthStateChanged(auth, (user) => {
+  window.currentUser = user;
+  const nameEl = document.getElementById('user-name');
+  document.getElementById('btn-signin').style.display = user ? 'none' : 'block';
+  document.getElementById('btn-signout').style.display = user ? 'block' : 'none';
+  nameEl.style.display = user ? 'block' : 'none';
+  if (user) nameEl.textContent = user.displayName || user.email.split('@')[0];
+});
+
+window.showLogin = function() { document.getElementById('login-modal').classList.add('active'); };
+window.hideLogin = function() { document.getElementById('login-modal').classList.remove('active'); };
+window.showAuthTab = function(tab) {
+  document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+};
+window.doSignIn = async function() {
+  const err = document.getElementById('login-error');
+  try {
+    await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+    hideLogin();
+  } catch (e) { err.style.display = 'block'; err.textContent = '[!] ' + e.message.replace('Firebase: ', ''); }
+};
+window.doSignUp = async function() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const err = document.getElementById('login-error');
+  if (!name || !email || !password) { err.style.display = 'block'; err.textContent = '[!] Fill all fields'; return; }
+  if (password.length < 6) { err.style.display = 'block'; err.textContent = '[!] Password min 6 characters'; return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(window.db, 'studio_users', cred.user.uid), { name, email, joinedAt: serverTimestamp(), plan: 'beta' });
+    try { await updateProfile(cred.user, { displayName: name }); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
+    try { await sendEmailVerification(cred.user); } catch (e) { console.log('[Signup] sendEmailVerification failed (non-critical):', e); }
+    hideLogin();
+  } catch (e) { err.style.display = 'block'; err.textContent = '[!] ' + e.message.replace('Firebase: ', ''); }
+};
+window.signOut = async function() { await fbSignOut(auth); };
+document.getElementById('login-modal').addEventListener('click', function(e) { if (e.target === this) hideLogin(); });
+</script>
+
+<script src="limits.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════════
+   GRAPHICS AND IMAGES
+   The merge of the old Design Studio (interactive canvas) and the old Image Generator
+   (the engineered server pipeline).
+
+   The split of responsibilities, and why it is this way round:
+
+   - ARTWORK AND COPY come from the server (/generate-brand-image + /poster-intake). That
+     pipeline is deliberately tuned: it describes the background as a plain PHOTOGRAPH rather
+     than a "poster" or "advertisement" (that wording measurably pushes the diffusion model
+     into baking in garbled fake ad-copy), forbids people and any lettering in the scene,
+     retries when a face slips through, and pulls the headline/tagline/points/CTA out as
+     structured text. The old Design Studio fired the user's prompt straight at
+     /generate-image, which is exactly why its posters came back covered in hallucinated
+     nonsense text.
+
+   - LAYOUT AND EDITING happen here, on a real canvas. The server also composites a finished
+     poster, and we keep that as the guaranteed-good result; but when it hands back the bare
+     scene plus the copy (return_layers), we rebuild the same design out of live, movable,
+     retypable objects. That is the whole point of the merge: engineered output you can still
+     fix. A generated headline that misses a detail stops being a dead end.
+
+   GRACEFUL DEGRADATION: return_layers is a newer server field. If the deployed backend does
+   not send scene_url/copy, everything still works — the composited poster drops onto the
+   canvas as a background image and all the overlay, crop, export and Studio-save tools behave
+   normally. Never assume the layered response is present.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+const API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+const WORKER = 'https://afrivid-tts.reaganayiecho.workers.dev';
+const PROXY = WORKER + '/download-proxy?url=';
+
+// Mirrors ORIENTATION_SIZES in app.py — the client layout has to agree with the server's
+// canvas dimensions or the rebuilt layers would not line up with the composited version.
+const SIZES = { landscape: [1600, 900], portrait: [1080, 1350], square: [1080, 1080] };
+
+const MODES = {
+  poster: { title: 'Poster',       orientation: 'portrait',  template: 'photo-right', pipeline: 'poster', limit: 'image_brand', cta: 'Generate Poster' },
+  flyer:  { title: 'Flyer',        orientation: 'portrait',  template: 'bold',        pipeline: 'poster', limit: 'image_brand', cta: 'Generate Flyer' },
+  banner: { title: 'Banner',       orientation: 'landscape', template: 'photo-right', pipeline: 'poster', limit: 'image_brand', cta: 'Generate Banner' },
+  social: { title: 'Social Post',  orientation: 'square',    template: 'photo-right', pipeline: 'poster', limit: 'image_brand', cta: 'Generate Social Post' },
+  brand:  { title: 'Brand Image',  orientation: 'landscape', template: null,          pipeline: 'photo',  limit: 'image_brand', cta: 'Generate Brand Image' },
+  motion: { title: 'Motion Image', orientation: 'landscape', template: null,          pipeline: 'motion', limit: 'image_motion', cta: 'Generate Motion Image' },
+  canvas: { title: 'Blank Canvas', orientation: 'portrait',  template: null,          pipeline: 'canvas', limit: null,          cta: 'Generate Artwork' },
+};
+
+const PALETTES = [
+  { name: 'Navy & Gold',      bg: '#080E1C', accent: '#F5A623' },
+  { name: 'Forest & Tan',     bg: '#1B2A1E', accent: '#D8B26A' },
+  { name: 'Maroon & Gold',    bg: '#2A1414', accent: '#E0A840' },
+  { name: 'Charcoal & Blue',  bg: '#1A1D24', accent: '#5B9BD5' },
+  { name: 'Plum & Pink',      bg: '#12143B', accent: '#E63988' },
+  { name: 'Cream & Rust',     bg: '#F4EDE0', accent: '#8B4A2B' },
+];
+
+let mode = 'poster';
+let orientation = 'portrait';
+let paletteIdx = 0;
+let headlineFont = 'Montserrat';
+let logoBase64 = null, photoBase64 = null;
+let lastArtworkUrl = '';
+
+// ── Canvas document ───────────────────────────────────────────────────────────
+const doc_ = { w: 1080, h: 1350, bg: '#080E1C', accent: '#F5A623', els: [], headOnPhoto: false };
+let selected = null, hovered = null;
+const history = [];
+
+const canvas = document.getElementById('gfx-canvas');
+const ctx = canvas.getContext('2d');
+
+function log(type, msg) {
+  const box = document.getElementById('gfx-log');
+  const line = document.createElement('span');
+  line.className = 'log-line ' + type;
+  line.textContent = msg;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+function busy(on, text) {
+  document.getElementById('canvas-busy').classList.toggle('active', !!on);
+  if (text) document.getElementById('busy-text').textContent = text;
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// While a style variation is being rendered off to the side, `styleOverride` stands in for the
+// three knobs that actually change the look — the palette, the headline face, and whether the
+// layout is the heavy all-caps treatment. It is transient: picking a variation writes those
+// values back into the real controls (see applyVariant) and clears this, so every existing
+// swatch, select and slider keeps working on the result afterwards.
+let styleOverride = null;
+
+function palette() {
+  if (styleOverride) return styleOverride.pal;
+  return paletteIdx === -1
+    ? { bg: document.getElementById('gfx-bg-color').value, accent: document.getElementById('gfx-accent-color').value }
+    : PALETTES[paletteIdx] || PALETTES[0];
+}
+function styleFont() { return styleOverride ? styleOverride.font : headlineFont; }
+function styleIsBold(tmpl) { return styleOverride ? styleOverride.bold : tmpl === 'bold'; }
+function styleWantsPhoto(tmpl) { return styleOverride ? styleOverride.photo : tmpl !== 'centered'; }
+
+// Mirrors auto_text_colors() in app.py: dark grounds get white type, light grounds dark type.
+function textColors(hex) {
+  const c = hexToRgb(hex, [8, 14, 28]);
+  const lum = (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255;
+  return lum > 0.55 ? { fg: '#141418', muted: '#5A5A64' } : { fg: '#FFFFFF', muted: '#BEC3CD' };
+}
+function hexToRgb(h, fallback) {
+  h = String(h || '').replace('#', '');
+  if (h.length !== 6) return fallback;
+  const n = parseInt(h, 16);
+  return isNaN(n) ? fallback : [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+// ── Image loading ─────────────────────────────────────────────────────────────
+// R2 serves the generated artwork without CORS headers, so an <img crossOrigin="anonymous">
+// would fail and a plain <img> would taint the canvas and break every export. Pulling the
+// bytes through the worker's download-proxy (which does send Access-Control-Allow-Origin) and
+// handing the canvas a same-origin blob: URL keeps toDataURL working.
+function loadImage(src, viaProxy) {
+  return new Promise((resolve, reject) => {
+    const finish = (url, revoke) => {
+      const img = new Image();
+      img.onload = () => { if (revoke) setTimeout(() => URL.revokeObjectURL(url), 0); resolve(img); };
+      img.onerror = () => reject(new Error('Image failed to load'));
+      img.src = url;
+    };
+    if (!viaProxy) return finish(src, false);
+    fetch(PROXY + encodeURIComponent(src))
+      .then(r => { if (!r.ok) throw new Error('Proxy ' + r.status); return r.blob(); })
+      .then(b => finish(URL.createObjectURL(b), true))
+      .catch(reject);
+  });
+}
+
+// ── Text measurement / fitting ────────────────────────────────────────────────
+function fontSpec(el, size) {
+  const s = size == null ? el.size : size;
+  return `${el.italic ? 'italic ' : ''}${el.weight || 700} ${s}px "${el.font || 'Montserrat'}", 'Syne', sans-serif`;
+}
+function wrapText(text, maxW) {
+  const out = [];
+  String(text == null ? '' : text).split('\n').forEach(para => {
+    const words = para.split(/\s+/).filter(Boolean);
+    if (!words.length) { out.push(''); return; }
+    let line = words[0];
+    for (let i = 1; i < words.length; i++) {
+      if (ctx.measureText(line + ' ' + words[i]).width <= maxW) line += ' ' + words[i];
+      else { out.push(line); line = words[i]; }
+    }
+    out.push(line);
+  });
+  return out;
+}
+// Same intent as fit_headline() in app.py, but measuring real glyphs instead of approximating
+// from an 'M' width — which is why headlines here sit tighter to the column than the server's.
+function fitLines(el, maxW, maxH) {
+  const start = el.size, min = el.minSize || Math.max(14, Math.round(start * 0.42));
+  for (let s = start; s >= min; s -= 2) {
+    ctx.font = fontSpec(el, s);
+    const lines = wrapText(displayText(el), maxW);
+    if (lines.length <= (el.maxLines || 4) && lines.length * s * (el.lineH || 1.16) <= maxH) return { size: s, lines };
+  }
+  ctx.font = fontSpec(el, min);
+  return { size: min, lines: wrapText(displayText(el), maxW).slice(0, el.maxLines || 4) };
+}
+function displayText(el) { return el.upper ? String(el.text || '').toUpperCase() : String(el.text || ''); }
+
+// ── Rendering ─────────────────────────────────────────────────────────────────
+let exporting = false;
+
+function render(target, scale) {
+  const c = target || canvas;
+  const g = c.getContext('2d');
+  const s = scale || 1;
+  c.width = Math.round(doc_.w * s);
+  c.height = Math.round(doc_.h * s);
+  g.save();
+  g.scale(s, s);
+  g.fillStyle = doc_.bg;
+  g.fillRect(0, 0, doc_.w, doc_.h);
+
+  // Faint dot grid — the same texture the server paints, so a rebuilt design and a
+  // server-composited one read as the same product rather than two different tools.
+  const tc = textColors(doc_.bg);
+  g.fillStyle = tc.fg === '#FFFFFF' ? 'rgba(255,255,255,0.055)' : 'rgba(20,20,24,0.05)';
+  for (let x = 0; x < doc_.w; x += 34) for (let y = 0; y < doc_.h; y += 34) g.fillRect(x, y, 2, 2);
+
+  doc_.els.forEach(el => drawEl(g, el));
+  // A light outline under the pointer. Without it the result reads as a flat picture; with it,
+  // one stray mouse movement tells you every piece of it is a thing you can grab.
+  if (!exporting && hovered && hovered !== selected && hovered._b) {
+    const b = hovered._b;
+    g.strokeStyle = 'rgba(224,138,46,0.9)';
+    g.lineWidth = 2;
+    g.setLineDash([7, 5]);
+    g.strokeRect(b.x - 5, b.y - 5, b.w + 10, b.h + 10);
+    g.setLineDash([]);
+  }
+  if (!exporting && selected && selected._b) {
+    const b = selected._b;
+    g.strokeStyle = '#E08A2E';
+    g.lineWidth = 3;
+    g.setLineDash([9, 6]);
+    g.strokeRect(b.x - 6, b.y - 6, b.w + 12, b.h + 12);
+    g.setLineDash([]);
+  }
+  g.restore();
+}
+
+function drawEl(g, el) {
+  const prev = ctx.font;
+  if (el.type === 'image' && el.img) {
+    drawImageCover(g, el);
+  } else if (el.type === 'rect') {
+    roundRect(g, el.x, el.y, el.w, el.h, el.radius || 0);
+    if (el.color) { g.fillStyle = el.color; g.fill(); }
+    if (el.outline) { g.strokeStyle = el.outline; g.lineWidth = el.lineWidth || 2; g.stroke(); }
+    el._b = { x: el.x, y: el.y, w: el.w, h: el.h };
+  } else if (el.type === 'circle') {
+    g.fillStyle = el.color;
+    g.beginPath();
+    g.arc(el.x + el.r, el.y + el.r, el.r, 0, Math.PI * 2);
+    g.fill();
+    el._b = { x: el.x, y: el.y, w: el.r * 2, h: el.r * 2 };
+  } else if (el.type === 'pill') {
+    drawPill(g, el);
+  } else if (el.type === 'bullet') {
+    drawBullet(g, el);
+  } else if (el.type === 'iconText') {
+    drawIconText(g, el);
+  } else if (el.type === 'text') {
+    drawText(g, el);
+  }
+  ctx.font = prev;
+}
+
+function roundRect(g, x, y, w, h, r) {
+  const rr = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+  g.beginPath();
+  if (g.roundRect) g.roundRect(x, y, w, h, rr);
+  else {
+    g.moveTo(x + rr, y);
+    g.arcTo(x + w, y, x + w, y + h, rr); g.arcTo(x + w, y + h, x, y + h, rr);
+    g.arcTo(x, y + h, x, y, rr); g.arcTo(x, y, x + w, y, rr);
+    g.closePath();
+  }
+}
+
+function drawImageCover(g, el) {
+  const iw = el.img.naturalWidth || el.img.width, ih = el.img.naturalHeight || el.img.height;
+  const sr = iw / ih, tr = el.w / el.h;
+  let sx = 0, sy = 0, sw = iw, sh = ih;
+  if (sr > tr) { sw = ih * tr; sx = (iw - sw) / 2; } else { sh = iw / tr; sy = (ih - sh) / 2; }
+  g.save();
+  if (el.radius) { roundRect(g, el.x, el.y, el.w, el.h, el.radius); g.clip(); }
+  g.drawImage(el.img, sx, sy, sw, sh, el.x, el.y, el.w, el.h);
+  g.restore();
+  if (el.scrim) {
+    const grad = g.createLinearGradient(0, el.y + el.h - 90, 0, el.y + el.h);
+    const rgb = hexToRgb(doc_.bg, [8, 14, 28]);
+    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+    grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.72)`);
+    g.fillStyle = grad;
+    g.fillRect(el.x, el.y + el.h - 90, el.w, 90);
+  }
+  el._b = { x: el.x, y: el.y, w: el.w, h: el.h };
+}
+
+function drawText(g, el) {
+  ctx.font = fontSpec(el);
+  const maxW = el.maxW || (doc_.w - el.x - 40);
+  const fit = el.fit ? fitLines(el, maxW, el.maxH || doc_.h) : { size: el.size, lines: wrapText(displayText(el), maxW) };
+  const lh = fit.size * (el.lineH || 1.16);
+  g.font = fontSpec(el, fit.size);
+  g.fillStyle = el.color;
+  g.textBaseline = 'top';
+  g.textAlign = el.align || 'left';
+  const ax = el.align === 'center' ? el.x + maxW / 2 : el.align === 'right' ? el.x + maxW : el.x;
+  let widest = 0;
+  fit.lines.forEach((ln, i) => {
+    g.fillText(ln, ax, el.y + i * lh);
+    widest = Math.max(widest, g.measureText(ln).width);
+  });
+  g.textAlign = 'left';
+  const bx = el.align === 'center' ? ax - widest / 2 : el.align === 'right' ? ax - widest : el.x;
+  el._b = { x: bx, y: el.y, w: Math.max(widest, 24), h: Math.max(lh * fit.lines.length, fit.size) };
+  el._fitSize = fit.size;
+}
+
+function drawPill(g, el) {
+  ctx.font = fontSpec(el);
+  const tw = ctx.measureText(displayText(el)).width;
+  const w = tw + (el.padX == null ? 52 : el.padX) * 2;
+  const h = el.size + (el.padY == null ? 15 : el.padY) * 2;
+  g.fillStyle = el.color;
+  roundRect(g, el.x, el.y, w, h, h / 2);
+  g.fill();
+  g.font = fontSpec(el);
+  g.fillStyle = el.textColor || '#17140F';
+  g.textBaseline = 'middle';
+  g.textAlign = 'center';
+  g.fillText(displayText(el), el.x + w / 2, el.y + h / 2 + 1);
+  g.textAlign = 'left';
+  g.textBaseline = 'alphabetic';
+  el._b = { x: el.x, y: el.y, w, h };
+}
+
+// Compact vector glyphs, kept in step with drawPointIcon() in create.html and
+// draw_point_icon() in app.py — same names, same r-scaled point arrays, so a bullet the
+// server composited and the same bullet rebuilt here are the same picture. `calendar` and
+// `location` are additions this page's info row needs; everything else is the existing
+// 17-name vocabulary the video pipeline already uses.
+function drawPointIcon(g, cx, cy, r, icon, color) {
+  g.save();
+  g.translate(cx, cy);
+  g.strokeStyle = color;
+  g.fillStyle = color;
+  g.lineWidth = Math.max(1.2, r * 0.16);
+  g.lineCap = 'round';
+  g.lineJoin = 'round';
+  const P = (pts, close) => {
+    g.beginPath();
+    pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
+    if (close) g.closePath();
+    g.stroke();
+  };
+  const C = (ox, oy, rad, filled) => {
+    g.beginPath(); g.arc(ox, oy, rad, 0, Math.PI * 2);
+    filled ? g.fill() : g.stroke();
+  };
+  switch (icon) {
+    case 'idea':
+      C(0, -r*0.18, r*0.5); P([[-r*0.24, r*0.42],[r*0.24, r*0.42]]); P([[-r*0.16, r*0.68],[r*0.16, r*0.68]]);
+      break;
+    case 'time':
+      C(0, 0, r*0.72); P([[0,-r*0.4],[0,0],[r*0.36,r*0.12]]);
+      break;
+    case 'growth':
+      P([[-r*0.7, r*0.5],[-r*0.2, -r*0.05],[r*0.1, r*0.22],[r*0.68, -r*0.5]]);
+      P([[r*0.24,-r*0.5],[r*0.68,-r*0.5],[r*0.68,-r*0.08]]);
+      break;
+    case 'money':
+      C(0, 0, r*0.72); P([[0,-r*0.5],[0,r*0.5]]);
+      P([[r*0.26,-r*0.24],[-r*0.06,-r*0.24],[-r*0.26,-r*0.02],[r*0.26,r*0.02],[r*0.06,r*0.26],[-r*0.26,r*0.26]]);
+      break;
+    case 'security':
+      P([[0,-r*0.72],[r*0.6,-r*0.42],[r*0.6,r*0.12],[0,r*0.74],[-r*0.6,r*0.12],[-r*0.6,-r*0.42]], true);
+      break;
+    case 'speed':
+      g.beginPath(); g.arc(0, r*0.2, r*0.68, Math.PI, 0); g.stroke();
+      P([[0, r*0.2],[r*0.4, -r*0.24]]);
+      break;
+    case 'communication':
+      roundRect(g, -r*0.7, -r*0.6, r*1.4, r*1.0, r*0.24); g.stroke();
+      P([[-r*0.24, r*0.4],[-r*0.34, r*0.76],[r*0.06, r*0.4]]);
+      break;
+    case 'target':
+      C(0,0,r*0.72); C(0,0,r*0.36); C(0,0,r*0.1, true);
+      break;
+    case 'warning':
+      P([[0,-r*0.7],[r*0.74,r*0.6],[-r*0.74,r*0.6]], true);
+      P([[0,-r*0.18],[0,r*0.16]]); C(0, r*0.4, r*0.09, true);
+      break;
+    case 'check':
+      P([[-r*0.6, r*0.02],[-r*0.18, r*0.46],[r*0.64, -r*0.5]]);
+      break;
+    case 'people':
+      C(-r*0.26, -r*0.28, r*0.26); C(r*0.36, -r*0.2, r*0.2);
+      g.beginPath(); g.arc(-r*0.26, r*0.62, r*0.52, Math.PI, 0); g.stroke();
+      g.beginPath(); g.arc(r*0.36, r*0.62, r*0.4, Math.PI*1.15, Math.PI*1.9); g.stroke();
+      break;
+    case 'learning':
+      P([[0,-r*0.56],[r*0.8,-r*0.16],[0,r*0.24],[-r*0.8,-r*0.16]], true);
+      P([[r*0.46, 0],[r*0.46, r*0.5]]);
+      P([[-r*0.42, r*0.04],[-r*0.42, r*0.44],[r*0.42, r*0.44]]);
+      break;
+    case 'tools':
+      g.beginPath(); g.arc(-r*0.34, -r*0.34, r*0.32, Math.PI*0.35, Math.PI*1.85); g.stroke();
+      P([[-r*0.14, -r*0.12],[r*0.6, r*0.62]]);
+      break;
+    case 'global':
+      C(0, 0, r*0.72);
+      g.beginPath(); g.ellipse(0, 0, r*0.3, r*0.72, 0, 0, Math.PI*2); g.stroke();
+      P([[-r*0.7,-r*0.22],[r*0.7,-r*0.22]]); P([[-r*0.7,r*0.22],[r*0.7,r*0.22]]);
+      break;
+    case 'health':
+      g.beginPath();
+      g.moveTo(0, r*0.62);
+      g.bezierCurveTo(-r*1.0, -r*0.06, -r*0.44, -r*0.82, 0, -r*0.22);
+      g.bezierCurveTo(r*0.44, -r*0.82, r*1.0, -r*0.06, 0, r*0.62);
+      g.closePath(); g.stroke();
+      break;
+    case 'document':
+      roundRect(g, -r*0.5, -r*0.7, r*1.0, r*1.4, r*0.12); g.stroke();
+      P([[-r*0.26,-r*0.3],[r*0.26,-r*0.3]]); P([[-r*0.26,0],[r*0.26,0]]); P([[-r*0.26,r*0.3],[r*0.06,r*0.3]]);
+      break;
+    case 'star': {
+      const pts = [];
+      for (let i = 0; i < 10; i++) {
+        const rad = i % 2 === 0 ? r*0.74 : r*0.32;
+        const a = -Math.PI/2 + i * Math.PI/5;
+        pts.push([Math.cos(a)*rad, Math.sin(a)*rad]);
+      }
+      P(pts, true);
+      break;
+    }
+    case 'calendar':
+      roundRect(g, -r*0.66, -r*0.5, r*1.32, r*1.2, r*0.14); g.stroke();
+      P([[-r*0.66,-r*0.16],[r*0.66,-r*0.16]]);
+      P([[-r*0.34,-r*0.74],[-r*0.34,-r*0.34]]); P([[r*0.34,-r*0.74],[r*0.34,-r*0.34]]);
+      break;
+    case 'location':
+      g.beginPath(); g.arc(0, -r*0.18, r*0.44, Math.PI*0.89, Math.PI*0.11); g.stroke();
+      P([[-r*0.414, 0],[0, r*0.74],[r*0.414, 0]]);
+      C(0, -r*0.18, r*0.15, true);
+      break;
+    default:
+      C(0, 0, r*0.34, true);
+  }
+  g.beginPath();
+  g.restore();
+}
+
+// One glyph plus its text — the shared shape behind an info-row item, a points-grid bullet
+// and the footer line. Kept as a single element so the whole item moves as one.
+function drawIconText(g, el) {
+  const r = el.iconR || 20;
+  const gap = el.gap == null ? 16 : el.gap;
+  if (el.disc) {
+    g.fillStyle = el.discColor || 'rgba(255,255,255,0.12)';
+    g.beginPath(); g.arc(el.x + r, el.y + r, r, 0, Math.PI * 2); g.fill();
+  }
+  const textX = el.x + r * 2 + gap;
+  const maxW = Math.max(40, (el.w || 300) - (r * 2 + gap));
+  ctx.font = fontSpec(el);
+  const lines = wrapText(displayText(el), maxW).slice(0, el.maxLines || 2);
+  const lh = el.size * (el.lineH || 1.24);
+  let subLines = [];
+  const subSize = el.subSize || Math.round(el.size * 0.8);
+  if (el.sub) {
+    ctx.font = `400 ${subSize}px "Syne", sans-serif`;
+    subLines = wrapText(el.sub, maxW).slice(0, 2);
+  }
+  const subLh = subSize * 1.25;
+  const blockH = lines.length * lh + (subLines.length ? subLines.length * subLh + 6 : 0);
+  let ty = el.y + (el.center ? Math.max(0, (r * 2 - blockH) / 2) : 0);
+  const top = ty;
+  g.textBaseline = 'top';
+  g.font = fontSpec(el);
+  g.fillStyle = el.color;
+  lines.forEach(ln => { g.fillText(ln, textX, ty); ty += lh; });
+  if (subLines.length) {
+    ty += 6;
+    g.font = `400 ${subSize}px "Syne", sans-serif`;
+    g.fillStyle = el.subColor || el.color;
+    subLines.forEach(ln => { g.fillText(ln, textX, ty); ty += subLh; });
+  }
+  drawPointIcon(g, el.x + r, el.y + r, el.disc ? r * 0.72 : r, el.icon, el.iconColor || doc_.accent);
+  el._b = { x: el.x, y: Math.min(el.y, top), w: el.w || 300,
+            h: Math.max(r * 2, blockH + (top - el.y)) };
+}
+
+function drawBullet(g, el) {
+  const r = 5;
+  g.fillStyle = el.dotColor || doc_.accent;
+  g.beginPath();
+  g.arc(el.x + r, el.y + el.size / 2, r, 0, Math.PI * 2);
+  g.fill();
+  ctx.font = fontSpec(el);
+  g.font = fontSpec(el);
+  g.fillStyle = el.color;
+  g.textBaseline = 'top';
+  g.fillText(displayText(el), el.x + r * 2 + 14, el.y);
+  const tw = g.measureText(displayText(el)).width;
+  el._b = { x: el.x, y: el.y, w: tw + r * 2 + 14, h: el.size * 1.25 };
+}
+
+// ── History ───────────────────────────────────────────────────────────────────
+function snapshot() {
+  return JSON.stringify({ w: doc_.w, h: doc_.h, bg: doc_.bg, accent: doc_.accent,
+    els: doc_.els.map(e => { const c = Object.assign({}, e); delete c.img; delete c._b; return c; }) });
+}
+// Set while the three style variations are being rendered off-screen for their thumbnails —
+// those throwaway builds must not each land in the undo stack.
+let quietBuild = false;
+function saveHistory() {
+  if (quietBuild) return;
+  history.push({ json: snapshot(), imgs: doc_.els.map(e => e.img || null) });
+  if (history.length > 40) history.shift();
+}
+function undo() {
+  if (history.length < 2) { log('info', '// nothing left to undo'); return; }
+  history.pop();
+  const prev = history[history.length - 1];
+  const data = JSON.parse(prev.json);
+  doc_.w = data.w; doc_.h = data.h; doc_.bg = data.bg; doc_.accent = data.accent;
+  doc_.els = data.els.map((e, i) => { if (prev.imgs[i]) e.img = prev.imgs[i]; return e; });
+  selected = null; syncInspector(); render();
+  log('info', '// undo');
+}
+
+// ── Building a poster out of live layers ──────────────────────────────────────
+// Mirrors draw_poster_layout() in app.py closely enough that a rebuilt design reads as the
+// same piece as the server's composite — but every block below is a real object the user can
+// grab, retype and move afterwards.
+function buildPosterLayers(d) {
+  const copy = d.copy || {};
+  const [W, H] = (d.size && d.size.w) ? [d.size.w, d.size.h] : SIZES[orientation];
+  const p = palette();
+  const tc = textColors(p.bg);
+  const ctaTc = textColors(p.accent);
+  const tmpl = d.template || currentTemplate();
+  const bold = styleIsBold(tmpl);
+  const hasPhoto = !!d._sceneImg && styleWantsPhoto(tmpl);
+  const land = (d.orientation || orientation) === 'landscape';
+
+  doc_.w = W; doc_.h = H; doc_.bg = p.bg; doc_.accent = p.accent;
+  doc_.els = [];
+
+  const padX = land ? 72 : Math.round(W * 0.06);
+  const mark = land ? (bold ? 68 : 60) : (bold ? 64 : 56);
+  let textX = padX, colW, textTop;
+
+  if (land) {
+    const frameW = Math.round(W * (bold ? 0.4 : 0.38));
+    colW = hasPhoto ? (W - padX * 2 - frameW - 48) : Math.round(W * (bold ? 0.78 : 0.72)) - padX;
+    if (hasPhoto && tmpl === 'photo-left') textX = padX + frameW + 48;
+    textTop = 0;
+    if (hasPhoto) {
+      const frameH = Math.round(H * (bold ? 0.84 : 0.8));
+      const frameX = tmpl === 'photo-left' ? padX : (W - padX - frameW);
+      const frameY = Math.round((H - frameH) / 2);
+      const off = 18;
+      doc_.els.push({ type: 'rect', role: 'accent', x: frameX + (tmpl === 'photo-left' ? -off : off), y: frameY + off, w: frameW, h: frameH, radius: 28, color: p.accent });
+      doc_.els.push({ type: 'image', role: 'photo', img: d._sceneImg, x: frameX, y: frameY, w: frameW, h: frameH, radius: 28 });
+    }
+  } else {
+    colW = W - padX * 2;
+    let photoH = 0;
+    if (hasPhoto) {
+      photoH = Math.round(H * 0.46);
+      doc_.els.push({ type: 'image', role: 'photo', img: d._sceneImg, x: 0, y: 0, w: W, h: photoH, radius: 0, scrim: true });
+      doc_.els.push({ type: 'rect', role: 'accent', x: 0, y: photoH, w: W, h: 5, color: p.accent });
+    }
+    textTop = hasPhoto ? photoH + 45 : 60;
+  }
+
+  // Measure the stack first so it can be centred as one block, the way the server does.
+  const blocks = [];
+  const kickerSize = bold ? 30 : 26;
+  blocks.push({ h: mark });
+
+  const headEl = {
+    type: 'text', role: 'headline', text: copy.headline || copy.business_name || 'Your Headline',
+    x: textX, y: 0, maxW: colW, fit: true, maxLines: 4, lineH: 1.13,
+    size: land ? (hasPhoto ? (bold ? 76 : 58) : (bold ? 96 : 78)) : (hasPhoto ? (bold ? 64 : 54) : (bold ? 74 : 64)),
+    weight: 900, font: styleFont(), color: tc.fg, align: 'left', upper: bold,
+  };
+  headEl.maxH = ((land ? H - 240 : H - textTop - 60) * (land ? 1 : 0.55));
+  ctx.font = fontSpec(headEl);
+  const headFit = fitLines(headEl, colW, headEl.maxH);
+  const headH = headFit.lines.length * headFit.size * 1.13;
+  blocks.push({ gap: land ? 26 : 24, h: headH });
+
+  let tagLines = [];
+  if (copy.tagline) {
+    ctx.font = `400 ${bold ? 29 : 27}px "Syne", sans-serif`;
+    tagLines = wrapText(copy.tagline, colW).slice(0, 3);
+    blocks.push({ gap: land ? 20 : 18, h: tagLines.length * (bold ? 29 : 27) * 1.35 });
+  }
+  const points = (copy.points || []).filter(Boolean).slice(0, 3);
+  const ptSize = bold ? 26 : 24, ptLineH = Math.round(ptSize * 1.6);
+  if (points.length) blocks.push({ gap: land ? 20 : 18, h: points.length * ptLineH + 14 });
+  const ctaSize = bold ? 28 : 25;
+  if (copy.cta) blocks.push({ gap: land ? 26 : 24, h: ctaSize + 30 });
+
+  const totalH = blocks.reduce((a, b) => a + (b.gap || 0) + b.h, 0);
+  let y = land ? Math.max(60, Math.round((H - totalH) / 2))
+               : textTop + Math.max(0, Math.round((H - 50 - textTop - totalH) / 2));
+
+  // Row 1: the mark + the organisation name.
+  if (d._logoImg) {
+    doc_.els.push({ type: 'image', role: 'logo', img: d._logoImg, x: textX, y, w: mark, h: mark, radius: 8 });
+  } else {
+    doc_.els.push({ type: 'circle', role: 'accent', x: textX, y, r: mark / 2, color: p.accent });
+  }
+  if (copy.business_name) {
+    doc_.els.push({ type: 'text', role: 'kicker', text: copy.business_name, upper: true,
+      x: textX + mark + (land ? 18 : 16), y: y + Math.round(mark / 2 - kickerSize * 0.62),
+      maxW: colW - mark - 20, size: kickerSize, weight: 800, font: 'Montserrat', color: p.accent, align: 'left' });
+  }
+  y += mark + (land ? 26 : 24);
+
+  headEl.y = y;
+  doc_.els.push(headEl);
+  y += headH;
+
+  if (tagLines.length) {
+    y += land ? 20 : 18;
+    doc_.els.push({ type: 'text', role: 'tagline', text: copy.tagline, x: textX, y,
+      maxW: colW, size: bold ? 29 : 27, weight: 400, font: 'Syne', color: tc.muted, align: 'left', lineH: 1.35 });
+    y += tagLines.length * (bold ? 29 : 27) * 1.35;
+  }
+  if (points.length) {
+    y += land ? 20 : 18;
+    points.forEach(pt => {
+      doc_.els.push({ type: 'bullet', role: 'point', text: pt, x: textX, y,
+        size: ptSize, weight: 700, font: 'Montserrat', color: tc.fg, dotColor: p.accent });
+      y += ptLineH;
+    });
+    y += 14;
+  }
+  if (copy.cta) {
+    y += land ? 26 : 24;
+    doc_.els.push({ type: 'pill', role: 'cta', text: copy.cta, x: textX, y,
+      size: ctaSize, weight: 800, font: 'Montserrat', color: p.accent, textColor: ctaTc.fg });
+  }
+
+  selected = null;
+  saveHistory();
+  render();
+  syncInspector();
+}
+
+// ── Building a sectioned event poster out of live layers ──────────────────────
+// The mirror of draw_poster_sections() in app.py. Same band order, same measurement pass,
+// same slack/shrink reconciliation — but measured in Montserrat/Syne rather than DejaVu,
+// which is exactly why the server sends CONTENT in `sections` and never pixel positions:
+// a headline that wraps to two lines there can wrap to three here, and absolute coordinates
+// computed on the server would strand every band below it.
+//
+// Keep the constants below in step with POSTER_* in app.py.
+const SEC = { PAD_X: 0.062, HEAD_MIN: 0.40, HEAD_MAX: 0.56, HEAD_MAX_SPARSE: 0.68,
+              GAP_MIN: 20, GAP_MAX: 58 };
+
+function mixHex(a, b, t) {
+  const ca = hexToRgb(a, [8, 14, 28]), cb = hexToRgb(b, [255, 255, 255]);
+  return '#' + [0, 1, 2].map(i =>
+    Math.round(ca[i] + (cb[i] - ca[i]) * t).toString(16).padStart(2, '0')).join('');
+}
+function wrapN(text, font, maxW, maxLines) {
+  ctx.font = font;
+  return wrapText(text, Math.max(40, maxW)).slice(0, maxLines);
+}
+function widestOf(lines, font) {
+  ctx.font = font;
+  return lines.reduce((m, ln) => Math.max(m, ctx.measureText(ln).width), 0);
+}
+
+function buildPosterSections(d) {
+  const sections = d.sections || [];
+  const [W, H] = (d.size && d.size.w) ? [d.size.w, d.size.h] : SIZES[orientation];
+  const p = palette(), tc = textColors(p.bg), ctaTc = textColors(p.accent);
+  const tmpl = d.template || currentTemplate();
+  const bold = styleIsBold(tmpl);
+  const hasPhoto = !!d._sceneImg && styleWantsPhoto(tmpl);
+  const dark = tc.fg === '#FFFFFF';
+  // The header band sits on the photo behind a scrim tinted from the background colour. On a
+  // light palette that scrim is light, so the title has to be dark — hard-coding white here
+  // was why the cream palette came back with an invisible headline.
+  const headFg = hasPhoto ? (dark ? '#FFFFFF' : '#17140F') : tc.fg;
+  const headMuted = hasPhoto ? (dark ? '#E2E6EE' : '#4C463C') : tc.muted;
+  const scrimA = dark ? 0.57 : 0.78;
+  const PANEL = mixHex(p.bg, dark ? '#FFFFFF' : '#000000', 0.07);
+  const HAIR = mixHex(p.bg, dark ? '#FFFFFF' : '#000000', 0.22);
+  const WARN = '#E84E3E';
+  const s = W / 1080;
+  const padX = Math.round(W * SEC.PAD_X), colW = W - padX * 2;
+
+  doc_.w = W; doc_.h = H; doc_.bg = p.bg; doc_.accent = p.accent;
+  doc_.els = [];
+
+  const header = sections.filter(x => x.kind === 'header')[0] || { org: '', title: '', tagline: '' };
+  const ordered = sections.filter(x => x.kind !== 'header');
+  const mark = Math.round(56 * s);
+  const orgSize = Math.round((bold ? 30 : 27) * s);
+  const tagSize = Math.round(25 * s);
+  const bodyFont = f => `${f.w} ${f.s}px "${f.f}", 'Syne', sans-serif`;
+
+  // ── Measurement ───────────────────────────────────────────────────────────
+  function measureHeader(st) {
+    const el = { text: header.title || '', upper: bold, font: styleFont(), weight: 900,
+                 size: Math.round(st.titleStart * s), lineH: 1.1, maxLines: 3 };
+    el.minSize = Math.round(40 * s);
+    const fitted = fitLines(el, colW, H * 0.30);
+    const titleH = fitted.lines.length * fitted.size * 1.1;
+    const orgH = (header.org || d._logoImg) ? Math.max(mark, orgSize) : 0;
+    let tagLines = [];
+    if (header.tagline) tagLines = wrapN(header.tagline, `400 ${tagSize}px "Syne", sans-serif`, colW, 2);
+    const tagH = tagLines.length * tagSize * 1.35;
+    return { el, fitted, titleH, orgH, tagLines, tagH,
+             contentH: orgH + (orgH ? 24 * s : 0) + titleH + (tagH ? 18 * s + tagH : 0) };
+  }
+
+  function measureInfo(sec) {
+    const items = sec.items, n = items.length, gut = Math.round(24 * s);
+    const r = Math.round(19 * s), textX = r * 2 + 14 * s;
+    const vsize = Math.round(23 * s), ssize = Math.round(18 * s);
+    const vFont = `700 ${vsize}px "Montserrat", sans-serif`;
+    const sFont = `400 ${ssize}px "Syne", sans-serif`;
+    // Three items split the width evenly; one or two are sized to their own longest line and
+    // the group is centred, so a lone date is not stranded against the left edge.
+    const wrapW = n >= 3 ? (colW - gut * (n - 1)) / n : colW / 2;
+    const rows = items.map(it => ({
+      vlines: wrapN(it.text, vFont, wrapW - textX, 3),
+      slines: it.sub ? wrapN(it.sub, sFont, wrapW - textX, 2) : [],
+    }));
+    let itemW;
+    if (n >= 3) itemW = (colW - gut * (n - 1)) / n;
+    else {
+      const widest = rows.reduce((m, row) =>
+        Math.max(m, widestOf(row.vlines, vFont), widestOf(row.slines, sFont)), 0);
+      itemW = Math.min(wrapW, widest + textX + 12 * s);
+    }
+    const x0 = n >= 3 ? 0 : Math.max(0, (colW - (itemW * n + gut * (n - 1))) / 2);
+    let tallest = 0;
+    rows.forEach(row => {
+      const th = row.vlines.length * vsize * 1.22 +
+                 (row.slines.length ? row.slines.length * ssize * 1.25 + 6 * s : 0);
+      tallest = Math.max(tallest, th, r * 2);
+    });
+    const pad = 22 * s;
+    return { rows, itemW, gut, r, textX, vsize, ssize, x0, innerH: tallest, h: tallest + pad * 2 };
+  }
+
+  function measureSectionHeader(sec) {
+    const size = Math.round((bold ? 28 : 25) * s);
+    ctx.font = `800 ${size}px "Montserrat", sans-serif`;
+    return { size, pillW: ctx.measureText(sec.text.toUpperCase()).width + 56 * s, h: size + 30 * s };
+  }
+
+  function measurePoints(sec, st) {
+    const pts = sec.points.slice(0, st.nPoints);
+    const cols = pts.length >= 4 ? 2 : 1;
+    const gut = Math.round(38 * s);
+    const cellW = cols === 2 ? (colW - gut) / 2 : colW;
+    const r = Math.round(20 * s), textX = r * 2 + 16 * s, inner = 22 * s;
+    const size = Math.round(st.pointSize * s);
+    const font = `700 ${size}px "Montserrat", sans-serif`;
+    const wrapped = pts.map(pt => wrapN(pt.text, font, cellW - textX - inner * 2, 2));
+    const leftN = cols === 2 ? Math.ceil(pts.length / 2) : pts.length;
+    const rowPad = 20 * s;
+    const heights = wrapped.map(l => Math.max(r * 2, l.length * size * 1.26) + rowPad);
+    const total = cols === 2
+      ? Math.max(heights.slice(0, leftN).reduce((a, b) => a + b, 0),
+                 heights.slice(leftN).reduce((a, b) => a + b, 0))
+      : heights.reduce((a, b) => a + b, 0);
+    const pad = 22 * s;
+    return { pts, cols, cellW, gut, r, textX, size, wrapped, leftN, heights, pad, inner,
+             h: total + pad * 2 };
+  }
+
+  function measureCallout(sec, st) {
+    const pad = 24 * s, r = Math.round(19 * s);
+    const innerX = pad + r * 2 + 16 * s;
+    const lsize = Math.round(21 * s), bsize = Math.round(21 * s);
+    const lines = wrapN(sec.text, `400 ${bsize}px "Syne", sans-serif`, colW - innerX - pad, st.noteLines);
+    return { lines, lsize, bsize, r, innerX, pad,
+             h: Math.max(lsize * 1.3 + lines.length * bsize * 1.32 + pad * 2, r * 2 + pad * 2) };
+  }
+
+  function measureFooter(sec) {
+    const size = Math.round(20 * s), r = Math.round(15 * s);
+    const lines = wrapN(sec.text, `400 ${size}px "Syne", sans-serif`, colW - r * 2 - 14 * s, 2);
+    return { lines, size, r, h: Math.max(r * 2, lines.length * size * 1.3) };
+  }
+
+  function measureCta(sec) {
+    const size = Math.round((bold ? 26 : 24) * s);
+    ctx.font = `800 ${size}px "Montserrat", sans-serif`;
+    return { size, pillW: ctx.measureText(sec.text).width + 56 * s, h: size + 30 * s };
+  }
+
+  function measureAll(st) {
+    const head = measureHeader(st);
+    const bands = [];
+    ordered.forEach(sec => {
+      if (sec.kind === 'footer' && !st.showFooter) return;
+      if ((sec.kind === 'points_grid' || sec.kind === 'section_header') && st.nPoints <= 0) return;
+      if (sec.kind === 'info_row') bands.push([sec, measureInfo(sec)]);
+      else if (sec.kind === 'section_header') bands.push([sec, measureSectionHeader(sec)]);
+      else if (sec.kind === 'points_grid') bands.push([sec, measurePoints(sec, st)]);
+      else if (sec.kind === 'callout') bands.push([sec, measureCallout(sec, st)]);
+      else if (sec.kind === 'footer') bands.push([sec, measureFooter(sec)]);
+      else if (sec.kind === 'cta') bands.push([sec, measureCta(sec)]);
+    });
+    return { head, bands };
+  }
+
+  // ── Two-pass reconciliation (mirrors the ladder in app.py) ────────────────
+  const grid = sections.filter(x => x.kind === 'points_grid')[0];
+  const st = { titleStart: bold ? 104 : 96, pointSize: 24,
+               nPoints: grid ? grid.points.length : 0, showFooter: true, noteLines: 3 };
+  const bottomPad = 44 * s;
+  const headMin = H * SEC.HEAD_MIN;
+  const stackH = (bands, headerH) =>
+    headerH + bands.reduce((a, b) => a + b[1].h, 0) + SEC.GAP_MIN * s * bands.length;
+  // Truncating real facts is deliberately near the end: the complaint this layout exists to
+  // answer was that too FEW details survived, so shrinking type always comes first.
+  const ladder = [
+    () => st.titleStart -= 12,
+    () => st.pointSize = 21,
+    () => st.titleStart -= 12,
+    () => { st.pointSize = 19; st.noteLines = 2; },
+    () => st.showFooter = false,
+    () => st.nPoints = Math.max(2, st.nPoints - 1),
+    () => st.nPoints = Math.max(2, st.nPoints - 1),
+    () => st.nPoints = Math.max(2, st.nPoints - 1),
+    () => st.nPoints = Math.max(2, st.nPoints - 1),
+  ];
+  let m = measureAll(st);
+  for (const rung of ladder) {
+    if (stackH(m.bands, headMin) <= H - bottomPad) break;
+    rung();
+    m = measureAll(st);
+  }
+  const { head, bands } = m;
+  const headMax = H * (bands.length <= 3 ? SEC.HEAD_MAX_SPARSE : SEC.HEAD_MAX);
+  let headerH = Math.max(headMin, Math.min(headMax, head.contentH + 150 * s));
+  const nGaps = Math.max(1, bands.length);
+  let gap = SEC.GAP_MIN * s;
+  let slack = (H - bottomPad) - stackH(bands, headerH);
+  if (slack > 0) {
+    let grow = Math.min(slack, (SEC.GAP_MAX - SEC.GAP_MIN) * s * nGaps);
+    gap += grow / nGaps; slack -= grow;
+    grow = Math.min(Math.max(0, slack), headMax - headerH);
+    headerH += grow; slack -= grow;
+    if (slack > 0) {
+      const padded = bands.filter(b => ['info_row', 'points_grid', 'callout'].indexOf(b[0].kind) !== -1);
+      padded.forEach(b => {
+        const add = Math.min(slack / padded.length, b[1].h * 0.25);
+        b[1].h += add; b[1].voff = add / 2; slack -= add;
+      });
+    }
+  } else if (slack < 0) {
+    const take = Math.min(-slack, headerH - headMin);
+    headerH -= take; slack += take;
+    if (slack < 0) gap = Math.max(8 * s, gap + slack / nGaps);
+  }
+  headerH = Math.round(headerH);
+
+  // ── Header band ───────────────────────────────────────────────────────────
+  const bgRgb = hexToRgb(p.bg, [8, 14, 28]);
+  doc_.headOnPhoto = hasPhoto;
+  if (hasPhoto) {
+    doc_.els.push({ type: 'image', role: 'photo', img: d._sceneImg, x: 0, y: 0, w: W, h: headerH, radius: 0 });
+    // A full-band scrim, not a bottom-edge gradient: the title sits ON the photo now, so the
+    // whole band has to carry the header type. `tintA` lets a later palette swap re-mix it.
+    doc_.els.push({ type: 'rect', role: 'scrim', tintA: scrimA, x: 0, y: 0, w: W, h: headerH,
+                    color: `rgba(${bgRgb[0]},${bgRgb[1]},${bgRgb[2]},${scrimA})` });
+  } else {
+    doc_.els.push({ type: 'rect', role: 'scrim', tint: 0.07, x: 0, y: 0, w: W, h: headerH, color: PANEL });
+  }
+  doc_.els.push({ type: 'rect', role: 'accent', x: 0, y: headerH - 6 * s, w: W, h: 6 * s, color: p.accent });
+
+  let y = headerH - 46 * s - head.tagH - (head.tagH ? 18 * s : 0) - head.titleH;
+  const orgTop = head.orgH ? y - (24 * s + head.orgH) : y;
+  if (head.orgH) {
+    if (d._logoImg) {
+      doc_.els.push({ type: 'image', role: 'logo', img: d._logoImg, x: padX,
+                      y: orgTop + (head.orgH - mark) / 2, w: mark, h: mark, radius: 8 });
+    } else {
+      doc_.els.push({ type: 'circle', role: 'accent', x: padX, y: orgTop + (head.orgH - mark) / 2,
+                      r: mark / 2, color: p.accent });
+    }
+    if (header.org) {
+      doc_.els.push({ type: 'text', role: 'kicker', text: header.org, upper: true,
+        x: padX + mark + 18 * s, y: orgTop + head.orgH / 2 - orgSize * 0.62,
+        maxW: colW - mark - 20 * s, size: orgSize, weight: 800, font: 'Montserrat',
+        color: p.accent, align: 'left' });
+    }
+  }
+  // The event title: the single most prominent element, immediately under the organisation
+  // name. role:'headline' is kept so the font picker still targets it.
+  doc_.els.push(Object.assign(head.el, { type: 'text', role: 'headline', x: padX, y: y,
+    maxW: colW, maxH: H * 0.30, fit: true, color: headFg, align: 'left' }));
+  y += head.titleH;
+  if (head.tagLines.length) {
+    y += 18 * s;
+    doc_.els.push({ type: 'text', role: 'tagline', text: header.tagline, x: padX, y: y,
+      maxW: colW, size: tagSize, weight: 400, font: 'Syne', color: headMuted,
+      align: 'left', lineH: 1.35 });
+  }
+
+  // ── Bands ─────────────────────────────────────────────────────────────────
+  y = headerH;
+  bands.forEach(([sec, b]) => {
+    y += gap;
+    const voff = b.voff || 0;
+    if (sec.kind === 'info_row') {
+      doc_.els.push({ type: 'rect', role: 'panel', tint: 0.07, outlineTint: 0.22,
+                      x: padX, y: y, w: colW, h: b.h,
+                      radius: 16 * s, color: PANEL, outline: HAIR, lineWidth: 2 });
+      const iy = y + (b.h - b.innerH) / 2;
+      sec.items.forEach((it, i) => {
+        const ix = padX + b.x0 + i * (b.itemW + b.gut);
+        if (i) doc_.els.push({ type: 'rect', role: 'divider', tint: 0.22, x: ix - b.gut / 2, y: y + 16 * s,
+                               w: 2, h: b.h - 32 * s, color: HAIR });
+        doc_.els.push({ type: 'iconText', role: 'info', icon: it.icon, iconR: b.r, gap: 14 * s,
+          x: ix, y: iy, w: b.itemW, text: it.text, sub: it.sub || '', maxLines: 3,
+          size: b.vsize, subSize: b.ssize, weight: 700, font: 'Montserrat', lineH: 1.22,
+          color: tc.fg, subColor: tc.muted, iconColor: p.accent });
+      });
+    } else if (sec.kind === 'section_header') {
+      const px = (W - b.pillW) / 2;
+      doc_.els.push({ type: 'rect', role: 'rule', tint: 0.22, x: padX, y: y + b.h / 2 - 1, w: px - 20 * s - padX, h: 2, color: HAIR });
+      doc_.els.push({ type: 'rect', role: 'rule', tint: 0.22, x: px + b.pillW + 20 * s, y: y + b.h / 2 - 1,
+                      w: padX + colW - (px + b.pillW + 20 * s), h: 2, color: HAIR });
+      doc_.els.push({ type: 'pill', role: 'section', text: sec.text, upper: true, x: px, y: y,
+        size: b.size, padX: 28 * s, padY: 15 * s, weight: 800, font: 'Montserrat',
+        color: p.accent, textColor: ctaTc.fg });
+    } else if (sec.kind === 'points_grid') {
+      doc_.els.push({ type: 'rect', role: 'panel', tint: 0.07, x: padX, y: y, w: colW, h: b.h,
+                      radius: 16 * s, color: PANEL });
+      const colX = [padX + b.inner, padX + b.cellW + b.gut + b.inner];
+      const curY = [y + b.pad + voff, y + b.pad + voff];
+      b.pts.forEach((pt, i) => {
+        const c = (b.cols === 1 || i < b.leftN) ? 0 : 1;
+        doc_.els.push({ type: 'iconText', role: 'point', icon: pt.icon || 'check', iconR: b.r,
+          gap: 16 * s, disc: true, discColor: `rgba(${hexToRgb(p.accent, [245,166,35]).join(',')},0.15)`,
+          x: colX[c], y: curY[c], w: b.cellW - b.inner * 2, text: pt.text, maxLines: 2,
+          size: b.size, weight: 700, font: 'Montserrat', lineH: 1.26, center: true,
+          color: tc.fg, iconColor: p.accent });
+        curY[c] += b.heights[i];
+      });
+    } else if (sec.kind === 'callout') {
+      doc_.els.push({ type: 'rect', role: 'callout', x: padX, y: y, w: colW, h: b.h,
+        radius: 16 * s, color: 'rgba(232,78,62,0.10)', outline: WARN, lineWidth: 3 });
+      const cy = y + b.pad + voff;
+      doc_.els.push({ type: 'iconText', role: 'note', icon: 'warning', iconR: b.r, gap: 16 * s,
+        x: padX + b.pad, y: cy, w: colW - b.pad * 2, text: sec.label, upper: true, maxLines: 1,
+        size: b.lsize, weight: 800, font: 'Montserrat', color: WARN, iconColor: WARN });
+      doc_.els.push({ type: 'text', role: 'noteBody', text: sec.text,
+        x: padX + b.innerX, y: cy + b.lsize * 1.3, maxW: colW - b.innerX - b.pad,
+        size: b.bsize, weight: 400, font: 'Syne', color: tc.fg, align: 'left', lineH: 1.32 });
+    } else if (sec.kind === 'footer') {
+      doc_.els.push({ type: 'iconText', role: 'footer', icon: sec.icon || 'star', iconR: b.r,
+        gap: 14 * s, x: padX, y: y, w: colW, text: sec.text, maxLines: 2, center: true,
+        size: b.size, weight: 400, font: 'Syne', color: tc.muted, iconColor: p.accent, lineH: 1.3 });
+    } else if (sec.kind === 'cta') {
+      doc_.els.push({ type: 'pill', role: 'cta', text: sec.text, x: padX, y: y, size: b.size,
+        padX: 28 * s, padY: 15 * s, weight: 800, font: 'Montserrat',
+        color: p.accent, textColor: ctaTc.fg });
+    }
+    y += b.h;
+  });
+
+  selected = null;
+  saveHistory();
+  render();
+  syncInspector();
+}
+
+function buildFlatResult(img, w, h) {
+  doc_.w = w; doc_.h = h;
+  doc_.headOnPhoto = false;
+  doc_.els = [{ type: 'image', role: 'photo', img, x: 0, y: 0, w, h, radius: 0 }];
+  selected = null;
+  saveHistory();
+  render();
+  syncInspector();
+}
+
+// ── Style variations ──────────────────────────────────────────────────────────
+// Three looks, one generation. The expensive half of a poster is the AI scene and the parsed
+// copy, and neither differs between the three — so paying for three /generate-brand-image
+// calls would triple the cost and the wait to produce the same words on the same photograph.
+// Instead the one payload is re-rendered locally through the knobs that genuinely change the
+// look: the palette, the headline face, and the heavy all-caps treatment. Each pass takes
+// milliseconds and no network at all.
+let layerData = null, variants = [], activeVariant = 0;
+
+function buildFromData(d) {
+  if (d.sections && d.sections.length) buildPosterSections(d);
+  else buildPosterLayers(d);
+}
+
+function variantSpecs() {
+  const base = palette();
+  const tmpl = (layerData && layerData.template) || currentTemplate();
+  const photo = tmpl !== 'centered';
+  const baseIsLight = textColors(base.bg).fg !== '#FFFFFF';
+  // The third look flips the ground: a light poster next to two dark ones is the difference
+  // you can read at thumbnail size, which is the whole point of showing three.
+  const flipped = baseIsLight ? { bg: '#080E1C', accent: '#F5A623' } : { bg: '#F4EDE0', accent: '#8B4A2B' };
+  return [
+    { id: 'clean',     name: 'Clean',     pal: base,    font: 'Montserrat',       bold: false, photo },
+    { id: 'bold',      name: 'Bold',      pal: base,    font: 'Anton',            bold: true,  photo },
+    { id: 'editorial', name: 'Editorial', pal: flipped, font: 'Playfair Display', bold: false, photo },
+  ];
+}
+
+function variantThumb() {
+  const off = document.createElement('canvas');
+  const wasExporting = exporting;
+  exporting = true;                 // no selection chrome in a thumbnail
+  render(off, 300 / doc_.w);
+  exporting = wasExporting;
+  return off.toDataURL('image/jpeg', 0.72);
+}
+
+function makeVariants(d) {
+  layerData = d;
+  variants = variantSpecs();
+  quietBuild = true;
+  try {
+    variants.forEach(v => { styleOverride = v; buildFromData(d); v.thumb = variantThumb(); });
+  } finally {
+    styleOverride = null;
+    quietBuild = false;
+  }
+  applyVariant(0);
+  document.getElementById('variant-strip').classList.add('show');
+  fitCanvas();
+}
+
+function renderVariantStrip() {
+  document.getElementById('variant-row').innerHTML = variants.map((v, i) =>
+    `<button type="button" class="variant-card${i === activeVariant ? ' active' : ''}" onclick="applyVariant(${i})">
+       <img src="${v.thumb}" alt="${esc(v.name)} style">
+       <div class="variant-name">${esc(v.name)}</div>
+     </button>`).join('');
+}
+
+// Picking a style writes it into the real controls rather than holding it in a side channel,
+// so the palette swatches, typeface picker and style select all stay truthful afterwards and
+// the user can carry on tweaking from there.
+window.applyVariant = function(i) {
+  const v = variants[i];
+  if (!v || !layerData) return;
+  activeVariant = i;
+  const idx = PALETTES.findIndex(p => p.bg === v.pal.bg && p.accent === v.pal.accent);
+  if (idx >= 0) {
+    paletteIdx = idx;
+    document.getElementById('custom-colors').style.display = 'none';
+  } else {
+    paletteIdx = -1;
+    document.getElementById('gfx-bg-color').value = v.pal.bg;
+    document.getElementById('gfx-accent-color').value = v.pal.accent;
+    document.getElementById('custom-colors').style.display = 'flex';
+  }
+  renderPalettes();
+  headlineFont = v.font;
+  document.getElementById('gfx-headline-font').value = v.font;
+  const tsel = document.getElementById('gfx-template');
+  const want = v.bold ? 'bold' : (v.photo ? 'photo-right' : 'centered');
+  if (Array.prototype.some.call(tsel.options, o => o.value === want)) tsel.value = want;
+  // The payload carries the template it was generated with, and both builders prefer it over
+  // the select — so the chosen style has to be written onto the payload too, or the applied
+  // result silently reverts to the server's original and no longer matches its own thumbnail.
+  layerData.template = want;
+  styleOverride = null;
+  buildFromData(layerData);
+  renderVariantStrip();
+  log('info', '// style: ' + v.name.toLowerCase());
+};
+
+function hideVariants() {
+  variants = []; layerData = null;
+  document.getElementById('variant-strip').classList.remove('show');
+  document.getElementById('variant-row').innerHTML = '';
+  fitCanvas();
+}
+
+// ── Keeping the whole sticky column on one screen ─────────────────────────────
+// The styles strip and the edit hint appear and disappear, so the canvas cannot have a fixed
+// ceiling: measure everything else in the column and give the canvas what is left. Without
+// this the result gets pushed below the fold by its own controls.
+function fitCanvas() {
+  const panel = document.querySelector('.canvas-panel');
+  const wrap = document.getElementById('canvas-wrap');
+  const mf = document.getElementById('motion-frame');
+  if (!panel || !wrap) return;
+  if (window.innerWidth <= 1180) { canvas.style.maxHeight = ''; mf.style.maxHeight = ''; return; }
+  const cs = getComputedStyle(wrap);
+  const inner = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + 2;
+  // Height of the column minus the canvas frame — stable whatever size the canvas ends up.
+  const other = panel.getBoundingClientRect().height - wrap.getBoundingClientRect().height;
+  const stickyTop = parseFloat(getComputedStyle(panel).top) || 74;
+  const max = Math.max(260, Math.round(window.innerHeight - stickyTop - 16 - other - inner));
+  canvas.style.maxHeight = max + 'px';
+  mf.style.maxHeight = max + 'px';
+}
+window.addEventListener('resize', fitCanvas);
+
+// ── Telling the user the result is editable ───────────────────────────────────
+function showEditAffordance() {
+  document.getElementById('edit-badge').classList.add('show');
+  let seen = false;
+  try { seen = localStorage.getItem('gfx-edit-hint') === 'seen'; } catch (e) {}
+  if (!seen) document.getElementById('edit-hint').classList.add('show');
+  markStepReady();
+  fitCanvas();
+}
+function hideEditAffordance() {
+  document.getElementById('edit-badge').classList.remove('show');
+  document.getElementById('edit-hint').classList.remove('show');
+  fitCanvas();
+}
+window.dismissEditHint = function() {
+  document.getElementById('edit-hint').classList.remove('show');
+  try { localStorage.setItem('gfx-edit-hint', 'seen'); } catch (e) {}
+  fitCanvas();
+};
+
+// ── Generation ────────────────────────────────────────────────────────────────
+function currentTemplate() {
+  const sel = document.getElementById('gfx-template');
+  return sel ? sel.value : 'photo-right';
+}
+
+window.generate = async function() {
+  const cfg = MODES[mode];
+  if (cfg.pipeline === 'canvas') { alert('Blank Canvas starts from a template or your own elements — pick a template on the left, or switch to Poster to generate artwork.'); return; }
+  const prompt = document.getElementById('gfx-prompt').value.trim();
+  const business = document.getElementById('gfx-business').value.trim();
+  if (!prompt) { alert('Describe what you want first.'); return; }
+  if (cfg.pipeline !== 'motion' && !business) { alert('Please enter your business or organisation name.'); return; }
+  if (cfg.limit && window.checkAfriVidLimit && !(await window.checkAfriVidLimit(cfg.limit))) return;
+
+  const btn = document.getElementById('gfx-generate-btn');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+  busy(true, cfg.pipeline === 'motion' ? 'Rendering your living image — up to a minute…' : 'Photographing the artwork and writing the copy — this can take up to a minute…');
+
+  try {
+    if (cfg.pipeline === 'motion') {
+      const res = await fetch(API + '/generate-motion-image', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, business_name: business }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      showMotion(data.url);
+      hideVariants();
+      hideEditAffordance();
+      lastArtworkUrl = data.url;
+      showEmbed(data.url);
+      saveGeneratedToStudio(data.url, 'motion', prompt, {});
+      log('success', '[ok] motion image ready');
+    } else {
+      const p = palette();
+      const body = {
+        prompt,
+        business_name: business,
+        tagline: document.getElementById('gfx-tagline').value.trim(),
+        logo_base64: logoBase64,
+        style: cfg.pipeline === 'photo' ? 'photo' : 'poster',
+        enhance_text: !document.getElementById('gfx-exact-wording').checked,
+        website: document.getElementById('gfx-website').value.trim() || undefined,
+      };
+      if (cfg.pipeline === 'poster') {
+        Object.assign(body, {
+          photo_base64: photoBase64,
+          template: currentTemplate(),
+          orientation,
+          bg_color: p.bg,
+          accent_color: p.accent,
+          brief: confirmedBrief || undefined,
+          // Ask for the bare scene + the parsed copy so the result can be rebuilt as editable
+          // layers. Older backends simply ignore this and return {url} — handled below.
+          return_layers: true,
+        });
+      }
+      const res = await fetch(API + '/generate-brand-image', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      lastArtworkUrl = data.url;
+      showEmbed(data.url);
+      hideMotion();
+
+      if (cfg.pipeline === 'poster' && data.copy && data.scene_url !== undefined) {
+        busy(true, 'Laying it out as editable objects…');
+        try { data._sceneImg = data.scene_url ? await loadImage(data.scene_url, true) : null; }
+        catch (e) { data._sceneImg = null; log('info', '// scene art could not be loaded for editing — using flat result'); }
+        if (logoBase64) { try { data._logoImg = await loadImage(logoBase64, false); } catch (e) { data._logoImg = null; } }
+        // `sections` is the newer, richer contract (org + bold event title + info row +
+        // points grid + callout). A backend that predates it simply omits the key and we
+        // fall through to the original single-column builder, unchanged.
+        makeVariants(data);
+        showEditAffordance();
+        log('success', '[ok] 3 styles ready — ' + doc_.els.length + ' editable objects each');
+      } else {
+        // Backend predates return_layers (or this is a plain brand image): keep the finished
+        // server composite, which is the exact output the Image Generator always produced.
+        const img = await loadImage(data.url, true);
+        const [w, h] = cfg.pipeline === 'poster' ? SIZES[orientation] : [1600, 900];
+        buildFlatResult(img, img.naturalWidth || w, img.naturalHeight || h);
+        hideVariants();
+        hideEditAffordance();
+        markStepReady();
+        log('success', '[ok] generated — add text or shapes on top, then export');
+      }
+      saveGeneratedToStudio(data.url, cfg.pipeline === 'poster' ? 'poster' : 'brand', prompt,
+        confirmedBrief ? { businessName: business, brief: confirmedBrief } : { businessName: business });
+    }
+    document.getElementById('regen-hint').style.display = 'block';
+  } catch (e) {
+    log('error', '[x] ' + (e.message || 'Something went wrong'));
+    alert('Generation failed: ' + (e.message || 'Something went wrong'));
+  }
+  busy(false);
+  btn.disabled = false;
+  btn.textContent = MODES[mode].cta;
+};
+
+function showMotion(url) {
+  const f = document.getElementById('motion-frame');
+  f.src = url; f.style.display = 'block';
+  canvas.style.display = 'none';
+}
+function hideMotion() {
+  document.getElementById('motion-frame').style.display = 'none';
+  canvas.style.display = 'block';
+}
+// The hosted-artwork link is a niche need; it used to sit permanently open under the export
+// row and cost ~60px of the one screen the result has to share. It is a button now.
+function showEmbed(url) {
+  document.getElementById('embed-input').value = url;
+  document.getElementById('btn-embed').style.display = 'inline-flex';
+}
+window.toggleEmbed = function() {
+  const row = document.getElementById('embed-row'), hint = document.getElementById('embed-hint');
+  const open = row.style.display !== 'flex';
+  row.style.display = open ? 'flex' : 'none';
+  hint.style.display = open ? 'block' : 'none';
+  fitCanvas();
+};
+window.copyEmbed = async function() {
+  const input = document.getElementById('embed-input');
+  try { await navigator.clipboard.writeText(input.value); }
+  catch (e) { input.select(); document.execCommand('copy'); }
+  log('success', '[ok] link copied');
+};
+
+// Same collection and field shape the Image Generator writes, so anything made here shows up
+// in My Studio next to everything else. Silently skipped when signed out.
+async function saveGeneratedToStudio(url, kind, prompt, extra) {
+  if (!window.currentUser || !window.db) return;
+  try {
+    const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    await addDoc(collection(window.db, 'studio_photos'), {
+      userId: window.currentUser.uid, userEmail: window.currentUser.email,
+      title: kind === 'poster' ? 'Poster' : kind === 'brand' ? 'Brand Image' : 'Motion Image',
+      dataURL: url, thumbnail: url, kind, prompt,
+      createdAt: serverTimestamp(), ...extra,
+    });
+  } catch (e) { console.error('[Studio save] failed:', e); }
+}
+
+// ── AI intake (carried over from the Image Generator, unchanged in behaviour) ──
+let intakeHistory = [], intakeSite = '', intakeSiteChecked = false, intakeQuestions = [], confirmedBrief = '';
+
+function intakePanel() { return document.getElementById('intake-panel'); }
+function setIntakeBusy(msg) {
+  const p = intakePanel();
+  p.style.display = 'block';
+  p.innerHTML = `<div class="intake-busy"><div class="spinner"></div><span>${esc(msg)}</span></div>`;
+  document.getElementById('gfx-refine-btn').disabled = true;
+}
+function setIntakeError(msg) {
+  const p = intakePanel();
+  p.style.display = 'block';
+  p.innerHTML = `<div class="intake-error">${esc(msg)}</div>
+    <div class="intake-actions"><button type="button" class="btn btn-outline" onclick="startIntake()">Try again</button></div>`;
+  document.getElementById('gfx-refine-btn').disabled = false;
+}
+async function intakeCall(extra) {
+  const res = await fetch(API + '/poster-intake', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.assign({
+      description: document.getElementById('gfx-prompt').value.trim(),
+      business_name: document.getElementById('gfx-business').value.trim(),
+      website: document.getElementById('gfx-website').value.trim(),
+      history: intakeHistory, site_context: intakeSite, site_context_checked: intakeSiteChecked,
+    }, extra || {})),
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  if (data.site_context) intakeSite = data.site_context;
+  if (data.site_context_checked) intakeSiteChecked = true;
+  return data;
+}
+function renderIntake(data) {
+  document.getElementById('gfx-refine-btn').disabled = false;
+  const p = intakePanel();
+  p.style.display = 'block';
+  if (data.status === 'questions') {
+    intakeQuestions = data.questions || [];
+    p.innerHTML = `<div class="intake-step">STEP ${esc(data.round)} OF ${esc(data.max_rounds)} — QUICK QUESTIONS</div>` +
+      intakeQuestions.map((q, i) => `<div class="intake-q" style="margin-top:${i ? '0.8rem' : '0'};">${esc(q)}</div>
+        <textarea class="form-textarea" id="intake-a${i}" style="min-height:56px;" placeholder="Your answer — or leave blank to skip"></textarea>`).join('') +
+      `<div class="intake-actions">
+         <button type="button" class="btn btn-gold" onclick="submitIntakeAnswers()">Send answers</button>
+         <button type="button" class="btn btn-outline" onclick="skipToBrief()">Skip — build it now</button>
+       </div>`;
+    const first = document.getElementById('intake-a0');
+    if (first) first.focus();
+    return;
+  }
+  p.innerHTML = `<div class="intake-step">YOUR BRIEF</div>
+     <div class="form-hint" style="margin:0 0 0.5rem;">Edit anything here before we generate — this is exactly what the design gets built from.</div>
+     <textarea class="form-textarea" id="brief-text" style="min-height:170px;font-size:0.8rem;line-height:1.6;"></textarea>
+     <div class="intake-actions">
+       <button type="button" class="btn btn-gold" onclick="confirmBrief()">Use this &amp; generate</button>
+       <button type="button" class="btn btn-outline" onclick="startIntake()">Start over</button>
+     </div>`;
+  document.getElementById('brief-text').value = data.brief || '';
+}
+window.startIntake = async function() {
+  const description = document.getElementById('gfx-prompt').value.trim();
+  const business = document.getElementById('gfx-business').value.trim();
+  if (!description) { alert('Write a line or two about your design first — even a few words is enough.'); return; }
+  if (!business) { alert('Please enter your business or organisation name.'); return; }
+  intakeHistory = []; intakeQuestions = []; intakeSite = ''; intakeSiteChecked = false;
+  setIntakeBusy(document.getElementById('gfx-website').value.trim() ? 'Reading your website and your description…' : 'Reading your description…');
+  try { renderIntake(await intakeCall({})); }
+  catch (e) { setIntakeError(e.message || 'Could not reach the AI just now.'); }
+};
+window.submitIntakeAnswers = async function() {
+  const answers = intakeQuestions.map((_, i) => { const el = document.getElementById('intake-a' + i); return el ? el.value.trim() : ''; });
+  intakeHistory = intakeHistory.concat([{ questions: intakeQuestions, answers }]);
+  const none = answers.every(a => !a);
+  setIntakeBusy(none ? 'Putting your brief together…' : 'Thinking about what you said…');
+  try { renderIntake(await intakeCall(none ? { force_brief: true } : {})); }
+  catch (e) { setIntakeError(e.message || 'Could not reach the AI just now.'); }
+};
+window.skipToBrief = async function() {
+  const answers = intakeQuestions.map((_, i) => { const el = document.getElementById('intake-a' + i); return el ? el.value.trim() : ''; });
+  if (intakeQuestions.length) intakeHistory = intakeHistory.concat([{ questions: intakeQuestions, answers }]);
+  setIntakeBusy('Putting your brief together…');
+  try { renderIntake(await intakeCall({ force_brief: true })); }
+  catch (e) { setIntakeError(e.message || 'Could not reach the AI just now.'); }
+};
+window.confirmBrief = function() {
+  const box = document.getElementById('brief-text');
+  confirmedBrief = box ? box.value.trim() : '';
+  intakePanel().style.display = 'none';
+  document.getElementById('brief-chip').style.display = confirmedBrief ? 'block' : 'none';
+  generate();
+};
+window.clearBrief = function() {
+  confirmedBrief = '';
+  document.getElementById('brief-chip').style.display = 'none';
+  intakePanel().style.display = 'none';
+};
+
+// ── Steps ─────────────────────────────────────────────────────────────────────
+let step = 'setup';
+window.setStep = function(s) {
+  step = s;
+  document.getElementById('pane-setup').style.display = s === 'setup' ? 'flex' : 'none';
+  document.getElementById('pane-edit').style.display = s === 'edit' ? 'flex' : 'none';
+  document.getElementById('step-setup').classList.toggle('active', s === 'setup');
+  document.getElementById('step-edit').classList.toggle('active', s === 'edit');
+};
+// A filled-in "2" is the quiet nudge that there is now something worth going and editing.
+function markStepReady() { document.getElementById('step-edit').classList.add('ready'); }
+
+// ── The style select, honestly labelled ───────────────────────────────────────
+// In the portrait/square poster layout the photo is always a full-width header band, so
+// "photo on the left / right" describe nothing — those values only decide the type weight and
+// whether there is a photo at all. Landscape still lays the photo out beside the type in
+// buildPosterLayers (and on the server), so there the original labels are still true.
+const TEMPLATE_OPTIONS = {
+  stacked: [['photo-right', 'Standard'], ['bold', 'Bold'], ['centered', 'No photo — type only']],
+  side:    [['photo-right', 'Photo on the right'], ['photo-left', 'Photo on the left'],
+            ['bold', 'Bold / event poster'], ['centered', 'No photo — type only']],
+};
+function syncTemplateOptions(preferred) {
+  const sel = document.getElementById('gfx-template');
+  const side = orientation === 'landscape';
+  const opts = TEMPLATE_OPTIONS[side ? 'side' : 'stacked'];
+  const want = preferred || sel.value;
+  sel.innerHTML = opts.map(([v, label]) => `<option value="${v}">${esc(label)}</option>`).join('');
+  // 'photo-left' has no stacked equivalent — it fell back to the same thing anyway.
+  sel.value = opts.some(o => o[0] === want) ? want : (want === 'photo-left' ? 'photo-right' : opts[0][0]);
+  document.getElementById('template-label').textContent = side ? 'LAYOUT' : 'STYLE';
+}
+
+window.toggleIntake = function() {
+  const btn = document.getElementById('intake-fold');
+  const open = btn.getAttribute('aria-expanded') !== 'true';
+  btn.setAttribute('aria-expanded', String(open));
+  document.getElementById('intake-body').style.display = open ? 'block' : 'none';
+};
+
+// ── Mode / look controls ──────────────────────────────────────────────────────
+window.setMode = function(m) {
+  mode = m;
+  const cfg = MODES[m];
+  document.querySelectorAll('.gfxtab').forEach(t => t.classList.toggle('active', t.dataset.mode === m));
+  const isPoster = cfg.pipeline === 'poster';
+  const isCanvas = cfg.pipeline === 'canvas';
+  const isMotion = cfg.pipeline === 'motion';
+
+  document.getElementById('brief-card').style.display = isCanvas ? 'none' : 'block';
+  document.getElementById('look-card').style.display = isCanvas ? 'none' : 'block';
+  document.getElementById('canvas-card').style.display = isCanvas ? 'block' : 'none';
+  document.getElementById('template-row').style.display = isPoster ? 'block' : 'none';
+  document.getElementById('palette-row').style.display = isPoster ? 'block' : 'none';
+  document.getElementById('font-row').style.display = isPoster ? 'block' : 'none';
+  document.getElementById('orientation-row').style.display = isPoster ? 'block' : 'none';
+  document.getElementById('upload-row').style.display = isMotion ? 'none' : 'block';
+  document.getElementById('exact-wording-row').style.display = isPoster ? 'block' : 'none';
+  document.getElementById('intake-box').style.display = isPoster ? 'block' : 'none';
+  document.getElementById('gfx-tagline').style.display = isMotion ? 'none' : 'block';
+  document.getElementById('tagline-label').style.display = isMotion ? 'none' : 'block';
+  document.getElementById('gen-bar').style.display = isCanvas ? 'none' : 'block';
+  if (isMotion) { hideVariants(); hideEditAffordance(); }
+
+  document.getElementById('brief-label').textContent = 'YOUR ' + cfg.title.toUpperCase();
+  document.getElementById('gfx-generate-btn').textContent = cfg.cta;
+  document.getElementById('prompt-hint').textContent = isPoster
+    ? "Include the real facts — the event's actual name, dates, times, prices, the venue. Anything concrete you write here gets used verbatim instead of invented."
+    : isMotion ? 'A short, seamlessly looping living image — a slow zoom and gentle drift. Great for a website hero.'
+    : 'Describe the photograph you want. We shoot it clean and add your name and tagline as real type.';
+
+  if (isPoster) { orientation = cfg.orientation; syncOrientation(); syncTemplateOptions(cfg.template); }
+  if (isMotion) showMotion(document.getElementById('motion-frame').src || ''); else hideMotion();
+  if (isMotion && !document.getElementById('motion-frame').src) hideMotion();
+  if (isCanvas) { orientation = 'portrait'; resizeDoc(document.getElementById('gfx-canvas-size').value); }
+  else if (isPoster) resizeDoc(SIZES[orientation].join('x'));
+  // Changing what you are making is a set-up action — never leave the user on the Edit pane
+  // looking at controls for the thing they just switched away from. (It also kept Blank
+  // Canvas's template grid, which lives in the set-up pane, permanently hidden.)
+  setStep('setup');
+  fitCanvas();
+  log('info', '// ' + cfg.title.toLowerCase() + ' mode');
+};
+
+window.setOrientation = function(o) {
+  orientation = o;
+  syncOrientation();
+  syncTemplateOptions();
+  resizeDoc(SIZES[o].join('x'));
+};
+function syncOrientation() {
+  document.querySelectorAll('#orient-seg button').forEach(b => b.classList.toggle('active', b.dataset.o === orientation));
+}
+// The style select changes how the copy is laid out, not what it says — so when a result is
+// already on the canvas it can be re-rendered on the spot instead of costing another generation.
+window.onTemplateChange = function() {
+  if (layerData) { layerData.template = currentTemplate(); buildFromData(layerData); log('info', '// re-laid out'); }
+  else log('info', '// style: ' + currentTemplate() + ' — press Generate to apply');
+};
+window.onCustomColor = function() { applyPalette(); };
+window.onHeadlineFontChange = function() {
+  headlineFont = document.getElementById('gfx-headline-font').value;
+  doc_.els.filter(e => e.role === 'headline').forEach(e => { e.font = headlineFont; });
+  render();
+};
+
+function renderPalettes() {
+  const wrap = document.getElementById('palette-swatches');
+  wrap.innerHTML = PALETTES.map((p, i) =>
+    `<button type="button" class="swatch${paletteIdx === i ? ' active' : ''}" title="${esc(p.name)}" onclick="selectPalette(${i})"
+      style="background:linear-gradient(90deg, ${p.bg} 50%, ${p.accent} 50%);"></button>`).join('') +
+    `<button type="button" class="swatch custom${paletteIdx === -1 ? ' active' : ''}" title="Custom" onclick="selectPalette(-1)">Custom</button>`;
+}
+window.selectPalette = function(i) {
+  paletteIdx = i;
+  document.getElementById('custom-colors').style.display = i === -1 ? 'flex' : 'none';
+  renderPalettes();
+  applyPalette();
+};
+// Recolours the design in place. Every generated element carries a `role`, so a palette swap
+// can retint the right things — accents, type on the ground, the CTA's label — without the
+// user having to reselect and recolour each one, and without touching anything they added
+// themselves (those have no role).
+// Recolours in place rather than rebuilding, so a palette swap never throws away edits the
+// user has already made. Every role the two builders emit is covered — including the panels,
+// hairlines and header scrim, which are mixed from the background and so would otherwise be
+// left tinted for the *old* palette.
+function applyPalette() {
+  const p = palette();
+  doc_.bg = p.bg; doc_.accent = p.accent;
+  const tc = textColors(p.bg), ctaTc = textColors(p.accent);
+  const dark = tc.fg === '#FFFFFF';
+  const rgb = hexToRgb(p.bg, [8, 14, 28]);
+  const mixTo = dark ? '#FFFFFF' : '#000000';
+  const headFg = doc_.headOnPhoto ? (dark ? '#FFFFFF' : '#17140F') : tc.fg;
+  const headMuted = doc_.headOnPhoto ? (dark ? '#E2E6EE' : '#4C463C') : tc.muted;
+  doc_.els.forEach(el => {
+    if (el.tintA != null) { const a = dark ? 0.57 : 0.78; el.tintA = a; el.color = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`; return; }
+    if (el.tint != null) {
+      el.color = mixHex(p.bg, mixTo, el.tint);
+      if (el.outlineTint != null) el.outline = mixHex(p.bg, mixTo, el.outlineTint);
+      return;
+    }
+    switch (el.role) {
+      case 'accent': case 'kicker': el.color = p.accent; break;
+      case 'headline': el.color = headFg; break;
+      case 'tagline': el.color = headMuted; break;
+      case 'point': el.color = tc.fg; el.dotColor = p.accent; el.iconColor = p.accent;
+        if (el.disc) el.discColor = `rgba(${hexToRgb(p.accent, [245,166,35]).join(',')},0.15)`;
+        break;
+      case 'info': el.color = tc.fg; el.subColor = tc.muted; el.iconColor = p.accent; break;
+      case 'footer': el.color = tc.muted; el.iconColor = p.accent; break;
+      case 'noteBody': el.color = tc.fg; break;
+      case 'section': case 'cta': el.color = p.accent; el.textColor = ctaTc.fg; break;
+    }
+  });
+  render();
+}
+
+window.resizeDoc = function(spec) {
+  const [w, h] = String(spec).split('x').map(Number);
+  if (!w || !h) return;
+  doc_.w = w; doc_.h = h;
+  render();
+};
+
+function readFile(input, cb) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = () => cb(r.result, file.name);
+  r.readAsDataURL(file);
+}
+window.onLogoChange = function(e) { readFile(e.target, (d, n) => { logoBase64 = d; document.getElementById('gfx-logo-name').textContent = n; }); };
+window.onPhotoChange = function(e) { readFile(e.target, (d, n) => { photoBase64 = d; document.getElementById('gfx-photo-name').textContent = n; }); };
+
+// ── Adding / editing elements ─────────────────────────────────────────────────
+window.addText = function() {
+  const tc = textColors(doc_.bg);
+  const el = { type: 'text', text: 'Your text', x: Math.round(doc_.w * 0.1), y: Math.round(doc_.h * 0.45),
+    maxW: Math.round(doc_.w * 0.8), size: Math.round(doc_.w / 18), weight: 800, font: headlineFont, color: tc.fg, align: 'left' };
+  doc_.els.push(el); selected = el; saveHistory(); render(); syncInspector();
+};
+window.addShape = function(kind) {
+  const el = kind === 'rect'
+    ? { type: 'rect', x: Math.round(doc_.w * 0.15), y: Math.round(doc_.h * 0.4), w: Math.round(doc_.w * 0.4), h: Math.round(doc_.h * 0.06), radius: 6, color: doc_.accent }
+    : { type: 'circle', x: Math.round(doc_.w * 0.4), y: Math.round(doc_.h * 0.4), r: Math.round(doc_.w * 0.08), color: doc_.accent };
+  doc_.els.push(el); selected = el; saveHistory(); render(); syncInspector();
+};
+window.addImageElement = function(e) {
+  readFile(e.target, async (dataUrl) => {
+    try {
+      const img = await loadImage(dataUrl, false);
+      const w = Math.round(doc_.w * 0.5), h = Math.round(w * (img.naturalHeight / img.naturalWidth));
+      const el = { type: 'image', img, x: Math.round(doc_.w * 0.25), y: Math.round(doc_.h * 0.3), w, h, radius: 10 };
+      doc_.els.push(el); selected = el; saveHistory(); render(); syncInspector();
+    } catch (err) { log('error', '[x] could not load that image'); }
+  });
+};
+window.clearCanvas = function() {
+  if (!doc_.els.length) return;
+  if (!confirm('Clear everything on the canvas?')) return;
+  doc_.els = []; selected = null; hovered = null;
+  hideVariants(); hideEditAffordance();
+  saveHistory(); render(); syncInspector();
+  log('info', '// canvas cleared');
+};
+
+function syncInspector() {
+  const box = document.getElementById('inspector');
+  if (!selected) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  const isTexty = ['text', 'pill', 'bullet', 'iconText'].indexOf(selected.type) !== -1;
+  document.getElementById('insp-text-wrap').style.display = isTexty ? 'block' : 'none';
+  document.getElementById('insp-font-wrap').style.display = isTexty ? 'flex' : 'none';
+  document.getElementById('insp-size-wrap').style.display = isTexty ? 'flex' : 'none';
+  if (isTexty) {
+    document.getElementById('insp-text').value = selected.text || '';
+    document.getElementById('insp-font').value = selected.font || 'Montserrat';
+    document.getElementById('insp-size').value = selected.size || 32;
+    document.getElementById('insp-size-val').textContent = (selected._fitSize || selected.size || 32) + 'px';
+  }
+  document.getElementById('insp-color').value = toHex(selected.color || '#ffffff');
+}
+function toHex(c) {
+  if (/^#[0-9a-f]{6}$/i.test(c)) return c;
+  const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/i.exec(c || '');
+  if (!m) return '#ffffff';
+  return '#' + [1, 2, 3].map(i => (+m[i]).toString(16).padStart(2, '0')).join('');
+}
+window.inspSet = function(prop, val) {
+  if (!selected) return;
+  if (prop === 'size') {
+    selected.size = val;
+    // A generated headline is auto-fitted to its column; once the user reaches for the size
+    // slider they are overriding that on purpose, so stop refitting it behind their back.
+    if (selected.fit) selected.fit = false;
+    document.getElementById('insp-size-val').textContent = val + 'px';
+  } else selected[prop] = val;
+  render();
+  if (prop !== 'text' && prop !== 'size') saveHistory();
+};
+window.inspDelete = function() {
+  if (!selected) return;
+  doc_.els = doc_.els.filter(e => e !== selected);
+  selected = null; saveHistory(); render(); syncInspector();
+};
+window.inspDuplicate = function() {
+  if (!selected) return;
+  const copy = Object.assign({}, selected);
+  delete copy._b;
+  copy.x += 24; copy.y += 24;
+  doc_.els.push(copy); selected = copy; saveHistory(); render(); syncInspector();
+};
+window.inspLayer = function(dir) {
+  if (!selected) return;
+  const i = doc_.els.indexOf(selected), j = i + dir;
+  if (i < 0 || j < 0 || j >= doc_.els.length) return;
+  doc_.els.splice(i, 1);
+  doc_.els.splice(j, 0, selected);
+  saveHistory(); render();
+};
+
+// ── Canvas interaction ────────────────────────────────────────────────────────
+let dragging = null, dragOff = { x: 0, y: 0 };
+let cropMode = false, cropStart = null, cropRect = null;
+
+function canvasPos(e) {
+  const r = canvas.getBoundingClientRect();
+  const src = e.touches && e.touches[0] ? e.touches[0] : e;
+  return { x: (src.clientX - r.left) * (doc_.w / r.width), y: (src.clientY - r.top) * (doc_.h / r.height) };
+}
+function hit(pt) {
+  for (let i = doc_.els.length - 1; i >= 0; i--) {
+    const b = doc_.els[i]._b;
+    if (b && pt.x >= b.x - 6 && pt.x <= b.x + b.w + 6 && pt.y >= b.y - 6 && pt.y <= b.y + b.h + 6) return doc_.els[i];
+  }
+  return null;
+}
+function onDown(e) {
+  const pt = canvasPos(e);
+  if (cropMode) { cropStart = pt; cropRect = null; e.preventDefault(); return; }
+  const el = hit(pt);
+  selected = el;
+  syncInspector();
+  if (el) {
+    dragging = el; dragOff = { x: pt.x - el.x, y: pt.y - el.y };
+    canvas.classList.add('dragging');
+    // The inspector for what you just picked lives in the Edit pane — put it in front of you
+    // rather than making you find it under a screenful of generation controls.
+    setStep('edit');
+    markStepReady();
+    e.preventDefault();
+  }
+  render();
+}
+canvas.addEventListener('mousemove', e => {
+  if (dragging || cropMode) return;
+  const el = hit(canvasPos(e));
+  canvas.classList.toggle('hovering', !!el);
+  if (el !== hovered) { hovered = el; render(); }
+});
+canvas.addEventListener('mouseleave', () => {
+  canvas.classList.remove('hovering');
+  if (hovered) { hovered = null; render(); }
+});
+function onMove(e) {
+  const pt = canvasPos(e);
+  if (cropMode && cropStart) {
+    cropRect = { x: Math.min(cropStart.x, pt.x), y: Math.min(cropStart.y, pt.y), w: Math.abs(pt.x - cropStart.x), h: Math.abs(pt.y - cropStart.y) };
+    drawCropBox();
+    e.preventDefault();
+    return;
+  }
+  if (!dragging) return;
+  dragging.x = Math.round(pt.x - dragOff.x);
+  dragging.y = Math.round(pt.y - dragOff.y);
+  render();
+  e.preventDefault();
+}
+function onUp() {
+  if (cropMode) { cropStart = null; return; }
+  if (dragging) { dragging = null; canvas.classList.remove('dragging'); saveHistory(); }
+}
+canvas.addEventListener('mousedown', onDown);
+window.addEventListener('mousemove', onMove);
+window.addEventListener('mouseup', onUp);
+canvas.addEventListener('touchstart', onDown, { passive: false });
+window.addEventListener('touchmove', onMove, { passive: false });
+window.addEventListener('touchend', onUp);
+canvas.addEventListener('dblclick', () => {
+  if (!selected || ['text', 'pill', 'bullet', 'iconText'].indexOf(selected.type) === -1) return;
+  const t = prompt('Edit this text:', selected.text || '');
+  if (t !== null) { selected.text = t; saveHistory(); render(); syncInspector(); }
+});
+window.addEventListener('keydown', e => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  if (!selected) return;
+  const step = e.shiftKey ? 20 : 3;
+  if (e.key === 'ArrowLeft') { selected.x -= step; render(); e.preventDefault(); }
+  else if (e.key === 'ArrowRight') { selected.x += step; render(); e.preventDefault(); }
+  else if (e.key === 'ArrowUp') { selected.y -= step; render(); e.preventDefault(); }
+  else if (e.key === 'ArrowDown') { selected.y += step; render(); e.preventDefault(); }
+  else if (e.key === 'Delete' || e.key === 'Backspace') { inspDelete(); e.preventDefault(); }
+});
+
+// ── Crop ──────────────────────────────────────────────────────────────────────
+window.toggleCrop = function() {
+  cropMode = !cropMode;
+  cropRect = null; cropStart = null;
+  canvas.classList.toggle('cropping', cropMode);
+  document.getElementById('crop-controls').style.display = cropMode ? 'block' : 'none';
+  document.getElementById('crop-box').style.display = 'none';
+  if (cropMode) log('info', '// drag a box on the canvas, then Apply crop');
+};
+function drawCropBox() {
+  const box = document.getElementById('crop-box');
+  if (!cropRect) { box.style.display = 'none'; return; }
+  const r = canvas.getBoundingClientRect(), wrap = document.getElementById('canvas-wrap').getBoundingClientRect();
+  const sx = r.width / doc_.w, sy = r.height / doc_.h;
+  box.style.display = 'block';
+  box.style.left = (r.left - wrap.left + cropRect.x * sx) + 'px';
+  box.style.top = (r.top - wrap.top + cropRect.y * sy) + 'px';
+  box.style.width = (cropRect.w * sx) + 'px';
+  box.style.height = (cropRect.h * sy) + 'px';
+}
+window.applyCrop = function() {
+  if (!cropRect || cropRect.w < 20 || cropRect.h < 20) { alert('Drag a box on the canvas first.'); return; }
+  // Crop by re-origining the document: shift every element by the crop offset and shrink the
+  // page. Keeps everything editable, unlike flattening to a cropped bitmap.
+  const { x, y, w, h } = cropRect;
+  doc_.els.forEach(el => { el.x -= x; el.y -= y; });
+  doc_.w = Math.round(w); doc_.h = Math.round(h);
+  cropRect = null;
+  toggleCrop();
+  saveHistory(); render();
+  log('success', '[ok] cropped to ' + doc_.w + '×' + doc_.h);
+};
+
+// ── Export ────────────────────────────────────────────────────────────────────
+function renderExport(scale) {
+  const off = document.createElement('canvas');
+  exporting = true;
+  render(off, scale || 1);
+  exporting = false;
+  render();
+  return off;
+}
+window.downloadDesign = function(format, scale) {
+  if (document.getElementById('motion-frame').style.display === 'block') {
+    downloadUrl(lastArtworkUrl, 'afrivid-motion.apng');
+    return;
+  }
+  const off = renderExport(scale || 1);
+  const url = off.toDataURL('image/' + format, format === 'jpeg' ? 0.94 : 1);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `AfriVid-${MODES[mode].title.replace(/\s+/g, '')}-${off.width}x${off.height}.${format === 'jpeg' ? 'jpg' : format}`;
+  a.click();
+  log('success', `[ok] downloaded ${off.width}×${off.height} ${format.toUpperCase()}`);
+};
+async function downloadUrl(url, filename) {
+  if (!url) return;
+  try {
+    const res = await fetch(PROXY + encodeURIComponent(url));
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch (e) { alert('Download failed: ' + e.message); }
+}
+window.downloadSVG = function() {
+  // Text and shapes go out as real SVG nodes (so they stay editable in Illustrator/Inkscape);
+  // bitmaps are embedded as data URIs since there is nothing vector about them.
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${doc_.w}" height="${doc_.h}" viewBox="0 0 ${doc_.w} ${doc_.h}">`;
+  svg += `<rect width="${doc_.w}" height="${doc_.h}" fill="${doc_.bg}"/>`;
+  doc_.els.forEach(el => {
+    if (el.type === 'image' && el.img) {
+      const off = document.createElement('canvas');
+      off.width = el.w; off.height = el.h;
+      drawImageCover(off.getContext('2d'), Object.assign({}, el, { x: 0, y: 0 }));
+      svg += `<image x="${el.x}" y="${el.y}" width="${el.w}" height="${el.h}" xlink:href="${off.toDataURL('image/jpeg', 0.9)}"/>`;
+    } else if (el.type === 'rect') {
+      svg += `<rect x="${el.x}" y="${el.y}" width="${el.w}" height="${el.h}" rx="${el.radius || 0}" fill="${el.color}"/>`;
+    } else if (el.type === 'circle') {
+      svg += `<circle cx="${el.x + el.r}" cy="${el.y + el.r}" r="${el.r}" fill="${el.color}"/>`;
+    } else if (el.type === 'iconText') {
+      const r = el.iconR || 20, gap = el.gap == null ? 16 : el.gap;
+      ctx.font = fontSpec(el);
+      wrapText(displayText(el), Math.max(40, (el.w || 300) - (r * 2 + gap))).slice(0, el.maxLines || 2)
+        .forEach((ln, i) => {
+          svg += `<text x="${el.x + r * 2 + gap}" y="${el.y + el.size + i * el.size * (el.lineH || 1.24)}" font-family="${esc(el.font || 'Montserrat')}" font-size="${el.size}" font-weight="${el.weight || 700}" fill="${el.color}">${esc(ln)}</text>`;
+        });
+    } else if (el.type === 'text' || el.type === 'bullet' || el.type === 'pill') {
+      const size = el._fitSize || el.size;
+      ctx.font = fontSpec(el, size);
+      const lines = el.type === 'text' ? wrapText(displayText(el), el.maxW || doc_.w) : [displayText(el)];
+      const ox = el.type === 'bullet' ? el.x + 24 : el.type === 'pill' ? el.x + 52 : el.x;
+      lines.forEach((ln, i) => {
+        svg += `<text x="${ox}" y="${el.y + size + i * size * (el.lineH || 1.16)}" font-family="${esc(el.font || 'Montserrat')}" font-size="${size}" font-weight="${el.weight || 700}" fill="${el.type === 'pill' ? (el.textColor || '#17140F') : el.color}">${esc(ln)}</text>`;
+      });
+    }
+  });
+  svg += '</svg>';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+  a.download = `AfriVid-${MODES[mode].title.replace(/\s+/g, '')}-${Date.now()}.svg`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  log('success', '[ok] downloaded SVG');
+};
+
+// Same pattern the Design Studio used: full-resolution PNG to R2, only a small thumbnail in
+// the Firestore document — a full-size design as an inline base64 dataURL would blow past
+// Firestore's ~1MB document limit and the write would silently fail.
+window.saveToStudio = async function() {
+  if (!window.currentUser) { if (window.showLogin) showLogin(); else alert('Please sign in to save.'); return; }
+  if (!doc_.els.length) { alert('Nothing to save yet — generate a design or add something to the canvas first.'); return; }
+  busy(true, 'Saving to My Studio…');
+  try {
+    const off = renderExport(1);
+    const full = off.toDataURL('image/png');
+    const tc = document.createElement('canvas');
+    const s = 320 / off.width;
+    tc.width = 320; tc.height = Math.max(1, Math.round(off.height * s));
+    tc.getContext('2d').drawImage(off, 0, 0, tc.width, tc.height);
+    const thumbnail = tc.toDataURL('image/jpeg', 0.7);
+    let designUrl = '';
+    try {
+      const blob = await (await fetch(full)).blob();
+      const form = new FormData();
+      form.append('file', blob, 'design-' + Date.now() + '.png');
+      const r = await fetch(WORKER + '/upload', { method: 'POST', body: form });
+      designUrl = (await r.json()).url || '';
+    } catch (e) { console.log('[Studio] R2 upload failed, falling back to thumbnail:', e); }
+    const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    const head = doc_.els.find(e => e.role === 'headline') || doc_.els.find(e => e.type === 'text');
+    await addDoc(collection(window.db, 'studio_designs'), {
+      userId: window.currentUser.uid, userEmail: window.currentUser.email,
+      title: (head && head.text) || MODES[mode].title,
+      dataURL: designUrl || thumbnail, thumbnail, createdAt: serverTimestamp(),
+    });
+    log('success', '[ok] saved to My Studio');
+  } catch (e) {
+    log('error', '[x] save failed: ' + e.message);
+    alert('Save failed: ' + e.message);
+  }
+  busy(false);
+};
+
+// ── Blank-canvas templates ────────────────────────────────────────────────────
+// Covers the starting points the old Design Studio offered (logo, certificate, wedding,
+// graduation, church, grand opening, WhatsApp, YouTube, school notice, birthday) for the
+// pieces the photo pipeline has no opinion about — a logo or a certificate wants flat vector
+// shapes and type, not a photograph.
+const TEMPLATES = {
+  logo:          { size: [1080, 1080], kind: 'logo',  title: 'AFRIVID', sub: 'YOUR TAGLINE HERE' },
+  certificate:   { size: [1754, 1240], kind: 'cert',  title: 'CERTIFICATE OF ACHIEVEMENT', sub: 'Recipient Name' },
+  wedding:       { size: [1080, 1350], kind: 'card',  title: 'Amara & Kwame', sub: 'request the pleasure of your company' },
+  graduation:    { size: [1080, 1350], kind: 'card',  title: 'CLASS OF 2026', sub: 'Congratulations, Graduate' },
+  church:        { size: [1080, 1350], kind: 'card',  title: 'SUNDAY SERVICE', sub: 'Everyone is welcome' },
+  business_open: { size: [1080, 1350], kind: 'card',  title: 'GRAND OPENING', sub: 'Doors open Saturday' },
+  whatsapp:      { size: [1080, 1920], kind: 'card',  title: 'BIG NEWS', sub: 'Tap to find out more' },
+  youtube:       { size: [1600, 900],  kind: 'card',  title: 'WATCH THIS', sub: 'New episode out now' },
+  school:        { size: [1240, 1754], kind: 'cert',  title: 'SCHOOL NOTICE', sub: 'Important information for parents' },
+  birthday:      { size: [1080, 1080], kind: 'card',  title: 'HAPPY BIRTHDAY', sub: 'Join us to celebrate' },
+};
+function renderTemplateGrid() {
+  document.getElementById('template-grid').innerHTML = Object.keys(TEMPLATES).map(k =>
+    `<button class="template-btn" onclick="loadTemplate('${k}')">${esc(k.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()))}</button>`).join('');
+}
+window.loadTemplate = function(key) {
+  const t = TEMPLATES[key];
+  if (!t) return;
+  const p = palette();
+  const light = t.kind === 'cert';
+  hideVariants();
+  doc_.headOnPhoto = false;
+  doc_.w = t.size[0]; doc_.h = t.size[1];
+  doc_.bg = light ? '#FFFFFF' : p.bg;
+  doc_.accent = p.accent;
+  const tc = textColors(doc_.bg);
+  const W = doc_.w, H = doc_.h;
+  doc_.els = [];
+
+  if (t.kind === 'logo') {
+    doc_.els.push({ type: 'circle', role: 'accent', x: W / 2 - 190, y: H * 0.2, r: 190, color: p.accent });
+    doc_.els.push({ type: 'text', text: t.title, x: 0, y: H * 0.5, maxW: W, size: Math.round(W / 9), weight: 900, font: headlineFont, color: tc.fg, align: 'center', upper: true });
+    doc_.els.push({ type: 'text', text: t.sub, x: 0, y: H * 0.63, maxW: W, size: Math.round(W / 34), weight: 600, font: 'Space Mono', color: tc.muted, align: 'center' });
+  } else if (t.kind === 'cert') {
+    doc_.els.push({ type: 'rect', role: 'accent', x: 40, y: 40, w: W - 80, h: 14, color: p.accent });
+    doc_.els.push({ type: 'rect', role: 'accent', x: 40, y: H - 54, w: W - 80, h: 14, color: p.accent });
+    doc_.els.push({ type: 'text', text: t.title, x: 0, y: H * 0.18, maxW: W, size: Math.round(W / 22), weight: 800, font: 'Playfair Display', color: tc.fg, align: 'center', upper: true });
+    doc_.els.push({ type: 'text', text: 'This is to certify that', x: 0, y: H * 0.34, maxW: W, size: Math.round(W / 48), weight: 400, font: 'Syne', color: tc.muted, align: 'center' });
+    doc_.els.push({ type: 'text', text: t.sub, x: 0, y: H * 0.42, maxW: W, size: Math.round(W / 16), weight: 900, font: 'Playfair Display', color: p.accent, align: 'center' });
+    doc_.els.push({ type: 'text', text: 'has successfully completed the programme', x: 0, y: H * 0.58, maxW: W, size: Math.round(W / 48), weight: 400, font: 'Syne', color: tc.muted, align: 'center' });
+    doc_.els.push({ type: 'text', text: 'Date', x: W * 0.15, y: H * 0.78, maxW: W * 0.25, size: Math.round(W / 52), weight: 700, font: 'Space Mono', color: tc.fg, align: 'left' });
+    doc_.els.push({ type: 'text', text: 'Signature', x: W * 0.6, y: H * 0.78, maxW: W * 0.25, size: Math.round(W / 52), weight: 700, font: 'Space Mono', color: tc.fg, align: 'left' });
+  } else {
+    doc_.els.push({ type: 'rect', role: 'accent', x: 0, y: 0, w: W, h: 12, color: p.accent });
+    doc_.els.push({ type: 'circle', role: 'accent', x: W - 180, y: -90, r: 180, color: p.accent });
+    doc_.els.push({ type: 'text', text: t.title, x: Math.round(W * 0.08), y: H * 0.34, maxW: Math.round(W * 0.84), size: Math.round(W / 8), weight: 900, font: headlineFont, color: tc.fg, align: 'left', fit: true, maxLines: 3 });
+    doc_.els.push({ type: 'text', text: t.sub, x: Math.round(W * 0.08), y: H * 0.58, maxW: Math.round(W * 0.84), size: Math.round(W / 26), weight: 400, font: 'Syne', color: tc.muted, align: 'left' });
+    doc_.els.push({ type: 'pill', role: 'cta', text: 'Find out more', x: Math.round(W * 0.08), y: H * 0.72, size: Math.round(W / 34), weight: 800, font: 'Montserrat', color: p.accent, textColor: textColors(p.accent).fg });
+    doc_.els.push({ type: 'rect', role: 'accent', x: 0, y: H - 12, w: W, h: 12, color: p.accent });
+  }
+  selected = null;
+  saveHistory();
+  render();
+  syncInspector();
+  showEditAffordance();
+  log('success', '[ok] loaded the ' + key.replace('_', ' ') + ' template');
+};
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+renderPalettes();
+renderTemplateGrid();
+syncOrientation();
+setMode('poster');
+saveHistory();
+fitCanvas();
+
+// Canvas text only measures correctly once the webfonts are actually available; without this
+// the first render would lay everything out in the fallback face and then never reflow.
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => render());
+  ['Anton', 'Archivo Black', 'Bebas Neue', 'Montserrat', 'Playfair Display', 'Syne'].forEach(f => {
+    if (document.fonts.load) document.fonts.load('900 64px "' + f + '"').then(() => render()).catch(() => {});
+  });
+}
+render();
+window.__gfxReady = true;
+</script>
+
+</body>
+</html>

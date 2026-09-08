@@ -37,13 +37,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .hero-badge{display:inline-block;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:30px;padding:0.4rem 1.2rem;font-size:0.72rem;font-weight:700;color:#F5A623;letter-spacing:2px;font-family:'Space Mono',monospace;margin-bottom:1rem;}
 .hero h1{font-size:3rem;font-weight:900;line-height:1.1;margin-bottom:0.5rem;}
 .hero h1 span{color:#F5A623;}
-.hero-tagline{color:rgba(255,255,255,0.4);font-size:0.9rem;font-style:italic;margin-bottom:0.5rem;}
+.hero-tagline{color:rgba(255,255,255,0.58);font-size:0.9rem;font-style:italic;margin-bottom:0.5rem;}
 .steps-bar{display:flex;gap:8px;margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;}
 .steps-bar::-webkit-scrollbar{display:none;}
-.step-pill{display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:20px;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);font-size:0.78rem;font-weight:700;white-space:nowrap;flex-shrink:0;font-family:'Syne',sans-serif;}
+.step-pill{display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:20px;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.56);font-size:0.78rem;font-weight:700;white-space:nowrap;flex-shrink:0;font-family:'Syne',sans-serif;}
 .step-pill.active{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.1);color:#F5A623;}
 .step-pill.done{border-color:rgba(116,198,157,0.3);background:rgba(116,198,157,0.08);color:#74C69D;}
-.step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);}
+.step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.58);}
 .step-pill.active .step-dot{background:#F5A623;color:#050A14;}
 .step-pill.done .step-dot{background:#74C69D;color:#050A14;}
 .panel{display:none;}.panel.active{display:block;}
@@ -70,12 +70,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .char-card.selected::after{content:'✓';position:absolute;top:6px;right:8px;color:#F5A623;font-size:0.8rem;font-weight:900;}
 .char-emoji{font-size:2.2rem;margin-bottom:0.4rem;}
 .char-name{font-weight:700;font-size:0.8rem;color:#fff;margin-bottom:0.2rem;}
-.char-role{font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;}
+.char-role{font-size:0.62rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;}
 .scene-card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.6rem;}
 .scene-num{display:inline-block;background:rgba(245,166,35,0.15);color:#F5A623;font-size:0.62rem;font-weight:700;font-family:'Space Mono',monospace;padding:0.2rem 0.5rem;border-radius:4px;margin-bottom:0.4rem;}
 .scene-char{font-weight:700;font-size:0.82rem;margin-bottom:0.2rem;}
 .scene-text{font-size:0.82rem;color:rgba(255,255,255,0.65);line-height:1.6;font-style:italic;}
-.scene-dur{font-size:0.6rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;margin-top:0.3rem;}
+.scene-dur{font-size:0.6rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;margin-top:0.3rem;}
 .progress-wrap{background:rgba(255,255,255,0.06);border-radius:6px;height:8px;margin:0.75rem 0;}
 .progress-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,#F5A623,#74C69D);transition:width 0.5s;}
 .lock-overlay{position:fixed;inset:0;background:rgba(8,8,8,0.97);z-index:200;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;}
@@ -122,10 +122,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <div style="font-size:3rem;margin-bottom:1rem;">🌿</div>
     <div style="font-size:1.8rem;font-weight:900;margin-bottom:0.75rem;">Watering Hole</div>
     <div style="color:rgba(255,255,255,0.5);margin-bottom:0.5rem;font-style:italic;">"Everyone comes thirsty. Nobody leaves satisfied."</div>
-    <div style="color:rgba(255,255,255,0.4);margin-bottom:2rem;line-height:1.7;" id="lock-sub">African political satire comedy series.<br><br>Requires a <strong style="color:#F5A623;">Pro account</strong> or Comedy credits.</div>
+    <div style="color:rgba(255,255,255,0.58);margin-bottom:2rem;line-height:1.7;" id="lock-sub">African political satire comedy series.<br><br>Requires a <strong style="color:#F5A623;">Pro account</strong> or Comedy credits.</div>
     <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
       <button onclick="showLogin()" class="btn btn-gold" style="width:100%;max-width:300px;justify-content:center;">Sign In to Continue</button>
-      <a href="pricing.html" style="color:rgba(255,255,255,0.4);font-size:0.8rem;font-family:'Space Mono',monospace;">View pricing →</a>
+      <a href="pricing.html" style="color:rgba(255,255,255,0.58);font-size:0.8rem;font-family:'Space Mono',monospace;">View pricing →</a>
     </div>
   </div>
 </div>
@@ -137,20 +137,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <h1>African Satire.<br><span>Real Stories.</span></h1>
     <div class="hero-tagline">"Everyone comes thirsty. Nobody leaves satisfied."</div>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">🦁 Lion · King</div>
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">🦜 Parrot · Media</div>
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">🦴 Hyena · Hustler</div>
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">🦌 Antelope · People</div>
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">🐍 Snake · Spy</div>
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;">👤 Human · NGO</div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;">🦁 Lion · King</div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;">🦜 Parrot · Media</div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;">🦴 Hyena · Hustler</div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;">🦌 Antelope · People</div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;">🐍 Snake · Spy</div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.5rem 1rem;font-size:0.75rem;color:rgba(255,255,255,0.58);font-family:'Space Mono',monospace;">👤 Human · NGO</div>
     </div>
   </div>
 
   <!-- TAB SWITCHER -->
   <div style="display:flex;gap:0;justify-content:center;margin:1.5rem 0 0;border-bottom:1px solid rgba(255,255,255,0.08);">
     <button id="tab-series" onclick="switchTab('series')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid #F5A623;color:#F5A623;font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">🎭 Comedy Series</button>
-    <button id="tab-podcast" onclick="switchTab('podcast')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.4);font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">🎙️ Podcast</button>
-    <button id="tab-dating" onclick="switchTab('dating')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.4);font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">💕 Dating Files</button>
+    <button id="tab-podcast" onclick="switchTab('podcast')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.58);font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">🎙️ Podcast</button>
+    <button id="tab-dating" onclick="switchTab('dating')" style="padding:0.75rem 2rem;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.58);font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">💕 Dating Files</button>
   </div>
 
   <!-- SERIES SECTION -->
@@ -220,7 +220,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   </div>
   <div class="panel" id="panel-2">
     <div class="card">
-      <div class="card-title"><div class="card-icon">🎭</div>Pick Your Cast <span style="font-size:0.7rem;color:rgba(255,255,255,0.3);font-weight:400;margin-left:0.5rem;">Select 2-4 characters</span></div>
+      <div class="card-title"><div class="card-icon">🎭</div>Pick Your Cast <span style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-weight:400;margin-left:0.5rem;">Select 2-4 characters</span></div>
       <div class="char-grid">
         <div class="char-card" data-char="Lion" onclick="toggleChar(this)">
           <div class="char-emoji">🦁</div>
@@ -282,11 +282,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   </div>
   <div class="panel" id="panel-3">
     <div class="card">
-      <div class="card-title"><div class="card-icon">📝</div>The Script <span id="script-label" style="font-size:0.72rem;color:rgba(255,255,255,0.3);font-weight:400;margin-left:0.5rem;font-family:'Space Mono',monospace;"></span></div>
+      <div class="card-title"><div class="card-icon">📝</div>The Script <span id="script-label" style="font-size:0.72rem;color:rgba(255,255,255,0.54);font-weight:400;margin-left:0.5rem;font-family:'Space Mono',monospace;"></span></div>
       <div id="script-loading" style="text-align:center;padding:2rem;">
         <div style="font-size:2rem;margin-bottom:0.75rem;">✍️</div>
         <div style="color:#F5A623;font-weight:700;margin-bottom:0.5rem;">Writing the script...</div>
-        <div style="color:rgba(255,255,255,0.3);font-size:0.8rem;font-family:'Space Mono',monospace;">AI is crafting dialogue for your cast</div>
+        <div style="color:rgba(255,255,255,0.54);font-size:0.8rem;font-family:'Space Mono',monospace;">AI is crafting dialogue for your cast</div>
         <div class="progress-wrap" style="margin-top:1rem;"><div class="progress-bar" id="script-progress" style="width:0%"></div></div>
       </div>
       <div id="script-scenes" style="display:none;"></div>
@@ -305,15 +305,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <div style="font-size:2.5rem;margin-bottom:1rem;" id="gen-emoji">🌿</div>
         <div style="font-weight:700;font-size:1rem;margin-bottom:0.5rem;" id="gen-stage">Setting up the Savanna...</div>
         <div class="progress-wrap"><div class="progress-bar" id="gen-progress" style="width:0%"></div></div>
-        <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;" id="gen-pct">0%</div>
+        <div style="color:rgba(255,255,255,0.54);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;" id="gen-pct">0%</div>
       </div>
       <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:1rem;margin-top:1rem;">
         <div style="color:#F5A623;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">📧 We will email you when ready!</div>
-        <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;font-family:'Space Mono',monospace;" id="gen-email-txt">Processing your episode...</div>
+        <div style="color:rgba(255,255,255,0.58);font-size:0.75rem;font-family:'Space Mono',monospace;" id="gen-email-txt">Processing your episode...</div>
       </div>
       <div id="wh-dashboard-btn" style="display:none;margin-top:1rem;gap:0.5rem;flex-wrap:wrap;">
         <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard</a>
-        <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
+        <div style="color:rgba(255,255,255,0.54);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
       </div>
     </div>
     <div class="card" id="wh-result" style="display:none;">
@@ -347,7 +347,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <div class="hero-tagline">"Where the animals discuss what the humans won't"</div>
     </div>
     <div style="max-width:900px;margin:0 auto;padding:0 1rem;">
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:1rem;">SEASON 1 — KENYA POLITICS</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;margin-bottom:1rem;">SEASON 1 — KENYA POLITICS</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;" id="podcast-episode-grid"></div>
     </div>
     <div style="max-width:600px;margin:2rem auto;padding:0 1rem;" id="podcast-generate-section">
@@ -371,7 +371,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       </div>
     </div>
     <div style="max-width:900px;margin:0 auto;padding:0 1rem 2rem;">
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:1rem;">RECENT EPISODES</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;margin-bottom:1rem;">RECENT EPISODES</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem;" id="podcast-history"></div>
     </div>
   </div><!-- end section-podcast -->
@@ -384,7 +384,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <div class="hero-tagline">"Because love in Kenya is a whole series"</div>
     </div>
     <div style="max-width:900px;margin:0 auto;padding:0 1rem;">
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:1rem;">30 EPISODES — RELATIONSHIP SERIES</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;margin-bottom:1rem;">30 EPISODES — RELATIONSHIP SERIES</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;" id="dating-episode-grid"></div>
     </div>
     <div style="max-width:600px;margin:2rem auto;padding:0 1rem;" id="dating-generate-section">
@@ -415,10 +415,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 <div class="modal-overlay" id="login-modal">
   <div class="login-box">
-    <button onclick="closeLogin()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.2rem;cursor:pointer;">✕</button>
+    <button onclick="closeLogin()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.58);font-size:1.2rem;cursor:pointer;">✕</button>
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:1.5rem;font-weight:900;margin-bottom:0.25rem;">Sign In</div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Watering Hole — AfriVid Comedy</div>
+      <div style="color:rgba(255,255,255,0.58);font-size:0.8rem;">Watering Hole — AfriVid Comedy</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:0.75rem;">
       <input type="email" id="login-email" placeholder="Email address" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;width:100%;">
@@ -478,7 +478,7 @@ async function loadEpisodeHistory(uid) {
       const ep = d.data();
       const card = document.createElement('div');
       card.style.cssText = 'background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.75rem;text-align:center;cursor:pointer;';
-      card.innerHTML = '<div style="font-size:0.62rem;color:rgba(255,255,255,0.3);font-family:Space Mono,monospace;margin-bottom:0.2rem;">S'+ep.season+' EP'+ep.epNum+'</div><div style="font-size:0.78rem;font-weight:700;color:#fff;">'+(ep.epTitle||'Untitled')+'</div><div style="font-size:0.58rem;color:#74C69D;font-family:Space Mono,monospace;margin-top:0.2rem;">Done</div>';
+      card.innerHTML = '<div style="font-size:0.62rem;color:rgba(255,255,255,0.54);font-family:Space Mono,monospace;margin-bottom:0.2rem;">S'+ep.season+' EP'+ep.epNum+'</div><div style="font-size:0.78rem;font-weight:700;color:#fff;">'+(ep.epTitle||'Untitled')+'</div><div style="font-size:0.58rem;color:#74C69D;font-family:Space Mono,monospace;margin-top:0.2rem;">Done</div>';
       grid.appendChild(card);
     });
   } catch(e) { console.log('History:', e); }
@@ -548,7 +548,7 @@ window.renderScript = function(scenes, cast) {
   scenes.forEach(s => {
     const div = document.createElement('div');
     div.className = 'scene-card';
-    div.innerHTML = '<div class="scene-num">SCENE '+s.scene+'</div><div class="scene-char">'+(emojis[s.character]||'')+'  '+s.character+(s.emotion?' <span style="font-size:0.6rem;color:rgba(255,255,255,0.25);font-family:Space Mono,monospace;">['+s.emotion+']</span>':'')+'</div><div class="scene-text">"'+s.text+'"</div><div class="scene-dur">'+s.duration+'s</div>';
+    div.innerHTML = '<div class="scene-num">SCENE '+s.scene+'</div><div class="scene-char">'+(emojis[s.character]||'')+'  '+s.character+(s.emotion?' <span style="font-size:0.6rem;color:rgba(255,255,255,0.52);font-family:Space Mono,monospace;">['+s.emotion+']</span>':'')+'</div><div class="scene-text">"'+s.text+'"</div><div class="scene-dur">'+s.duration+'s</div>';
     c.appendChild(div);
   });
   document.getElementById('script-actions').style.display='flex';
@@ -725,9 +725,9 @@ function renderDatingEpisodes() {
   if (!grid) return;
   grid.innerHTML = DATING_EPISODES.map(ep => `
     <div onclick="selectDatingEp(${ep.ep})" id="dating-card-${ep.ep}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;cursor:pointer;transition:all 0.2s;">
-      <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">EP ${ep.ep}</div>
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">EP ${ep.ep}</div>
       <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">${ep.title}</div>
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${ep.desc}</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.58);">${ep.desc}</div>
     </div>`).join('');
 }
 
@@ -970,7 +970,7 @@ window.cutTikTok = async function() {
           const grid = document.getElementById('tiktok-clips-grid');
           grid.innerHTML = clips.map(cl => `
             <a href="${cl.url}" download style="display:block;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.5rem;text-align:center;color:#F5A623;font-size:0.72rem;font-family:'Space Mono',monospace;text-decoration:none;">
-              📱 Clip ${cl.clip}<br><span style="color:rgba(255,255,255,0.3);font-size:0.65rem;">${cl.start}s–${cl.start+cl.duration}s</span>
+              📱 Clip ${cl.clip}<br><span style="color:rgba(255,255,255,0.54);font-size:0.65rem;">${cl.start}s–${cl.start+cl.duration}s</span>
             </a>`).join('');
           document.getElementById('tiktok-status-text').textContent = `✅ ${clips.length} TikTok clips ready!`;
         } catch(e) {
@@ -1023,9 +1023,9 @@ function renderPodcastEpisodes() {
   if (!grid) return;
   grid.innerHTML = PODCAST_EPISODES.map(ep => `
     <div onclick="selectPodcastEp(${ep.ep})" id="pod-card-${ep.ep}" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;cursor:pointer;transition:all 0.2s;">
-      <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">EP ${ep.ep}</div>
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">EP ${ep.ep}</div>
       <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">${ep.title}</div>
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${ep.desc}</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.58);">${ep.desc}</div>
     </div>
   `).join('');
 }
@@ -1126,7 +1126,7 @@ window.cutYouTube = async function() {
           const grid = document.getElementById('youtube-clips-grid');
           grid.innerHTML = clips.map(cl => `
             <a href="${cl.url}" download style="display:block;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.5rem;text-align:center;color:#F5A623;font-size:0.72rem;font-family:'Space Mono',monospace;text-decoration:none;">
-              ▶️ Part ${cl.clip}<br><span style="color:rgba(255,255,255,0.3);font-size:0.65rem;">${Math.floor(cl.start/60)}m–${Math.floor((cl.start+cl.duration)/60)}m</span>
+              ▶️ Part ${cl.clip}<br><span style="color:rgba(255,255,255,0.54);font-size:0.65rem;">${Math.floor(cl.start/60)}m–${Math.floor((cl.start+cl.duration)/60)}m</span>
             </a>`).join('');
           document.getElementById('youtube-status-text').textContent = `✅ ${clips.length} YouTube clips ready!`;
         } catch(e) {}
