@@ -371,9 +371,14 @@
       await new Promise(function (r) { setTimeout(r, POLL_INTERVAL_MS); });
       var after = await entitlements(user);
       if (applied(plan, before, after)) {
+        // The receipt line is here on purpose. A real customer's complaint was
+        // that the only mail they ever got was Paystack's own — so now that the
+        // server sends an AfriVid-branded receipt of its own from this same
+        // success path, say so, or they go looking for it in the Paystack one.
         show('You are upgraded',
              (PLANS[plan] ? planLabel(plan, cur) + ' is active on your account.' : 'Your upgrade is active.') +
-             ' Everything it unlocks is available now.',
+             ' Everything it unlocks is available now. A receipt from AfriVid Studio ' +
+             'is on its way to your email.',
              [{ label: 'Continue', primary: true, onClick: function () { window.location.reload(); } }]);
         return;
       }
@@ -590,7 +595,8 @@
         // Nothing to confirm server-side — a donation grants no entitlement to
         // poll for, unlike confirmUpgrade() above. Say thanks immediately.
         show('Thank you!',
-             'Your support helps grow Africa’s tech infrastructure. We appreciate it.',
+             'Your support helps grow Africa’s tech infrastructure. We appreciate it. ' +
+             'A thank-you and a record of the donation are on their way to your email.',
              [{ label: 'Close', primary: true, onClick: hide }]);
       },
       onCancel: function () {
