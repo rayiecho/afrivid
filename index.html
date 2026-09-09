@@ -262,6 +262,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .footer-col-link:hover{color:#9C5918;}
 .footer-social-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:rgba(23,20,15,0.05);border:1px solid rgba(23,20,15,0.1);transition:all 0.2s;}
 .footer-social-icon:hover{background:rgba(224,138,46,0.15);border-color:rgba(224,138,46,0.4);}
+/* Account column's Upgrade/Support buttons need to read as bold actions against
+   the footer's light cream ground — .hero-support-link's white-on-photo treatment
+   would vanish here, so this is an amber-outlined equivalent for a light bg. */
+.footer-support-btn{display:inline-flex;align-items:center;color:#9C5918;font-size:0.85rem;font-weight:800;font-family:'Syne',sans-serif;text-decoration:none;padding:0.55rem 1.1rem;border-radius:9px;border:2px solid #E08A2E;background:rgba(224,138,46,0.08);transition:background 0.18s,color 0.18s;}
+.footer-support-btn:hover{background:#E08A2E;color:#17140F;}
+.footer-account-actions{display:flex;flex-direction:column;gap:0.7rem;margin-bottom:1rem;}
 .footer-bottom{max-width:1100px;margin:3rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(23,20,15,0.08);color:rgba(23,20,15,0.75);font-size:0.78rem;font-family:'Space Mono',monospace;text-align:center;}
 @media(max-width:800px){
   .footer-modern-grid{grid-template-columns:1fr 1fr;gap:2rem;}
@@ -298,6 +304,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .navbar-badge{display:none;}
   .navbar-actions{gap:0.4rem;}
   .btn-nav-tool{padding:0.4rem 0.7rem;font-size:0.72rem;}
+  /* Five nav links (was three) now wrap to 3 rows here instead of 2 — .navbar's
+     align-items:center was centering the single-row brand against that whole
+     wrapped block, dragging the logo down to mid-stack. Pin it to the top instead. */
+  .navbar-brand{align-self:flex-start;}
   /* flex-wrap so .hero-actions (a sibling of .hero-content, not nested in
      it) drops to its own line below the text once the text column takes
      the full width right below — same stacked order as before this became
@@ -594,6 +604,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div class="navbar-actions" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
     <a href="create.html" class="btn-nav-tool" style="text-decoration:none;">Create Video</a>
     <a href="graphics.html" class="btn-nav-tool" style="text-decoration:none;">Graphics and Images</a>
+    <a href="studio-editor.html" class="btn-nav-tool" style="text-decoration:none;">Video Editor</a>
+    <a href="compress.html" class="btn-nav-tool" style="text-decoration:none;">Video Compressor</a>
     <a href="studio.html" class="btn-nav-tool" style="text-decoration:none;">My Studio</a>
     <button class="btn-signin" id="btn-nav-user" style="display:none;margin-left:0.4rem;" onclick="window.location.href='studio.html'"></button>
   </div>
@@ -737,7 +749,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 <div class="stats-section">
   <div class="stats-grid">
     <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.05s forwards;"><div class="stat-num" id="stat-users">...</div><div class="stat-label">CREATORS JOINED</div></div>
-    <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.15s forwards;"><div class="stat-num">5+</div><div class="stat-label">COUNTRIES REACHED</div></div>
+    <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.15s forwards;"><div class="stat-num" id="stat-countries">5+</div><div class="stat-label">COUNTRIES REACHED</div></div>
     <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.25s forwards;"><div class="stat-num">6</div><div class="stat-label">AFRICAN LANGUAGES</div></div>
     <div class="stat-item" style="opacity:0;animation:fadeUp 0.6s ease-out 0.35s forwards;"><div class="stat-num">5</div><div class="stat-label">AI TOOLS</div></div>
   </div>
@@ -843,6 +855,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
     <div class="footer-col">
       <div class="footer-col-title">Account</div>
+      <div class="footer-account-actions">
+        <a href="pricing.html#plans" class="av-upgrade">Upgrade</a>
+        <a href="support.html" class="footer-support-btn">Support AfriVid</a>
+      </div>
       <button class="footer-col-link" id="btn-nav-signin" onclick="showLogin()" style="background:none;border:none;padding:0;text-align:left;cursor:pointer;font-family:'Syne',sans-serif;">Sign In</button>
       <button class="footer-col-link" id="btn-nav-start" onclick="showLogin()" style="background:none;border:none;padding:0;text-align:left;cursor:pointer;font-family:'Syne',sans-serif;color:#9C5918;font-weight:700;">Get Started Free →</button>
     </div>
@@ -1254,6 +1270,14 @@ if('serviceWorker' in navigator) {
       if (!snap.exists()) throw new Error('public_stats/counts missing');
       const data = snap.data();
       document.getElementById('stat-users').textContent = (data.userCount || 0) + '+';
+      // Distinct non-empty countries, kept as an arrayUnion-deduped list on this same
+      // doc by every signup (studio_users itself is owner-only-read, so the homepage
+      // can't query it directly — see doSignUp in studio.html). Existing users from
+      // before the country field shipped simply aren't in this list yet.
+      const countries = Array.isArray(data.countries) ? data.countries.filter(Boolean) : [];
+      if (countries.length > 0) {
+        document.getElementById('stat-countries').textContent = countries.length + '+';
+      }
       return;
     } catch(e) {
       if (attempt === MAX_ATTEMPTS) {

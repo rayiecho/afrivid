@@ -122,7 +122,17 @@ service cloud.firestore {
             && request.resource.data.userCount == resource.data.userCount + 1)
         || (request.auth != null
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['videoCount'])
-            && request.resource.data.videoCount == resource.data.videoCount + 1);
+            && request.resource.data.videoCount == resource.data.videoCount + 1)
+        // "countries reached" stat (homepage): signup writes arrayUnion(country) here, since
+        // studio_users itself can't be listed/read from the client (see above). Same "inflate a
+        // vanity number, never corrupt anything else" shape as the counters above, adapted for a
+        // list — grows by at most one element per write, and every existing element must still
+        // be present, so a write can add a country but never remove or replace one.
+        || (request.auth != null
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['countries'])
+            && request.resource.data.countries is list
+            && request.resource.data.countries.size() <= resource.data.get('countries', []).size() + 1
+            && request.resource.data.countries.hasAll(resource.data.get('countries', [])));
     }
 
     // Catch-all - admin can access everything else; everyone else denied by default

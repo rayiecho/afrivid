@@ -650,6 +650,189 @@ body::after{
         <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
+        <label class="form-label">COUNTRY</label>
+        <select id="signup-country" class="form-input" required>
+          <option value="" disabled selected>Select your country</option>
+          <optgroup label="Africa">
+            <option>Algeria</option>
+            <option>Angola</option>
+            <option>Benin</option>
+            <option>Botswana</option>
+            <option>Burkina Faso</option>
+            <option>Burundi</option>
+            <option>Cabo Verde</option>
+            <option>Cameroon</option>
+            <option>Central African Republic</option>
+            <option>Chad</option>
+            <option>Comoros</option>
+            <option>Congo (Republic of the)</option>
+            <option>Congo (DRC)</option>
+            <option>Djibouti</option>
+            <option>Egypt</option>
+            <option>Equatorial Guinea</option>
+            <option>Eritrea</option>
+            <option>Eswatini</option>
+            <option>Ethiopia</option>
+            <option>Gabon</option>
+            <option>Gambia</option>
+            <option>Ghana</option>
+            <option>Guinea</option>
+            <option>Guinea-Bissau</option>
+            <option>Ivory Coast</option>
+            <option>Kenya</option>
+            <option>Lesotho</option>
+            <option>Liberia</option>
+            <option>Libya</option>
+            <option>Madagascar</option>
+            <option>Malawi</option>
+            <option>Mali</option>
+            <option>Mauritania</option>
+            <option>Mauritius</option>
+            <option>Morocco</option>
+            <option>Mozambique</option>
+            <option>Namibia</option>
+            <option>Niger</option>
+            <option>Nigeria</option>
+            <option>Rwanda</option>
+            <option>Sao Tome and Principe</option>
+            <option>Senegal</option>
+            <option>Seychelles</option>
+            <option>Sierra Leone</option>
+            <option>Somalia</option>
+            <option>South Africa</option>
+            <option>South Sudan</option>
+            <option>Sudan</option>
+            <option>Tanzania</option>
+            <option>Togo</option>
+            <option>Tunisia</option>
+            <option>Uganda</option>
+            <option>Zambia</option>
+            <option>Zimbabwe</option>
+          </optgroup>
+          <optgroup label="Other Countries">
+            <option>Afghanistan</option>
+            <option>Albania</option>
+            <option>Andorra</option>
+            <option>Argentina</option>
+            <option>Armenia</option>
+            <option>Australia</option>
+            <option>Austria</option>
+            <option>Azerbaijan</option>
+            <option>Bahamas</option>
+            <option>Bahrain</option>
+            <option>Bangladesh</option>
+            <option>Barbados</option>
+            <option>Belarus</option>
+            <option>Belgium</option>
+            <option>Belize</option>
+            <option>Bhutan</option>
+            <option>Bolivia</option>
+            <option>Bosnia and Herzegovina</option>
+            <option>Brazil</option>
+            <option>Brunei</option>
+            <option>Bulgaria</option>
+            <option>Cambodia</option>
+            <option>Canada</option>
+            <option>Chile</option>
+            <option>China</option>
+            <option>Colombia</option>
+            <option>Costa Rica</option>
+            <option>Croatia</option>
+            <option>Cuba</option>
+            <option>Cyprus</option>
+            <option>Czech Republic</option>
+            <option>Denmark</option>
+            <option>Dominican Republic</option>
+            <option>Ecuador</option>
+            <option>El Salvador</option>
+            <option>Estonia</option>
+            <option>Fiji</option>
+            <option>Finland</option>
+            <option>France</option>
+            <option>Georgia</option>
+            <option>Germany</option>
+            <option>Greece</option>
+            <option>Guatemala</option>
+            <option>Guyana</option>
+            <option>Haiti</option>
+            <option>Honduras</option>
+            <option>Hungary</option>
+            <option>Iceland</option>
+            <option>India</option>
+            <option>Indonesia</option>
+            <option>Iran</option>
+            <option>Iraq</option>
+            <option>Ireland</option>
+            <option>Israel</option>
+            <option>Italy</option>
+            <option>Jamaica</option>
+            <option>Japan</option>
+            <option>Jordan</option>
+            <option>Kazakhstan</option>
+            <option>Kuwait</option>
+            <option>Kyrgyzstan</option>
+            <option>Laos</option>
+            <option>Latvia</option>
+            <option>Lebanon</option>
+            <option>Lithuania</option>
+            <option>Luxembourg</option>
+            <option>Malaysia</option>
+            <option>Maldives</option>
+            <option>Malta</option>
+            <option>Mexico</option>
+            <option>Moldova</option>
+            <option>Monaco</option>
+            <option>Mongolia</option>
+            <option>Montenegro</option>
+            <option>Myanmar</option>
+            <option>Nepal</option>
+            <option>Netherlands</option>
+            <option>New Zealand</option>
+            <option>Nicaragua</option>
+            <option>North Korea</option>
+            <option>North Macedonia</option>
+            <option>Norway</option>
+            <option>Oman</option>
+            <option>Pakistan</option>
+            <option>Panama</option>
+            <option>Papua New Guinea</option>
+            <option>Paraguay</option>
+            <option>Peru</option>
+            <option>Philippines</option>
+            <option>Poland</option>
+            <option>Portugal</option>
+            <option>Qatar</option>
+            <option>Romania</option>
+            <option>Russia</option>
+            <option>Saudi Arabia</option>
+            <option>Serbia</option>
+            <option>Singapore</option>
+            <option>Slovakia</option>
+            <option>Slovenia</option>
+            <option>South Korea</option>
+            <option>Spain</option>
+            <option>Sri Lanka</option>
+            <option>Sweden</option>
+            <option>Switzerland</option>
+            <option>Syria</option>
+            <option>Taiwan</option>
+            <option>Tajikistan</option>
+            <option>Thailand</option>
+            <option>Trinidad and Tobago</option>
+            <option>Turkey</option>
+            <option>Turkmenistan</option>
+            <option>Ukraine</option>
+            <option>United Arab Emirates</option>
+            <option>United Kingdom</option>
+            <option>United States</option>
+            <option>Uruguay</option>
+            <option>Uzbekistan</option>
+            <option>Venezuela</option>
+            <option>Vietnam</option>
+            <option>Yemen</option>
+            <option>Other</option>
+          </optgroup>
+        </select>
                 <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.75);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
           <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Privacy Policy</a></label>
@@ -693,7 +876,7 @@ function saveProfileName(){ if(window._saveProfileName) window._saveProfileName(
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, updateProfile, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, orderBy, getDocs, addDoc, serverTimestamp, onSnapshot, deleteDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, orderBy, getDocs, addDoc, serverTimestamp, onSnapshot, deleteDoc, increment, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",
@@ -797,9 +980,9 @@ const GRANT_LABELS = {
 // The My Plans view uses this + studioUserCreatedAt to tell "still inside the free trial
 // window" apart from "expiry got pushed out further — that's a real purchase or Pro".
 const TOOL_GRANTS = [
-  { field: 'editor_expires', label: 'Video Editor', icon: '🎬', freeDays: 30 },
-  { field: 'graphics_expires', label: 'Graphics and Images', icon: '🎨', freeDays: 90 },
-  { field: 'compressor_expires', label: 'Compressor', icon: '📦', freeDays: 30 },
+  { field: 'editor_expires', label: 'Video Editor', freeDays: 30 },
+  { field: 'graphics_expires', label: 'Graphics and Images', freeDays: 90 },
+  { field: 'compressor_expires', label: 'Compressor', freeDays: 30 },
 ];
 
 function fmtExpiry(unixSeconds) {
@@ -932,7 +1115,7 @@ function renderMyPlansView(ent) {
   creditsFillEl.style.width = (remaining !== null && total) ? `${Math.max(0, Math.min(100, (remaining / total) * 100))}%` : '0%';
 
   const now = Date.now();
-  const cards = TOOL_GRANTS.map(({ field, label, icon, freeDays }) => {
+  const cards = TOOL_GRANTS.map(({ field, label, freeDays }) => {
     const expirySeconds = ent[field];
     const expiryDate = expirySeconds ? new Date(expirySeconds * 1000) : null;
     const active = !!(expiryDate && expiryDate.getTime() > now);
@@ -948,7 +1131,6 @@ function renderMyPlansView(ent) {
       ? `Active — until ${expiryDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
       : 'Not active';
     return `<div class="plan-grant-card ${active ? 'active' : 'inactive'}">
-      <div class="plan-grant-icon">${icon}</div>
       <div class="plan-grant-body">
         <div class="plan-grant-name">${label}</div>
         <div class="plan-grant-status">${status}</div>
@@ -965,7 +1147,6 @@ function renderMyPlansView(ent) {
   const apiActive = apiSecondsLeft > 0;
   const apiSource = isPro ? 'Metered separately — not included free' : (apiActive ? 'Free-tier trial balance' : '');
   cards.push(`<div class="plan-grant-card ${apiActive ? 'active' : 'inactive'}">
-    <div class="plan-grant-icon">💻</div>
     <div class="plan-grant-body">
       <div class="plan-grant-name">Developer API</div>
       <div class="plan-grant-status">${apiActive ? `Active — ${Math.round(apiSecondsLeft / 60)} min left` : 'Not active'}</div>
@@ -1209,8 +1390,10 @@ window.doSignUp = async function() {
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
+  const country = document.getElementById('signup-country').value;
   const err = document.getElementById('login-error');
   if (!name||!email||!password) { err.style.display='block'; err.textContent='[!] Fill all fields'; return; }
+  if (!country) { err.style.display='block'; err.textContent='[!] Please select your country'; return; }
   if (password.length < 6) { err.style.display='block'; err.textContent='[!] Password min 6 characters'; return; }
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
@@ -1219,9 +1402,14 @@ window.doSignUp = async function() {
     // (a rate-limited verification email previously left a real Auth account with no
     // studio_users doc, invisible everywhere the app reads from that collection).
     await setDoc(doc(db, 'studio_users', cred.user.uid), {
-      name, email, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'free'
+      name, email, country, videosGenerated: 0, joinedAt: serverTimestamp(), plan: 'free'
     });
     updateDoc(doc(db, 'public_stats', 'counts'), { userCount: increment(1) }).catch(() => {});
+    // studio_users is owner-only-read (see the identical note on index.html's stats
+    // loader), so the homepage can't query it directly for distinct countries — this
+    // mirrors that same public_stats/counts doc: arrayUnion is atomic and naturally
+    // dedupes, so no read-before-write and no separate aggregation job is needed.
+    updateDoc(doc(db, 'public_stats', 'counts'), { countries: arrayUnion(country) }).catch(() => {});
     try { await updateProfile(cred.user, { displayName: name }); } catch (e) { console.log('[Signup] updateProfile failed (non-critical):', e); }
     try { await sendEmailVerification(cred.user); } catch (e) { console.log('[Signup] sendEmailVerification failed (non-critical):', e); }
     hideLogin();
