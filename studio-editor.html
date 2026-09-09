@@ -2587,6 +2587,11 @@ async function pollExport(jobId) {
       setBar(100);
       setStatus(`Done in ${mins} min.`, 'ok');
       const a = $('export-dl');
+      // No `download` attribute on purpose: this link points at the R2 bucket,
+      // which is a different origin, and browsers silently ignore `download` on
+      // cross-origin links — that is exactly how these saved as
+      // "job_1788865307655_thrdqw_output.mp4". The branded name now rides on the
+      // object's Content-Disposition, set by the server when it uploaded it.
       a.href = d.output_url; a.style.display = 'block';
       $('btn-export').disabled = false;
       window._exportDone = { url: d.output_url, minutes: +mins };
@@ -2606,6 +2611,7 @@ syncImgRangeUI();
 updateBeautifyNote();
 window._pageReady = true;
 </script>
+<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>

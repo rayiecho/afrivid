@@ -410,7 +410,9 @@ window.startCompress = async function() {
     // against Google's public signing certs, so this account cannot be spoofed
     // by typing someone else's uid into the request body.
     const compressHeaders = { 'Content-Type': 'application/json' };
-    const compressBody = { input_url: uploadResult.public_url, level };
+    const compressBody = { input_url: uploadResult.public_url, level,
+      // Names the file the user saves; the server has no other real text to go on.
+      source_name: chosenFile ? chosenFile.name : '' };
     if (window.currentUser) {
       compressBody.user_id = window.currentUser.uid;
       compressBody.user_email = window.currentUser.email || '';
@@ -468,7 +470,8 @@ window.downloadResult = async function() {
     const blob = await res.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'compressed-' + (chosenFile ? chosenFile.name : 'video.mp4');
+    a.download = window.afrividFilename(
+      chosenFile ? chosenFile.name.replace(/\.[^.]+$/, '') : '', 'Compressed', 'mp4');
     a.click();
     URL.revokeObjectURL(a.href);
   } catch (e) {
@@ -477,6 +480,7 @@ window.downloadResult = async function() {
 }
 </script>
 
+<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>
