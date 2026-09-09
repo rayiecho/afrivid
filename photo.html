@@ -486,7 +486,7 @@ body::after{
   right:0.75rem;
   z-index:150;
   flex-direction:column;
-  gap:0.4rem;
+  gap:0.6rem;
 }
 @media(max-width:768px){
   #mobile-actions{ display:flex !important; }
@@ -495,7 +495,7 @@ body::after{
   background:rgba(245,166,35,0.9);
   border:none;
   color:#050A14;
-  padding:0.4rem 0.75rem;
+  padding:0.65rem 0.9rem;
   border-radius:8px;
   font-size:0.72rem;
   font-weight:800;
@@ -1324,14 +1324,14 @@ function renderPhotoCropUI(cropUI, container) {
       </div>
       <div data-handle="move" style="position:absolute;inset:20px;cursor:move;"></div>
     </div>
-    <div data-handle="nw" style="position:absolute;left:${x-8}px;top:${y-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:nw-resize;"></div>
-    <div data-handle="ne" style="position:absolute;left:${x+w-8}px;top:${y-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:ne-resize;"></div>
-    <div data-handle="sw" style="position:absolute;left:${x-8}px;top:${y+h-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:sw-resize;"></div>
-    <div data-handle="se" style="position:absolute;left:${x+w-8}px;top:${y+h-8}px;width:16px;height:16px;background:#fff;border-radius:3px;cursor:se-resize;"></div>
-    <div data-handle="n" style="position:absolute;left:${cx-20}px;top:${y-6}px;width:40px;height:12px;background:#fff;border-radius:6px;cursor:n-resize;"></div>
-    <div data-handle="s" style="position:absolute;left:${cx-20}px;top:${y+h-6}px;width:40px;height:12px;background:#fff;border-radius:6px;cursor:s-resize;"></div>
-    <div data-handle="w" style="position:absolute;left:${x-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:w-resize;"></div>
-    <div data-handle="e" style="position:absolute;left:${x+w-6}px;top:${cy-20}px;width:12px;height:40px;background:#fff;border-radius:6px;cursor:e-resize;"></div>
+    <div data-handle="nw" style="position:absolute;left:${x-12}px;top:${y-12}px;width:24px;height:24px;background:#fff;border-radius:3px;cursor:nw-resize;"></div>
+    <div data-handle="ne" style="position:absolute;left:${x+w-12}px;top:${y-12}px;width:24px;height:24px;background:#fff;border-radius:3px;cursor:ne-resize;"></div>
+    <div data-handle="sw" style="position:absolute;left:${x-12}px;top:${y+h-12}px;width:24px;height:24px;background:#fff;border-radius:3px;cursor:sw-resize;"></div>
+    <div data-handle="se" style="position:absolute;left:${x+w-12}px;top:${y+h-12}px;width:24px;height:24px;background:#fff;border-radius:3px;cursor:se-resize;"></div>
+    <div data-handle="n" style="position:absolute;left:${cx-24}px;top:${y-8}px;width:48px;height:16px;background:#fff;border-radius:6px;cursor:n-resize;"></div>
+    <div data-handle="s" style="position:absolute;left:${cx-24}px;top:${y+h-8}px;width:48px;height:16px;background:#fff;border-radius:6px;cursor:s-resize;"></div>
+    <div data-handle="w" style="position:absolute;left:${x-8}px;top:${cy-24}px;width:16px;height:48px;background:#fff;border-radius:6px;cursor:w-resize;"></div>
+    <div data-handle="e" style="position:absolute;left:${x+w-8}px;top:${cy-24}px;width:16px;height:48px;background:#fff;border-radius:6px;cursor:e-resize;"></div>
     <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:0.5rem;z-index:60;">
       <button onclick="applyCrop()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.88rem;">✓ Apply</button>
       <button onclick="cancelCrop()" style="background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.5rem 1.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.88rem;">✕ Cancel</button>
@@ -1599,6 +1599,7 @@ textPos: "none", "bottom", "top", "br"`;
 }
 
 window.resetPhotoEditor = function resetPhotoEditor() {
+  if(!confirm('Discard this photo and start over? This cannot be undone.')) return;
   photoImage = null;
   document.getElementById('photo-editor').style.display = 'none';
   document.getElementById('photo-upload-card').style.display = 'block';
