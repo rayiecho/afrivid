@@ -272,7 +272,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <div class="result-placeholder">Your branded image will appear here</div>
       </div>
       <div class="result-status" id="brand-result-status"></div>
-      <a class="btn-download" id="brand-download-btn" disabled onclick="downloadImage(this.dataset.url,'brand-image.jpg');return false;">Download Image</a>
+      <a class="btn-download" id="brand-download-btn" disabled onclick="downloadImage(this.dataset.url,window.afrividFilename((document.getElementById('brand-business').value||document.getElementById('brand-prompt').value||''),'Design','jpg'));return false;">Download Image</a>
       <div class="embed-row" id="brand-embed-row" style="display:none;">
         <input type="text" class="form-input embed-input" id="brand-embed-input" readonly onclick="this.select()">
         <button class="file-btn" onclick="copyEmbedLink('brand')">Copy Link</button>
@@ -297,7 +297,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
         <div class="result-placeholder">Your living image will appear here</div>
       </div>
       <div class="result-status" id="motion-result-status"></div>
-      <a class="btn-download" id="motion-download-btn" disabled onclick="downloadImage(this.dataset.url,'motion-image.apng');return false;">Download Image</a>
+      <a class="btn-download" id="motion-download-btn" disabled onclick="downloadImage(this.dataset.url,window.afrividFilename((document.getElementById('brand-business').value||document.getElementById('brand-prompt').value||''),'Motion','apng'));return false;">Download Image</a>
       <div class="embed-row" id="motion-embed-row" style="display:none;">
         <input type="text" class="form-input embed-input" id="motion-embed-input" readonly onclick="this.select()">
         <button class="file-btn" onclick="copyEmbedLink('motion')">Copy Link</button>
@@ -865,6 +865,7 @@ window.generateMotionImage = async function() {
 }
 </script>
 
+<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>

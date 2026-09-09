@@ -2566,14 +2566,14 @@ function renderExport(scale) {
 }
 window.downloadDesign = function(format, scale) {
   if (document.getElementById('motion-frame').style.display === 'block') {
-    downloadUrl(lastArtworkUrl, 'afrivid-motion.apng');
+    downloadUrl(lastArtworkUrl, window.afrividFilename((document.getElementById('gfx-business')?.value||document.getElementById('gfx-prompt')?.value||''), 'Motion', 'apng'));
     return;
   }
   const off = renderExport(scale || 1);
   const url = off.toDataURL('image/' + format, format === 'jpeg' ? 0.94 : 1);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `AfriVid-${MODES[mode].title.replace(/\s+/g, '')}-${off.width}x${off.height}.${format === 'jpeg' ? 'jpg' : format}`;
+  a.download = window.afrividFilename((document.getElementById('gfx-business')?.value||document.getElementById('gfx-prompt')?.value||''), MODES[mode].title, format === 'jpeg' ? 'jpg' : format);
   a.click();
   log('success', `[ok] downloaded ${off.width}×${off.height} ${format.toUpperCase()}`);
 };
@@ -2624,7 +2624,7 @@ window.downloadSVG = function() {
   svg += '</svg>';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-  a.download = `AfriVid-${MODES[mode].title.replace(/\s+/g, '')}-${Date.now()}.svg`;
+  a.download = window.afrividFilename((document.getElementById('gfx-business')?.value||document.getElementById('gfx-prompt')?.value||''), MODES[mode].title, 'svg');
   a.click();
   URL.revokeObjectURL(a.href);
   log('success', '[ok] downloaded SVG');
@@ -2752,6 +2752,7 @@ render();
 window.__gfxReady = true;
 </script>
 
+<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>
