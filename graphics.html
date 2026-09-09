@@ -476,7 +476,7 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
           <div class="variant-strip" id="variant-strip">
             <div class="control-label">PICK A STYLE</div>
             <div class="variant-row" id="variant-row"></div>
-            <div class="variant-note">Same words, same artwork — three treatments.</div>
+            <div class="variant-note">Same words, same artwork — four treatments.</div>
           </div>
 
           <div class="canvas-stage">
@@ -775,6 +775,9 @@ function palette() {
 function styleFont() { return styleOverride ? styleOverride.font : headlineFont; }
 function styleIsBold(tmpl) { return styleOverride ? styleOverride.bold : tmpl === 'bold'; }
 function styleWantsPhoto(tmpl) { return styleOverride ? styleOverride.photo : tmpl !== 'centered'; }
+// 'launch' is a whole layout rather than a knob on the banded one, so it is asked about
+// separately — see buildLaunchSections().
+function styleIsLaunch(tmpl) { return styleOverride ? !!styleOverride.launch : tmpl === 'launch'; }
 
 // Mirrors auto_text_colors() in app.py: dark grounds get white type, light grounds dark type.
 function textColors(hex) {
@@ -890,10 +893,33 @@ function drawEl(g, el) {
   if (el.type === 'image' && el.img) {
     drawImageCover(g, el);
   } else if (el.type === 'rect') {
+    // The shadow is applied to the FILL only and dropped before the outline, or the hairline
+    // border of a mockup card would be shadowed a second time and read as a double edge.
+    if (el.shadow) {
+      g.save();
+      g.shadowColor = `rgba(0,0,0,${el.shadow.a})`;
+      g.shadowBlur = el.shadow.blur;
+      g.shadowOffsetY = el.shadow.dy;
+    }
     roundRect(g, el.x, el.y, el.w, el.h, el.radius || 0);
     if (el.color) { g.fillStyle = el.color; g.fill(); }
+    if (el.shadow) g.restore();
     if (el.outline) { g.strokeStyle = el.outline; g.lineWidth = el.lineWidth || 2; g.stroke(); }
     el._b = { x: el.x, y: el.y, w: el.w, h: el.h };
+  } else if (el.type === 'poly') {
+    // An arbitrary filled polygon — what the launch layout's angled band is made of. A
+    // rotated rect would not do: the band has to be cut off square by the canvas edges.
+    g.beginPath();
+    el.pts.forEach((pt, i) => i ? g.lineTo(pt[0], pt[1]) : g.moveTo(pt[0], pt[1]));
+    g.closePath();
+    g.fillStyle = el.color;
+    g.fill();
+    const xs = el.pts.map(pt => pt[0]), ys = el.pts.map(pt => pt[1]);
+    const x0 = Math.min.apply(null, xs), y0 = Math.min.apply(null, ys);
+    el._b = { x: x0, y: y0, w: Math.max.apply(null, xs) - x0, h: Math.max.apply(null, ys) - y0 };
+  } else if (el.type === 'icon') {
+    drawPointIcon(g, el.x + el.r, el.y + el.r, el.r, el.icon, el.color);
+    el._b = { x: el.x, y: el.y, w: el.r * 2, h: el.r * 2 };
   } else if (el.type === 'circle') {
     g.fillStyle = el.color;
     g.beginPath();
@@ -947,7 +973,12 @@ function drawImageCover(g, el) {
 function drawText(g, el) {
   ctx.font = fontSpec(el);
   const maxW = el.maxW || (doc_.w - el.x - 40);
-  const fit = el.fit ? fitLines(el, maxW, el.maxH || doc_.h) : { size: el.size, lines: wrapText(displayText(el), maxW) };
+  // noWrap keeps the string exactly as given. wrapText() collapses every run of whitespace to
+  // one space, which silently destroys a manually letter-spaced kicker ("W H A T  Y O U" came
+  // back as "WHATYOU") — the server draws that string verbatim, so this side must too.
+  const fit = el.noWrap ? { size: el.size, lines: [displayText(el)] }
+    : el.fit ? fitLines(el, maxW, el.maxH || doc_.h)
+    : { size: el.size, lines: wrapText(displayText(el), maxW) };
   const lh = fit.size * (el.lineH || 1.16);
   g.font = fontSpec(el, fit.size);
   g.fillStyle = el.color;
@@ -1629,6 +1660,383 @@ function buildPosterSections(d) {
   syncInspector();
 }
 
+// ── The 'launch' visual language ──────────────────────────────────────────────
+// The mirror of the `template == 'launch'` branch of draw_poster_sections() in app.py, and
+// the fourth look the style strip offers. It consumes the SAME `sections` contract as the
+// banded layout above — header / info_row / section_header / points_grid / callout / cta /
+// footer — but arranges it as a modern product-launch graphic instead of a stack of bands:
+// flat brand ground, a headline top-left in a narrow column, an icon+label feature list, a
+// real angled colour band down the right edge, and a floating device-mockup collage.
+//
+// Nothing is discarded. info_row items and points are already the same {icon, text} shape,
+// so both become rows of the feature list (an info item keeps its sub-line); section_header
+// becomes the letter-spaced kicker above that list; callout, cta and footer make up the
+// bottom block.
+//
+// Keep every number in LAUNCH in step with the LAUNCH_* constants in app.py. The two
+// renderers are independent implementations measuring in different fonts on purpose, so the
+// geometry is the ONLY thing holding them together — let these drift and the thumbnail stops
+// being a picture of the file you download.
+const LAUNCH = {
+  BAND_TOP: 0.56, BAND_W: 0.12, BAND_RUN: 0.32,
+  COL_L: 0.50, COL_B: 0.76, TOP: 0.082, BOTTOM: 0.950,
+  A: [0.515, 0.275, 0.905, 0.505],   // the windowed dashboard
+  B: [0.610, 0.455, 0.955, 0.680],   // the certificate overlapping its foot
+  MAX_FEATURES: 5,
+};
+
+function buildLaunchSections(d) {
+  const c = d.copy || {};
+  // A brief too thin for the banded layout still composes here — headline, mark, band and
+  // collage are a complete design on their own. app.py synthesises exactly this same
+  // header-only list server-side, so both ends draw the same thing from the same payload.
+  const sections = (d.sections && d.sections.length) ? d.sections
+    : [{ kind: 'header', org: c.org || c.business_name || '',
+         title: c.title || c.headline || '', tagline: c.tagline || '' }];
+  const [W, H] = (d.size && d.size.w) ? [d.size.w, d.size.h] : SIZES[orientation];
+  const p = palette(), tc = textColors(p.bg), ctaTc = textColors(p.accent);
+  const s = W / 1080;
+  const R = n => Math.round(n * s);
+  const LX = f => Math.round(W * f), LY = f => Math.round(H * f);
+  const padX = Math.round(W * SEC.PAD_X);
+  const colL = LX(LAUNCH.COL_L) - padX;
+  const colB = LX(LAUNCH.COL_B) - padX;
+  const accRgb = hexToRgb(p.accent, [245, 166, 35]).join(',');
+  const A = a => `rgba(${accRgb},${a})`;
+  // The mockup surfaces are deliberately palette-independent: a screenshot is white whatever
+  // the brand colours are, and tinting it would stop it reading as a screenshot.
+  const CARD = '#FAFAFC', CARD_LINE = '#DFE2E9', CARD_FILL = '#E8EAF1',
+        CHROME = '#F0F1F5', CARD_INK = '#1E2028', WARN = '#E84E3E';
+
+  const header = sections.filter(x => x.kind === 'header')[0] || { org: '', title: '', tagline: '' };
+  const ordered = sections.filter(x => x.kind !== 'header');
+  const byKind = {};
+  sections.forEach(x => { byKind[x.kind] = x; });
+
+  doc_.w = W; doc_.h = H; doc_.bg = p.bg; doc_.accent = p.accent;
+  doc_.headOnPhoto = false;
+  doc_.els = [];
+
+  // ── The angled band ─────────────────────────────────────────────────────────
+  // Both of its edges share one slope, and the tinted wedge to its right is cut on that same
+  // slope again. Three parallel diagonals is what reads as deliberate; one lone slanted shape
+  // reads as a mistake.
+  const bt = LAUNCH.BAND_TOP, bw = LAUNCH.BAND_W, br = LAUNCH.BAND_RUN;
+  doc_.els.push({ type: 'poly', role: 'accentSoft', accentA: 0.12, color: A(0.12),
+                  pts: [[LX(bt + bw), 0], [W, 0], [W, H]] });
+  doc_.els.push({ type: 'poly', role: 'accent', color: p.accent,
+                  pts: [[LX(bt), 0], [LX(bt + bw), 0], [LX(bt + bw + br), H], [LX(bt + br), H]] });
+
+  // ── The device-mockup collage ───────────────────────────────────────────────
+  const ax0 = LX(LAUNCH.A[0]), ay0 = LY(LAUNCH.A[1]), ax1 = LX(LAUNCH.A[2]), ay1 = LY(LAUNCH.A[3]);
+  const bx0 = LX(LAUNCH.B[0]), by0 = LY(LAUNCH.B[1]), bx1 = LX(LAUNCH.B[2]), by1 = LY(LAUNCH.B[3]);
+  const cardR = R(20);
+  // The server blurs its shadow with a Gaussian of sigma 22; canvas shadowBlur is roughly
+  // twice the sigma, hence 44 rather than 22 — matching the number would halve the spread.
+  const shade = { blur: R(44), dy: R(16), a: 0.43 };
+
+  doc_.els.push({ type: 'rect', role: 'card', x: ax0, y: ay0, w: ax1 - ax0, h: ay1 - ay0,
+                  radius: cardR, color: CARD, outline: CARD_LINE, lineWidth: 2, shadow: shade });
+  const barH = R(30);
+  doc_.els.push({ type: 'rect', role: 'card', x: ax0, y: ay0, w: ax1 - ax0, h: barH,
+                  radius: cardR, color: CHROME });
+  doc_.els.push({ type: 'rect', role: 'card', x: ax0, y: ay0 + barH - cardR, w: ax1 - ax0,
+                  h: cardR, color: CHROME });
+  for (let i = 0; i < 3; i++) {
+    doc_.els.push({ type: 'circle', role: 'card', r: R(5),
+                    x: ax0 + R(22) + i * R(18) - R(5), y: ay0 + Math.round(barH / 2) - R(5),
+                    color: '#CCD0D8' });
+  }
+
+  const inset = R(12);
+  const sx0 = ax0 + inset, sy0 = ay0 + barH + inset, sx1 = ax1 - inset, sy1 = ay1 - inset;
+  const screenR = R(10);
+  if (d._sceneImg) {
+    // The scene photograph the generation already paid for, standing in as the product
+    // screenshot inside the window. Nothing extra is fetched or generated for this.
+    doc_.els.push({ type: 'image', role: 'photo', img: d._sceneImg,
+                    x: sx0, y: sy0, w: sx1 - sx0, h: sy1 - sy0, radius: screenR });
+  } else {
+    doc_.els.push({ type: 'rect', role: 'card', x: sx0, y: sy0, w: sx1 - sx0, h: sy1 - sy0,
+                    radius: screenR, color: '#F3F4F8' });
+    const sideW = Math.round((sx1 - sx0) * 0.22);
+    doc_.els.push({ type: 'rect', role: 'card', x: sx0, y: sy0, w: sideW, h: sy1 - sy0,
+                    radius: screenR, color: CARD_FILL });
+    for (let i = 0; i < 3; i++) {
+      doc_.els.push({ type: 'rect', role: 'card', x: sx0 + R(12), y: sy0 + R(16) + i * R(20),
+                      w: sideW - R(24), h: R(7), radius: R(3), color: '#FFFFFF' });
+    }
+    for (let i = 0; i < 2; i++) {
+      const rx = sx0 + sideW + R(16);
+      doc_.els.push({ type: 'rect', role: 'card', x: rx, y: sy0 + R(18) + i * R(24),
+                      w: (sx1 - R(20) - i * R(60)) - rx, h: R(8), radius: R(4), color: CARD_FILL });
+    }
+  }
+
+  // The floating stat card is the one element that makes the window read as a dashboard
+  // rather than as an empty frame.
+  const statW = Math.round((sx1 - sx0) * 0.46), statH = Math.round((sy1 - sy0) * 0.48);
+  const stx = sx0 + R(14), sty = sy1 - statH - R(14);
+  doc_.els.push({ type: 'rect', role: 'card', x: stx, y: sty, w: statW, h: statH,
+                  radius: R(10), color: 'rgba(255,255,255,0.94)' });
+  doc_.els.push({ type: 'rect', role: 'card', x: stx + R(12), y: sty + R(12),
+                  w: Math.round(statW * 0.5), h: R(6), radius: R(3), color: CARD_FILL });
+  const barW = Math.max(3, Math.round(statW * 0.11)), barGap = Math.max(2, Math.round(statW * 0.07));
+  const bBase = sty + statH - R(12), bMax = Math.max(6, statH - R(44));
+  [0.42, 0.68, 0.52, 0.95].forEach((f, i) => {
+    const bh = Math.max(3, Math.round(bMax * f));
+    doc_.els.push({ type: 'rect', role: i === 3 ? 'accent' : 'accentSoft',
+                    accentA: i === 3 ? null : 0.43, color: i === 3 ? p.accent : A(0.43),
+                    x: stx + R(14) + i * (barW + barGap), y: bBase - bh,
+                    w: barW, h: bh, radius: R(3) });
+  });
+
+  // ── The certificate. Seal, name and rules are measured as one block and centred in the
+  // card; anchoring them to the top leaves its lower half visibly empty. ──────────────────
+  doc_.els.push({ type: 'rect', role: 'card', x: bx0, y: by0, w: bx1 - bx0, h: by1 - by0,
+                  radius: R(16), color: '#FFFFFF', outline: CARD_LINE, lineWidth: 2, shadow: shade });
+  const cins = R(14);
+  doc_.els.push({ type: 'rect', role: 'accentSoft', accentA: 0.51, outline: A(0.51), lineWidth: 2,
+                  x: bx0 + cins, y: by0 + cins, w: (bx1 - cins) - (bx0 + cins),
+                  h: (by1 - cins) - (by0 + cins), radius: R(10) });
+  const certName = String(header.org || '').trim().toUpperCase();
+  let cLines = [], cSize = 0;
+  if (certName) {
+    const cFit = fitLines({ text: certName, font: 'Montserrat', weight: 800, size: R(20),
+                            lineH: 1.2, maxLines: 2, minSize: R(12) },
+                          (bx1 - bx0) - cins * 4, R(58));
+    cLines = cFit.lines; cSize = cFit.size;
+  }
+  const nameH = Math.round(cLines.length * cSize * 1.2);
+  const sealR = R(26), rulesH = R(19) + R(5);
+  const certH = sealR * 2 + (nameH ? R(18) + nameH : 0) + R(22) + rulesH;
+  let cty = by0 + Math.max(cins * 2, Math.round(((by1 - by0) - certH) / 2));
+  const scx = Math.round((bx0 + bx1) / 2), scy = cty + sealR;
+  doc_.els.push({ type: 'circle', role: 'accent', x: scx - sealR, y: scy - sealR, r: sealR,
+                  color: p.accent });
+  const ir = Math.round(sealR * 0.6);
+  doc_.els.push({ type: 'icon', role: 'onAccent', icon: 'check', x: scx - ir, y: scy - ir,
+                  r: ir, color: ctaTc.fg });
+  cty = scy + sealR;
+  if (nameH) {
+    cty += R(18);
+    doc_.els.push({ type: 'text', role: 'cert', text: certName, x: bx0 + cins * 2, y: cty,
+                    maxW: (bx1 - bx0) - cins * 4, size: cSize, weight: 800, font: 'Montserrat',
+                    color: CARD_INK, align: 'center', lineH: 1.2 });
+    cty += nameH;
+  }
+  const ruleW = Math.round((bx1 - bx0) * 0.40), ry = cty + R(22);
+  doc_.els.push({ type: 'rect', role: 'card', x: scx - Math.round(ruleW / 2), y: ry,
+                  w: ruleW, h: R(5), radius: R(2), color: CARD_FILL });
+  doc_.els.push({ type: 'rect', role: 'card', x: scx - Math.round(ruleW / 3), y: ry + R(14),
+                  w: Math.round(ruleW / 3) * 2, h: R(5), radius: R(2), color: CARD_FILL });
+
+  // ── The bottom block, measured first so the feature list knows its ceiling ──
+  const note = byKind['callout'], ctaSec = byKind['cta'], foot = byKind['footer'];
+  const fSz = R(19), nSz = R(19);
+  const fLines = foot ? wrapN(foot.text, `400 ${fSz}px "Syne", sans-serif`, colB - R(28), 2) : [];
+  const nLines = note ? wrapN(note.text, `400 ${nSz}px "Syne", sans-serif`, colB - R(60), 2) : [];
+  const ctaSize = R(24), ctaH = ctaSize + R(30);
+  ctx.font = `800 ${ctaSize}px "Montserrat", sans-serif`;
+  const ctaW = ctaSec ? Math.round(ctx.measureText(ctaSec.text).width) + R(58) : 0;
+  const noteH = nLines.length ? Math.round(nLines.length * nSz * 1.35) + R(26) : 0;
+
+  let bb = LY(LAUNCH.BOTTOM);
+  if (fLines.length) bb -= Math.round(fLines.length * fSz * 1.35);
+  const footTop = bb;
+  if (fLines.length) bb -= R(24);
+  if (ctaSec) bb -= ctaH;
+  const ctaTop = bb;
+  if (ctaSec) bb -= R(26);
+  if (noteH) bb -= noteH;
+  const noteTop = bb;
+  const ceiling = bb - R(28);
+
+  // ── The top-left stack ──────────────────────────────────────────────────────
+  // Measured in full before a single pixel of it is drawn, so the space left between it and
+  // the bottom block can be SPENT on the gaps rather than left as a hole in the middle of
+  // the canvas — the same "never leave a void" rule the banded layout follows.
+  const org = String(header.org || '').trim();
+  const title = String(header.title || '').trim();
+  const tagline = String(header.tagline || '').trim();
+  const slabel = String((byKind['section_header'] || {}).text || '').trim();
+
+  const mark = R(56), orgSize = R(27), tagSize = R(25);
+  const orgH = (org || d._logoImg) ? Math.max(mark, orgSize) : 0;
+  const ruleGap = R(20);
+  let headEl = null, headH = 0, titleH = 0;
+  if (title) {
+    // Four lines rather than the banded layout's three, and a lower floor: this column is
+    // half the width that one gets, so the same title needs more room to land whole instead
+    // of being cut off mid-sentence.
+    headEl = { text: title, font: styleFont(), weight: 900, size: R(78), lineH: 1.1,
+               maxLines: 4, minSize: R(30) };
+    const hFit = fitLines(headEl, colL, H * 0.235);
+    headEl.size = hFit.size;
+    headH = Math.round(hFit.lines.length * hFit.size * 1.1);
+    titleH = headH + ruleGap;
+  }
+  const tagLines = tagline ? wrapN(tagline, `400 ${tagSize}px "Syne", sans-serif`, colL, 3) : [];
+  const tagH = Math.round(tagLines.length * tagSize * 1.4);
+  const kickSize = R(17), kickH = slabel ? kickSize : 0;
+
+  const feats = [];
+  ordered.forEach(sec => {
+    if (sec.kind === 'info_row') {
+      sec.items.forEach(it => feats.push({ icon: it.icon, text: it.text, sub: it.sub || '' }));
+    } else if (sec.kind === 'points_grid') {
+      sec.points.forEach(pt => feats.push({ icon: pt.icon || 'check', text: pt.text, sub: '' }));
+    }
+  });
+  feats.length = Math.min(feats.length, LAUNCH.MAX_FEATURES);
+
+  const fr = R(15), ftx = fr * 2 + R(18), subSize = R(15);
+  function featRows(size, n) {
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const ft = feats[i];
+      const lines = wrapN(ft.text, `700 ${size}px "Montserrat", sans-serif`, colL - ftx, 2);
+      const subl = ft.sub ? wrapN(ft.sub, `400 ${subSize}px "Syne", sans-serif`, colL - ftx, 1) : [];
+      const body = Math.round(lines.length * size * 1.24) + (subl.length ? Math.round(subSize * 1.3) + R(4) : 0);
+      out.push({ ft: ft, lines: lines, subl: subl, h: Math.max(fr * 2, body), body: body });
+    }
+    return out;
+  }
+
+  // gaps[i] is the space AFTER block i: org, title, tagline, kicker.
+  const gaps = [orgH ? R(30) : 0, titleH ? R(26) : 0, tagH ? R(16) : 0, kickH ? R(20) : 0];
+  const caps = [R(60), R(54), R(40), R(40)];
+  let rowGap = R(15);
+  const stackH = (rows, gg, rg) => orgH + titleH + tagH + kickH
+    + gg.reduce((a, b) => a + b, 0) + rows.reduce((a, r) => a + r.h, 0)
+    + rg * Math.max(0, rows.length - 1);
+
+  // Shrink before dropping, exactly as the banded layout does: losing a real fact is always
+  // the last resort, never the first.
+  let fsize = R(22), nFeats = feats.length;
+  let rows = featRows(fsize, nFeats);
+  let top = LY(LAUNCH.TOP);
+  while (rows.length && top + stackH(rows, gaps, rowGap) > ceiling) {
+    if (fsize > R(18)) fsize -= R(2);
+    else if (nFeats > 2) nFeats -= 1;
+    else break;
+    rows = featRows(fsize, nFeats);
+  }
+
+  let slack = ceiling - (top + stackH(rows, gaps, rowGap));
+  if (slack > 0) {
+    const slots = gaps.filter(Boolean).length + Math.max(0, rows.length - 1);
+    if (slots) {
+      const per = slack / slots;
+      for (let i = 0; i < 4; i++) {
+        if (!gaps[i]) continue;
+        const add = Math.round(Math.min(per, caps[i]));
+        gaps[i] += add; slack -= add;
+      }
+      const add = Math.round(Math.min(per, R(30)));
+      rowGap += add;
+      slack -= add * Math.max(0, rows.length - 1);
+    }
+    // Whatever the caps could not absorb barely moves the stack: this design is anchored
+    // top-left, and floating the whole thing down to close a gap costs more than the gap.
+    top += Math.round(Math.min(Math.max(0, slack) * 0.5, H * 0.035));
+  }
+
+  let y = top;
+  if (orgH) {
+    if (d._logoImg) {
+      doc_.els.push({ type: 'image', role: 'logo', img: d._logoImg, x: padX,
+                      y: y + Math.round((orgH - mark) / 2), w: mark, h: mark, radius: 8 });
+    } else {
+      // Disc plus the play glyph knocked out of it, matching the mark the server draws. The
+      // banded layout leaves the disc bare, but there the mark is a small detail on a photo
+      // band; here it is the top-left brand anchor of the whole composition.
+      const mr = mark / 2, mcx = padX + mr, mcy = y + Math.round((orgH - mark) / 2) + mr;
+      doc_.els.push({ type: 'circle', role: 'accent', x: padX,
+                      y: y + Math.round((orgH - mark) / 2), r: mr, color: p.accent });
+      doc_.els.push({ type: 'poly', role: 'onBg', color: p.bg,
+                      pts: [[mcx - mr * 0.32, mcy - mr * 0.45], [mcx - mr * 0.32, mcy + mr * 0.45],
+                            [mcx + mr * 0.5, mcy]] });
+    }
+    if (org) {
+      // One line, shrunk to the column rather than wrapped: a long association name ran clean
+      // off the right edge of the canvas otherwise.
+      const ox = padX + mark + R(16), ow = padX + colL - ox;
+      let osz = orgSize;
+      const om = n => { ctx.font = `800 ${n}px "Montserrat", sans-serif`; return ctx.measureText(org.toUpperCase()).width; };
+      while (osz > R(14) && om(osz) > ow) osz -= 1;
+      doc_.els.push({ type: 'text', role: 'orgName', text: org, upper: true, noWrap: true,
+                      x: ox, y: y + orgH / 2 - osz * 0.62,
+                      maxW: ow, size: osz, weight: 800, font: 'Montserrat',
+                      color: tc.fg, align: 'left' });
+    }
+    y += orgH + gaps[0];
+  }
+  if (titleH) {
+    doc_.els.push(Object.assign(headEl, { type: 'text', role: 'headline', x: padX, y: y,
+      maxW: colL, maxH: H * 0.235, fit: true, color: tc.fg, align: 'left' }));
+    y += headH;
+    doc_.els.push({ type: 'rect', role: 'accent', x: padX, y: y + R(8), w: R(96), h: R(6),
+                    radius: R(3), color: p.accent });
+    y += ruleGap + gaps[1];
+  }
+  if (tagH) {
+    doc_.els.push({ type: 'text', role: 'tagline', text: tagline, x: padX, y: y, maxW: colL,
+                    size: tagSize, weight: 400, font: 'Syne', color: tc.muted,
+                    align: 'left', lineH: 1.4 });
+    y += tagH + gaps[2];
+  }
+  if (kickH) {
+    // Letter-spaced small caps — the kicker of the launch vocabulary, where the banded layout
+    // would centre the same words in an accent pill.
+    // Shrunk to the column, never wrapped: letter-spacing costs roughly double the width, so
+    // a long section label overran the canvas at the nominal size.
+    const klabel = slabel.toUpperCase().split('').join(' ');
+    let ksz = kickSize;
+    const km = n => { ctx.font = `800 ${n}px "Montserrat", sans-serif`; return ctx.measureText(klabel).width; };
+    while (ksz > R(11) && km(ksz) > colL) ksz -= 1;
+    doc_.els.push({ type: 'text', role: 'kicker', text: klabel,
+                    noWrap: true, x: padX, y: y, maxW: colL, size: ksz, weight: 800,
+                    font: 'Montserrat', color: p.accent, align: 'left' });
+    y += kickH + gaps[3];
+  }
+  rows.forEach((r, i) => {
+    doc_.els.push({ type: 'iconText', role: 'point', icon: r.ft.icon, iconR: fr, gap: R(18),
+      disc: true, discColor: A(0.16), center: true,
+      x: padX, y: y, w: colL, text: r.ft.text, sub: r.ft.sub, maxLines: 2,
+      size: fsize, subSize: subSize, weight: 700, font: 'Montserrat', lineH: 1.24,
+      color: tc.fg, subColor: tc.muted, iconColor: p.accent });
+    y += r.h + (i < rows.length - 1 ? rowGap : 0);
+  });
+
+  if (noteH) {
+    doc_.els.push({ type: 'rect', role: 'callout', x: padX, y: noteTop, w: colB, h: noteH,
+                    radius: R(12), color: 'rgba(232,78,62,0.10)', outline: WARN, lineWidth: 2 });
+    const nr = R(13);
+    doc_.els.push({ type: 'icon', role: 'note', icon: 'warning', x: padX + R(18),
+                    y: noteTop + Math.round(noteH / 2) - nr, r: nr, color: WARN });
+    doc_.els.push({ type: 'text', role: 'noteBody', text: note.text,
+                    x: padX + R(18) + nr * 2 + R(12), y: noteTop + R(13),
+                    maxW: colB - R(60), size: nSz, weight: 400, font: 'Syne',
+                    color: tc.fg, align: 'left', lineH: 1.35 });
+  }
+  if (ctaSec) {
+    doc_.els.push({ type: 'pill', role: 'cta', text: ctaSec.text, x: padX, y: ctaTop,
+                    size: ctaSize, padX: R(29), padY: R(15), weight: 800, font: 'Montserrat',
+                    color: p.accent, textColor: ctaTc.fg });
+  }
+  if (fLines.length) {
+    doc_.els.push({ type: 'text', role: 'footer', text: foot.text, x: padX, y: footTop,
+                    maxW: colB - R(28), size: fSz, weight: 400, font: 'Syne',
+                    color: tc.muted, align: 'left', lineH: 1.35 });
+  }
+
+  selected = null;
+  saveHistory();
+  render();
+  syncInspector();
+}
+
 function buildFlatResult(img, w, h) {
   doc_.w = w; doc_.h = h;
   doc_.headOnPhoto = false;
@@ -1649,7 +2057,14 @@ function buildFlatResult(img, w, h) {
 let layerData = null, variants = [], activeVariant = 0;
 
 function buildFromData(d) {
-  if (d.sections && d.sections.length) buildPosterSections(d);
+  // 'launch' is a different layout rather than a knob on the banded one, so it is checked
+  // before the sections/no-sections fork — it composes from either. It is portrait/square
+  // only, the same gate the server puts on `use_sections`: on a 1600x900 banner the server
+  // falls back to the column layout, and if this side did not, the two would draw different
+  // designs from one payload.
+  const land = (d.size && d.size.w) ? d.size.w > d.size.h : orientation === 'landscape';
+  if (!land && styleIsLaunch(d.template || currentTemplate())) buildLaunchSections(d);
+  else if (d.sections && d.sections.length) buildPosterSections(d);
   else buildPosterLayers(d);
 }
 
@@ -1659,12 +2074,17 @@ function variantSpecs() {
   const photo = tmpl !== 'centered';
   const baseIsLight = textColors(base.bg).fg !== '#FFFFFF';
   // The third look flips the ground: a light poster next to two dark ones is the difference
-  // you can read at thumbnail size, which is the whole point of showing three.
+  // you can read at thumbnail size, which is the whole point of showing several.
   const flipped = baseIsLight ? { bg: '#080E1C', accent: '#F5A623' } : { bg: '#F4EDE0', accent: '#8B4A2B' };
+  // The first three are one layout under three treatments — palette, headline face, weight.
+  // 'Launch' is the odd one out on purpose: it is the only entry that changes the STRUCTURE
+  // rather than the surface, which is exactly why it earns a slot next to them rather than
+  // replacing one. Kept last so the familiar three still lead.
   return [
     { id: 'clean',     name: 'Clean',     pal: base,    font: 'Montserrat',       bold: false, photo },
     { id: 'bold',      name: 'Bold',      pal: base,    font: 'Anton',            bold: true,  photo },
     { id: 'editorial', name: 'Editorial', pal: flipped, font: 'Playfair Display', bold: false, photo },
+    { id: 'launch',    name: 'Launch',    pal: base,    font: 'Montserrat',       bold: false, photo: false, launch: true },
   ];
 }
 
@@ -1725,7 +2145,7 @@ window.applyVariant = function(i, userPicked) {
   headlineFont = v.font;
   document.getElementById('gfx-headline-font').value = v.font;
   const tsel = document.getElementById('gfx-template');
-  const want = v.bold ? 'bold' : (v.photo ? 'photo-right' : 'centered');
+  const want = v.launch ? 'launch' : v.bold ? 'bold' : (v.photo ? 'photo-right' : 'centered');
   if (Array.prototype.some.call(tsel.options, o => o.value === want)) tsel.value = want;
   // The payload carries the template it was generated with, and both builders prefer it over
   // the select — so the chosen style has to be written onto the payload too, or the applied
@@ -2193,7 +2613,8 @@ function applyPromptDesign(data) {
 // whether there is a photo at all. Landscape still lays the photo out beside the type in
 // buildPosterLayers (and on the server), so there the original labels are still true.
 const TEMPLATE_OPTIONS = {
-  stacked: [['photo-right', 'Standard'], ['bold', 'Bold'], ['centered', 'No photo — type only']],
+  stacked: [['photo-right', 'Standard'], ['bold', 'Bold'], ['centered', 'No photo — type only'],
+            ['launch', 'Launch — product graphic']],
   side:    [['photo-right', 'Photo on the right'], ['photo-left', 'Photo on the left'],
             ['bold', 'Bold / event poster'], ['centered', 'No photo — type only']],
 };
@@ -2311,6 +2732,13 @@ function applyPalette() {
   const headMuted = doc_.headOnPhoto ? (dark ? '#E2E6EE' : '#4C463C') : tc.muted;
   doc_.els.forEach(el => {
     if (el.tintA != null) { const a = dark ? 0.57 : 0.78; el.tintA = a; el.color = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`; return; }
+    // A translucent wash of the ACCENT rather than the background — the launch layout's soft
+    // wedge, its certificate border and its faded chart bars are all this.
+    if (el.accentA != null) {
+      const c = `rgba(${hexToRgb(p.accent, [245, 166, 35]).join(',')},${el.accentA})`;
+      if (el.outline) el.outline = c; else el.color = c;
+      return;
+    }
     if (el.tint != null) {
       el.color = mixHex(p.bg, mixTo, el.tint);
       if (el.outlineTint != null) el.outline = mixHex(p.bg, mixTo, el.outlineTint);
@@ -2326,6 +2754,11 @@ function applyPalette() {
       case 'info': el.color = tc.fg; el.subColor = tc.muted; el.iconColor = p.accent; break;
       case 'footer': el.color = tc.muted; el.iconColor = p.accent; break;
       case 'noteBody': el.color = tc.fg; break;
+      case 'onAccent': el.color = ctaTc.fg; break;
+      case 'onBg': el.color = p.bg; break;
+      // The launch layout sets its organisation line in the foreground colour beside the
+      // accent mark, where the banded layout makes the whole line accent-coloured.
+      case 'orgName': el.color = tc.fg; break;
       case 'section': case 'cta': el.color = p.accent; el.textColor = ctaTc.fg; break;
     }
   });
@@ -2566,14 +2999,14 @@ function renderExport(scale) {
 }
 window.downloadDesign = function(format, scale) {
   if (document.getElementById('motion-frame').style.display === 'block') {
-    downloadUrl(lastArtworkUrl, window.afrividFilename((document.getElementById('gfx-business')?.value||document.getElementById('gfx-prompt')?.value||''), 'Motion', 'apng'));
+    downloadUrl(lastArtworkUrl, 'afrivid-motion.apng');
     return;
   }
   const off = renderExport(scale || 1);
   const url = off.toDataURL('image/' + format, format === 'jpeg' ? 0.94 : 1);
   const a = document.createElement('a');
   a.href = url;
-  a.download = window.afrividFilename((document.getElementById('gfx-business')?.value||document.getElementById('gfx-prompt')?.value||''), MODES[mode].title, format === 'jpeg' ? 'jpg' : format);
+  a.download = `AfriVid-${MODES[mode].title.replace(/\s+/g, '')}-${off.width}x${off.height}.${format === 'jpeg' ? 'jpg' : format}`;
   a.click();
   log('success', `[ok] downloaded ${off.width}×${off.height} ${format.toUpperCase()}`);
 };
@@ -2624,7 +3057,7 @@ window.downloadSVG = function() {
   svg += '</svg>';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-  a.download = window.afrividFilename((document.getElementById('gfx-business')?.value||document.getElementById('gfx-prompt')?.value||''), MODES[mode].title, 'svg');
+  a.download = `AfriVid-${MODES[mode].title.replace(/\s+/g, '')}-${Date.now()}.svg`;
   a.click();
   URL.revokeObjectURL(a.href);
   log('success', '[ok] downloaded SVG');

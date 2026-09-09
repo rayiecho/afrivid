@@ -732,9 +732,9 @@ window.generateOnServer = async function() {
           if (finalPlayer) { finalPlayer.src = d.output_url; finalPlayer.style.display = 'block'; }
           // Update download button text
           const dlBtn = document.getElementById('btn-download');
-          if (dlBtn) { dlBtn.textContent = 'Download MP4'; dlBtn.onclick = async () => { dlBtn.textContent='Downloading...';dlBtn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=window.afrividFilename((window.scriptData&&window.scriptData.title)||document.getElementById('video-topic')?.value||'','Video','mp4');a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}dlBtn.textContent='Download MP4';dlBtn.disabled=false;}; }
+          if (dlBtn) { dlBtn.textContent = 'Download MP4'; dlBtn.onclick = async () => { dlBtn.textContent='Downloading...';dlBtn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}dlBtn.textContent='Download MP4';dlBtn.disabled=false;}; }
           const mp4Btn = document.getElementById('btn-download') ? document.querySelector('#panel-4 .btn-gold') : null;
-          if (mp4Btn) { mp4Btn.onclick = async () => { mp4Btn.textContent='Downloading...';mp4Btn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=window.afrividFilename((window.scriptData&&window.scriptData.title)||document.getElementById('video-topic')?.value||'','Video','mp4');a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}mp4Btn.textContent='Download MP4';mp4Btn.disabled=false;}; }
+          if (mp4Btn) { mp4Btn.onclick = async () => { mp4Btn.textContent='Downloading...';mp4Btn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(d.output_url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}mp4Btn.textContent='Download MP4';mp4Btn.disabled=false;}; }
           goToStep(4);
           // Save to Firestore studio
           try {
@@ -1410,7 +1410,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
           </div>
           <div id="server-gen-download" style="display:none;margin-top:1rem;">
             <div style="color:#7D6440;font-weight:900;font-size:0.88rem;margin-bottom:0.5rem;">Video ready!</div>
-            <button id="server-gen-link" onclick="(async()=>{const btn=document.getElementById('server-gen-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=window.afrividFilename((window.scriptData&&window.scriptData.title)||document.getElementById('video-topic')?.value||'','Video','mp4');a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='Download Video';btn.disabled=false;})()" data-url="" style="background:#8B6F47;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">Download Video</button>
+            <button id="server-gen-link" onclick="(async()=>{const btn=document.getElementById('server-gen-link');btn.textContent='Downloading...';btn.disabled=true;try{const proxyUrl='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(proxyUrl);const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AfriVid-Video.mp4';a.click();URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='Download Video';btn.disabled=false;})()" data-url="" style="background:#8B6F47;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-size:0.85rem;">Download Video</button>
           </div>
         </div>
       </div>
@@ -1829,7 +1829,7 @@ function getTransitionAlpha() {
 // -- MP4 CONVERSION --
 window._downloadMP4 = async function downloadMP4() {
   // Use server MP4 URL if available
-  if (window._serverVideoUrl) { const a = document.createElement('a'); a.href = window._serverVideoUrl; a.download = window.afrividFilename((window.scriptData&&window.scriptData.title)||document.getElementById('video-topic')?.value||'','Video','mp4'); document.body.appendChild(a); a.click(); document.body.removeChild(a); return; }
+  if (window._serverVideoUrl) { const a = document.createElement('a'); a.href = window._serverVideoUrl; a.download = 'AfriVid-Video.mp4'; document.body.appendChild(a); a.click(); document.body.removeChild(a); return; }
   if (!currentUser) { showLogin("Sign in to download your video"); return; }
   if (!videoBlob) { alert('No video to convert.'); return; }
   
@@ -1862,7 +1862,7 @@ window._downloadMP4 = async function downloadMP4() {
     const url = URL.createObjectURL(mp4Blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = window.afrividFilename(scriptData.title, 'Video', 'webm');
+    a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.webm`;
     a.click();
     URL.revokeObjectURL(url);
     
@@ -1873,7 +1873,7 @@ window._downloadMP4 = async function downloadMP4() {
     const url = URL.createObjectURL(videoBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = window.afrividFilename(scriptData.title, 'Video', 'webm');
+    a.download = `AfriVid-${scriptData.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.webm`;
     a.click();
     URL.revokeObjectURL(url);
     // status update removed
@@ -4506,7 +4506,7 @@ window._downloadVideo = async function() {
     const url = URL.createObjectURL(videoBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = window.afrividFilename(scriptData.title, 'Video', 'webm');
+    a.download = `AfriVid-${(scriptData.title||'video').replace(/[^a-z0-9]/gi, '-').toLowerCase()}.webm`;
     a.click();
     URL.revokeObjectURL(url);
     addLog('success', '[dn] Video downloaded successfully!');
@@ -4532,7 +4532,7 @@ window._downloadVideo = async function() {
         const url = URL.createObjectURL(watermarkedBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = window.afrividFilename(scriptData.title, 'Video', 'webm');
+        a.download = `AfriVid-${(scriptData.title||'video').replace(/[^a-z0-9]/gi,'-').toLowerCase()}.webm`;
         a.click();
         URL.revokeObjectURL(url);
         addLog('success', '[dn] Video downloaded with AfriVid watermark!');
@@ -4558,7 +4558,7 @@ window._downloadVideo = async function() {
       const url = URL.createObjectURL(videoBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = window.afrividFilename(scriptData.title, 'Video', 'webm');
+      a.download = `AfriVid-${(scriptData.title||'video').replace(/[^a-z0-9]/gi,'-').toLowerCase()}.webm`;
       a.click();
       URL.revokeObjectURL(url);
       addLog('success', '[dn] Video downloaded!');
@@ -4726,7 +4726,7 @@ function downloadFromLibrary(id) {
   if (!entry) return;
   const a = document.createElement('a');
   a.href = entry.data;
-  a.download = window.afrividFilename(entry.title, 'Video', 'webm');
+  a.download = `AfriVid-${entry.title.replace(/[^a-z0-9]/gi,'-')}.webm`;
   a.click();
 }
 
@@ -4986,7 +4986,7 @@ async function convertToMP4(webmBlob) {
   const url = URL.createObjectURL(mp4Blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = window.afrividFilename((window.scriptData&&window.scriptData.title)||document.getElementById('video-topic')?.value||'', 'Enhanced', 'mp4');
+  a.download = `AfriVid-Enhanced-${Date.now()}.mp4`;
   a.click();
   URL.revokeObjectURL(url);
 
@@ -6690,7 +6690,7 @@ window.convertAndDownloadMP4 = async function() {
     const a = document.createElement('a');
     a.href = url;
     const title = scriptData?.title?.replace(/[^a-z0-9]/gi,'-').toLowerCase() || 'video';
-    a.download = window.afrividFilename(title, 'Video', 'mp4');
+    a.download = `AfriVid-${title}.mp4`;
     a.click();
     addLog('success', `[ok] Real MP4 downloaded! ${(mp4Blob.size/1024/1024).toFixed(1)}MB`);
     if(btn) { btn.disabled=false; btn.textContent='Download Real MP4'; }
@@ -6869,7 +6869,7 @@ window.downloadTutorialVideo = async function() {
     const b = await r.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(b);
-    a.download = window.afrividFilename(document.getElementById('tutorial-topic')?.value||'', 'Tutorial', 'mp4');
+    a.download = 'AfriVid-Tutorial.mp4';
     a.click();
     URL.revokeObjectURL(a.href);
   } catch(e) { alert('Download failed: ' + e.message); }
@@ -7190,7 +7190,7 @@ async function generateAd() {
               const b = await r.blob();
               const a = document.createElement('a');
               a.href = URL.createObjectURL(b);
-              a.download = window.afrividFilename(businessName, 'Ad', 'mp4');
+              a.download = (businessName || 'AfriVid-Ad') + '.mp4';
               a.click();
               URL.revokeObjectURL(a.href);
             } catch(e) { alert('Download failed: ' + e.message); }
@@ -7262,7 +7262,6 @@ window.uploadAdToYouTube = function() {
 };
 // ─────────────────────────────────────────────
 </script>
-<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>

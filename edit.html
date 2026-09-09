@@ -1605,7 +1605,7 @@ async function convertToMP4(webmBlob) {
   const url = URL.createObjectURL(mp4Blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = window.afrividFilename((window.currentVideoFile?.name || '').replace(/\.[^.]+$/, ''), 'Enhanced', 'mp4');
+  a.download = `AfriVid-Enhanced-${Date.now()}.mp4`;
   a.click();
   URL.revokeObjectURL(url);
 
@@ -1617,7 +1617,7 @@ window._downloadEnhanced = function downloadEnhanced() {
   const url = URL.createObjectURL(enhancedBlob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = window.afrividFilename((window.currentVideoFile?.name || '').replace(/\.[^.]+$/, ''), 'Enhanced', 'webm');
+  a.download = `AfriVid-Enhanced-${Date.now()}.webm`;
   a.click();
   URL.revokeObjectURL(url);
   addEnhanceLog('success', '[dn] Downloaded!');
@@ -1996,7 +1996,7 @@ combineVideos = async function() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = window.afrividFilename((window.currentVideoFile?.name || '').replace(/\.[^.]+$/, ''), 'Combined', 'mp4');
+    a.download = `AfriVid-Combined-${Date.now()}.mp4`;
     a.click();
     URL.revokeObjectURL(url);
     addCombineLog('success', `[ok] Downloaded! Size: ${sizeMB}MB`);
@@ -2596,7 +2596,7 @@ window._fastExport = window._fastExport = window.fastExport = async function fas
     // Download
     const a = document.createElement('a');
     a.href = url;
-    a.download = window.afrividFilename((window.currentVideoFile?.name || '').replace(/\.[^.]+$/, ''), 'Export', 'mp4');
+    a.download = `afrivid_export_${Date.now()}.mp4`;
     a.click();
 
     addEnhanceLog('success', '[ok] Export complete! MP4 downloaded.');
@@ -3183,7 +3183,6 @@ setTimeout(() => clearInterval(_eUsageCheck), 10000);
     <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.65);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
   </div>
 </div>
-<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>
@@ -3653,7 +3652,7 @@ window.translateVideo = async function(targetLang) {
         <div style="color:rgba(255,255,255,0.65);font-size:0.72rem;margin-top:0.2rem;">"${translatedText.slice(0,60)}..."</div>
       </div>
       <button onclick="(new Audio('${translatedAudioUrl}')).play()" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play</button>
-      <button onclick="const a=document.createElement('a');a.href='${translatedAudioUrl}';a.download='${window.afrividFilename(langName, 'Audio', 'mp3')}';a.click();" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
+      <button onclick="const a=document.createElement('a');a.href='${translatedAudioUrl}';a.download='AfriVid-${langName}-audio.mp3';a.click();" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
       <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
@@ -3895,7 +3894,7 @@ window.generateThumbnail = async function() {
         </div>
         <img src="${thumbUrl}" style="width:100%;border-radius:8px;margin-bottom:0.75rem;">
         <div style="display:flex;gap:0.5rem;">
-          <button onclick="const a=document.createElement('a');a.href='${thumbUrl}';a.download='${window.afrividFilename(title, 'Thumbnail', 'jpg')}';a.click();" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.5rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
+          <button onclick="const a=document.createElement('a');a.href='${thumbUrl}';a.download='thumbnail.jpg';a.click();" style="flex:1;background:#F5A623;border:none;color:#050A14;padding:0.5rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
           <button onclick="openPhotoInEditor(null,'${thumbUrl}')" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">✏ Edit in Photo</button>
         </div>
       `;
@@ -4238,7 +4237,7 @@ window.removeNoise = async function() {
         <div style="color:#74C69D;font-weight:800;">✅ Noise Removed!</div>
         <div style="color:rgba(255,255,255,0.65);font-size:0.72rem;">Clean audio preview playing</div>
       </div>
-      <button onclick="const a=document.createElement('a');a.href='${cleanUrl}';a.download='${window.afrividFilename((window.currentVideoFile?.name || '').replace(/\.[^.]+$/, ''), 'Clean Audio', 'wav')}';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
+      <button onclick="const a=document.createElement('a');a.href='${cleanUrl}';a.download='clean-audio.wav';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio</button>
       <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);

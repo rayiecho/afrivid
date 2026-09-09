@@ -1200,8 +1200,7 @@ window.downloadPhoto = function() {
   const url = canvas.toDataURL(`image/${format}`, format==='jpeg'?0.92:1);
   const a = document.createElement('a');
   a.href = url;
-  const photoSubject = (document.getElementById('photo-filename')||{textContent:''}).textContent;
-  a.download = window.afrividFilename(photoSubject, 'Photo', format);
+  a.download = `AfriVid-Photo-${Date.now()}.${format}`;
   a.click();
   addLog('success', '[ok] Photo downloaded!');
 }
@@ -2507,7 +2506,6 @@ function submitGlobalUpgrade() {
   }
 }
 </script>
-<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>

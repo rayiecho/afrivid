@@ -359,7 +359,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <div id="phase2-download" style="display:none;margin-top:1rem;">
       <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <button id="phase2-download-link" data-url="" onclick="(async()=>{const btn=document.getElementById('phase2-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download=window.afrividFilename((window.currentVideoFile?.name||'').replace(/\.[^.]+$/,''),'Edited','mp4');a.click();window.URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Processed Video';btn.disabled=false;})()" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</button>
+        <button id="phase2-download-link" data-url="" onclick="(async()=>{const btn=document.getElementById('phase2-download-link');btn.textContent='Downloading...';btn.disabled=true;try{const pu='https://afrivid-tts.reaganayiecho.workers.dev/download-proxy?url='+encodeURIComponent(btn.dataset.url);const r=await fetch(pu);const b=await r.blob();const a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download='AfriVid-Edited.mp4';a.click();window.URL.revokeObjectURL(a.href);}catch(e){alert('Download failed: '+e.message);}btn.textContent='⬇ Download Processed Video';btn.disabled=false;})()" style="background:#74C69D;color:#050A14;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⬇ Download Processed Video</button>
         <button onclick="uploadToYouTube()" style="background:#FF0000;border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">▶ Upload to YouTube</button>
       </div>
     </div>
@@ -1293,7 +1293,7 @@ async function doBgRemove(bgType) {
     const blob = new Blob(chunks, {type:'video/webm'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = window.afrividFilename(bgType, 'Background', 'webm');
+    a.href = url; a.download = `AfriVid-BgRemoved-${bgType}.webm`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
 
     updateProcessingProgress(100, 'Done!', 2);
@@ -1485,7 +1485,7 @@ async function exportClips(clips, filename, bitrate) {
   const _url = URL.createObjectURL(blob);
   const _a = document.createElement('a');
   _a.href = _url;
-  _a.download = window.afrividFilename(filename, 'Edit', 'webm');
+  _a.download = (filename || 'AfriVid-Edit') + '.webm';
   document.body.appendChild(_a);
   _a.click();
   document.body.removeChild(_a);
@@ -1509,7 +1509,7 @@ function showResultBanner(msg, blob, filename) {
     btn.style.background = '#74C69D';
     btn.style.color = '#050A14';
     btn.textContent = '⬇ Download';
-    btn.onclick = () => { const a=document.createElement('a');a.href=url;a.download=window.afrividFilename(filename, 'Edit', 'webm');a.click(); btn.textContent='✦ Apply';btn.style.background='';btn.style.color='';btn.onclick=applyPrompt; };
+    btn.onclick = () => { const a=document.createElement('a');a.href=url;a.download=(filename||'AfriVid')+'.webm';a.click(); btn.textContent='✦ Apply';btn.style.background='';btn.style.color='';btn.onclick=applyPrompt; };
     return;
   }
   const banner = document.createElement('div');
@@ -1519,7 +1519,7 @@ function showResultBanner(msg, blob, filename) {
       <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">${msg}</div>
       <div style="color:rgba(255,255,255,0.65);font-size:0.72rem;margin-top:0.2rem;">Ready to download</div>
     </div>
-    <button onclick="const a=document.createElement('a');a.href='${url}';a.download='${window.afrividFilename(filename, 'Edit', 'webm')}';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
+    <button onclick="const a=document.createElement('a');a.href='${url}';a.download='${filename}.webm';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
     <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:1.2rem;cursor:pointer;">✕</button>
   `;
   document.body.appendChild(banner);
@@ -1752,7 +1752,7 @@ async function doTranslate(lang) {
       <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.65);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
       <button id="play-translated-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play Synced</button>
       <button id="export-translated-btn" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Video</button>
-      <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='${window.afrividFilename(langName, 'Audio', 'mp3')}';a.click();" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio Only</button>
+      <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio Only</button>
       <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
@@ -1813,7 +1813,7 @@ async function doTranslate(lang) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = window.afrividFilename(langName, 'Dubbed', 'webm');
+        a.download = 'AfriVid-' + '${langName}' + '-dubbed.webm';
         a.click();
         btn.textContent = '✅ Downloaded!';
         setTimeout(()=>{ btn.textContent='⬇ Download Video'; btn.disabled=false; }, 3000);
@@ -2048,7 +2048,7 @@ async function doThumbnail() {
       ctx.fillText('afrivid.studio',canvas.width*0.05,canvas.height*0.95);
       const thumbUrl=canvas.toDataURL('image/jpeg',0.92);
       const result=document.getElementById('thumb-result');
-      if(result) result.innerHTML=`<img src="${thumbUrl}" style="width:100%;border-radius:8px;margin-bottom:0.75rem;"><button onclick="const a=document.createElement('a');a.href='${thumbUrl}';a.download='${window.afrividFilename(title, 'Thumbnail', 'jpg')}';a.click();" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.5rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Thumbnail</button>`;
+      if(result) result.innerHTML=`<img src="${thumbUrl}" style="width:100%;border-radius:8px;margin-bottom:0.75rem;"><button onclick="const a=document.createElement('a');a.href='${thumbUrl}';a.download='thumbnail.jpg';a.click();" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.5rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Thumbnail</button>`;
       addLog('thumbnail','[ok] Thumbnail ready!');
     }; img.src=best;
   } catch(e) { addLog('thumbnail','[x] '+e.message); }
@@ -2905,7 +2905,6 @@ window.doYouTubeUpload = async function(accessToken, title, description) {
   }
 };
 </script>
-<script src="filename.js"></script>
 <script src="paystack.js"></script>
 </body>
 </html>
