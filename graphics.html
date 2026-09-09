@@ -136,7 +136,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
    own scrolling height, and the sidebar column is already full and sticky next to the canvas;
    folding a chat into it would either push the Generate button below the fold or squeeze the
    conversation into a slot too small to read it in. */
-.pb-box{position:relative;width:100%;max-width:660px;max-height:88vh;display:flex;flex-direction:column;background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.4rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+.pb-box{position:relative;width:100%;max-width:660px;max-height:88vh;max-height:88dvh;overflow-y:auto;display:flex;flex-direction:column;background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.4rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
 .pb-head{margin-bottom:0.9rem;padding-right:1.5rem;}
 .pb-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;}
 .pb-sub{font-size:0.78rem;line-height:1.5;color:rgba(23,20,15,0.62);margin-top:0.2rem;}
@@ -156,7 +156,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .pb-actions .btn{flex:1 1 140px;padding:0.6rem;font-size:0.76rem;}
 .pb-result{border-top:1px solid rgba(23,20,15,0.08);padding-top:0.85rem;}
 .pb-result .form-textarea{min-height:190px;font-size:0.8rem;line-height:1.6;}
-@media(max-width:620px){.pb-box{padding:1rem;max-height:94vh;}.pb-msg{max-width:94%;}}
+@media(max-width:620px){.pb-box{padding:1rem;max-height:94vh;max-height:94dvh;}.pb-chat{min-height:110px;}.pb-result .form-textarea{min-height:120px;}.pb-msg{max-width:94%;}}
 
 /* SELECTED-ELEMENT INSPECTOR — only meaningful once something on the canvas is picked. */
 #inspector{display:none;background:#FFF7EA;border:1px solid rgba(224,138,46,0.3);}
@@ -285,25 +285,29 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
         <input type="text" id="gfx-business" class="form-input" placeholder="e.g. Amara Coffee Co.">
         <label class="form-label" for="gfx-tagline" id="tagline-label">TAGLINE (OPTIONAL)</label>
         <input type="text" id="gfx-tagline" class="form-input" placeholder="e.g. Freshly roasted, every morning">
-        <label class="form-label" for="gfx-prompt" id="prompt-label">DESCRIBE IT</label>
-        <textarea id="gfx-prompt" class="form-textarea" placeholder="e.g. Scholarship Session with Nsaingeh Bernadette, Saturday June 20 2026, 7PM CAT on Google Meet, register at youngafricansnetwork.org"></textarea>
-        <div class="form-hint" id="prompt-hint">Write it however you like — this exact text is what gets built. Include the real facts (the event's actual name, dates, times, prices, the venue) and, if you want, how it should look: "deep navy with gold accents", "type only, no photo". Anything concrete is used verbatim instead of invented.</div>
 
-        <div id="exact-wording-row" style="margin-top:0.8rem;">
-          <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;">
-            <input type="checkbox" id="gfx-exact-wording" style="margin-top:3px;accent-color:#E08A2E;">
-            <span class="form-hint" style="margin:0;">Use my wording exactly as the headline (unchecked = let AI shape a punchy headline). Either way the poster is still laid out in full — dates, highlights, notes and all.</span>
-          </label>
+        <!-- PROMPT BUILDER — promoted to the first, primary path. It writes a prompt INTO the
+             box below; it never sits invisibly between that box and the generator the way the
+             old "brief" did. Whatever ends up in the textarea is exactly what gets built. -->
+        <div class="intake-box" id="intake-box" style="margin-top:0.9rem;background:rgba(224,138,46,0.1);border-color:rgba(224,138,46,0.35);">
+          <div class="control-label" style="margin-bottom:0.3rem;">RECOMMENDED</div>
+          <div class="intake-title" style="margin-bottom:0.35rem;">Not sure what to write?</div>
+          <div class="form-hint" style="margin:0 0 0.7rem;">Talk it through with the AI — it asks a few questions, can read a link you give it, and writes you a full prompt covering the facts, the layout and the colours. You read it, edit it, and paste it above.</div>
+          <button type="button" class="btn btn-gold btn-full" id="gfx-refine-btn" onclick="openPromptBuilder()">Build my prompt with AI</button>
         </div>
 
-        <!-- PROMPT BUILDER LAUNCHER — the AI's only role before generation, and it is now
-             entirely optional and entirely visible. It writes a prompt INTO the box above;
-             it never sits invisibly between that box and the generator the way the old
-             "brief" did. Whatever ends up in the textarea is exactly what gets built. -->
-        <div class="intake-box" id="intake-box">
-          <div class="intake-title" style="margin-bottom:0.35rem;">Not sure what to write?</div>
-          <div class="form-hint" style="margin:0 0 0.7rem;">Talk it through with the AI — it asks a few questions, can read a link you give it, and writes you a full prompt covering the facts, the layout and the colours. You read it, edit it, and paste it above. Or just write your own; nothing here is required.</div>
-          <button type="button" class="btn btn-outline btn-full" id="gfx-refine-btn" onclick="openPromptBuilder()">Build my prompt with AI</button>
+        <!-- WRITE YOUR OWN — the secondary path. Equally valid, just not the default. -->
+        <div class="intake-box" style="margin-top:0.9rem;">
+          <label class="form-label" for="gfx-prompt" id="prompt-label" style="margin-top:0;">OR, WRITE YOUR OWN DESCRIPTION</label>
+          <textarea id="gfx-prompt" class="form-textarea" placeholder="e.g. Scholarship Session with Nsaingeh Bernadette, Saturday June 20 2026, 7PM CAT on Google Meet, register at youngafricansnetwork.org"></textarea>
+          <div class="form-hint" id="prompt-hint" style="display:none;"></div>
+
+          <div id="exact-wording-row" style="margin-top:0.8rem;">
+            <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;">
+              <input type="checkbox" id="gfx-exact-wording" style="margin-top:3px;accent-color:#E08A2E;">
+              <span class="form-hint" style="margin:0;">Use my exact wording as the headline</span>
+            </label>
+          </div>
         </div>
       </div>
 
@@ -2218,10 +2222,12 @@ window.setMode = function(m) {
 
   document.getElementById('brief-label').textContent = 'YOUR ' + cfg.title.toUpperCase();
   document.getElementById('gfx-generate-btn').textContent = cfg.cta;
-  document.getElementById('prompt-hint').textContent = isPoster
-    ? "Write it however you like — this exact text is what gets built. Include the real facts (the event's actual name, dates, times, prices, the venue) and, if you want, how it should look: “deep navy with gold accents”, “type only, no photo”. Anything concrete is used verbatim instead of invented."
-    : isMotion ? 'A short, seamlessly looping living image — a slow zoom and gentle drift. Great for a website hero.'
-    : 'Describe the photograph you want. We shoot it clean and add your name and tagline as real type.';
+  document.getElementById('prompt-label').textContent = isPoster ? 'OR, WRITE YOUR OWN DESCRIPTION' : 'DESCRIBE IT';
+  const promptHintEl = document.getElementById('prompt-hint');
+  promptHintEl.style.display = isPoster ? 'none' : 'block';
+  promptHintEl.textContent = isMotion
+    ? 'A short, seamlessly looping living image — a slow zoom and gentle drift. Great for a website hero.'
+    : isPoster ? '' : 'Describe the photograph you want. We shoot it clean and add your name and tagline as real type.';
 
   if (isPoster) { orientation = cfg.orientation; syncOrientation(); syncTemplateOptions(cfg.template); }
   if (isMotion) showMotion(document.getElementById('motion-frame').src || ''); else hideMotion();
