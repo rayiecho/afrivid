@@ -274,12 +274,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
    pages that still read it, but this panel is the actual source of truth for
    what a user has unlocked, and the one place to recover a payment that a
    missed webhook never applied. */
-.billing-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.4rem;margin-bottom:2rem;}
-.billing-panel-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
-.billing-tier{font-size:1.15rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
+.billing-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.4rem;margin-bottom:1.25rem;}
+.billing-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;}
+.billing-tier{font-size:1.05rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
 .billing-tier .tag{display:inline-block;margin-left:0.5rem;font-size:0.62rem;font-family:'Space Mono',monospace;letter-spacing:1px;padding:0.15rem 0.5rem;border-radius:20px;background:rgba(224,138,46,0.12);color:#9C5918;vertical-align:middle;}
-.billing-credits-text{font-size:0.84rem;color:rgba(23,20,15,0.68);margin-top:0.2rem;}
-.billing-sync-btn{font-size:0.78rem;font-weight:700;font-family:'Syne',sans-serif;background:transparent;border:1px solid rgba(224,138,46,0.4);color:#9C5918;padding:0.5rem 1rem;border-radius:9px;cursor:pointer;white-space:nowrap;}
+.billing-credits-text{font-size:0.82rem;color:rgba(23,20,15,0.68);margin-top:0.2rem;}
+.billing-sync-btn{font-size:0.76rem;font-weight:700;font-family:'Syne',sans-serif;background:transparent;border:1px solid rgba(224,138,46,0.4);color:#9C5918;padding:0.5rem 1rem;border-radius:9px;cursor:pointer;white-space:normal;text-align:left;}
 .billing-sync-btn:hover{background:rgba(224,138,46,0.08);}
 .billing-grants{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.9rem;}
 .billing-grant-pill{font-size:0.72rem;font-family:'Space Mono',monospace;background:rgba(47,125,83,0.08);color:#2F7D53;border:1px solid rgba(47,125,83,0.2);padding:0.3rem 0.7rem;border-radius:20px;}
@@ -478,31 +478,14 @@ body::after{
           <div class="stat-card-value" id="stat-total">0</div>
           <div class="stat-card-label">TOTAL CREATIONS</div>
         </div>
-        <div class="stat-card">
+        <!-- Legacy plan indicator (studio_users.plan) — kept wired for code
+             that still reads it, but not shown as its own stat card: the
+             Billing & Usage panel below is the real source of truth for plan
+             and would just repeat this number right next to it. -->
+        <div class="stat-card" style="display:none;">
           <div class="stat-card-value" id="stat-plan">Free</div>
           <div class="stat-card-label">PLAN</div>
         </div>
-      </div>
-
-      <!-- BILLING & USAGE — real credits/tier status, and recovery for a
-           payment that went through on Paystack but never reflected here
-           (the webhook that should apply it can fail to fire; this lets a
-           user ask us to go check directly instead of waiting on it). -->
-      <div class="billing-panel" id="billing-panel" style="display:none;">
-        <div class="billing-panel-head">
-          <div>
-            <div class="billing-tier" id="billing-tier">Free<span class="tag" id="billing-tier-tag" style="display:none;"></span></div>
-            <div class="billing-credits-text" id="billing-credits-text">Loading your usage…</div>
-          </div>
-          <button class="billing-sync-btn" type="button" id="billing-sync-btn" onclick="avSyncPayment()">Paid but it's not showing? Sync now</button>
-        </div>
-        <div class="billing-grants" id="billing-grants"></div>
-        <div class="billing-sync-box" id="billing-sync-box" style="display:none;">
-          <div style="font-size:0.8rem;color:rgba(23,20,15,0.68);margin-bottom:0.5rem;">Couldn't find it automatically. Paste the reference from your Paystack receipt email:</div>
-          <input type="text" id="billing-sync-ref" placeholder="e.g. av-tool-compressor-1788... or the Paystack reference">
-          <button class="billing-sync-btn" type="button" onclick="avSyncPayment(true)">Try this reference</button>
-        </div>
-        <div class="billing-sync-msg" id="billing-sync-msg" style="display:none;"></div>
       </div>
 
       <div class="studio-main-grid">
@@ -532,6 +515,30 @@ body::after{
             <a href="create.html" class="side-panel-action">+ New Video</a>
             <a href="graphics.html" class="side-panel-action">+ New Design</a>
           </div>
+
+          <!-- BILLING & USAGE — real credits/tier status, and recovery for a
+               payment that went through on Paystack but never reflected here
+               (the webhook that should apply it can fail to fire; this lets a
+               user ask us to go check directly instead of waiting on it).
+               Grouped with Account below since both are "about your account",
+               not "about your files". -->
+          <div class="billing-panel" id="billing-panel" style="display:none;">
+            <div class="billing-panel-head">
+              <div>
+                <div class="billing-tier" id="billing-tier">Free<span class="tag" id="billing-tier-tag" style="display:none;"></span></div>
+                <div class="billing-credits-text" id="billing-credits-text">Loading your usage…</div>
+              </div>
+              <button class="billing-sync-btn" type="button" id="billing-sync-btn" onclick="avSyncPayment()">Paid but it's not showing? Sync now</button>
+            </div>
+            <div class="billing-grants" id="billing-grants"></div>
+            <div class="billing-sync-box" id="billing-sync-box" style="display:none;">
+              <div style="font-size:0.8rem;color:rgba(23,20,15,0.68);margin-bottom:0.5rem;">Couldn't find it automatically. Paste the reference from your Paystack receipt email:</div>
+              <input type="text" id="billing-sync-ref" placeholder="e.g. av-tool-compressor-1788... or the Paystack reference">
+              <button class="billing-sync-btn" type="button" onclick="avSyncPayment(true)">Try this reference</button>
+            </div>
+            <div class="billing-sync-msg" id="billing-sync-msg" style="display:none;"></div>
+          </div>
+
           <div class="side-panel">
             <div class="side-panel-title">ACCOUNT</div>
             <div class="stat-row"><span class="stat-row-label">Email</span><span class="stat-row-value" id="side-email">—</span></div>
