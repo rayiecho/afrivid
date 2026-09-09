@@ -117,7 +117,7 @@
   --border:rgba(23,20,15,0.1);
   --border-gold:rgba(224,138,46,0.3);
   --text:#17140F;
-  --text-muted:rgba(23,20,15,0.62);
+  --text-muted:rgba(23,20,15,0.75);
   --text-faint:rgba(23,20,15,0.4);
   --gold:#E08A2E;
   --gold-dark:#C4701E;
@@ -157,7 +157,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .user-plan{font-size:0.68rem;color:#7D6440;font-family:'Space Mono',monospace;}
 .btn-signin{background:transparent;border:1px solid rgba(245,166,35,0.4);color:#9B5B17;padding:0.5rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-signin:hover{box-shadow:var(--glow-gold);}
-.btn-signout{background:none;border:1px solid var(--border);color:rgba(23,20,15,0.68);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout{background:none;border:1px solid var(--border);color:rgba(23,20,15,0.75);padding:0.4rem 0.9rem;border-radius:var(--radius-sm);font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-signout:hover{border-color:var(--red);color:#CE2218;}
 
 /* MAIN */
@@ -167,11 +167,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .page-header{margin-bottom:2.5rem;}
 .page-label{font-size:0.68rem;color:#7D6440;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem;}
 .page-title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:var(--text);margin-bottom:0.5rem;}
-.page-sub{font-size:0.9rem;color:rgba(23,20,15,0.68);}
+.page-sub{font-size:0.9rem;color:rgba(23,20,15,0.75);}
 
 /* FILTER TABS */
 .filter-tabs{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;}
-.filter-tab{padding:0.5rem 1.1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:rgba(23,20,15,0.68);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
+.filter-tab{padding:0.5rem 1.1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:rgba(23,20,15,0.75);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
 .filter-tab.active{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:#925616;box-shadow:var(--glow-gold);}
 .filter-tab:hover:not(.active){border-color:rgba(23,20,15,0.18);color:var(--text-muted);}
 
@@ -179,7 +179,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .studio-section{margin-bottom:3rem;animation:slideUp 0.3s ease both;}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
 .section-label{font-size:0.68rem;color:#9B5B17;font-family:'Space Mono',monospace;letter-spacing:2px;}
-.section-count{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;}
+.section-count{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;}
 
 /* GRID */
 .content-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1.25rem;}
@@ -196,7 +196,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .badge-sample{background:rgba(23,20,15,0.12);color:var(--text-muted);border:1px solid rgba(23,20,15,0.12);}
 .card-body{padding:1rem;}
 .card-title{font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-meta{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;}
+.card-meta{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;}
 .card-actions{display:flex;gap:0.5rem;margin-top:0.75rem;}
 .card-btn{flex:1;padding:0.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
 .card-btn:hover{border-color:rgba(245,166,35,0.3);color:#9B5B17;}
@@ -208,7 +208,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .empty-state{text-align:center;padding:4rem 2rem;background:rgba(23,20,15,0.03);border:1px dashed var(--border);border-radius:var(--radius-lg);}
 .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.4;}
 .empty-title{font-size:1rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;}
-.empty-sub{font-size:0.82rem;color:rgba(23,20,15,0.68);margin-bottom:1.5rem;}
+.empty-sub{font-size:0.82rem;color:rgba(23,20,15,0.75);margin-bottom:1.5rem;}
 .empty-btn{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#925616;padding:0.75rem 1.5rem;border-radius:var(--radius-md);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;text-decoration:none;display:inline-block;transition:var(--transition);}
 .empty-btn:hover{background:rgba(245,166,35,0.2);box-shadow:var(--glow-gold);}
 
@@ -235,15 +235,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .login-title span{color:#9B5B17;}
 .login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
 .auth-tabs{display:flex;background:rgba(23,20,15,0.04);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
-.auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(23,20,15,0.68);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(23,20,15,0.75);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .auth-tab.active{background:var(--gradient-gold);color:#17140F;}
-.form-label{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
+.form-label{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
 .form-input{width:100%;background:rgba(23,20,15,0.04);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
 .form-input:focus{border-color:rgba(245,166,35,0.5);}
 .btn-auth{width:100%;background:var(--gradient-gold);color:#17140F;border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-auth:hover{box-shadow:var(--glow-gold);}
 .login-error{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#C20000;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(23,20,15,0.68);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(23,20,15,0.75);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;}
 
 /* TOOL QUICK ACCESS — 2 tools right now (Create, Design) while others are paused */
 .quick-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;margin-bottom:2.5rem;max-width:420px;}
@@ -259,14 +259,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .studio-nav-link{padding:0.7rem 1rem;border-radius:var(--radius-sm);color:var(--text-muted);font-weight:700;font-size:0.85rem;text-decoration:none;font-family:'Syne',sans-serif;transition:var(--transition);white-space:nowrap;}
 .studio-nav-link:hover:not(.active){background:rgba(245,166,35,0.08);color:#925616;}
 .studio-nav-link.active{background:var(--gradient-gold);color:#17140F;box-shadow:var(--glow-gold);}
-.btn-signout-sidebar{width:100%;background:none;border:1px solid var(--border);color:rgba(23,20,15,0.68);padding:0.65rem;border-radius:var(--radius-sm);font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
+.btn-signout-sidebar{width:100%;background:none;border:1px solid var(--border);color:rgba(23,20,15,0.75);padding:0.65rem;border-radius:var(--radius-sm);font-size:0.8rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-signout-sidebar:hover{border-color:var(--red);color:#CE2218;}
 
 /* STAT CARDS */
 .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;}
 .stat-card-value{font-size:1.7rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
-.stat-card-label{font-size:0.66rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:0.35rem;}
+.stat-card-label{font-size:0.66rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:0.35rem;}
 
 /* BILLING & USAGE — the real credits/tier ledger (credits.py, a different
    Firestore project than studio_users above; see credits.py's own docstring
@@ -278,7 +278,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .billing-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;}
 .billing-tier{font-size:1.05rem;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;}
 .billing-tier .tag{display:inline-block;margin-left:0.5rem;font-size:0.62rem;font-family:'Space Mono',monospace;letter-spacing:1px;padding:0.15rem 0.5rem;border-radius:20px;background:rgba(224,138,46,0.12);color:#9C5918;vertical-align:middle;}
-.billing-credits-text{font-size:0.82rem;color:rgba(23,20,15,0.68);margin-top:0.2rem;}
+.billing-credits-text{font-size:0.82rem;color:rgba(23,20,15,0.75);margin-top:0.2rem;}
 .billing-sync-btn{font-size:0.76rem;font-weight:700;font-family:'Syne',sans-serif;background:transparent;border:1px solid rgba(224,138,46,0.4);color:#9C5918;padding:0.5rem 1rem;border-radius:9px;cursor:pointer;white-space:normal;text-align:left;}
 .billing-sync-btn:hover{background:rgba(224,138,46,0.08);}
 .billing-grants{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.9rem;}
@@ -343,7 +343,7 @@ body{padding-top:70px;}
 .profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#17140F;flex-shrink:0;}
 .profile-info{flex:1;}
 .profile-name{font-size:1rem;font-weight:700;}
-.profile-email{font-size:0.72rem;color:rgba(23,20,15,0.68);font-family:'Space Mono',monospace;margin-top:0.2rem;}
+.profile-email{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-top:0.2rem;}
 .profile-body{padding:1.25rem;}
 .profile-section{margin-bottom:1.25rem;}
 .profile-section-title{font-size:0.6rem;color:#9B5B17;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.75rem;}
@@ -353,18 +353,18 @@ body{padding-top:70px;}
 .plan-dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
 .stat-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(23,20,15,0.04);font-size:0.82rem;}
 .stat-row:last-child{border-bottom:none;}
-.stat-row-label{color:rgba(23,20,15,0.68);}
+.stat-row-label{color:rgba(23,20,15,0.75);}
 .stat-row-value{font-weight:600;font-family:'Space Mono',monospace;font-size:0.75rem;}
 .profile-input{width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.65rem 0.9rem;border-radius:var(--radius-sm);font-size:0.85rem;font-family:'Syne',sans-serif;outline:none;margin-top:0.4rem;transition:var(--transition);}
 .profile-input:focus{border-color:rgba(245,166,35,0.4);}
 .profile-actions{display:flex;gap:0.75rem;padding:1rem 1.25rem;border-top:1px solid var(--border);}
 .btn-profile-save{flex:1;background:var(--gold);color:#17140F;border:none;padding:0.65rem;border-radius:var(--radius-sm);font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-profile-save:hover{box-shadow:var(--glow-gold);}
-.btn-profile-close{background:transparent;border:1px solid var(--border);color:rgba(23,20,15,0.68);padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-profile-close{background:transparent;border:1px solid var(--border);color:rgba(23,20,15,0.75);padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
 .btn-signout-profile{background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#BC1F16;padding:0.65rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;cursor:pointer;font-family:'Syne',sans-serif;}
 .upgrade-box{background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.15);border-radius:var(--radius-md);padding:1rem;margin-top:0.75rem;}
 .upgrade-price{font-size:1.5rem;font-weight:800;color:#7D6440;}
-.upgrade-price span{font-size:0.75rem;color:rgba(23,20,15,0.68);font-weight:400;}
+.upgrade-price span{font-size:0.75rem;color:rgba(23,20,15,0.75);font-weight:400;}
 .user-name{cursor:pointer;}
 .user-name:hover{color:#9B5B17;}
 
@@ -532,7 +532,7 @@ body::after{
             </div>
             <div class="billing-grants" id="billing-grants"></div>
             <div class="billing-sync-box" id="billing-sync-box" style="display:none;">
-              <div style="font-size:0.8rem;color:rgba(23,20,15,0.68);margin-bottom:0.5rem;">Couldn't find it automatically. Paste the reference from your Paystack receipt email:</div>
+              <div style="font-size:0.8rem;color:rgba(23,20,15,0.75);margin-bottom:0.5rem;">Couldn't find it automatically. Paste the reference from your Paystack receipt email:</div>
               <input type="text" id="billing-sync-ref" placeholder="e.g. av-tool-compressor-1788... or the Paystack reference">
               <button class="billing-sync-btn" type="button" onclick="avSyncPayment(true)">Try this reference</button>
             </div>
@@ -570,7 +570,7 @@ body::after{
         <label class="form-label">PASSWORD</label>
         <input type="password" id="login-password" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#9B5B17;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.75);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#9B5B17;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="form-label">FULL NAME</label>
@@ -579,16 +579,16 @@ body::after{
         <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
         <label class="form-label">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.74);line-height:1.5;">
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.75);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
           <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.74);line-height:1.5;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.75);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
           <label for="afribrain-consent">Help build <span style="color:#7D6440;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#7D6440;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#9B5B17;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.75);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#9B5B17;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </form>
       <div class="login-error" id="login-error">
       </div>
@@ -955,7 +955,7 @@ async function loadUserFiles(uid) {
     renderStudioTab();
   } catch(e) {
     console.error('Error loading files:', e);
-    grid.innerHTML = `<div style="color:rgba(23,20,15,0.68);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
+    grid.innerHTML = `<div style="color:rgba(23,20,15,0.75);font-size:0.82rem;font-family:'Space Mono',monospace;grid-column:1/-1;padding:2rem;text-align:center;">[x] Error loading files. Please refresh.</div>`;
   }
 }
 
@@ -1140,19 +1140,19 @@ window._saveProfileName = async function() {
     <div style="background:#F3EDE0;border-radius:12px;padding:1rem;margin-bottom:1rem;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
         <div>
-          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DATE</div>
+          <div style="color:rgba(23,20,15,0.75);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DATE</div>
           <div id="vinfo-date" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DURATION</div>
+          <div style="color:rgba(23,20,15,0.75);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">DURATION</div>
           <div id="vinfo-duration" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">SIZE</div>
+          <div style="color:rgba(23,20,15,0.75);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">SIZE</div>
           <div id="vinfo-size" style="color:#17140F;font-size:0.85rem;font-weight:600;"></div>
         </div>
         <div>
-          <div style="color:rgba(23,20,15,0.72);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">STATUS</div>
+          <div style="color:rgba(23,20,15,0.75);font-size:0.7rem;font-family:monospace;margin-bottom:0.25rem;">STATUS</div>
           <div style="color:#775F3D;font-size:0.85rem;font-weight:600;">Saved</div>
         </div>
       </div>
@@ -1194,13 +1194,13 @@ window.playStudioVideo = function(id, title, videoUrl, dataURL) {
     <div style="max-width:860px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid rgba(23,20,15,0.1);">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(23,20,15,0.08);">
         <span style="color:#17140F;font-weight:700;font-family:Syne,sans-serif;">${title}</span>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(23,20,15,0.72);font-size:1.4rem;cursor:pointer;"></button>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(23,20,15,0.75);font-size:1.4rem;cursor:pointer;"></button>
       </div>
       <video src="${src}" controls autoplay style="width:100%;max-height:70vh;background:#000;display:block;"></video>
       <div style="padding:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
         <button onclick="downloadStudioItem('${src}','${title}','video')" style="background:#E08A2E;border:none;color:#17140F;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">Download</button>
         <button onclick="useTemplate('${title}')" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Recreate</button>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.72);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Close</button>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.75);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;">Close</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
@@ -1259,17 +1259,17 @@ function showToast(msg, type) {
 window._showToast = showToast;
 </script>
 
-<div style="text-align:center;padding:2rem;color:rgba(23,20,15,0.64);font-size:0.7rem;font-family:'Space Mono',monospace;">
-  <a href="admin.html" style="color:rgba(23,20,15,0.04);text-decoration:none;user-select:none;">·</a>     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Facebook</a>
-      <span style="color:rgba(23,20,15,0.62);">·</span>
-      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Instagram</a>
-      <span style="color:rgba(23,20,15,0.62);">·</span>
-      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">TikTok</a>
-      <span style="color:rgba(23,20,15,0.62);">·</span>
-      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Twitter</a>
-      <span style="color:rgba(23,20,15,0.62);">·</span>
-      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(23,20,15,0.68);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">YouTube</a>
+<div style="text-align:center;padding:2rem;color:rgba(23,20,15,0.75);font-size:0.7rem;font-family:'Space Mono',monospace;">
+  <a href="admin.html" style="color:rgba(23,20,15,0.75);text-decoration:none;user-select:none;">·</a>     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
+      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(23,20,15,0.75);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Facebook</a>
+      <span style="color:rgba(23,20,15,0.75);">·</span>
+      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.75);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Instagram</a>
+      <span style="color:rgba(23,20,15,0.75);">·</span>
+      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(23,20,15,0.75);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">TikTok</a>
+      <span style="color:rgba(23,20,15,0.75);">·</span>
+      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(23,20,15,0.75);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">Twitter</a>
+      <span style="color:rgba(23,20,15,0.75);">·</span>
+      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(23,20,15,0.75);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#E08A2E'" onmouseout="this.style.color='rgba(23,20,15,0.4)'">YouTube</a>
     </div>
     © 2026 AfriVid Studio
 </div>
@@ -1287,7 +1287,7 @@ if('serviceWorker' in navigator) {
   <div style="width:90%;max-width:800px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <div id="vp-title" style="color:#F8F9FC;font-weight:800;font-size:1rem;font-family:'Syne',sans-serif;"></div>
-      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(248,249,252,0.6);font-size:1.5rem;cursor:pointer;"></button>
+      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(248,249,252,0.65);font-size:1.5rem;cursor:pointer;"></button>
     </div>
     <video id="vp-video" controls style="width:100%;border-radius:12px;background:#000;max-height:70vh;"></video>
     <div style="display:flex;gap:0.75rem;margin-top:1rem;">
@@ -1322,7 +1322,7 @@ function closeVideoPlayer() {
   <div style="width:90%;max-width:700px;text-align:center;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <div style="color:#F8F9FC;font-weight:800;font-family:'Syne',sans-serif;">Edited Photo</div>
-      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(248,249,252,0.6);font-size:1.5rem;cursor:pointer;"></button>
+      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(248,249,252,0.65);font-size:1.5rem;cursor:pointer;"></button>
     </div>
     <img id="pv-image" style="max-width:100%;max-height:70vh;border-radius:12px;object-fit:contain;">
     <div style="display:flex;gap:0.75rem;margin-top:1rem;justify-content:center;">
@@ -1466,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div style="background:#FFFFFF;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(23,20,15,0.72);font-size:0.8rem;">Tell us what's going on — we read every message</div>
+      <div style="color:rgba(23,20,15,0.75);font-size:0.8rem;">Tell us what's going on — we read every message</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
       <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#BC1F16;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Problem</button>
@@ -1481,10 +1481,10 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <textarea id="feedback-msg" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, or what you'd love to see in AfriVid..."></textarea>
     <div style="display:flex;gap:0.5rem;">
-      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.6);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.75);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.66);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.75);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
   </div>
 </div>
 <script src="paystack.js"></script>

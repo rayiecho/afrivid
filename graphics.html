@@ -25,7 +25,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 .topbar{position:sticky;top:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(23,20,15,0.1);}
 .topbar-left{display:flex;align-items:center;gap:1rem;}
-.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(23,20,15,0.6);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;}
+.back-btn{display:flex;align-items:center;gap:0.5rem;color:rgba(23,20,15,0.75);font-size:0.85rem;font-weight:600;text-decoration:none;transition:color 0.2s;}
 .back-btn:hover{color:#9C5918;}
 .back-btn svg{width:17px;height:17px;}
 .topbar-divider{width:1px;height:20px;background:rgba(23,20,15,0.12);}
@@ -38,20 +38,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 @media(max-width:480px){.topbar{flex-wrap:wrap;row-gap:0.5rem;}.topbar-right{flex:1 1 100%;justify-content:flex-end;}}
 .user-name{font-size:0.82rem;font-weight:700;color:#17140F;cursor:pointer;}
 .btn-signin{background:transparent;border:1px solid rgba(224,138,46,0.5);color:#9C5918;padding:0.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;}
-.btn-signout{background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.62);padding:0.4rem 0.9rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;}
+.btn-signout{background:none;border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.75);padding:0.4rem 0.9rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:'Syne',sans-serif;}
 .btn-signout:hover{border-color:#E63329;color:#CE2218;}
 
 .main{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:1.25rem 2rem 3rem;}
 .page-label{font-size:0.68rem;color:#9C5918;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.35rem;}
 .page-title{font-size:clamp(1.4rem,2.4vw,1.8rem);font-weight:800;margin-bottom:0.25rem;}
-.page-sub{font-size:0.84rem;color:rgba(23,20,15,0.66);margin-bottom:1.1rem;max-width:820px;line-height:1.5;}
+.page-sub{font-size:0.84rem;color:rgba(23,20,15,0.75);margin-bottom:1.1rem;max-width:820px;line-height:1.5;}
 
 .gfx-layout{display:grid;grid-template-columns:158px 330px 1fr;gap:1.1rem;align-items:start;}
 @media (max-width:1180px){.gfx-layout{grid-template-columns:158px 1fr;}.canvas-panel{grid-column:1/-1;position:static!important;}}
 @media (max-width:760px){.gfx-layout{grid-template-columns:1fr;}.gfxtabs{flex-direction:row!important;overflow-x:auto;position:static!important;}}
 
 .gfxtabs{display:flex;flex-direction:column;gap:0.5rem;position:sticky;top:5rem;}
-.gfxtab{width:100%;text-align:left;padding:0.7rem 1rem;border-radius:10px;border:1px solid rgba(23,20,15,0.12);background:#FFF;color:rgba(23,20,15,0.6);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.gfxtab{width:100%;text-align:left;padding:0.7rem 1rem;border-radius:10px;border:1px solid rgba(23,20,15,0.12);background:#FFF;color:rgba(23,20,15,0.75);font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .gfxtab:hover:not(.active){border-color:rgba(224,138,46,0.4);color:#A15C19;}
 .gfxtab.active{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border-color:transparent;box-shadow:0 6px 16px rgba(224,138,46,0.3);}
 
@@ -62,17 +62,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .canvas-panel{display:flex;flex-direction:column;gap:0.8rem;min-width:0;position:sticky;top:4.6rem;align-self:start;}
 .card{background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.25rem;}
 .control-label{font-size:0.65rem;color:#9C5918;font-family:'Space Mono',monospace;letter-spacing:2px;margin-bottom:0.7rem;}
-.form-label{font-size:0.65rem;color:rgba(23,20,15,0.6);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin:0.9rem 0 0.35rem;}
+.form-label{font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin:0.9rem 0 0.35rem;}
 .form-label:first-child{margin-top:0;}
 .form-input,.form-textarea,.form-select{width:100%;background:#F3EDE0;border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.65rem 0.8rem;border-radius:9px;font-family:'Syne',sans-serif;font-size:0.84rem;outline:none;box-sizing:border-box;transition:border-color 0.2s;}
 .form-textarea{resize:vertical;min-height:82px;line-height:1.5;}
 .form-input:focus,.form-textarea:focus,.form-select:focus{border-color:rgba(224,138,46,0.5);}
-.form-hint{font-size:0.72rem;color:rgba(23,20,15,0.58);margin-top:0.35rem;line-height:1.5;}
+.form-hint{font-size:0.72rem;color:rgba(23,20,15,0.75);margin-top:0.35rem;line-height:1.5;}
 
 .btn{padding:0.7rem 1.1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.84rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:0.45rem;}
 .btn-gold{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;font-weight:800;}
 .btn-gold:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(224,138,46,0.35);}
-.btn-outline{background:transparent;border:1px solid rgba(23,20,15,0.15);color:rgba(23,20,15,0.65);}
+.btn-outline{background:transparent;border:1px solid rgba(23,20,15,0.15);color:rgba(23,20,15,0.75);}
 .btn-outline:hover:not(:disabled){border-color:rgba(224,138,46,0.45);color:#9C5918;}
 .btn-green{background:#8B6F47;color:#FFF;}
 .btn-green:hover:not(:disabled){background:#75603D;}
@@ -82,17 +82,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-row .btn{flex:1 1 auto;padding:0.55rem 0.7rem;font-size:0.76rem;}
 
 .seg{display:flex;gap:4px;background:#F3EDE0;padding:4px;border-radius:10px;}
-.seg button{flex:1;padding:0.5rem 0.4rem;background:transparent;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.75rem;color:rgba(23,20,15,0.6);cursor:pointer;transition:all 0.2s;}
+.seg button{flex:1;padding:0.5rem 0.4rem;background:transparent;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.75rem;color:rgba(23,20,15,0.75);cursor:pointer;transition:all 0.2s;}
 .seg button.active{background:#FFF;color:#17140F;box-shadow:0 2px 6px rgba(23,20,15,0.08);}
 
 .swatches{display:flex;gap:0.5rem;flex-wrap:wrap;}
 .swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;padding:0;border:2px solid transparent;transition:transform 0.15s;}
 .swatch:hover{transform:scale(1.1);}
 .swatch.active{border-color:#E08A2E;}
-.swatch.custom{background:#F3EDE0;color:rgba(23,20,15,0.6);font-size:0.55rem;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;}
+.swatch.custom{background:#F3EDE0;color:rgba(23,20,15,0.75);font-size:0.55rem;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;}
 
 .template-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;}
-.template-btn{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);color:rgba(23,20,15,0.68);padding:0.55rem 0.4rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.template-btn{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);color:rgba(23,20,15,0.75);padding:0.55rem 0.4rem;border-radius:8px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;}
 .template-btn:hover{border-color:rgba(224,138,46,0.45);color:#935417;background:rgba(224,138,46,0.07);}
 
 .canvas-wrap{background:#F3EDE0;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:1rem;padding:0.9rem;border:1px solid rgba(23,20,15,0.1);min-height:260px;position:relative;overflow:hidden;}
@@ -110,10 +110,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .canvas-busy{position:absolute;inset:0;background:rgba(251,247,239,0.9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;z-index:20;border-radius:14px;}
 .canvas-busy.active{display:flex;}
 .spinner{width:34px;height:34px;border:3px solid rgba(224,138,46,0.22);border-top-color:#E08A2E;border-radius:50%;animation:spin 0.8s linear infinite;}
-.busy-text{font-family:'Space Mono',monospace;font-size:0.78rem;color:rgba(23,20,15,0.66);text-align:center;max-width:280px;line-height:1.6;}
+.busy-text{font-family:'Space Mono',monospace;font-size:0.78rem;color:rgba(23,20,15,0.75);text-align:center;max-width:280px;line-height:1.6;}
 .crop-box{position:absolute;border:2px solid #E08A2E;box-shadow:0 0 0 9999px rgba(23,20,15,0.55);pointer-events:none;z-index:15;display:none;}
 
-.gfx-log{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);border-radius:10px;padding:0.45rem 0.8rem;font-family:'Space Mono',monospace;font-size:0.68rem;color:rgba(23,20,15,0.68);max-height:44px;overflow-y:auto;line-height:1.85;}
+.gfx-log{background:#F3EDE0;border:1px solid rgba(23,20,15,0.1);border-radius:10px;padding:0.45rem 0.8rem;font-family:'Space Mono',monospace;font-size:0.68rem;color:rgba(23,20,15,0.75);max-height:44px;overflow-y:auto;line-height:1.85;}
 .log-line{display:block;}
 .log-line.success{color:#7A6039;}
 .log-line.error{color:#CE2218;}
@@ -122,11 +122,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* The Prompt Builder's launcher card in the sidebar, plus the shared chrome its modal uses. */
 .intake-box{border:1px solid rgba(23,20,15,0.1);border-radius:11px;padding:0.9rem;background:#F3EDE0;margin-top:0.9rem;}
 .intake-title{font-size:0.84rem;font-weight:800;margin-bottom:0.25rem;}
-.intake-step{font-size:0.66rem;font-family:'Space Mono',monospace;letter-spacing:1px;color:rgba(23,20,15,0.6);margin-bottom:0.5rem;}
+.intake-step{font-size:0.66rem;font-family:'Space Mono',monospace;letter-spacing:1px;color:rgba(23,20,15,0.75);margin-bottom:0.5rem;}
 .intake-q{font-size:0.82rem;font-weight:700;line-height:1.4;margin-bottom:0.35rem;}
 .intake-actions{display:flex;gap:0.45rem;margin-top:0.7rem;flex-wrap:wrap;}
 .intake-actions .btn{flex:1 1 130px;padding:0.55rem;font-size:0.74rem;}
-.intake-busy{display:flex;align-items:center;gap:0.6rem;font-size:0.8rem;color:rgba(23,20,15,0.66);}
+.intake-busy{display:flex;align-items:center;gap:0.6rem;font-size:0.8rem;color:rgba(23,20,15,0.75);}
 .intake-busy .spinner{width:19px;height:19px;border-width:2px;flex-shrink:0;}
 .intake-error{font-size:0.8rem;color:#CE2218;}
 .intake-chip{margin-top:0.7rem;padding:0.55rem 0.7rem;border-radius:8px;background:rgba(224,138,46,0.12);border:1px solid rgba(224,138,46,0.35);font-size:0.76rem;line-height:1.5;}
@@ -139,7 +139,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .pb-box{position:relative;width:100%;max-width:660px;max-height:88vh;max-height:88dvh;overflow-y:auto;display:flex;flex-direction:column;background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.4rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
 .pb-head{margin-bottom:0.9rem;padding-right:1.5rem;}
 .pb-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;}
-.pb-sub{font-size:0.78rem;line-height:1.5;color:rgba(23,20,15,0.62);margin-top:0.2rem;}
+.pb-sub{font-size:0.78rem;line-height:1.5;color:rgba(23,20,15,0.75);margin-top:0.2rem;}
 .pb-site{padding-bottom:0.9rem;border-bottom:1px solid rgba(23,20,15,0.08);}
 /* The transcript. It only ever grows — every question and every answer stays on screen, which
    is the difference between "a chat" and the old panel that overwrote itself each round and
@@ -149,7 +149,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .pb-msg.ai{align-self:flex-start;background:#F3EDE0;border:1px solid rgba(23,20,15,0.08);border-bottom-left-radius:4px;}
 .pb-msg.me{align-self:flex-end;background:rgba(224,138,46,0.16);border:1px solid rgba(224,138,46,0.32);border-bottom-right-radius:4px;}
 .pb-msg.err{align-self:flex-start;background:rgba(230,51,41,0.09);border:1px solid rgba(230,51,41,0.28);color:#AF3427;}
-.pb-who{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;color:rgba(23,20,15,0.45);margin-bottom:0.2rem;}
+.pb-who{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;color:rgba(23,20,15,0.75);margin-bottom:0.2rem;}
 .pb-compose{border-top:1px solid rgba(23,20,15,0.08);padding-top:0.8rem;}
 .pb-compose .form-textarea{min-height:64px;margin:0;}
 .pb-actions{display:flex;gap:0.45rem;margin-top:0.6rem;flex-wrap:wrap;}
@@ -161,11 +161,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* SELECTED-ELEMENT INSPECTOR — only meaningful once something on the canvas is picked. */
 #inspector{display:none;background:#FFF7EA;border:1px solid rgba(224,138,46,0.3);}
 .insp-row{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.6rem;flex-wrap:wrap;}
-.insp-row label{font-size:0.7rem;color:rgba(23,20,15,0.6);font-weight:600;}
+.insp-row label{font-size:0.7rem;color:rgba(23,20,15,0.75);font-weight:600;}
 input[type=color]{width:38px;height:30px;border:1px solid rgba(23,20,15,0.12);border-radius:6px;cursor:pointer;background:none;padding:2px;}
 input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
 .file-row{display:flex;align-items:center;gap:0.6rem;margin-top:0.35rem;}
-.file-name{font-size:0.72rem;color:rgba(23,20,15,0.55);font-family:'Space Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-name{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .embed-row{display:flex;gap:0.45rem;margin-top:0.6rem;}
 .embed-row input{font-family:'Space Mono',monospace;font-size:0.72rem;}
 
@@ -174,10 +174,10 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
    into two panes so only the half you are actually working in is on screen, and so there is
    an obvious line between "set this up" and "now change the result". */
 .stepseg{display:flex;gap:5px;background:#F3EDE0;padding:5px;border-radius:12px;position:sticky;top:4.6rem;z-index:40;box-shadow:0 4px 14px rgba(23,20,15,0.06);}
-.stepseg button{flex:1;padding:0.6rem 0.4rem;background:transparent;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;color:rgba(23,20,15,0.55);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
+.stepseg button{flex:1;padding:0.6rem 0.4rem;background:transparent;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;color:rgba(23,20,15,0.75);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
 .stepseg button.active{background:#FFF;color:#17140F;box-shadow:0 2px 6px rgba(23,20,15,0.1);}
 .stepseg button:disabled{opacity:0.45;cursor:not-allowed;}
-.step-num{width:17px;height:17px;border-radius:50%;background:rgba(23,20,15,0.14);color:rgba(23,20,15,0.6);font-size:0.62rem;font-family:'Space Mono',monospace;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-num{width:17px;height:17px;border-radius:50%;background:rgba(23,20,15,0.14);color:rgba(23,20,15,0.75);font-size:0.62rem;font-family:'Space Mono',monospace;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .stepseg button.active .step-num{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;}
 .stepseg button.ready:not(.active) .step-num{background:rgba(224,138,46,0.45);color:#17140F;}
 
@@ -193,13 +193,13 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
    thing that makes the column taller than the screen. */
 .variant-strip.show{display:flex;flex-direction:column;gap:0.45rem;max-height:calc(100vh - 26rem);overflow-y:auto;animation:slideUp 0.3s ease both;}
 .variant-strip .control-label{margin:0 0 0.1rem;font-size:0.6rem;letter-spacing:1.4px;}
-.variant-note{font-size:0.64rem;color:rgba(23,20,15,0.52);line-height:1.4;margin-top:0.15rem;}
+.variant-note{font-size:0.64rem;color:rgba(23,20,15,0.75);line-height:1.4;margin-top:0.15rem;}
 .variant-row{display:flex;flex-direction:column;gap:0.45rem;}
 .variant-card{background:none;border:2px solid transparent;border-radius:9px;padding:3px;cursor:pointer;transition:all 0.18s;font-family:'Syne',sans-serif;}
 .variant-card:hover{border-color:rgba(224,138,46,0.45);}
 .variant-card.active{border-color:#E08A2E;background:rgba(224,138,46,0.1);}
 .variant-card img{display:block;width:100%;height:auto;border-radius:5px;box-shadow:0 3px 10px rgba(23,20,15,0.16);}
-.variant-name{font-size:0.68rem;font-weight:700;color:rgba(23,20,15,0.62);margin-top:0.15rem;text-align:center;}
+.variant-name{font-size:0.68rem;font-weight:700;color:rgba(23,20,15,0.75);margin-top:0.15rem;text-align:center;}
 .variant-card.active .variant-name{color:#9C5918;}
 
 /* ── EDIT AFFORDANCE ──────────────────────────────────────────────────────────
@@ -208,7 +208,7 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
 .edit-hint.show{display:flex;animation:slideUp 0.3s ease both;}
 .edit-hint svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;color:#9C5918;}
 .edit-hint strong{font-weight:800;color:#17140F;}
-.hint-x{margin-left:auto;background:none;border:none;color:rgba(23,20,15,0.4);font-size:0.9rem;cursor:pointer;line-height:1;padding:0 0 0 0.4rem;flex-shrink:0;}
+.hint-x{margin-left:auto;background:none;border:none;color:rgba(23,20,15,0.75);font-size:0.9rem;cursor:pointer;line-height:1;padding:0 0 0 0.4rem;flex-shrink:0;}
 .hint-x:hover{color:#17140F;}
 .edit-badge{position:absolute;top:0.55rem;left:0.55rem;z-index:12;display:none;align-items:center;gap:0.35rem;background:rgba(23,20,15,0.82);color:#FFF;border-radius:20px;padding:0.3rem 0.65rem;font-size:0.68rem;font-weight:700;pointer-events:none;backdrop-filter:blur(6px);}
 .edit-badge.show{display:flex;}
@@ -223,7 +223,7 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
 .login-title span{color:#E8A54C;}
 .login-card{background:#FFF;border:1px solid rgba(23,20,15,0.1);border-radius:16px;padding:1.75rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
 .auth-tabs{display:flex;background:#F3EDE0;border-radius:10px;padding:3px;margin-bottom:1.5rem;}
-.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(23,20,15,0.6);border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.84rem;font-family:'Syne',sans-serif;}
+.auth-tab{flex:1;padding:0.6rem;background:transparent;color:rgba(23,20,15,0.75);border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.84rem;font-family:'Syne',sans-serif;}
 .auth-tab.active{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;}
 .btn-auth{width:100%;background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:0.92rem;cursor:pointer;font-family:'Syne',sans-serif;margin-top:1.1rem;}
 .login-error{display:none;margin-top:0.9rem;padding:0.7rem 0.9rem;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.3);border-radius:8px;font-size:0.8rem;color:#AF3427;font-family:'Space Mono',monospace;}
@@ -593,7 +593,7 @@ input[type=range]{flex:1;accent-color:#E08A2E;min-width:90px;}
         <input type="email" id="signup-email" class="form-input" placeholder="you@example.com">
         <label class="form-label" for="signup-password">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters">
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.9rem 0 0;font-size:0.75rem;color:rgba(23,20,15,0.64);line-height:1.5;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.9rem 0 0;font-size:0.75rem;color:rgba(23,20,15,0.75);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
           <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#9B5B17;text-decoration:none;">Privacy Policy</a></label>
         </div>

@@ -18,7 +18,7 @@
     if (panel) {
       const div = document.createElement('div');
       div.style.cssText = `padding:0.4rem 0.75rem;border-left:3px solid ${type==='ERROR'?'#E63329':type==='PERMISSION'?'#F5A623':'#74C69D'};margin-bottom:0.4rem;font-size:0.72rem;font-family:monospace;`;
-      div.innerHTML = `<span style="color:rgba(255,255,255,0.52)">${entry.time}</span> <span style="color:${type==='ERROR'?'#E63329':type==='PERMISSION'?'#F5A623':'#74C69D'}">[${type}]</span> ${message}${detail?'<br><span style="color:rgba(255,255,255,0.5);font-size:0.65rem;">'+detail+'</span>':''}`;
+      div.innerHTML = `<span style="color:rgba(255,255,255,0.65)">${entry.time}</span> <span style="color:${type==='ERROR'?'#E63329':type==='PERMISSION'?'#F5A623':'#74C69D'}">[${type}]</span> ${message}${detail?'<br><span style="color:rgba(255,255,255,0.65);font-size:0.65rem;">'+detail+'</span>':''}`;
       panel.prepend(div);
       document.getElementById('admin-error-count').textContent = _adminLogs.length + ' events';
     }
@@ -73,7 +73,7 @@
 :root{
   --bg:#050A14;--bg2:#0a1628;--bg3:#0d1f35;--card:#0f1e30;
   --gold:#F5A623;--green:#74C69D;--red:#E63329;--white:#fff;
-  --muted:rgba(255,255,255,0.4);--border:rgba(255,255,255,0.07);
+  --muted:rgba(255,255,255,0.65);--border:rgba(255,255,255,0.07);
   --font-display:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
 }
 body{background:var(--bg);color:var(--white);font-family:var(--font-display);min-height:100vh;}
@@ -82,7 +82,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-display);min
 #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);}
 .login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:360px;text-align:center;}
 .login-logo{font-size:2rem;font-weight:800;color:var(--gold);margin-bottom:0.25rem;}
-.login-sub{font-size:0.75rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:2rem;}
+.login-sub{font-size:0.75rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);letter-spacing:2px;margin-bottom:2rem;}
 .login-input{width:100%;background:#1a2a3a;border:1px solid var(--border);color:var(--white);padding:0.85rem 1rem;border-radius:10px;font-size:0.9rem;font-family:var(--font-display);margin-bottom:1rem;outline:none;}
 .login-input:focus{border-color:rgba(245,166,35,0.4);}
 .login-btn{width:100%;background:var(--gold);color:#000;border:none;padding:0.9rem;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:var(--font-display);}
@@ -96,12 +96,12 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-display);min
 .sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.5rem 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;}
 .sidebar-logo{padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
 .sidebar-logo-text{font-size:1.1rem;font-weight:800;color:var(--gold);}
-.sidebar-logo-sub{font-size:0.6rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);letter-spacing:2px;}
-.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1.5rem;cursor:pointer;color:rgba(255,255,255,0.52);font-size:0.82rem;font-weight:600;transition:all 0.2s;border-left:2px solid transparent;}
+.sidebar-logo-sub{font-size:0.6rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);letter-spacing:2px;}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1.5rem;cursor:pointer;color:rgba(255,255,255,0.65);font-size:0.82rem;font-weight:600;transition:all 0.2s;border-left:2px solid transparent;}
 .nav-item:hover{color:var(--white);background:rgba(255,255,255,0.03);}
 .nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(245,166,35,0.05);}
 .nav-icon{width:18px;text-align:center;font-size:0.9rem;}
-.nav-section{padding:1rem 1.5rem 0.4rem;font-size:0.6rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);letter-spacing:2px;}
+.nav-section{padding:1rem 1.5rem 0.4rem;font-size:0.6rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);letter-spacing:2px;}
 .sidebar-footer{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--border);}
 .logout-btn{width:100%;background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#EA5149;padding:0.6rem;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;font-family:var(--font-display);}
 
@@ -110,7 +110,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-display);min
 .page{display:none;}
 .page.active{display:block;}
 .page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.25rem;}
-.page-sub{font-size:0.78rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);margin-bottom:1.5rem;}
+.page-sub{font-size:0.78rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);margin-bottom:1.5rem;}
 
 /* CARDS */
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
@@ -119,35 +119,35 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-display);min
 /* STATS GRID */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
-.stat-label{font-size:0.65rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:0.5rem;}
+.stat-label{font-size:0.65rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:0.5rem;}
 .stat-value{font-size:2rem;font-weight:800;color:var(--white);}
 .stat-value.gold{color:var(--gold);}
 .stat-value.green{color:var(--green);}
 .stat-value.red{color:var(--red);}
-.stat-delta{font-size:0.7rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);margin-top:0.25rem;}
+.stat-delta{font-size:0.7rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);margin-top:0.25rem;}
 
 /* TABLE */
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:0.82rem;}
-th{text-align:left;padding:0.75rem 1rem;font-size:0.62rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);letter-spacing:1px;border-bottom:1px solid var(--border);}
+th{text-align:left;padding:0.75rem 1rem;font-size:0.62rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);letter-spacing:1px;border-bottom:1px solid var(--border);}
 td{padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
 tr:hover td{background:rgba(255,255,255,0.02);}
 .badge{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:0.65rem;font-weight:700;font-family:var(--font-mono);}
 .badge-gold{background:rgba(245,166,35,0.15);color:var(--gold);}
 .badge-green{background:rgba(116,198,157,0.15);color:var(--green);}
 .badge-red{background:rgba(230,51,41,0.15);color:#EA564E;}
-.badge-muted{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.52);}
+.badge-muted{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);}
 
 /* CHART */
 .chart-wrap{height:180px;display:flex;align-items:flex-end;gap:6px;padding-top:1rem;}
 .bar{flex:1;background:rgba(245,166,35,0.2);border-radius:4px 4px 0 0;position:relative;transition:all 0.3s;cursor:pointer;min-height:4px;}
 .bar:hover{background:rgba(245,166,35,0.4);}
-.bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:0.55rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);white-space:nowrap;}
+.bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:0.55rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);white-space:nowrap;}
 
 /* FORMS */
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
 .form-group{margin-bottom:1rem;}
-.form-label{display:block;font-size:0.68rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:0.4rem;}
+.form-label{display:block;font-size:0.68rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:0.4rem;}
 .form-input,.form-select,.form-textarea{width:100%;background:#1a2a3a;border:1px solid var(--border);color:var(--white);padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;font-family:var(--font-display);outline:none;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(245,166,35,0.4);}
 .form-select option{background:#1a2a3a;}
@@ -174,7 +174,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .system-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;align-items:center;justify-content:space-between;}
 .system-info{}
 .system-name{font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;}
-.system-url{font-size:0.65rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);}
+.system-url{font-size:0.65rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);}
 .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;}
 .status-online{background:var(--green);box-shadow:0 0 8px var(--green);}
 .status-offline{background:var(--red);}
@@ -203,7 +203,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .flex{display:flex;align-items:center;}
 .flex-between{display:flex;align-items:center;justify-content:space-between;}
 .gap-1{gap:1rem;}
-.text-muted{color:rgba(255,255,255,0.52);font-size:0.78rem;}
+.text-muted{color:rgba(255,255,255,0.65);font-size:0.78rem;}
 .text-mono{font-family:var(--font-mono);}
 .text-gold{color:var(--gold);}
 .text-green{color:var(--green);}
@@ -291,7 +291,7 @@ window._feedbackLoaded = false;
       <div class="nav-item" onclick="showPage('upgrades',this);loadUpgrades();"><span class="nav-icon">⚡</span> Upgrades</div>
 
       <div class="sidebar-footer">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);margin-bottom:0.75rem;" id="admin-time"></div>
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);margin-bottom:0.75rem;" id="admin-time"></div>
         <button class="logout-btn" onclick="doLogout()">Sign Out</button>
       </div>
     </div>
@@ -647,8 +647,8 @@ window._feedbackLoaded = false;
               <div class="form-label">RECEIPT (OPTIONAL)</div>
               <div class="upload-zone" onclick="document.getElementById('tx-receipt').click()" id="receipt-zone">
                 <input type="file" id="tx-receipt" accept="image/*,application/pdf" style="display:none;" onchange="handleReceiptUpload(event)">
-                <div style="font-size:0.78rem;color:rgba(255,255,255,0.52);">📎 Click to upload receipt</div>
-                <div style="font-size:0.65rem;color:rgba(255,255,255,0.52);margin-top:0.25rem;font-family:var(--font-mono);">JPG, PNG, PDF</div>
+                <div style="font-size:0.78rem;color:rgba(255,255,255,0.65);">📎 Click to upload receipt</div>
+                <div style="font-size:0.65rem;color:rgba(255,255,255,0.65);margin-top:0.25rem;font-family:var(--font-mono);">JPG, PNG, PDF</div>
               </div>
               <img id="receipt-preview" class="receipt-preview" style="display:none;margin-top:0.5rem;">
             </div>
@@ -725,7 +725,7 @@ window._feedbackLoaded = false;
                 </tr>
               </thead>
               <tbody id="apikeys-tbody">
-                <tr><td colspan="6" style="color:rgba(255,255,255,0.52);">Loading...</td></tr>
+                <tr><td colspan="6" style="color:rgba(255,255,255,0.65);">Loading...</td></tr>
               </tbody>
             </table>
           </div>
@@ -808,13 +808,13 @@ window._feedbackLoaded = false;
               <div class="form-label">ATTACHMENTS (OPTIONAL — ~8MB TOTAL)</div>
               <div class="upload-zone" onclick="document.getElementById('compose-attachments-input').click()" style="padding:1rem;">
                 <input type="file" id="compose-attachments-input" multiple style="display:none;" onchange="handleComposeAttachmentsSelected(event)">
-                <div style="font-size:0.78rem;color:rgba(255,255,255,0.52);">📎 Click to attach files</div>
+                <div style="font-size:0.78rem;color:rgba(255,255,255,0.65);">📎 Click to attach files</div>
               </div>
               <div id="compose-attachments-list" style="margin-top:0.5rem;"></div>
             </div>
             <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;margin-bottom:1rem;">
               <input type="checkbox" id="compose-include-logo" checked style="width:16px;height:16px;">
-              <span style="font-size:0.78rem;color:rgba(255,255,255,0.52);">Include AfriVid Studio logo &amp; branded footer</span>
+              <span style="font-size:0.78rem;color:rgba(255,255,255,0.65);">Include AfriVid Studio logo &amp; branded footer</span>
             </label>
             <div class="flex gap-1">
               <button class="btn btn-gold" id="compose-send-btn" onclick="sendComposeEmail()">Send Email</button>
@@ -871,13 +871,13 @@ window._feedbackLoaded = false;
                 <div class="form-label">ATTACHMENTS (OPTIONAL — ~8MB TOTAL)</div>
                 <div class="upload-zone" onclick="document.getElementById('inbox-reply-attachments-input').click()" style="padding:1rem;">
                   <input type="file" id="inbox-reply-attachments-input" multiple style="display:none;" onchange="handleInboxAttachmentsSelected(event)">
-                  <div style="font-size:0.78rem;color:rgba(255,255,255,0.52);">📎 Click to attach files</div>
+                  <div style="font-size:0.78rem;color:rgba(255,255,255,0.65);">📎 Click to attach files</div>
                 </div>
                 <div id="inbox-reply-attachments-list" style="margin-top:0.5rem;"></div>
               </div>
               <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;margin-bottom:1rem;">
                 <input type="checkbox" id="inbox-reply-include-logo" checked style="width:16px;height:16px;">
-                <span style="font-size:0.78rem;color:rgba(255,255,255,0.52);">Include AfriVid Studio logo &amp; branded footer</span>
+                <span style="font-size:0.78rem;color:rgba(255,255,255,0.65);">Include AfriVid Studio logo &amp; branded footer</span>
               </label>
               <button class="btn btn-gold" id="inbox-reply-send-btn" onclick="sendInboxReply()">Send Reply</button>
               <div id="inbox-reply-status" style="margin-top:1rem;"></div>
@@ -1101,7 +1101,7 @@ async function loadOverview() {
       <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid var(--border);">
         <div>
           <div style="font-size:0.82rem;font-weight:600;">${u.displayName||u.email||'User'}</div>
-          <div style="font-size:0.68rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);">${u.email||''}</div>
+          <div style="font-size:0.68rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);">${u.email||''}</div>
         </div>
         <span class="badge badge-gold">${u.videosGenerated||0} videos</span>
       </div>
@@ -1174,7 +1174,7 @@ async function loadAnalytics(days=30) {
     document.getElementById('top-users-list').innerHTML = topUsers.slice(0,5).map((u,i) => `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;gap:0.75rem;">
-          <span style="font-size:0.65rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);width:16px;">${i+1}</span>
+          <span style="font-size:0.65rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);width:16px;">${i+1}</span>
           <span style="font-size:0.82rem;">${u.email}</span>
         </div>
         <span class="badge badge-gold">${u.videos}</span>
@@ -1208,7 +1208,7 @@ function renderUsersTable(users) {
     <tr>
       <td><div style="font-weight:600;font-size:0.85rem;">${u.displayName||'—'}</div></td>
       <td><span style="font-family:var(--font-mono);font-size:0.75rem;">${u.email||'—'}</span></td>
-      <td><span style="font-size:0.75rem;color:rgba(255,255,255,0.52);">${u.createdAt?.toDate?.()?.toLocaleDateString()||'—'}</span></td>
+      <td><span style="font-size:0.75rem;color:rgba(255,255,255,0.65);">${u.createdAt?.toDate?.()?.toLocaleDateString()||'—'}</span></td>
       <td><span class="badge badge-gold">${u.videosGenerated||0}</span></td>
       <td><span class="badge ${u.banned?'badge-red':'badge-green'}">${u.banned?'Banned':'Active'}</span></td>
       <td>
@@ -1378,7 +1378,7 @@ window.sendAnnouncement = async function() {
               <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
                 <div style="text-align:center;margin-bottom:1.5rem;">
                   <h1 style="color:#F5A623;font-size:1.5rem;">AfriVid Studio</h1>
-                  <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
+                  <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
                 </div>
                 <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
                   <p style="line-height:1.7;color:rgba(255,255,255,0.8);">${msg}</p>
@@ -1386,7 +1386,7 @@ window.sendAnnouncement = async function() {
                 <div style="text-align:center;margin-bottom:1rem;">
                   <a href="https://afrivid.studio" style="background:#F5A623;color:#050A14;padding:0.75rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Visit AfriVid Studio</a>
                 </div>
-                <p style="text-align:center;color:rgba(255,255,255,0.5);font-size:0.75rem;">AfriVid Studio · afrivid.studio · info@afrivid.studio</p>
+                <p style="text-align:center;color:rgba(255,255,255,0.65);font-size:0.75rem;">AfriVid Studio · afrivid.studio · info@afrivid.studio</p>
               </div>
             `
           })
@@ -1438,7 +1438,7 @@ async function loadContent() {
         <td>${r.title||'Untitled'}</td>
         <td><span class="badge ${r.type==='Video'?'badge-gold':r.type==='Photo'?'badge-green':'badge-muted'}">${r.type}</span></td>
         <td style="font-size:0.72rem;font-family:var(--font-mono);">${r.userEmail||'—'}</td>
-        <td style="font-size:0.72rem;color:rgba(255,255,255,0.52);">${r.createdAt?.toDate?.()?.toLocaleDateString()||'—'}</td>
+        <td style="font-size:0.72rem;color:rgba(255,255,255,0.65);">${r.createdAt?.toDate?.()?.toLocaleDateString()||'—'}</td>
         <td><button class="btn btn-red btn-sm" onclick="deleteContent('${r.id}','${r.type.toLowerCase()}s')">Delete</button></td>
       </tr>
     `).join('') || '<tr><td colspan="5" class="text-muted" style="text-align:center;padding:2rem;">No content</td></tr>';
@@ -1680,7 +1680,7 @@ updateClock();
     const list = document.getElementById('upg-list');
     const stats = document.getElementById('upg-stats');
     if(!list) return;
-    list.innerHTML = '<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;">[..] Loading...</div>';
+    list.innerHTML = '<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;">[..] Loading...</div>';
     try {
       const snap = await getDocs(query(collection(db,'upgrade_requests'),orderBy('createdAt','desc')));
       const items = snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -1696,32 +1696,32 @@ updateClock();
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
             <div>
               <div style="color:#fff;font-weight:800;font-size:0.95rem;">${item.name}</div>
-              <div style="color:rgba(255,255,255,0.52);font-size:0.78rem;">${item.email}</div>
+              <div style="color:rgba(255,255,255,0.65);font-size:0.78rem;">${item.email}</div>
             </div>
             <span style="background:${item.status==='pending'?'rgba(245,166,35,0.1)':'rgba(116,198,157,0.1)'};color:${item.status==='pending'?'#F5A623':'#74C69D'};padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:700;">${(item.status||'pending').toUpperCase()}</span>
           </div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
             <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-              <div style="color:rgba(255,255,255,0.52);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
+              <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
               <div style="color:#fff;font-size:0.8rem;">${item.country||'—'}</div>
             </div>
             <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-              <div style="color:rgba(255,255,255,0.52);font-size:0.65rem;margin-bottom:0.2rem;">PAYMENT</div>
+              <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">PAYMENT</div>
               <div style="color:#fff;font-size:0.8rem;">${item.payment||'—'}</div>
             </div>
             <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-              <div style="color:rgba(255,255,255,0.52);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
+              <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
               <div style="color:#fff;font-size:0.8rem;">${item.phone||'—'}</div>
             </div>
           </div>
-          ${item.message ? `<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;margin-bottom:0.75rem;">"${item.message}"</div>` : ''}
+          ${item.message ? `<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;margin-bottom:0.75rem;">"${item.message}"</div>` : ''}
           <div style="display:flex;gap:0.5rem;align-items:center;">
             <a href="mailto:${item.email}?subject=AfriVid Pro Upgrade&body=Hi ${item.name},%0D%0A%0D%0AThank you for your interest in AfriVid Pro!%0D%0A%0D%0ATo complete your upgrade to Pro ($5/month), please send payment via ${item.payment||'your preferred method'}.%0D%0A%0D%0AOnce confirmed, we will activate your Pro account within 1 hour.%0D%0A%0D%0ABest regards,%0D%0AAfriVid Team" style="background:var(--gold);border:none;color:#050A14;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:800;cursor:pointer;font-family:var(--font-main);text-decoration:none;">Reply with Payment Details</a>
             <button onclick="markUpgradeDone('${item.id}')" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:var(--font-main);">Mark Complete</button>
-            <span style="color:rgba(255,255,255,0.52);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
+            <span style="color:rgba(255,255,255,0.65);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
           </div>
         </div>
-      `).join('') : '<div style="color:rgba(255,255,255,0.52);text-align:center;padding:2rem;">No upgrade requests yet</div>';
+      `).join('') : '<div style="color:rgba(255,255,255,0.65);text-align:center;padding:2rem;">No upgrade requests yet</div>';
     } catch(e) {
       if(list) list.innerHTML = `<div style="color:#E63329;">[x] ${e.message}</div>`;
     }
@@ -1760,7 +1760,7 @@ const ADMIN_SECRET_HEADER = 'avs_admin_KQWnNZboq1qqmmNYU1KjbHn4o99uO93B8qigWgEz8
 
 window.loadApiKeys = async function() {
   const tbody = document.getElementById('apikeys-tbody');
-  tbody.innerHTML = '<tr><td colspan="6" style="color:rgba(255,255,255,0.52);">Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" style="color:rgba(255,255,255,0.65);">Loading...</td></tr>';
   try {
     const res = await fetch(`${API_KEYS_WORKER}/api-keys/list`, {
       headers: { 'X-Admin-Secret': ADMIN_SECRET_HEADER },
@@ -1768,7 +1768,7 @@ window.loadApiKeys = async function() {
     const data = await res.json();
     const keys = data.keys || [];
     if (!keys.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="color:rgba(255,255,255,0.52);">No keys issued yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="color:rgba(255,255,255,0.65);">No keys issued yet.</td></tr>';
       return;
     }
     tbody.innerHTML = keys.map(k => `
@@ -1831,7 +1831,7 @@ window.loadFeedback = async function() {
     const list = document.getElementById('fb-list');
     const stats = document.getElementById('fb-stats');
     if(!list) return;
-    list.innerHTML = '<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;font-family:var(--font-mono);">[..] Loading...</div>';
+    list.innerHTML = '<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;font-family:var(--font-mono);">[..] Loading...</div>';
     try {
       const snap = await getDocs(query(collection(db,'feedback'),orderBy('createdAt','desc')));
       const items = snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -1849,14 +1849,14 @@ window.loadFeedback = async function() {
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
             <div style="display:flex;gap:0.5rem;align-items:center;">
               <span style="background:rgba(245,166,35,0.1);color:var(--gold);padding:0.15rem 0.5rem;border-radius:4px;font-size:0.7rem;font-family:var(--font-mono);">${(item.type||'general').toUpperCase()}</span>
-              <span style="color:rgba(255,255,255,0.52);font-size:0.75rem;">${item.userEmail||'anonymous'}</span>
+              <span style="color:rgba(255,255,255,0.65);font-size:0.75rem;">${item.userEmail||'anonymous'}</span>
             </div>
             <span style="color:var(--gold);font-size:0.82rem;">${'⭐'.repeat(item.rating||5)}</span>
           </div>
           <div style="color:var(--white);font-size:0.85rem;line-height:1.5;margin-bottom:0.4rem;">${item.message||''}</div>
-          <div style="color:rgba(255,255,255,0.52);font-size:0.68rem;font-family:var(--font-mono);">${item.page||''} · ${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:0.68rem;font-family:var(--font-mono);">${item.page||''} · ${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</div>
         </div>
-      `).join('') : '<div style="color:rgba(255,255,255,0.52);text-align:center;padding:2rem;">No feedback yet</div>';
+      `).join('') : '<div style="color:rgba(255,255,255,0.65);text-align:center;padding:2rem;">No feedback yet</div>';
     } catch(e) {
       if(list) list.innerHTML = `<div style="color:#E63329;font-family:var(--font-mono);">[x] ${e.message}</div>`;
     }
@@ -1867,10 +1867,10 @@ window.loadFeedback = async function() {
 <div id="admin-error-panel-wrap" style="position:fixed;bottom:1rem;right:1rem;width:380px;z-index:9999;display:none;">
   <div style="background:#0D1117;border:1px solid rgba(230,51,41,0.3);border-radius:10px;overflow:hidden;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:rgba(230,51,41,0.1);border-bottom:1px solid rgba(230,51,41,0.2);">
-      <span style="color:#EA564E;font-size:0.72rem;font-weight:800;font-family:monospace;">⚠ ERROR LOG <span id="admin-error-count" style="color:rgba(255,255,255,0.52);font-weight:400;"></span></span>
+      <span style="color:#EA564E;font-size:0.72rem;font-weight:800;font-family:monospace;">⚠ ERROR LOG <span id="admin-error-count" style="color:rgba(255,255,255,0.65);font-weight:400;"></span></span>
       <div style="display:flex;gap:0.5rem;">
-        <button onclick="document.getElementById('admin-error-panel').innerHTML='';window._adminLogs.length=0;" style="background:none;border:none;color:rgba(255,255,255,0.52);font-size:0.65rem;cursor:pointer;">Clear</button>
-        <button onclick="document.getElementById('admin-error-panel-wrap').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.52);font-size:0.9rem;cursor:pointer;">✕</button>
+        <button onclick="document.getElementById('admin-error-panel').innerHTML='';window._adminLogs.length=0;" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:0.65rem;cursor:pointer;">Clear</button>
+        <button onclick="document.getElementById('admin-error-panel-wrap').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:0.9rem;cursor:pointer;">✕</button>
       </div>
     </div>
     <div id="admin-error-panel" style="max-height:300px;overflow-y:auto;padding:0.5rem;"></div>
@@ -1927,7 +1927,7 @@ window.toggleAfriBrainEntries = async function() {
 
 window.loadAfriBrainEntries = async function() {
   const list = document.getElementById('afribrain-entries-list');
-  list.innerHTML = '<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;font-family:var(--font-mono);padding:1rem;">[..] Loading...</div>';
+  list.innerHTML = '<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;font-family:var(--font-mono);padding:1rem;">[..] Loading...</div>';
   try {
     const snap = await getDocs(query(collection(db, 'afribrain_data'), orderBy('created_at', 'desc'), limit(200)));
     const items = snap.docs.map(d => d.data());
@@ -1936,13 +1936,13 @@ window.loadAfriBrainEntries = async function() {
         <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.4rem;flex-wrap:wrap;">
           <span style="background:rgba(116,198,157,0.1);color:#74C69D;padding:0.15rem 0.5rem;border-radius:4px;font-size:0.68rem;font-family:var(--font-mono);">${(item.source||'?').toUpperCase()}</span>
           <span style="background:rgba(245,166,35,0.1);color:#F5A623;padding:0.15rem 0.5rem;border-radius:4px;font-size:0.68rem;font-family:var(--font-mono);">${(item.type||'?').toUpperCase()}</span>
-          <span style="color:rgba(255,255,255,0.52);font-size:0.7rem;font-family:var(--font-mono);">${item.language||'en'} · ${item.word_count||0} words</span>
-          <span style="color:rgba(255,255,255,0.52);font-size:0.68rem;margin-left:auto;font-family:var(--font-mono);">${item.created_at?.toDate?.()?.toLocaleString()||'—'}</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:0.7rem;font-family:var(--font-mono);">${item.language||'en'} · ${item.word_count||0} words</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:0.68rem;margin-left:auto;font-family:var(--font-mono);">${item.created_at?.toDate?.()?.toLocaleString()||'—'}</span>
         </div>
         ${item.topic ? `<div style="color:var(--white);font-size:0.8rem;font-weight:700;margin-bottom:0.3rem;">${item.topic}</div>` : ''}
-        <div style="color:rgba(255,255,255,0.52);font-size:0.82rem;line-height:1.5;white-space:pre-wrap;">${item.text||''}</div>
+        <div style="color:rgba(255,255,255,0.65);font-size:0.82rem;line-height:1.5;white-space:pre-wrap;">${item.text||''}</div>
       </div>
-    `).join('') : '<div style="color:rgba(255,255,255,0.52);text-align:center;padding:2rem;">No entries yet</div>';
+    `).join('') : '<div style="color:rgba(255,255,255,0.65);text-align:center;padding:2rem;">No entries yet</div>';
   } catch(e) {
     list.innerHTML = `<div style="color:#E63329;font-family:var(--font-mono);padding:1rem;">[x] ${e.message}</div>`;
   }
@@ -1951,7 +1951,7 @@ window.loadFeedback = async function() {
   const list = document.getElementById('fb-list');
   const stats = document.getElementById('fb-stats');
   if(!list) return;
-  list.innerHTML = '<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;">[..] Loading...</div>';
+  list.innerHTML = '<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;">[..] Loading...</div>';
   try {
     const cfg = {apiKey:"AIzaSyBDgcY4SYAOdG2QCPZYCEJRPaQNQZm6BI0",authDomain:"afrivid-studio.firebaseapp.com",projectId:"afrivid-studio"};
     const app = getApps().length ? getApps()[0] : initializeApp(cfg);
@@ -1972,14 +1972,14 @@ window.loadFeedback = async function() {
         <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
           <div style="display:flex;gap:0.5rem;">
             <span style="background:rgba(245,166,35,0.1);color:#F5A623;padding:0.15rem 0.5rem;border-radius:4px;font-size:0.7rem;">${(item.type||'general').toUpperCase()}</span>
-            <span style="color:rgba(255,255,255,0.52);font-size:0.75rem;">${item.userEmail||'anonymous'}</span>
+            <span style="color:rgba(255,255,255,0.65);font-size:0.75rem;">${item.userEmail||'anonymous'}</span>
           </div>
           <span style="color:#F5A623;font-size:0.82rem;">${'⭐'.repeat(item.rating||5)}</span>
         </div>
         <div style="color:#fff;font-size:0.85rem;line-height:1.5;margin-bottom:0.4rem;">${item.message||''}</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.68rem;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</div>
+        <div style="color:rgba(255,255,255,0.65);font-size:0.68rem;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</div>
       </div>
-    `).join('') : '<div style="color:rgba(255,255,255,0.5);text-align:center;padding:2rem;">No feedback yet</div>';
+    `).join('') : '<div style="color:rgba(255,255,255,0.65);text-align:center;padding:2rem;">No feedback yet</div>';
   } catch(e) {
     if(list) list.innerHTML = `<div style="color:#E63329;">[x] ${e.message}</div>`;
   }
@@ -2017,7 +2017,7 @@ window.loadUpgrades = async function() {
   const list = document.getElementById('upg-list');
   const stats = document.getElementById('upg-stats');
   if(!list) return;
-  list.innerHTML = '<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;">[..] Loading...</div>';
+  list.innerHTML = '<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;">[..] Loading...</div>';
   try {
     const snap = await getDocs(query(collection(db,'upgrade_requests'),orderBy('createdAt','desc')));
     const items = snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -2033,32 +2033,32 @@ window.loadUpgrades = async function() {
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
           <div>
             <div style="color:#fff;font-weight:800;font-size:0.95rem;">${item.name}</div>
-            <div style="color:rgba(255,255,255,0.52);font-size:0.78rem;">${item.email}</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.78rem;">${item.email}</div>
           </div>
           <span style="background:${item.status==='pending'?'rgba(245,166,35,0.1)':'rgba(116,198,157,0.1)'};color:${item.status==='pending'?'#F5A623':'#74C69D'};padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:700;">${(item.status||'pending').toUpperCase()}</span>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
             <div style="color:#fff;font-size:0.8rem;">${item.country||'—'}</div>
           </div>
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">PAYMENT</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">PAYMENT</div>
             <div style="color:#fff;font-size:0.8rem;">${item.payment||'—'}</div>
           </div>
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
             <div style="color:#fff;font-size:0.8rem;">${item.phone||'—'}</div>
           </div>
         </div>
-        ${item.message ? `<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;margin-bottom:0.75rem;">"${item.message}"</div>` : ''}
+        ${item.message ? `<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;margin-bottom:0.75rem;">"${item.message}"</div>` : ''}
         <div style="display:flex;gap:0.5rem;align-items:center;">
           <a href="mailto:${item.email}?subject=AfriVid Pro Upgrade&body=Hi ${item.name},%0D%0A%0D%0AThank you for your interest in AfriVid Pro!%0D%0A%0D%0APlease send $5 via ${item.payment||'your preferred method'} and we will activate your account within 1 hour.%0D%0A%0D%0ABest regards,%0D%0AAfriVid Team" style="background:#F5A623;border:none;color:#050A14;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;text-decoration:none;">Reply with Payment Details</a>
           <button onclick="markUpgradeDone('${item.id}')" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">Mark Complete</button>
-          <span style="color:rgba(255,255,255,0.5);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
         </div>
       </div>
-    `).join('') : '<div style="color:rgba(255,255,255,0.5);text-align:center;padding:2rem;">No upgrade requests yet</div>';
+    `).join('') : '<div style="color:rgba(255,255,255,0.65);text-align:center;padding:2rem;">No upgrade requests yet</div>';
   } catch(e) {
     if(list) list.innerHTML = `<div style="color:#E63329;">[x] ${e.message}</div>`;
   }
@@ -2075,7 +2075,7 @@ window.loadApplications = async function() {
   const list = document.getElementById('app-list');
   const stats = document.getElementById('app-stats');
   if(!list) return;
-  list.innerHTML = '<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;">[..] Loading...</div>';
+  list.innerHTML = '<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;">[..] Loading...</div>';
   try {
     const snap = await getDocs(query(collection(db,'job_applications'),orderBy('createdAt','desc')));
     const items = snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -2100,27 +2100,27 @@ window.loadApplications = async function() {
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.75rem;">
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">EMAIL</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">EMAIL</div>
             <div style="color:#fff;font-size:0.8rem;word-break:break-word;">${item.email||'—'}</div>
           </div>
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">PHONE</div>
             <div style="color:#fff;font-size:0.8rem;">${item.phone||'—'}</div>
           </div>
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">WHATSAPP</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">WHATSAPP</div>
             <div style="color:#fff;font-size:0.8rem;">${item.whatsapp||'—'}</div>
           </div>
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">OCCUPATION</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">OCCUPATION</div>
             <div style="color:#fff;font-size:0.8rem;">${item.occupation||'—'}</div>
           </div>
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">GENDER</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">GENDER</div>
             <div style="color:#fff;font-size:0.8rem;">${item.gender||'—'}</div>
           </div>
           <div style="background:rgba(255,255,255,0.03);padding:0.5rem;border-radius:8px;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.65rem;margin-bottom:0.2rem;">COUNTRY</div>
             <div style="color:#fff;font-size:0.8rem;">${item.country||'—'}</div>
           </div>
         </div>
@@ -2128,10 +2128,10 @@ window.loadApplications = async function() {
           ${item.linkedin ? `<a href="${item.linkedin}" target="_blank" rel="noopener" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;text-decoration:none;">View LinkedIn ↗</a>` : ''}
           <a href="mailto:${item.email}?subject=Your application to AfriVid Studio" style="background:#F5A623;border:none;color:#050A14;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;text-decoration:none;">Reply by Email</a>
           ${item.status!=='reviewed' ? `<button onclick="markApplicationReviewed('${item.id}')" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.3);color:#74C69D;padding:0.4rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">Mark Reviewed</button>` : ''}
-          <span style="color:rgba(255,255,255,0.5);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
+          <span style="color:rgba(255,255,255,0.65);font-size:0.68rem;margin-left:auto;">${item.createdAt?.toDate?.()?.toLocaleString()||'Recently'}</span>
         </div>
       </div>
-    `).join('') : '<div style="color:rgba(255,255,255,0.5);text-align:center;padding:2rem;">No applications yet</div>';
+    `).join('') : '<div style="color:rgba(255,255,255,0.65);text-align:center;padding:2rem;">No applications yet</div>';
   } catch(e) {
     if(list) list.innerHTML = `<div style="color:#E63329;">[x] ${e.message}</div>`;
   }
@@ -2188,7 +2188,7 @@ function renderComposeUserList(users) {
         <span style="width:16px;height:16px;border-radius:4px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;${isSelected ? 'background:var(--gold);border-color:var(--gold);' : ''}">${isSelected ? '<span style="color:#17140F;font-size:0.65rem;font-weight:800;">✓</span>' : ''}</span>
         <div>
           <div style="font-size:0.82rem;font-weight:600;">${u.displayName||u.email||'User'}</div>
-          <div style="font-size:0.68rem;color:rgba(255,255,255,0.52);font-family:var(--font-mono);">${u.email||'—'}</div>
+          <div style="font-size:0.68rem;color:rgba(255,255,255,0.65);font-family:var(--font-mono);">${u.email||'—'}</div>
         </div>
       </div>
       <span class="badge ${u.plan==='pro'?'badge-green':'badge-gold'}">${u.plan||'free'}</span>
@@ -2456,7 +2456,7 @@ function buildComposeEmailHtml(bodyText, includeLogo) {
         </td>
         <td style="vertical-align:top;padding-left:1rem;">
           <p style="margin:0 0 2px;color:#F5A623;font-weight:700;font-size:0.95rem;">AfriVid Studio</p>
-          <p style="margin:0 0 8px;color:rgba(255,255,255,0.6);font-size:0.8rem;">Customer Care Support</p>
+          <p style="margin:0 0 8px;color:rgba(255,255,255,0.65);font-size:0.8rem;">Customer Care Support</p>
           <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:0.8rem;">E: info@afrivid.studio &nbsp;·&nbsp; W: afrivid.studio</p>
           <div style="margin-top:8px;">${socialIcons}</div>
         </td>
@@ -2468,7 +2468,7 @@ function buildComposeEmailHtml(bodyText, includeLogo) {
       <div style="text-align:center;margin-bottom:1.5rem;">
         ${logoBlock}
         <h1 style="color:#F5A623;font-size:1.5rem;margin:0;">AfriVid Studio</h1>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
       </div>
       <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
         <p style="line-height:1.7;color:rgba(255,255,255,0.8);margin:0;">${safeBody}</p>
@@ -2681,19 +2681,19 @@ function renderInboxList(items) {
         <span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${item.read?'transparent':'#F5A623'};"></span>
         <div style="min-width:0;">
           <div style="color:#fff;font-weight:${item.read?600:800};font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeInboxHtml(item.fromName || item.from || 'Unknown sender')}</div>
-          <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeInboxHtml(item.subject || '(no subject)')}</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeInboxHtml(item.subject || '(no subject)')}</div>
         </div>
       </div>
-      <span style="color:rgba(255,255,255,0.5);font-size:0.68rem;font-family:var(--font-mono);flex-shrink:0;">${item.receivedAt?.toDate?.()?.toLocaleString() || 'Recently'}</span>
+      <span style="color:rgba(255,255,255,0.65);font-size:0.68rem;font-family:var(--font-mono);flex-shrink:0;">${item.receivedAt?.toDate?.()?.toLocaleString() || 'Recently'}</span>
     </div>
-  `).join('') : '<div style="color:rgba(255,255,255,0.5);text-align:center;padding:2rem;">No messages yet</div>';
+  `).join('') : '<div style="color:rgba(255,255,255,0.65);text-align:center;padding:2rem;">No messages yet</div>';
 }
 
 window.loadInboxMessages = async function() {
   const list = document.getElementById('inbox-list');
   const stats = document.getElementById('inbox-stats');
   if (!list) return;
-  list.innerHTML = '<div style="color:rgba(255,255,255,0.52);font-size:0.8rem;">[..] Loading...</div>';
+  list.innerHTML = '<div style="color:rgba(255,255,255,0.65);font-size:0.8rem;">[..] Loading...</div>';
   try {
     const snap = await getDocs(query(collection(db, 'inbox_messages'), orderBy('receivedAt', 'desc')));
     inboxMessages = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -2719,8 +2719,8 @@ window.openInboxMessage = async function(id) {
 
   document.getElementById('inbox-detail-meta').innerHTML = `
     <div style="color:#fff;font-weight:800;font-size:1rem;margin-bottom:0.25rem;">${escapeInboxHtml(item.subject || '(no subject)')}</div>
-    <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;">From: ${escapeInboxHtml(item.fromName ? `${item.fromName} <${item.from}>` : (item.from || 'Unknown'))}</div>
-    <div style="color:rgba(255,255,255,0.5);font-size:0.7rem;font-family:var(--font-mono);margin-top:0.25rem;">${item.receivedAt?.toDate?.()?.toLocaleString() || 'Recently'}</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:0.8rem;">From: ${escapeInboxHtml(item.fromName ? `${item.fromName} <${item.from}>` : (item.from || 'Unknown'))}</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:0.7rem;font-family:var(--font-mono);margin-top:0.25rem;">${item.receivedAt?.toDate?.()?.toLocaleString() || 'Recently'}</div>
   `;
   document.getElementById('inbox-detail-body').textContent = item.bodyText || '(empty message)';
 
@@ -2780,7 +2780,7 @@ function buildInboxReplyHtml(bodyText, includeLogo) {
         </td>
         <td style="vertical-align:top;padding-left:1rem;">
           <p style="margin:0 0 2px;color:#F5A623;font-weight:700;font-size:0.95rem;">AfriVid Studio</p>
-          <p style="margin:0 0 8px;color:rgba(255,255,255,0.6);font-size:0.8rem;">Customer Care Support</p>
+          <p style="margin:0 0 8px;color:rgba(255,255,255,0.65);font-size:0.8rem;">Customer Care Support</p>
           <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:0.8rem;">E: info@afrivid.studio &nbsp;·&nbsp; W: afrivid.studio</p>
           <div style="margin-top:8px;">${socialIcons}</div>
         </td>
@@ -2792,7 +2792,7 @@ function buildInboxReplyHtml(bodyText, includeLogo) {
       <div style="text-align:center;margin-bottom:1.5rem;">
         ${logoBlock}
         <h1 style="color:#F5A623;font-size:1.5rem;margin:0;">AfriVid Studio</h1>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;">Africa's First AI Video Creation Platform</p>
       </div>
       <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
         <p style="line-height:1.7;color:rgba(255,255,255,0.8);margin:0;">${safeBody}</p>

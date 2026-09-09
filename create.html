@@ -120,7 +120,7 @@
   --border:rgba(23,20,15,0.1);
   --border-gold:rgba(224,138,46,0.3);
   --text:#17140F;
-  --text-muted:rgba(23,20,15,0.62);
+  --text-muted:rgba(23,20,15,0.75);
   --text-faint:rgba(23,20,15,0.4);
   --gold:#E08A2E;
   --gold-dark:#C4701E;
@@ -178,13 +178,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 /* STEPS */
 .steps-bar{display:flex;gap:8px;margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
 .steps-bar::-webkit-scrollbar{display:none;}
-.step-pill{display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:rgba(23,20,15,0.66);font-size:0.78rem;font-weight:700;white-space:nowrap;flex-shrink:0;transition:var(--transition);font-family:'Syne',sans-serif;cursor:default;}
+.step-pill{display:flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:var(--radius-full);border:1px solid var(--border);background:transparent;color:rgba(23,20,15,0.75);font-size:0.78rem;font-weight:700;white-space:nowrap;flex-shrink:0;transition:var(--transition);font-family:'Syne',sans-serif;cursor:default;}
 .step-pill.active{border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.1);color:#925616;box-shadow:var(--glow-gold);}
 .step-pill.done{border-color:rgba(116,198,157,0.3);background:rgba(116,198,157,0.08);color:#7A623E;}
 .step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
 .step-pill.active .step-dot{background:var(--gold);color:#17140F;}
 .step-pill.done .step-dot{background:var(--green);color:var(--bg);}
-.step-pill:not(.active):not(.done) .step-dot{background:rgba(23,20,15,0.08);color:rgba(23,20,15,0.68);}
+.step-pill:not(.active):not(.done) .step-dot{background:rgba(23,20,15,0.08);color:rgba(23,20,15,0.75);}
 
 /* PANELS */
 .panel{display:none;}
@@ -209,7 +209,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(245,166,35,0.5);}
 .form-textarea{resize:vertical;min-height:120px;line-height:1.6;}
 .form-select option{background:var(--surface-2);}
-.form-hint{font-size:0.7rem;color:rgba(23,20,15,0.66);font-family:'Space Mono',monospace;}
+.form-hint{font-size:0.7rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;}
 
 /* BUTTONS */
 .btn{padding:0.85rem 2rem;border-radius:var(--radius-md);font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;border:none;transition:var(--transition);display:inline-flex;align-items:center;gap:0.5rem;}
@@ -228,7 +228,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .scene-num{font-family:'Space Mono',monospace;font-size:0.65rem;color:#9B5B17;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
 .scene-title{font-size:0.95rem;font-weight:700;margin-bottom:0.5rem;color:var(--text);}
 .scene-text{font-size:0.85rem;color:var(--text-muted);line-height:1.7;}
-.scene-duration{position:absolute;top:1rem;right:1rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:rgba(23,20,15,0.66);background:rgba(255,255,255,0.05);padding:0.2rem 0.6rem;border-radius:var(--radius-sm);}
+.scene-duration{position:absolute;top:1rem;right:1rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:rgba(23,20,15,0.75);background:rgba(255,255,255,0.05);padding:0.2rem 0.6rem;border-radius:var(--radius-sm);}
 
 /* CANVAS */
 #canvas-container{background:#000;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:16/9;position:relative;border:1px solid var(--border);margin-bottom:1.5rem;}
@@ -243,7 +243,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
 /* PROGRESS */
 .progress-wrap{margin-bottom:1.5rem;}
-.progress-labels{display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(23,20,15,0.66);margin-bottom:0.5rem;}
+.progress-labels{display:flex;justify-content:space-between;font-size:0.72rem;font-family:'Space Mono',monospace;color:rgba(23,20,15,0.75);margin-bottom:0.5rem;}
 .progress-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--gradient-accent);border-radius:2px;transition:width 0.3s;width:0%;}
 
@@ -281,15 +281,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .login-title span{color:#9B5B17;}
 .login-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
 .auth-tabs{display:flex;background:rgba(23,20,15,0.05);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
-.auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(23,20,15,0.66);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
+.auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(23,20,15,0.75);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .auth-tab.active{background:var(--gradient-gold);color:#17140F;}
-.form-label-m{font-size:0.72rem;color:rgba(23,20,15,0.66);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
+.form-label-m{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
 .form-input-m{width:100%;background:rgba(23,20,15,0.03);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
 .form-input-m:focus{border-color:rgba(224,138,46,0.6);}
 .btn-auth{width:100%;background:var(--gradient-gold);color:#17140F;border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-auth:hover{box-shadow:var(--glow-gold);}
 .login-error-m{display:none;margin-top:1rem;padding:0.75rem 1rem;background:rgba(200,45,35,0.08);border:1px solid rgba(200,45,35,0.3);border-radius:var(--radius-sm);font-size:0.82rem;color:#B23A2E;font-family:'Space Mono',monospace;}
-.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(23,20,15,0.66);font-size:1.5rem;cursor:pointer;}
+.modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(23,20,15,0.75);font-size:1.5rem;cursor:pointer;}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -304,7 +304,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .loading-state{display:none;text-align:center;padding:3rem 2rem;}
 .loading-spinner{width:48px;height:48px;border-radius:50%;border:3px solid rgba(245,166,35,0.2);border-top-color:var(--gold);animation:spin 0.8s linear infinite;margin:0 auto 1.5rem;}
 .loading-text{font-size:1rem;color:var(--text-muted);font-family:'Space Mono',monospace;margin-bottom:0.5rem;}
-.loading-sub{font-size:0.78rem;color:rgba(23,20,15,0.66);font-family:'Space Mono',monospace;animation:pulse 1.6s ease-in-out infinite;}
+.loading-sub{font-size:0.78rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;animation:pulse 1.6s ease-in-out infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 .navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(251,247,239,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
@@ -878,12 +878,12 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
     <div class="card">
       <div class="card-title"><div class="card-title-icon"></div>AI Tutorial Maker</div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
         <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
           <select id="tutorial-duration" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="1">1 minute</option>
             <option value="2">2 minutes</option>
@@ -894,7 +894,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
           <select id="tutorial-style" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="classic">Classic (AfriVid)</option>
             <option value="cameroon_slide">Cameroon Slide</option>
@@ -903,7 +903,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
           <select id="tutorial-level" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
@@ -911,7 +911,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
+          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
           <select id="tutorial-language" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="English">English</option>
             <option value="French">French</option>
@@ -922,14 +922,14 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </div>
       </div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
           <button onclick="setTutorialMode('concept')" id="tmode-concept" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Concept Slides</button>
-          <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Browser Demo</button>
+          <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.75);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Browser Demo</button>
         </div>
       </div>
       <div id="tutorial-url-row" style="display:none;margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
+        <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
         <input id="tutorial-url" type="text" placeholder="e.g. https://docs.google.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">Generate Tutorial Video</button>
@@ -942,13 +942,13 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:6px;margin-bottom:0.75rem;">
             <div id="tutorial-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
           </div>
-          <div id="tutorial-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Starting...</div>
+          <div id="tutorial-stage" style="color:rgba(23,20,15,0.75);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Starting...</div>
           <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem;margin-bottom:1rem;">
             <div style="color:#8D5A06;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;">We will email you when ready!</div>
-            <div style="color:rgba(23,20,15,0.7);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
+            <div style="color:rgba(23,20,15,0.75);font-size:0.75rem;font-family:'Space Mono',monospace;margin-top:4px;">You can close this tab safely.</div>
             <div id="tutorial-dashboard-btn" style="display:none;margin-top:0.75rem;">
               <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#8D5A06;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
-              <div style="color:rgba(23,20,15,0.66);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">Processing started — safe to leave</div>
+              <div style="color:rgba(23,20,15,0.75);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.4rem;">Processing started — safe to leave</div>
             </div>
           </div>
           <div id="tutorial-download" style="display:none;">
@@ -970,19 +970,19 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         <div style="font-weight:800;font-size:1rem;">AI Video Ad Maker</div>
       </div>
       <div style="margin-bottom:1rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS NAME *</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS NAME *</label>
         <input id="ad-business-name" type="text" placeholder="e.g. Mama Tomato Fresh Produce" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="margin-bottom:1rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">DESCRIBE YOUR PRODUCT/SERVICE *</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">DESCRIBE YOUR PRODUCT/SERVICE *</label>
         <textarea id="ad-description" placeholder="e.g. We sell fresh farm tomatoes in Nairobi. Delivery within 2 hours. Ksh 200 per kg. Best quality direct from Limuru farms. Call 0722000000." style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;height:100px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">WEBSITE/LINK (OPTIONAL)</label>
         <input id="ad-url" type="text" placeholder="e.g. https://yourwebsite.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">LANGUAGE</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">LANGUAGE</label>
         <select id="ad-language" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
           <option value="English">English</option>
           <option value="French">French</option>
@@ -992,10 +992,10 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </select>
       </div>
       <div style="margin-bottom:1.25rem;">
-        <label style="font-size:0.75rem;color:rgba(23,20,15,0.7);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
+        <label style="font-size:0.75rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.5rem;display:block;">BUSINESS LOGO (OPTIONAL)</label>
         <div style="display:flex;align-items:center;gap:1rem;">
           <input type="file" id="ad-logo-input" accept="image/*" onchange="previewAdLogo(this)" style="display:none;">
-          <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.65);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Upload Logo</button>
+          <button onclick="document.getElementById('ad-logo-input').click()" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.75);padding:0.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Upload Logo</button>
           <div id="ad-logo-preview" style="display:none;align-items:center;gap:0.5rem;">
             <img id="ad-logo-img" style="height:40px;border-radius:4px;object-fit:contain;background:rgba(23,20,15,0.12);padding:4px;">
             <button onclick="clearAdLogo()" style="background:none;border:none;color:rgba(141,0,0,0.7);cursor:pointer;font-size:0.8rem;">Remove</button>
@@ -1006,13 +1006,13 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
       <div id="ad-status" style="display:none;">
         <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:1rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
-            <div id="ad-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;">Starting...</div>
+            <div id="ad-stage" style="color:rgba(23,20,15,0.75);font-size:0.75rem;font-family:'Space Mono',monospace;">Starting...</div>
             <div id="ad-pct" style="color:#925D07;font-size:0.85rem;font-family:'Space Mono',monospace;">0%</div>
           </div>
           <div style="background:rgba(23,20,15,0.04);border-radius:4px;height:6px;">
             <div id="ad-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
           </div>
-          <div style="color:rgba(23,20,15,0.68);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">We will email you when ready! You can close this tab safely.</div>
+          <div style="color:rgba(23,20,15,0.75);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;">We will email you when ready! You can close this tab safely.</div>
         </div>
       </div>
       <div id="ad-result" style="display:none;margin-top:1rem;">
@@ -1397,13 +1397,13 @@ Or just paste your raw content and we will structure it into scenes automaticall
           <div style="background:rgba(23,20,15,0.1);border-radius:6px;height:6px;margin-bottom:0.75rem;">
             <div id="server-gen-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#E08A2E,#8B6F47);border-radius:6px;transition:width 0.5s;"></div>
           </div>
-          <div id="server-gen-stage" style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Starting...</div>
+          <div id="server-gen-stage" style="color:rgba(23,20,15,0.75);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Starting...</div>
           <div style="background:rgba(224,138,46,0.08);border:1px solid rgba(224,138,46,0.25);border-radius:8px;padding:0.75rem 1rem;">
             <div style="color:#935417;font-size:0.82rem;font-weight:700;margin-bottom:0.25rem;">Your video is being generated!</div>
-            <div style="color:rgba(23,20,15,0.6);font-size:0.75rem;font-family:'Space Mono',monospace;">We'll email you at <span id="server-gen-email" style="color:#7A623E;">your email</span> when ready.</div>
+            <div style="color:rgba(23,20,15,0.75);font-size:0.75rem;font-family:'Space Mono',monospace;">We'll email you at <span id="server-gen-email" style="color:#7A623E;">your email</span> when ready.</div>
             <div id="server-gen-dashboard-btn" style="display:none;margin-top:0.75rem;flex-wrap:wrap;align-items:center;gap:0.5rem;">
               <a href="index.html" style="background:rgba(224,138,46,0.1);border:1px solid rgba(224,138,46,0.35);color:#935417;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">Go to Dashboard →</a>
-              <div style="color:rgba(23,20,15,0.66);font-size:0.72rem;font-family:'Space Mono',monospace;">Processing started — safe to leave</div>
+              <div style="color:rgba(23,20,15,0.75);font-size:0.72rem;font-family:'Space Mono',monospace;">Processing started — safe to leave</div>
             </div>
           </div>
           <div id="server-gen-download" style="display:none;margin-top:1rem;">
@@ -1463,7 +1463,7 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <label class="form-label-m">PASSWORD</label>
         <input type="password" id="login-password" class="form-input-m" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
         <button class="btn-auth" onclick="doSignIn()">Sign In →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#9C5918;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.75);">No account? <button onclick="showAuthTab('signup')" style="background:none;border:none;color:#9C5918;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign Up Free →</button></div>
       </form>
       <form id="form-signup" onsubmit="doSignUp();return false;">
         <label class="form-label-m">FULL NAME</label>
@@ -1472,16 +1472,16 @@ Or just paste your raw content and we will structure it into scenes automaticall
         <input type="email" id="signup-email" class="form-input-m" placeholder="you@example.com">
         <label class="form-label-m">PASSWORD</label>
         <input type="password" id="signup-password" class="form-input-m" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()">
-                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.72);line-height:1.5;">
+                <div style="display:flex;align-items:flex-start;gap:0.6rem;margin:0.75rem 0;font-size:0.75rem;color:rgba(23,20,15,0.75);line-height:1.5;">
           <input type="checkbox" id="terms-agree" style="margin-top:3px;accent-color:#E08A2E;flex-shrink:0;" required>
           <label for="terms-agree">I agree to the <a href="terms.html" target="_blank" style="color:#9C5918;text-decoration:none;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:#9C5918;text-decoration:none;">Privacy Policy</a></label>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.72);line-height:1.5;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.75rem;color:rgba(23,20,15,0.75);line-height:1.5;">
           <input type="checkbox" id="afribrain-consent" style="margin-top:3px;accent-color:#8B6F47;flex-shrink:0;" checked>
           <label for="afribrain-consent">Help build <span style="color:#7D6440;">AfriBrain</span> — Africa's first AI. My anonymized transcriptions may be used for AI training. <a href="privacy.html#afribrain" target="_blank" style="color:#7D6440;text-decoration:none;">Learn more</a></label>
         </div>
         <button class="btn-auth" onclick="doSignUp()">Create Account →</button>
-        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.7);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#9C5918;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.78rem;color:rgba(23,20,15,0.75);">Have account? <button onclick="showAuthTab('signin')" style="background:none;border:none;color:#9C5918;cursor:pointer;font-size:0.78rem;font-family:'Syne',sans-serif;font-weight:600;">Sign In →</button></div>
       </form>
       <div class="login-error-m" id="login-error"></div>
     </div>
@@ -4661,7 +4661,7 @@ function renderLibrary() {
     grid.innerHTML = `<div style="text-align:center;color:var(--muted);padding:4rem;grid-column:span 3;">
       <div style="font-size:3rem;margin-bottom:1rem;">[books]</div>
       <div style="font-family:var(--font-mono);font-size:0.82rem;">// Your library is empty</div>
-      <div style="font-size:0.78rem;margin-top:0.5rem;color:rgba(23,20,15,0.64);">Generated videos, designs and edited videos will appear here</div>
+      <div style="font-size:0.78rem;margin-top:0.5rem;color:rgba(23,20,15,0.75);">Generated videos, designs and edited videos will appear here</div>
     </div>`;
     return;
   }
@@ -5122,8 +5122,8 @@ window._doSignUp = window.doSignUp = async function() {
                 <p style="color:rgba(255,255,255,0.7);margin:0.5rem 0;">Design studio — unlimited</p>
               </div>
               <a href="https://afrivid.studio/create.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Create Your First Video →</a>
-              <p style="color:rgba(255,255,255,0.52);font-size:0.85rem;margin-top:2rem;">Need help? Reply to this email or visit afrivid.studio</p>
-              <p style="color:rgba(255,255,255,0.5);font-size:0.75rem;">AfriVid Studio · afrivid.studio · Built for Africa</p>
+              <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin-top:2rem;">Need help? Reply to this email or visit afrivid.studio</p>
+              <p style="color:rgba(255,255,255,0.65);font-size:0.75rem;">AfriVid Studio · afrivid.studio · Built for Africa</p>
             </div>
           `
         })
@@ -6705,7 +6705,7 @@ window.convertAndDownloadMP4 = async function() {
   <div style="background:#FFFFFF;box-shadow:0 20px 60px rgba(0,0,0,0.35);border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(23,20,15,0.7);font-size:0.8rem;">Tell us what's going on — we read every message</div>
+      <div style="color:rgba(23,20,15,0.75);font-size:0.8rem;">Tell us what's going on — we read every message</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
       <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#BC1F16;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Problem</button>
@@ -6720,10 +6720,10 @@ window.convertAndDownloadMP4 = async function() {
     </div>
     <textarea id="feedback-msg" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
     <div style="display:flex;gap:0.5rem;">
-      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.72);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.75);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.64);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.75);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
   </div>
 </div>
 

@@ -69,7 +69,7 @@
   --gold:#F5A623;--green:#74C69D;--red:#E63329;--blue:#6399ff;
   --bg:#050A14;--navy:#0D1117;--navy2:#0D1F35;--navy3:#1a1a2e;
   --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
-  --muted:rgba(255,255,255,0.4);--font:'Syne',sans-serif;--mono:'Space Mono',monospace;
+  --muted:rgba(255,255,255,0.65);--font:'Syne',sans-serif;--mono:'Space Mono',monospace;
 }
 body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 
@@ -90,7 +90,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
   .topbar-right{flex:1 1 100%;justify-content:flex-end;}
 }
 .user-badge{font-size:0.72rem;color:var(--green);font-family:var(--mono);background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;}
-.back-btn{color:rgba(255,255,255,0.54);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s;}
+.back-btn{color:rgba(255,255,255,0.65);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s;}
 .back-btn:hover{color:#fff;}
 
 /* HERO */
@@ -98,7 +98,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .hero-label{font-size:0.65rem;color:var(--gold);font-family:var(--mono);letter-spacing:3px;margin-bottom:0.75rem;}
 .hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;margin-bottom:0.75rem;line-height:1.1;}
 .hero-title em{color:var(--gold);font-style:normal;}
-.hero-sub{color:rgba(255,255,255,0.54);font-size:0.95rem;max-width:500px;margin:0 auto;}
+.hero-sub{color:rgba(255,255,255,0.65);font-size:0.95rem;max-width:500px;margin:0 auto;}
 
 /* DROP ZONE */
 .drop-zone{max-width:700px;margin:0 auto 1rem;padding:0 1.5rem;}
@@ -106,7 +106,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .drop-area:hover,.drop-area.dragover{border-color:var(--gold);background:rgba(245,166,35,0.05);}
 .drop-icon{font-size:2.5rem;margin-bottom:0.75rem;}
 .drop-title{font-weight:800;font-size:1.1rem;margin-bottom:0.4rem;}
-.drop-sub{color:rgba(255,255,255,0.54);font-size:0.82rem;}
+.drop-sub{color:rgba(255,255,255,0.65);font-size:0.82rem;}
 .drop-input{position:absolute;inset:0;opacity:0;cursor:pointer;}
 
 /* VIDEO PREVIEW */
@@ -114,9 +114,9 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .video-wrap{position:relative;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
 #ai-video{width:100%;max-height:400px;display:block;}
 .video-info{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:var(--navy);border-top:1px solid var(--border);}
-.video-name{font-size:0.82rem;color:rgba(255,255,255,0.54);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.video-name{font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
 .video-duration{font-size:0.82rem;color:var(--gold);font-family:var(--mono);}
-.change-video-btn{background:none;border:1px solid var(--border2);color:rgba(255,255,255,0.54);padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--font);}
+.change-video-btn{background:none;border:1px solid var(--border2);color:rgba(255,255,255,0.65);padding:0.3rem 0.75rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--font);}
 .change-video-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
 
 /* AI PROMPT */
@@ -127,7 +127,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .prompt-btn{background:var(--gold);border:none;color:#050A14;padding:0.85rem 1.5rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all 0.2s;}
 .prompt-btn:hover{background:#e09520;}
 .prompt-examples{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem;}
-.example-chip{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:rgba(255,255,255,0.54);padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;font-family:var(--font);}
+.example-chip{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:rgba(255,255,255,0.65);padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;font-family:var(--font);}
 .example-chip:hover{color:#fff;border-color:var(--border2);}
 
 /* FEATURES GRID */
@@ -155,13 +155,13 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 .btn{padding:0.6rem 1.1rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
 .btn-gold{background:var(--gold);color:#050A14;}
 .btn-gold:hover{background:#e09520;}
-.btn-outline{background:transparent;border:1px solid var(--border2);color:rgba(255,255,255,0.54);}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:rgba(255,255,255,0.65);}
 .btn-outline:hover{border-color:rgba(245,166,35,0.3);color:var(--gold);}
 .btn-green{background:var(--green);color:#050A14;}
 .form-input{width:100%;background:#111;border:1px solid var(--border2);color:#fff;padding:0.6rem 0.75rem;border-radius:8px;font-family:var(--font);font-size:0.82rem;outline:none;margin-bottom:0.5rem;}
 
 /* LOG */
-.ai-log{background:#0d0d0d;border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:var(--mono);font-size:0.72rem;color:rgba(255,255,255,0.54);max-height:100px;overflow-y:auto;line-height:1.9;margin-top:0.75rem;}
+.ai-log{background:#0d0d0d;border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:var(--mono);font-size:0.72rem;color:rgba(255,255,255,0.65);max-height:100px;overflow-y:auto;line-height:1.9;margin-top:0.75rem;}
 
 /* RESULT BANNER */
 .result-banner{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:9999;background:var(--navy2);border:1px solid rgba(116,198,157,0.4);border-radius:14px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:var(--font);min-width:320px;max-width:90vw;}
@@ -213,7 +213,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div style="position:fixed;inset:0;z-index:999999;background:#050A14;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;font-family:'Syne',sans-serif;">
   <div style="font-size:2.5rem;margin-bottom:1rem;">🛠️</div>
   <h1 style="color:#fff;font-size:1.6rem;font-weight:800;margin:0 0 0.75rem;">AI Video Editor is getting a redesign</h1>
-  <p style="color:rgba(255,255,255,0.6);font-size:0.95rem;max-width:420px;line-height:1.6;margin:0 0 1.75rem;">We've paused this tool for a bit while we rebuild it. It'll be back soon, better than before.</p>
+  <p style="color:rgba(255,255,255,0.65);font-size:0.95rem;max-width:420px;line-height:1.6;margin:0 0 1.75rem;">We've paused this tool for a bit while we rebuild it. It'll be back soon, better than before.</p>
   <a href="studio.html" style="background:#F5A623;color:#050A14;padding:0.8rem 1.75rem;border-radius:10px;font-weight:800;text-decoration:none;font-size:0.9rem;">Go to My Studio →</a>
 </div>
 -->
@@ -273,7 +273,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <span>Afri<em>Vid</em> AI Editor</span>
   </a>
   <div class="topbar-right">
-    <span id="ai-usage-badge" style="display:none;font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.54);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.8rem;border-radius:20px;"></span>
+    <span id="ai-usage-badge" style="display:none;font-size:0.7rem;font-family:'Space Mono',monospace;color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.8rem;border-radius:20px;"></span>
     <span class="user-badge" id="user-badge" style="display:none;" onclick="window.location.href='studio.html?profile=1'">Loading...</span>
     <button class="btn btn-outline" id="btn-signin" onclick="showLogin()" style="font-size:0.78rem;padding:0.4rem 0.9rem;">Sign In</button>
     <a href="pricing.html#plans" class="av-upgrade">Upgrade</a>
@@ -318,15 +318,15 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <div style="color:#F5A623;font-weight:900;font-size:0.85rem;font-family:'Syne',sans-serif;">✂ Draw Crop Area</div>
       <div style="display:flex;gap:0.5rem;">
         <button onclick="applyCropSelection()" style="background:#F5A623;border:none;color:#050A14;padding:0.4rem 1rem;border-radius:6px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Apply Crop</button>
-        <button onclick="cancelCrop()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Cancel</button>
+        <button onclick="cancelCrop()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Cancel</button>
       </div>
     </div>
-    <div style="color:rgba(255,255,255,0.54);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Click and drag on the video to select the area to keep</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">Click and drag on the video to select the area to keep</div>
     <div style="position:relative;display:inline-block;width:100%;">
       <canvas id="crop-canvas" style="width:100%;cursor:crosshair;border-radius:8px;display:block;"></canvas>
       <div id="crop-selection-box" style="display:none;position:absolute;border:2px solid #F5A623;background:rgba(245,166,35,0.1);pointer-events:none;"></div>
     </div>
-    <div id="crop-coords" style="color:rgba(255,255,255,0.52);font-size:0.7rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
+    <div id="crop-coords" style="color:rgba(255,255,255,0.65);font-size:0.7rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
   </div>
 </div>
 <!-- PHASE 2 STATUS -->
@@ -339,20 +339,20 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:6px;margin-bottom:0.75rem;">
       <div id="phase2-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#F5A623,#74C69D);border-radius:6px;transition:width 0.5s;"></div>
     </div>
-    <div id="phase2-stage" style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Uploading...</div>
+    <div id="phase2-stage" style="color:rgba(255,255,255,0.65);font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.5rem;">Uploading...</div>
     <div id="phase2-timer" style="display:none;color:#F5A623;font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:0.75rem;">⏱ Time elapsed: <span id="phase2-countdown">calculating...</span></div>
     <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
       <div style="color:#F5A623;font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">✅ Your video is being processed!</div>
-      <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when ready.</div>
+      <div style="color:rgba(255,255,255,0.65);font-size:0.75rem;font-family:'Space Mono',monospace;">📧 We'll email you at <span id="phase2-user-email" style="color:#74C69D;">your email</span> when ready.</div>
       <div id="phase2-dashboard-btn" style="display:none;margin-top:0.75rem;display:none;gap:0.5rem;flex-wrap:wrap;">
         <a href="index.html" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Go to Dashboard →</a>
-        <div style="color:rgba(255,255,255,0.52);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
+        <div style="color:rgba(255,255,255,0.65);font-size:0.72rem;font-family:'Space Mono',monospace;padding:0.5rem 0;">✅ Processing started — safe to leave</div>
       </div>
     </div>
     <div id="phase2-action-btns" style="display:none;gap:0.5rem;flex-wrap:wrap;">
       <a href="index.html" style="background:#F5A623;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:900;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">✦ Continue Using AfriVid →</a>
       <a href="index.html" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:0.5rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif;font-size:0.8rem;">🏠 Dashboard</a>
-      <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.54);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
+      <button onclick="document.getElementById('phase2-status').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.65);padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Close</button>
     </div>
     <div id="phase2-download" style="display:none;margin-top:1rem;">
       <div style="color:#74C69D;font-weight:900;font-size:0.88rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;">🎉 Processing complete!</div>
@@ -373,18 +373,18 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <span style="font-size:1.25rem;">🚀</span>
       <div>
         <div style="color:#F5A623;font-weight:900;font-size:0.9rem;font-family:'Syne',sans-serif;">Long video detected!</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">Your video is over 5 minutes</div>
+        <div style="color:rgba(255,255,255,0.65);font-size:0.75rem;font-family:'Space Mono',monospace;" id="phase2-duration-msg">Your video is over 5 minutes</div>
       </div>
     </div>
     <div style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin-bottom:1rem;line-height:1.5;">
       <strong style="color:#F5A623;">HOW TO USE:</strong> (1) Type instruction below (2) Click Apply (3) Click Process on Server. Our server will email you when done.
     </div>
     <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:rgba(255,255,255,0.5);font-family:'Space Mono',monospace;">
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:rgba(255,255,255,0.65);font-family:'Space Mono',monospace;">
         📝 Your instruction: <span id="phase2-prompt-preview" style="color:#F5A623;font-weight:700;"></span>
       </div>
       <button onclick="uploadToServer()" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem 1.25rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">⚡ Process on Server</button>
-      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
+      <button onclick="document.getElementById('phase2-banner').style.display='none'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);padding:0.6rem 1.25rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Use Browser Instead</button>
     </div>
   </div>
 </div>
@@ -410,7 +410,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
      immediately visible rather than buried among the existing grid. -->
 <div class="features-section">
   <div class="features-label">🎬 STUDIO UPGRADE — SERVER AI</div>
-  <p style="color:rgba(255,255,255,0.56);font-size:0.78rem;margin:-0.5rem 0 0.85rem;">These run on our servers (real AI models, not the browser) — clicking starts a job that takes a few minutes, not seconds. You'll see live progress below each one.</p>
+  <p style="color:rgba(255,255,255,0.65);font-size:0.78rem;margin:-0.5rem 0 0.85rem;">These run on our servers (real AI models, not the browser) — clicking starts a job that takes a few minutes, not seconds. You'll see live progress below each one.</p>
   <div class="features-grid">
 
     <div class="feature-card" onclick="togglePanel('su-noise')">
@@ -529,7 +529,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-su-noise">
   <div class="sub-panel-inner">
     <div class="sub-title">🎚️ AI Noise Reduction</div>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Learns the actual noise in your recording and removes it while keeping your voice — real fix, not a fixed filter. Uploads your video, processes it on our servers, then gives you the cleaned-up file.</p>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-bottom:1rem;">Learns the actual noise in your recording and removes it while keeping your voice — real fix, not a fixed filter. Uploads your video, processes it on our servers, then gives you the cleaned-up file.</p>
     <button class="btn btn-gold" onclick="runStudioUpgrade('denoise_ml','su-noise')">🎚️ Run on Server</button>
     <div class="ai-log" id="studio-log-su-noise"></div>
   </div>
@@ -538,7 +538,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-su-fillers">
   <div class="sub-panel-inner">
     <div class="sub-title">🗣️ Remove Filler Words</div>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Transcribes your video for real, finds "um", "uh" and stutters, cuts them, and adds a quick zoom at each cut so it reads as a deliberate edit.</p>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-bottom:1rem;">Transcribes your video for real, finds "um", "uh" and stutters, cuts them, and adds a quick zoom at each cut so it reads as a deliberate edit.</p>
     <button class="btn btn-gold" onclick="runStudioUpgrade('filler_words','su-fillers')">🗣️ Run on Server</button>
     <div class="ai-log" id="studio-log-su-fillers"></div>
   </div>
@@ -547,7 +547,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-su-overlays">
   <div class="sub-panel-inner">
     <div class="sub-title">📌 Key-Point Graphics</div>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">AI reads your transcript, picks 2-4 moments worth calling out, and adds a timed graphic exactly when you say it.</p>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-bottom:1rem;">AI reads your transcript, picks 2-4 moments worth calling out, and adds a timed graphic exactly when you say it.</p>
     <button class="btn btn-gold" onclick="runStudioUpgrade('topic_overlays','su-overlays')">📌 Run on Server</button>
     <div class="ai-log" id="studio-log-su-overlays"></div>
   </div>
@@ -556,7 +556,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-su-bg">
   <div class="sub-panel-inner">
     <div class="sub-title">🖼️ Studio Background (Server)</div>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Full AI segmentation across every frame of your video — slower than the quick browser version above, but much cleaner edges and works on the whole clip, not just a preview.</p>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-bottom:1rem;">Full AI segmentation across every frame of your video — slower than the quick browser version above, but much cleaner edges and works on the whole clip, not just a preview.</p>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
       <button class="btn btn-gold" onclick="runStudioUpgrade('background_replace','su-bg',{background_mode:'blur'})">🌫 Blur</button>
       <button class="btn btn-gold" onclick="runStudioUpgrade('background_replace','su-bg',{background_mode:'color',background_color:'#0A1929'})">⬛ Navy</button>
@@ -571,7 +571,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-speed">
   <div class="sub-panel-inner">
     <div class="sub-title">⚡ Speed Control</div>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Choose a speed or set a custom value.</p>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-bottom:1rem;">Choose a speed or set a custom value.</p>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
       <button class="btn btn-gold" onclick="runFeature('speed',0.5)">🐢 0.5x Slow Mo</button>
       <button class="btn btn-gold" onclick="runFeature('speed',0.75)">🚶 0.75x</button>
@@ -579,7 +579,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
       <button class="btn btn-gold" onclick="runFeature('speed',2)">🚀 2x Super Fast</button>
     </div>
     <div style="display:flex;align-items:center;gap:0.5rem;">
-      <span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Custom:</span>
+      <span style="color:rgba(255,255,255,0.65);font-size:0.8rem;">Custom:</span>
       <input type="number" id="speed-custom" min="0.25" max="4" step="0.25" value="1.5" style="width:70px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.3rem 0.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:0.82rem;">
       <button class="btn btn-gold" onclick="runFeature('speed',parseFloat(document.getElementById('speed-custom').value)||1.5)">Apply</button>
     </div>
@@ -590,7 +590,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-aspect">
   <div class="sub-panel-inner">
     <div class="sub-title">📐 Aspect Ratio Converter</div>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">Convert your video for different platforms.</p>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-bottom:1rem;">Convert your video for different platforms.</p>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="runFeature('aspect','9:16')">📱 9:16 TikTok / Reels</button>
       <button class="btn btn-gold" onclick="runFeature('aspect','16:9')">🖥 16:9 YouTube</button>
@@ -603,14 +603,14 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
 <div class="sub-panel" id="panel-bgremove">
   <div class="sub-panel-inner">
     <div class="sub-title">🎭 Background Remover</div>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1rem;">AI removes your background. Works best with clear subject and good lighting.</p>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-bottom:1rem;">AI removes your background. Works best with clear subject and good lighting.</p>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
       <button class="btn btn-gold" onclick="runFeature('bgremove','blur')">🌫 Blur</button>
       <button class="btn btn-gold" onclick="runFeature('bgremove','black')">⬛ Black</button>
       <button class="btn btn-gold" onclick="runFeature('bgremove','white')">⬜ White</button>
       <button class="btn btn-gold" onclick="runFeature('bgremove','green')">💚 Green Screen</button>
     </div>
-    <div style="color:rgba(255,255,255,0.52);font-size:0.72rem;">⚠ Browser processing — works on short clips. Pro users get server-quality removal.</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:0.72rem;">⚠ Browser processing — works on short clips. Pro users get server-quality removal.</div>
     <div class="ai-log" id="log-bgremove"></div>
   </div>
 </div>
@@ -725,7 +725,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <input class="form-input" id="brand-name" placeholder="Your brand name e.g. AfriVid Studio">
     <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;">
       <input type="color" id="brand-color" value="#F5A623" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer;">
-      <label style="flex:1;background:#111;border:1px solid var(--border2);color:rgba(255,255,255,0.54);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font);">
+      <label style="flex:1;background:#111;border:1px solid var(--border2);color:rgba(255,255,255,0.65);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font);">
         📁 Upload Logo <input type="file" accept="image/*" onchange="loadBrandLogoAI(this)" style="display:none;">
       </label>
       <img id="brand-logo-preview" style="display:none;width:36px;height:36px;border-radius:6px;object-fit:contain;">
@@ -746,7 +746,7 @@ body{background:var(--bg);color:#fff;font-family:var(--font);min-height:100vh;}
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F5A623,#E8931A);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:#050A14;margin:0 auto 0.75rem;">A</div>
       <div style="font-size:1.2rem;font-weight:900;">Sign in to AfriVid</div>
-      <div style="color:rgba(255,255,255,0.54);font-size:0.82rem;margin-top:0.3rem;">Continue to AI Editor</div>
+      <div style="color:rgba(255,255,255,0.65);font-size:0.82rem;margin-top:0.3rem;">Continue to AI Editor</div>
     </div>
     <input id="login-email" type="email" placeholder="Email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:0.75rem;">
     <input id="login-password" type="password" placeholder="Password" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:#fff;padding:0.8rem 1rem;border-radius:10px;font-size:0.88rem;outline:none;font-family:var(--font);margin-bottom:1rem;">
@@ -1470,9 +1470,9 @@ async function exportClips(clips, filename, bitrate) {
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#050A14;color:#fff;padding:2rem;border-radius:12px;">
               <h1 style="color:#F5A623;">Your video is ready! 🎬</h1>
               <p style="color:rgba(255,255,255,0.8);">AfriVid AI has finished processing <strong>${videoName}</strong>.</p>
-              <p style="color:rgba(255,255,255,0.6);">Your edited video has been downloaded automatically. Check your downloads folder.</p>
+              <p style="color:rgba(255,255,255,0.65);">Your edited video has been downloaded automatically. Check your downloads folder.</p>
               <a href="https://afrivid.studio/aieditor.html" style="background:#F5A623;color:#050A14;padding:1rem 2rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;margin:1rem 0;">Edit Another Video →</a>
-              <p style="color:rgba(255,255,255,0.52);font-size:0.75rem;margin-top:2rem;">AfriVid Studio · afrivid.studio</p>
+              <p style="color:rgba(255,255,255,0.65);font-size:0.75rem;margin-top:2rem;">AfriVid Studio · afrivid.studio</p>
             </div>
           `
         })
@@ -1515,10 +1515,10 @@ function showResultBanner(msg, blob, filename) {
   banner.innerHTML = `
     <div style="flex:1;">
       <div style="color:#74C69D;font-weight:800;font-size:0.9rem;">${msg}</div>
-      <div style="color:rgba(255,255,255,0.54);font-size:0.72rem;margin-top:0.2rem;">Ready to download</div>
+      <div style="color:rgba(255,255,255,0.65);font-size:0.72rem;margin-top:0.2rem;">Ready to download</div>
     </div>
     <button onclick="const a=document.createElement('a');a.href='${url}';a.download='${filename}.webm';a.click();" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download</button>
-    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.52);font-size:1.2rem;cursor:pointer;">✕</button>
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:1.2rem;cursor:pointer;">✕</button>
   `;
   document.body.appendChild(banner);
 }
@@ -1664,22 +1664,22 @@ function showViralClipsUI(clips) {
   panel.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <div style="color:#F5A623;font-weight:900;">✦ ${clips.length} Viral Clips</div>
-      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.54);font-size:1.4rem;cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:1.4rem;cursor:pointer;">✕</button>
     </div>
     ${clips.map((c,i) => `
       <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:0.75rem;">
         <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
           <div style="flex:1;">
             <div style="color:#fff;font-weight:700;font-size:0.88rem;">${fi(c.format)} ${c.title||'Clip '+(i+1)}</div>
-            <div style="color:rgba(255,255,255,0.54);font-size:0.7rem;">${c.reason||''}</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.7rem;">${c.reason||''}</div>
           </div>
           <div style="text-align:right;margin-left:1rem;">
             <div style="color:${sc(c.score)};font-weight:900;font-size:1.1rem;">${c.score||'--'}</div>
-            <div style="color:rgba(255,255,255,0.52);font-size:0.6rem;">SCORE</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:0.6rem;">SCORE</div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="color:rgba(255,255,255,0.54);font-size:0.7rem;font-family:Space Mono,monospace;">${formatTime(c.start)} → ${formatTime(c.end)} · ${Math.round(c.end-c.start)}s</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:0.7rem;font-family:Space Mono,monospace;">${formatTime(c.start)} → ${formatTime(c.end)} · ${Math.round(c.end-c.start)}s</div>
           <div style="display:flex;gap:0.4rem;">
             <button onclick="document.getElementById('ai-video').currentTime=${c.start};document.getElementById('ai-video').play();setTimeout(()=>document.getElementById('ai-video').pause(),${(c.end-c.start)*1000})" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:#F5A623;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:Syne,sans-serif;">▶</button>
             <button onclick="exportClips([{start:${c.start},end:${c.end}}],'${(c.title||'clip').replace(/'/g,'')}')" style="background:#F5A623;border:none;color:#050A14;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.72rem;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇</button>
@@ -1747,11 +1747,11 @@ async function doTranslate(lang) {
     const banner = document.createElement('div');
     banner.className = 'result-banner';
     banner.innerHTML = `
-      <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.54);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
+      <div style="flex:1;"><div style="color:#74C69D;font-weight:800;">✅ Translated to ${langName}!</div><div style="color:rgba(255,255,255,0.65);font-size:0.72rem;">"${translated.slice(0,60)}..."</div></div>
       <button id="play-translated-btn" style="background:#F5A623;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">▶ Play Synced</button>
       <button id="export-translated-btn" style="background:#74C69D;border:none;color:#050A14;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Download Video</button>
       <button onclick="const a=document.createElement('a');a.href='${ttsUrl}';a.download='AfriVid-${langName}.mp3';a.click();" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:0.5rem 1rem;border-radius:8px;font-weight:800;cursor:pointer;font-family:Syne,sans-serif;">⬇ Audio Only</button>
-      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.52);font-size:1.2rem;cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.remove();video.muted=false;" style="background:none;border:none;color:rgba(255,255,255,0.65);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
     document.body.appendChild(banner);
     document.getElementById('play-translated-btn').onclick = playSynced;
@@ -2159,7 +2159,7 @@ function resetPassword() {
   <div style="background:#0D1117;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
-      <div style="color:rgba(255,255,255,0.54);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
+      <div style="color:rgba(255,255,255,0.65);font-size:0.8rem;">Tell us what's going on — we read every message 🌍</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
       <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#EA5149;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">🐛 Problem</button>
@@ -2174,10 +2174,10 @@ function resetPassword() {
     </div>
     <textarea id="feedback-msg" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, what's broken, or what you'd love to see in AfriVid..."></textarea>
     <div style="display:flex;gap:0.5rem;">
-      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
       <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
     </div>
-    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.5);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(255,255,255,0.65);font-size:0.7rem;">Your message goes directly to the AfriVid team 🙏</div>
   </div>
 </div>
 
@@ -2324,13 +2324,13 @@ window.showLimitsUX = async function() {
     panel.innerHTML = `
       <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1rem;margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.54);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.52);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.65);font-family:'Space Mono',monospace;letter-spacing:1px;">MONTHLY USAGE</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.65);font-family:'Space Mono',monospace;">Resets ${resetStr} (${daysLeft} days)</div>
         </div>
         
         <div style="margin-bottom:0.6rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Video Creator</span>
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.65);">Video Creator</span>
             <span style="font-size:0.75rem;color:${barColor(videoUsed,videoMax)};">${videoUsed}/${videoMax}</span>
           </div>
           <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
@@ -2340,7 +2340,7 @@ window.showLimitsUX = async function() {
 
         <div style="margin-bottom:0.6rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">AI Editor</span>
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.65);">AI Editor</span>
             <span style="font-size:0.75rem;color:${barColor(aiUsed,aiMax)};">${aiUsed}/${aiMax}</span>
           </div>
           <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
@@ -2350,7 +2350,7 @@ window.showLimitsUX = async function() {
 
         <div style="margin-bottom:0.75rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
-            <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Voice Translation</span>
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.65);">Voice Translation</span>
             <span style="font-size:0.75rem;color:${barColor(transUsed,transMax)};">${transUsed}/${transMax}</span>
           </div>
           <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">
@@ -2405,11 +2405,11 @@ function showUpgradeForm() {
     <div style="text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
       <div style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Upgrade to Pro</div>
-      <div id="gum-reason" style="color:rgba(255,255,255,0.54);font-size:0.82rem;">The upgrade is active the moment your payment clears.</div>
+      <div id="gum-reason" style="color:rgba(255,255,255,0.65);font-size:0.82rem;">The upgrade is active the moment your payment clears.</div>
     </div>
     <div style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;"><span data-av-price="pro_subscription">$5</span><span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.54);">/month</span></div>
-      <div style="color:rgba(255,255,255,0.54);font-size:0.78rem;">300 minutes of video a month · No watermark · Editor, Graphics and Compressor unlocked</div>
+      <div style="color:#F5A623;font-weight:900;font-size:1.5rem;"><span data-av-price="pro_subscription">$5</span><span style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.65);">/month</span></div>
+      <div style="color:rgba(255,255,255,0.65);font-size:0.78rem;">300 minutes of video a month · No watermark · Editor, Graphics and Compressor unlocked</div>
     </div>
     <div id="gum-form">
       <!-- Real checkout, not a request form. This used to collect a name, country
@@ -2419,10 +2419,10 @@ function showUpgradeForm() {
            payment clears, so making someone fill a form and wait is no longer a
            trade-off — it is just a worse product. -->
       <div style="display:flex;gap:0.5rem;">
-        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Not now</button>
+        <button onclick="closeUpgradeModal()" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Not now</button>
         <button id="gum-submit-btn" onclick="submitGlobalUpgrade()" style="flex:2;background:#F5A623;border:none;color:#050A14;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;" data-av-price="pro_subscription" data-av-price-tpl="Go Pro — {price}/month">Go Pro &mdash; $5/month</button>
       </div>
-      <a href="pricing.html#tools" style="display:block;text-align:center;margin-top:0.85rem;color:rgba(255,255,255,0.5);font-size:0.78rem;font-family:Syne,sans-serif;text-decoration:underline;" data-av-price="tool_editor" data-av-price-tpl="Or unlock just one tool for {price}">Or unlock just one tool for $1</a>
+      <a href="pricing.html#tools" style="display:block;text-align:center;margin-top:0.85rem;color:rgba(255,255,255,0.65);font-size:0.78rem;font-family:Syne,sans-serif;text-decoration:underline;" data-av-price="tool_editor" data-av-price-tpl="Or unlock just one tool for {price}">Or unlock just one tool for $1</a>
     </div>
   </div>
 </div>
@@ -2510,7 +2510,7 @@ setTimeout(() => clearInterval(_usageCheck), 10000);
     <!-- Animated logo -->
     <div style="font-size:3rem;margin-bottom:1rem;animation:pulse 1.5s ease-in-out infinite;">🎬</div>
     <div style="color:#F5A623;font-weight:900;font-size:1.3rem;font-family:'Syne',sans-serif;margin-bottom:0.5rem;" id="proc-title">Processing your video...</div>
-    <div style="color:rgba(255,255,255,0.5);font-size:0.85rem;font-family:'Space Mono',monospace;margin-bottom:2rem;" id="proc-stage">Initializing...</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:0.85rem;font-family:'Space Mono',monospace;margin-bottom:2rem;" id="proc-stage">Initializing...</div>
     
     <!-- Progress bar -->
     <div style="background:rgba(255,255,255,0.08);border-radius:10px;height:8px;margin-bottom:0.75rem;overflow:hidden;">
@@ -2518,14 +2518,14 @@ setTimeout(() => clearInterval(_usageCheck), 10000);
     </div>
     <div style="display:flex;justify-content:space-between;margin-bottom:2rem;">
       <span id="proc-pct" style="font-size:0.75rem;color:#F5A623;font-family:'Space Mono',monospace;">0%</span>
-      <span id="proc-time" style="font-size:0.75rem;color:rgba(255,255,255,0.52);font-family:'Space Mono',monospace;"></span>
+      <span id="proc-time" style="font-size:0.75rem;color:rgba(255,255,255,0.65);font-family:'Space Mono',monospace;"></span>
     </div>
 
     <!-- Steps -->
     <div id="proc-steps" style="text-align:left;background:rgba(255,255,255,0.03);border-radius:12px;padding:1rem;">
     </div>
 
-    <div style="margin-top:1.5rem;color:rgba(255,255,255,0.5);font-size:0.75rem;font-family:'Space Mono',monospace;">
+    <div style="margin-top:1.5rem;color:rgba(255,255,255,0.65);font-size:0.75rem;font-family:'Space Mono',monospace;">
       You can keep this tab open or close it — we'll notify you when done.
     </div>
     <button onclick="hideProcessingOverlay();location.reload();" style="margin-top:1rem;background:rgba(230,51,41,0.15);border:1px solid rgba(230,51,41,0.3);color:#EA564E;padding:0.5rem 1.5rem;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">✕ Cancel Processing</button>
