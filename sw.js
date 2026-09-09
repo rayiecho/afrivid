@@ -1,4 +1,4 @@
-const CACHE = 'afrivid-v9';
+const CACHE = 'afrivid-v10';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/images/logo.png'

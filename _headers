@@ -8,6 +8,19 @@
   Content-Type: application/text
   Cache-Control: public, max-age=3600
 
+# The service worker file itself. Found 2026-09-09: sw.js's own fetch handler
+# already forces every .html request fresh from the network — but sw.js is
+# neither .html nor `/`, so it fell through to Cloudflare's default edge
+# caching for .js (the same default-caches-by-extension behaviour that once
+# kept serving a stale hero image below, regardless of origin headers). That
+# meant a returning visitor's browser could keep re-checking against a
+# stale EDGE COPY of sw.js and never discover a version bump at all — the
+# exact mechanism a bumped CACHE name in sw.js depends on to ever matter.
+# Every browser update-checks sw.js's own bytes on navigation; this just
+# makes sure what it fetches is never more than a few seconds old.
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
 /*.html
   Cache-Control: no-cache, no-store, must-revalidate
 
