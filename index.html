@@ -152,7 +152,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .hero-rule{width:56px;height:3px;background:#E08A2E;margin:0 0 1.25rem;border-radius:2px;opacity:0;animation:fadeUp 0.7s ease-out 0.2s forwards;}
 .hero-sub{font-size:1.02rem;color:rgba(255,255,255,0.9);max-width:520px;margin:0;line-height:1.6;text-shadow:0 1px 12px rgba(0,0,0,0.4);opacity:0;animation:fadeUp 0.8s ease-out 0.3s forwards;}
 .hero-powered{font-size:0.85rem;font-weight:700;color:#F0A94E;letter-spacing:0.3px;margin-top:1.1rem;text-shadow:0 1px 12px rgba(0,0,0,0.4);opacity:0;animation:fadeUp 0.8s ease-out 0.4s forwards;}
-.hero-actions{display:flex;align-items:center;justify-content:flex-end;gap:0.8rem;flex-wrap:wrap;margin-top:1.4rem;margin-left:auto;opacity:0;animation:fadeUp 0.8s ease-out 0.5s forwards;}
+/* Sibling of .hero-content now, inside .hero's own flex row — margin-left:auto
+   is what actually pushes it to the hero's far right edge, genuinely opposite
+   the text column rather than just right-aligned within it. */
+.hero-actions{display:flex;align-items:center;justify-content:flex-end;gap:0.8rem;flex-wrap:wrap;margin-left:auto;margin-right:clamp(1.25rem,6vw,5rem);opacity:0;animation:fadeUp 0.8s ease-out 0.5s forwards;}
 .hero-support-link{display:inline-flex;align-items:center;color:#fff;font-size:0.82rem;font-weight:700;font-family:'Syne',sans-serif;text-decoration:none;padding:0.45rem 1rem;border-radius:9px;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.08);backdrop-filter:blur(6px);transition:background 0.18s,border-color 0.18s;}
 .hero-support-link:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.55);}
 .btn-primary{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border:none;padding:1rem 2.5rem;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;font-family:'Syne',sans-serif;}
@@ -295,8 +298,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .navbar-badge{display:none;}
   .navbar-actions{gap:0.4rem;}
   .btn-nav-tool{padding:0.4rem 0.7rem;font-size:0.72rem;}
-  .hero{height:88vh;min-height:560px;align-items:flex-end;padding-bottom:3rem;}
+  /* flex-wrap so .hero-actions (a sibling of .hero-content, not nested in
+     it) drops to its own line below the text once the text column takes
+     the full width right below — same stacked order as before this became
+     a sibling, just via wrap instead of nesting. */
+  .hero{height:88vh;min-height:560px;align-items:flex-end;padding-bottom:3rem;flex-wrap:wrap;}
   .hero-content{max-width:100%;padding:0 1.25rem;}
+  .hero-actions{width:100%;justify-content:flex-start;margin:1rem 0 0;padding:0 1.25rem;}
   .hero-title{font-size:1.7rem;margin-bottom:0.9rem;}
   .hero-sub{font-size:0.9rem;max-width:100%;}
   .hero-powered{font-size:0.72rem;}
@@ -628,10 +636,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <div class="hero-rule"></div>
     <p class="hero-sub">Powering African learning platforms for video lesson creation — African creators, businesses, organizations and advertising.</p>
     <p class="hero-powered">POWERED BY AFRICA'S FIRST-GEN, GROWING AI</p>
-    <div class="hero-actions">
-      <a href="pricing.html#plans" class="av-upgrade">Upgrade</a>
-      <a href="support.html" class="hero-support-link">Support AfriVid</a>
-    </div>
+  </div>
+  <!-- A direct child of .hero (a sibling of the text column), not nested
+       inside it — right-aligning WITHIN the narrow 560px text column still
+       left it reading as "the left side" of the hero overall, since that
+       whole column sits on the left. As a sibling, .hero's own flex layout
+       can push this to the hero's actual right edge, genuinely opposite the
+       text rather than just right-edge-of-a-left-anchored-box. -->
+  <div class="hero-actions">
+    <a href="pricing.html#plans" class="av-upgrade">Upgrade</a>
+    <a href="support.html" class="hero-support-link">Support AfriVid</a>
   </div>
 </section>
 

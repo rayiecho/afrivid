@@ -809,6 +809,19 @@ function fmtExpiry(unixSeconds) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+// Real bug found 2026-09-09: a $1 tool unlock correctly flips the backend
+// tier to credits.py's TIER_PRO_TOOL ('pro_tool'), but both places that
+// showed a tier name here only ever recognized 'pro_subscription' as "Pro"
+// and fell through to title-casing the raw string for anything else —
+// so a real paying tool-unlock customer saw the literal "Pro_tool" on
+// screen instead of a real label, exactly the kind of half-applied payment
+// this whole Billing panel exists to rule out.
+function tierLabel(tier) {
+  if (tier === 'pro_subscription') return 'Pro';
+  if (tier === 'pro_tool') return 'Pro (tool unlock)';
+  return 'Free';
+}
+
 async function loadBilling(user) {
   billingUser = user;
   const panel = document.getElementById('billing-panel');
@@ -823,10 +836,9 @@ async function loadBilling(user) {
       return;
     }
     const tier = ent.tier || 'free';
-    const tierLabel = tier === 'pro_subscription' ? 'Pro' : (tier.charAt(0).toUpperCase() + tier.slice(1));
-    document.getElementById('billing-tier').firstChild.textContent = tierLabel;
+    document.getElementById('billing-tier').firstChild.textContent = tierLabel(tier);
     const tag = document.getElementById('billing-tier-tag');
-    if (tier === 'pro_subscription') { tag.textContent = 'ACTIVE'; tag.style.display = 'inline-block'; }
+    if (tier === 'pro_subscription' || tier === 'pro_tool') { tag.textContent = 'ACTIVE'; tag.style.display = 'inline-block'; }
     else { tag.style.display = 'none'; }
 
     const remaining = typeof ent.credits_remaining === 'number' ? ent.credits_remaining : null;
@@ -899,12 +911,17 @@ function renderMyPlansView(ent) {
   }
 
   const isPro = ent.tier === 'pro_subscription';
-  tierNameEl.firstChild.textContent = isPro ? 'Pro' : 'Free';
-  if (isPro) { tierTagEl.textContent = 'ACTIVE'; tierTagEl.style.display = 'inline-block'; }
+  const isToolTier = ent.tier === 'pro_tool';
+  tierNameEl.firstChild.textContent = tierLabel(ent.tier);
+  if (isPro || isToolTier) { tierTagEl.textContent = 'ACTIVE'; tierTagEl.style.display = 'inline-block'; }
   else { tierTagEl.style.display = 'none'; }
   tierSubEl.textContent = isPro
     ? 'Subscribed to Pro — 4,800 credits every month and every tool included.'
-    : 'On the Free plan — a one-time credit allowance, plus limited-time access to each tool below.';
+    : isToolTier
+      ? 'A $1 tool unlock is active below — everything else still runs on the Free plan\'s allowance.'
+      : 'On the Free plan — a one-time credit allowance, plus limited-time access to each tool below.';
+  // A full Pro subscription needs no upgrade prompt; a single tool unlock
+  // still might want the rest, so the button stays for that tier too.
   upgradeBtn.style.display = isPro ? 'none' : 'inline-block';
 
   const remaining = typeof ent.credits_remaining === 'number' ? ent.credits_remaining : null;
