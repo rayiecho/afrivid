@@ -658,7 +658,7 @@ window.setScenario = function(btn, text) {
   document.getElementById('scenario-text').value = text;
   document.querySelectorAll('[onclick^="setScenario"]').forEach(b => {
     b.style.borderColor = 'rgba(255,255,255,0.08)';
-    b.style.color = 'rgba(255,255,255,0.6)';
+    b.style.color = 'rgba(255,255,255,0.65)';
   });
   btn.style.borderColor = '#F5A623';
   btn.style.color = '#F5A623';
@@ -1009,11 +1009,11 @@ function switchTab(tab) {
   document.getElementById('section-podcast').style.display = tab === 'podcast' ? 'block' : 'none';
   document.getElementById('section-dating').style.display = tab === 'dating' ? 'block' : 'none';
   document.getElementById('tab-series').style.borderBottomColor = tab === 'series' ? '#F5A623' : 'transparent';
-  document.getElementById('tab-series').style.color = tab === 'series' ? '#F5A623' : 'rgba(255,255,255,0.4)';
+  document.getElementById('tab-series').style.color = tab === 'series' ? '#F5A623' : 'rgba(255,255,255,0.65)';
   document.getElementById('tab-podcast').style.borderBottomColor = tab === 'podcast' ? '#F5A623' : 'transparent';
-  document.getElementById('tab-podcast').style.color = tab === 'podcast' ? '#F5A623' : 'rgba(255,255,255,0.4)';
+  document.getElementById('tab-podcast').style.color = tab === 'podcast' ? '#F5A623' : 'rgba(255,255,255,0.65)';
   document.getElementById('tab-dating').style.borderBottomColor = tab === 'dating' ? '#F5A623' : 'transparent';
-  document.getElementById('tab-dating').style.color = tab === 'dating' ? '#F5A623' : 'rgba(255,255,255,0.4)';
+  document.getElementById('tab-dating').style.color = tab === 'dating' ? '#F5A623' : 'rgba(255,255,255,0.65)';
   if (tab === 'dating') renderDatingEpisodes();
   if (tab === 'podcast') renderPodcastEpisodes();
 }
