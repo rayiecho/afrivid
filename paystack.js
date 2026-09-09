@@ -14,6 +14,25 @@
 // script's download.
 (function () {
   var API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+
+  // Fire-and-forget: send a checkout failure's REAL message and the real
+  // browser's user-agent to the server, since a checkout failure reported
+  // here has never once been reproducible in this codebase's own Chromium
+  // testing (the suspected cause — Safari/WebKit revoking a click's "real
+  // gesture" status — is a documented Chromium/WebKit behavioural gap this
+  // sandbox cannot directly test). Never awaited, never blocks the user-
+  // facing error message from showing immediately regardless of whether
+  // this succeeds.
+  function reportClientError(context, err) {
+    try {
+      fetch(API + '/client-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ context: context, message: (err && err.message) || String(err) }),
+        keepalive: true,
+      }).catch(function () {});
+    } catch (e) { /* never let logging itself break anything */ }
+  }
   // v2 specifically — a real ES6 class exposing `new PaystackPop().checkout({...})`
   // with onSuccess/onCancel hooks. v1/inline.js (the old URL this pointed at) still
   // only exposes the static PaystackPop.setup({...}).openIframe() object form, which
@@ -429,6 +448,7 @@
       },
     }).catch(function (e) {
       console.warn('[Checkout] v2 checkout failed:', e && e.message);
+      reportClientError('checkout:' + planId, e);
       show('Could not open checkout',
            'We could not start Paystack checkout just now. Nothing was charged — please ' +
            'try again in a moment.',
@@ -578,6 +598,7 @@
       },
     }).catch(function (e) {
       console.warn('[Donate] checkout failed:', e && e.message);
+      reportClientError('donate:' + amountUsdCents, e);
       show('Could not open checkout',
            'We could not start Paystack checkout just now. Nothing was charged — please ' +
            'try again in a moment.',
