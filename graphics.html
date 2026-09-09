@@ -1766,8 +1766,19 @@ function fitCanvas() {
 window.addEventListener('resize', fitCanvas);
 
 // ── Telling the user the result is editable ───────────────────────────────────
+// editBadgeDismissedThisSession tracks the small "Editable — click anything" tag
+// specifically: once a real edit interaction happens (select/drag/retype, hooked
+// in the canvas handlers below) it has done its job and should stop covering the
+// design for the rest of this page session — including across a regenerate/variant
+// switch, which is why showEditAffordance() checks it before re-adding .show.
+let editBadgeDismissedThisSession = false;
+function dismissEditBadgeOnInteraction() {
+  if (editBadgeDismissedThisSession) return;
+  editBadgeDismissedThisSession = true;
+  document.getElementById('edit-badge').classList.remove('show');
+}
 function showEditAffordance() {
-  document.getElementById('edit-badge').classList.add('show');
+  if (!editBadgeDismissedThisSession) document.getElementById('edit-badge').classList.add('show');
   let seen = false;
   try { seen = localStorage.getItem('gfx-edit-hint') === 'seen'; } catch (e) {}
   if (!seen) document.getElementById('edit-hint').classList.add('show');
@@ -2448,6 +2459,7 @@ function onDown(e) {
   selected = el;
   syncInspector();
   if (el) {
+    dismissEditBadgeOnInteraction(); // first click-to-select / drag-start
     dragging = el; dragOff = { x: pt.x - el.x, y: pt.y - el.y };
     canvas.classList.add('dragging');
     // The inspector for what you just picked lives in the Edit pane — put it in front of you
@@ -2494,6 +2506,7 @@ window.addEventListener('touchmove', onMove, { passive: false });
 window.addEventListener('touchend', onUp);
 canvas.addEventListener('dblclick', () => {
   if (!selected || ['text', 'pill', 'bullet', 'iconText'].indexOf(selected.type) === -1) return;
+  dismissEditBadgeOnInteraction(); // first retype
   const t = prompt('Edit this text:', selected.text || '');
   if (t !== null) { selected.text = t; saveHistory(); render(); syncInspector(); }
 });

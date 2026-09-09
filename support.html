@@ -87,6 +87,17 @@ section{padding:1.5rem 0 3.5rem;}
 .donate-kes{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--ink-50);}
 .donate-btn:hover .donate-usd{color:var(--amber-deep);}
 
+.donate-custom{margin-top:0.9rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:0.65rem;}
+.donate-custom-label{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-50);}
+.donate-custom-row{display:flex;align-items:center;gap:0.6rem;}
+.donate-custom-prefix{font-weight:800;font-size:1.05rem;color:var(--ink-70);}
+.donate-custom-row input{flex:1;min-width:0;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;padding:0.7rem 0.8rem;border-radius:10px;border:1px solid var(--line);background:var(--cream);color:var(--ink);}
+.donate-custom-row input:focus{outline:none;border-color:var(--amber-line);}
+.donate-custom-btn{flex-shrink:0;font-family:'Syne',sans-serif;font-weight:800;font-size:0.88rem;padding:0.72rem 1.3rem;border-radius:10px;border:none;background:var(--amber);color:var(--ink);cursor:pointer;transition:background 0.18s;}
+.donate-custom-btn:hover{background:var(--amber-deep);}
+.donate-custom-error{font-size:0.8rem;color:#C0392B;line-height:1.4;}
+@media(max-width:480px){.donate-custom-row{flex-wrap:wrap;}.donate-custom-btn{width:100%;}}
+
 .why{margin-top:2.5rem;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.7rem 1.8rem;}
 .why h2{font-size:1.2rem;font-weight:800;margin-bottom:0.7rem;}
 .why p{color:var(--ink-64);font-size:0.9rem;line-height:1.65;}
@@ -136,6 +147,16 @@ footer nav a:hover{color:var(--amber-deep);}
     <div class="donate-grid" id="donate-grid">
       <!-- Filled in by the script below from PRESETS, so the USD/KES figures can
            never drift from the one shared rate in paystack.js. -->
+    </div>
+
+    <div class="donate-custom">
+      <label class="donate-custom-label" for="donate-custom-input">Custom amount</label>
+      <div class="donate-custom-row">
+        <span class="donate-custom-prefix">$</span>
+        <input type="number" id="donate-custom-input" inputmode="decimal" min="1" step="1" placeholder="Enter any amount">
+        <button type="button" class="donate-custom-btn" id="donate-custom-btn">Donate</button>
+      </div>
+      <p class="donate-custom-error" id="donate-custom-error" hidden></p>
     </div>
 
     <p class="note">Amounts are shown in USD with the KES equivalent underneath. Card
@@ -195,6 +216,44 @@ footer nav a:hover{color:var(--amber-deep);}
     });
   }
   renderGrid();
+
+  // Custom amount — same avStartDonation() call the presets use above, just with
+  // a USD figure the donor typed instead of one of PRESETS. Validated before
+  // checkout ever opens: must parse as a real number and be at least $1.
+  function submitCustomDonation() {
+    var errorEl = document.getElementById('donate-custom-error');
+    var input = document.getElementById('donate-custom-input');
+    errorEl.hidden = true;
+    errorEl.textContent = '';
+
+    var raw = (input.value || '').trim();
+    var usd = parseFloat(raw);
+    if (!raw || !isFinite(usd) || isNaN(usd)) {
+      errorEl.textContent = 'Enter a valid amount.';
+      errorEl.hidden = false;
+      return;
+    }
+    if (usd < 1) {
+      errorEl.textContent = 'Minimum donation is $1.';
+      errorEl.hidden = false;
+      return;
+    }
+    var cents = Math.round(usd * 100);
+    if (cents <= 0) {
+      errorEl.textContent = 'Enter a valid amount.';
+      errorEl.hidden = false;
+      return;
+    }
+    var email = document.getElementById('donate-email').value;
+    window.avStartDonation(cents, email);
+  }
+  document.getElementById('donate-custom-btn').addEventListener('click', submitCustomDonation);
+  document.getElementById('donate-custom-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); submitCustomDonation(); }
+  });
+  document.getElementById('donate-custom-input').addEventListener('input', function () {
+    document.getElementById('donate-custom-error').hidden = true;
+  });
 
   // support.html has no [data-av-plan] buttons (a donation isn't a plan), so
   // paystack.js's own wire() never calls prewarm() for this page. Do it
