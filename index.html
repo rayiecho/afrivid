@@ -152,7 +152,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .hero-rule{width:56px;height:3px;background:#E08A2E;margin:0 0 1.25rem;border-radius:2px;opacity:0;animation:fadeUp 0.7s ease-out 0.2s forwards;}
 .hero-sub{font-size:1.02rem;color:rgba(255,255,255,0.9);max-width:520px;margin:0;line-height:1.6;text-shadow:0 1px 12px rgba(0,0,0,0.4);opacity:0;animation:fadeUp 0.8s ease-out 0.3s forwards;}
 .hero-powered{font-size:0.85rem;font-weight:700;color:#F0A94E;letter-spacing:0.3px;margin-top:1.1rem;text-shadow:0 1px 12px rgba(0,0,0,0.4);opacity:0;animation:fadeUp 0.8s ease-out 0.4s forwards;}
-.hero-actions{display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;margin-top:1.4rem;opacity:0;animation:fadeUp 0.8s ease-out 0.5s forwards;}
+.hero-actions{display:flex;align-items:center;justify-content:flex-end;gap:0.8rem;flex-wrap:wrap;margin-top:1.4rem;margin-left:auto;opacity:0;animation:fadeUp 0.8s ease-out 0.5s forwards;}
 .hero-support-link{display:inline-flex;align-items:center;color:#fff;font-size:0.82rem;font-weight:700;font-family:'Syne',sans-serif;text-decoration:none;padding:0.45rem 1rem;border-radius:9px;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.08);backdrop-filter:blur(6px);transition:background 0.18s,border-color 0.18s;}
 .hero-support-link:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.55);}
 .btn-primary{background:linear-gradient(135deg,#E08A2E,#C4701E);color:#17140F;border:none;padding:1rem 2.5rem;border-radius:12px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;font-family:'Syne',sans-serif;}
@@ -436,6 +436,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 }
 .bg-section-2 > *{position:relative;z-index:1;}
 
+.av-upgrade{display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,#F5A623,#E08A2E);color:#17140F;padding:0.5rem 1.1rem;border-radius:999px;font-weight:800;font-size:0.8rem;font-family:'Syne',sans-serif;text-decoration:none;white-space:nowrap;transition:all 0.2s;}
+.av-upgrade:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(224,138,46,0.35);}
 </style>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#F5A623">
@@ -821,7 +823,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
       <a href="careers.html" class="footer-col-link">Careers</a>
       <a href="privacy.html" class="footer-col-link">Privacy</a>
       <a href="terms.html" class="footer-col-link">Terms</a>
-      <a href="contact.html" class="footer-col-link">Contact</a>
+      <a href="contact.html" class="footer-col-link" onclick="return openContactModal(event)">Contact</a>
       <a href="support.html" class="footer-col-link">Support AfriVid</a>
     </div>
 
@@ -1121,6 +1123,92 @@ document.getElementById('login-modal').addEventListener('click', function(e) {
 });
 </script>
 
+<script type="module">
+// ── CONTACT SYSTEM (same "Contact AfriVid" modal used in Studio/Editor/Design/etc.) ──
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+const contactDb = getFirestore(); // reuses the already-initialized default Firebase app
+
+const FB_CATEGORIES = {
+  problem: { collection: 'feedback', placeholder: "Tell us what's broken — the more detail (what you did, what you expected), the faster we can fix it..." },
+  feedback: { collection: 'feedback', placeholder: "Tell us what you think, or what you'd love to see in AfriVid..." },
+  support: { collection: 'feedback', placeholder: "Tell us what you need help with..." },
+  apply: { collection: 'job_applications', placeholder: "What do you want to do at AfriVid? (role, skills, what you'd bring)" }
+};
+
+window.openContactModal = function(e) {
+  if (e) e.preventDefault();
+  const modal = document.getElementById('feedback-modal');
+  if (!modal) return false;
+  modal.style.display = 'flex';
+  if (window.currentUser) {
+    const nameEl = document.getElementById('fb-apply-name');
+    const emailEl = document.getElementById('fb-apply-email');
+    if (nameEl && !nameEl.value && window.currentUser.displayName) nameEl.value = window.currentUser.displayName;
+    if (emailEl && !emailEl.value && window.currentUser.email) emailEl.value = window.currentUser.email;
+  }
+  return false;
+};
+
+window.setContactCategory = function(cat, btn) {
+  document.getElementById('feedback-type').value = cat;
+  document.querySelectorAll('.fb-cat-btn').forEach(b => { b.style.opacity='0.5'; b.style.fontWeight='700'; });
+  if (btn) { btn.style.opacity = '1'; btn.style.fontWeight = '900'; }
+  const info = FB_CATEGORIES[cat] || FB_CATEGORIES.feedback;
+  const applyFields = document.getElementById('fb-apply-fields');
+  if (applyFields) applyFields.style.display = cat === 'apply' ? 'block' : 'none';
+  const msg = document.getElementById('feedback-msg');
+  if (msg) msg.placeholder = info.placeholder;
+  if (cat === 'apply' && window.currentUser) {
+    const nameEl = document.getElementById('fb-apply-name');
+    const emailEl = document.getElementById('fb-apply-email');
+    if (nameEl && !nameEl.value && window.currentUser.displayName) nameEl.value = window.currentUser.displayName;
+    if (emailEl && !emailEl.value && window.currentUser.email) emailEl.value = window.currentUser.email;
+  }
+};
+
+window.submitFeedback = async function() {
+  const type = document.getElementById('feedback-type')?.value || 'feedback';
+  const msg = document.getElementById('feedback-msg')?.value?.trim() || '';
+  const btn = document.getElementById('feedback-submit-btn');
+  const setBtn = (text, disabled) => { if (btn) { btn.textContent = text; btn.disabled = disabled; } };
+  try {
+    if (type === 'apply') {
+      const name = document.getElementById('fb-apply-name')?.value?.trim() || '';
+      const email = document.getElementById('fb-apply-email')?.value?.trim() || window.currentUser?.email || '';
+      if (!name || !email) { alert('Please add your name and email'); return; }
+      if (!msg) { alert('Tell us what you want to do'); return; }
+      setBtn('[..] Sending...', true);
+      await addDoc(collection(contactDb, 'job_applications'), {
+        name, email, position: msg,
+        status: 'new', createdAt: serverTimestamp(),
+        source: 'quick_apply', page: 'home'
+      });
+    } else {
+      if (!msg) { alert('Please write your message'); return; }
+      setBtn('[..] Sending...', true);
+      await addDoc(collection(contactDb, 'feedback'), {
+        type, message: msg,
+        userId: window.currentUser?.uid || 'anonymous',
+        userEmail: window.currentUser?.email || 'anonymous',
+        userName: window.currentUser?.displayName || 'Anonymous',
+        page: 'home',
+        createdAt: serverTimestamp(),
+        status: 'unread'
+      });
+    }
+    document.getElementById('feedback-msg').value = '';
+    const nameEl = document.getElementById('fb-apply-name'); if (nameEl) nameEl.value = '';
+    const emailEl = document.getElementById('fb-apply-email'); if (emailEl) emailEl.value = '';
+    document.getElementById('feedback-modal').style.display = 'none';
+    setBtn('Send →', false);
+    alert(type === 'apply' ? "Thanks! We'll be in touch." : 'Thank you — message sent!');
+  } catch(e) {
+    setBtn('Send →', false);
+    alert('Failed: ' + e.message);
+  }
+};
+</script>
+
 <script src="chatbot.js"></script>
 <script>
 if('serviceWorker' in navigator) {
@@ -1234,6 +1322,33 @@ window.toggleFaq = function(questionEl) {
   }
 };
 </script>
+
+<!-- CONTACT MODAL -->
+<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#FFFFFF;border:1px solid rgba(245,166,35,0.15);border-radius:20px;padding:2rem;width:90%;max-width:440px;font-family:Syne,sans-serif;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="color:#17140F;font-weight:900;font-size:1.2rem;margin-bottom:0.25rem;">Contact AfriVid</div>
+      <div style="color:rgba(23,20,15,0.75);font-size:0.8rem;">Tell us what's going on — we read every message</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.25rem;">
+      <button type="button" onclick="setContactCategory('problem',this)" class="fb-cat-btn" data-cat="problem" style="background:rgba(230,51,41,0.1);border:1px solid rgba(230,51,41,0.2);color:#BC1F16;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Problem</button>
+      <button type="button" onclick="setContactCategory('feedback',this)" class="fb-cat-btn" data-cat="feedback" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#925616;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:900;opacity:1;">Feedback</button>
+      <button type="button" onclick="setContactCategory('support',this)" class="fb-cat-btn" data-cat="support" style="background:rgba(99,153,255,0.1);border:1px solid rgba(99,153,255,0.2);color:#0054F2;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Support</button>
+      <button type="button" onclick="setContactCategory('apply',this)" class="fb-cat-btn" data-cat="apply" style="background:rgba(116,198,157,0.1);border:1px solid rgba(116,198,157,0.2);color:#7A623E;padding:0.55rem 0.25rem;border-radius:8px;cursor:pointer;font-family:Syne,sans-serif;font-size:0.7rem;font-weight:700;opacity:0.5;">Join Us</button>
+    </div>
+    <input type="hidden" id="feedback-type" value="feedback">
+    <div id="fb-apply-fields" style="display:none;">
+      <input type="text" id="fb-apply-name" placeholder="Your full name" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;box-sizing:border-box;margin-bottom:0.6rem;outline:none;">
+      <input type="email" id="fb-apply-email" placeholder="you@example.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;box-sizing:border-box;margin-bottom:0.6rem;outline:none;">
+    </div>
+    <textarea id="feedback-msg" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.85rem;border-radius:10px;font-family:Syne,sans-serif;font-size:0.85rem;min-height:110px;resize:vertical;box-sizing:border-box;margin-bottom:1rem;outline:none;" placeholder="Tell us what you think, or what you'd love to see in AfriVid..."></textarea>
+    <div style="display:flex;gap:0.5rem;">
+      <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'" style="flex:1;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:rgba(23,20,15,0.75);padding:0.75rem;border-radius:10px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;">Cancel</button>
+      <button id="feedback-submit-btn" onclick="submitFeedback()" style="flex:2;background:#E08A2E;border:none;color:#17140F;padding:0.75rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:Syne,sans-serif;font-size:0.9rem;">Send →</button>
+    </div>
+    <div style="text-align:center;margin-top:0.75rem;color:rgba(23,20,15,0.75);font-size:0.7rem;">Your message goes directly to the AfriVid team</div>
+  </div>
+</div>
 <script src="paystack.js"></script>
 </body>
 </html>
