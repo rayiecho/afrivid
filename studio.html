@@ -197,11 +197,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .card-body{padding:1rem;}
 .card-title{font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:0.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card-meta{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;}
-.card-actions{display:flex;gap:0.5rem;margin-top:0.75rem;}
-.card-btn{flex:1;padding:0.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;}
+.card-actions{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;}
+.card-btn{flex:1;min-width:0;padding:0.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Syne',sans-serif;white-space:nowrap;}
 .card-btn:hover{border-color:rgba(245,166,35,0.3);color:#9B5B17;}
 .card-btn.primary{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.2);color:#925616;}
 .card-btn.primary:hover{background:rgba(245,166,35,0.2);}
+/* Fixed-width rather than flex:1 like its siblings: a destructive action
+   shouldn't compete for space with 3-4 text buttons in a 190px-wide card
+   (that squeeze was making every button — including this one — render as
+   an unreadable ~30px sliver), and it was also shipping with no visible
+   icon/label at all, just a title tooltip nobody sees on a touch screen. */
+.card-btn.danger{flex:0 0 2.25rem;padding:0.5rem 0;}
 .card-btn.danger:hover{border-color:rgba(230,51,41,0.4);color:#CE2218;}
 
 /* EMPTY STATE */
@@ -333,14 +339,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   .btn-signout-sidebar{width:auto;}
   .studio-main-grid{grid-template-columns:1fr;}
   .stat-cards{grid-template-columns:repeat(2,1fr);}
-}
-@media(max-width:768px){
   /* This page renders both the marketing .navbar and the tool .topbar right
      after each other in the markup (same pattern create.html/edit.html
-     already fix on mobile). Left unfixed, that's two full nav bars stacked
-     before any content — hide the marketing one and keep the topbar. */
+     already fix on mobile). Left unfixed, that's two/three full nav bars
+     stacked before any content. Hidden at the same 900px breakpoint the
+     sidebar-nav above switches to its own horizontal row at, rather than
+     768px: between 769-900px the .navbar's 5 items (incl. the Upgrade
+     pill) wrap to a second row since .navbar-actions has flex-wrap:wrap,
+     but .navbar is position:fixed with a body padding-top hard-coded to
+     its single-row height — wrapping made it silently grow past that and
+     start covering the sticky .topbar/page content underneath. */
   .navbar{display:none !important;}
   body{padding-top:0 !important;}
+}
+@media(max-width:768px){
   .topbar{padding:0.85rem 1rem;}
   .main{padding:1.5rem 1rem 5rem;}
   .content-grid{grid-template-columns:1fr 1fr;}
@@ -613,7 +625,7 @@ body::after{
 <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="login-modal">
   <div class="login-box">
-    <button class="modal-close" onclick="hideLogin()"></button>
+    <button class="modal-close" onclick="hideLogin()" aria-label="Close">×</button>
     <div class="login-header">
       <div class="login-icon">A</div>
       <div class="login-title">AfriVid <span>Studio</span></div>
@@ -1050,7 +1062,7 @@ function renderContentCard(docId, data, type, collectionName) {
       <div class="card-meta">${type === 'video' && data.duration ? data.duration+'s · ' : ''}${date}</div>
       <div class="card-actions">
         ${mainAction}
-        <button class="card-btn danger" onclick="deleteStudioItem('${collectionName}','${docId}')" title="Delete"></button>
+        <button class="card-btn danger" onclick="deleteStudioItem('${collectionName}','${docId}')" title="Delete" aria-label="Delete">🗑</button>
       </div>
     </div>
   </div>`;
@@ -1313,7 +1325,7 @@ window._saveProfileName = async function() {
     <div class="profile-actions">
       <button class="btn-profile-save" onclick="saveProfileName()">Save Changes</button>
       <button class="btn-signout-profile" onclick="signOut()">Sign Out</button>
-      <button class="btn-profile-close" onclick="closeProfile()"></button>
+      <button class="btn-profile-close" onclick="closeProfile()">Close</button>
     </div>
   </div>
 </div>
@@ -1324,7 +1336,7 @@ window._saveProfileName = async function() {
   <div style="background:#111;border-radius:16px;padding:1.5rem;border:1px solid rgba(23,20,15,0.1);width:90%;max-width:480px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <h3 id="vinfo-title" style="color:#E08A2E;font-weight:800;font-size:1rem;"></h3>
-      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:none;border:none;color:#F8F9FC;font-size:1.2rem;cursor:pointer;"></button>
+      <button onclick="document.getElementById('video-info-modal').style.display='none'" style="background:none;border:none;color:#F8F9FC;font-size:1.2rem;cursor:pointer;" aria-label="Close">×</button>
     </div>
     <div style="background:#F3EDE0;border-radius:12px;padding:1rem;margin-bottom:1rem;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
@@ -1383,7 +1395,7 @@ window.playStudioVideo = function(id, title, videoUrl, dataURL) {
     <div style="max-width:860px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid rgba(23,20,15,0.1);">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-bottom:1px solid rgba(23,20,15,0.08);">
         <span style="color:#17140F;font-weight:700;font-family:Syne,sans-serif;">${title}</span>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(23,20,15,0.75);font-size:1.4rem;cursor:pointer;"></button>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:rgba(23,20,15,0.75);font-size:1.4rem;cursor:pointer;" aria-label="Close">×</button>
       </div>
       <video src="${src}" controls autoplay style="width:100%;max-height:70vh;background:#000;display:block;"></video>
       <div style="padding:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
@@ -1476,7 +1488,7 @@ if('serviceWorker' in navigator) {
   <div style="width:90%;max-width:800px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <div id="vp-title" style="color:#F8F9FC;font-weight:800;font-size:1rem;font-family:'Syne',sans-serif;"></div>
-      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(248,249,252,0.65);font-size:1.5rem;cursor:pointer;"></button>
+      <button onclick="closeVideoPlayer()" style="background:none;border:none;color:rgba(248,249,252,0.65);font-size:1.5rem;cursor:pointer;" aria-label="Close">×</button>
     </div>
     <video id="vp-video" controls style="width:100%;border-radius:12px;background:#000;max-height:70vh;"></video>
     <div style="display:flex;gap:0.75rem;margin-top:1rem;">
@@ -1511,7 +1523,7 @@ function closeVideoPlayer() {
   <div style="width:90%;max-width:700px;text-align:center;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <div style="color:#F8F9FC;font-weight:800;font-family:'Syne',sans-serif;">Edited Photo</div>
-      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(248,249,252,0.65);font-size:1.5rem;cursor:pointer;"></button>
+      <button onclick="closePhotoViewer()" style="background:none;border:none;color:rgba(248,249,252,0.65);font-size:1.5rem;cursor:pointer;" aria-label="Close">×</button>
     </div>
     <img id="pv-image" style="max-width:100%;max-height:70vh;border-radius:12px;object-fit:contain;">
     <div style="display:flex;gap:0.75rem;margin-top:1rem;justify-content:center;">
