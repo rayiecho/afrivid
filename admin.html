@@ -209,9 +209,25 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .text-green{color:var(--green);}
 .text-red{color:var(--red);}
 
+/* Mobile nav — the sidebar (the ONLY navigation on this page: Overview,
+   Analytics, Users, System, Content, API Keys, Applications, Compose Email,
+   Inbox, Finances, Balance Sheet, Feedback, Upgrades) used to just get
+   `display:none` below 900px with nothing standing in for it, so every
+   page past Overview became permanently unreachable on a tablet or phone.
+   This adds a hamburger button that slides the same sidebar in as an
+   overlay instead of hiding it outright. */
+.admin-mobile-topbar{display:none;position:sticky;top:0;z-index:1500;align-items:center;gap:0.85rem;padding:0.9rem 1rem;background:var(--bg2);border-bottom:1px solid var(--border);}
+.admin-hamburger-btn{background:none;border:1px solid var(--border);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:1.1rem;cursor:pointer;flex-shrink:0;}
+.admin-mobile-topbar .sidebar-logo-text{font-size:1rem;font-weight:800;}
+.admin-mobile-topbar .sidebar-logo-sub{font-size:0.6rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:2px;}
+.admin-sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1998;}
+.admin-sidebar-backdrop.active{display:block;}
+
 @media(max-width:900px){
   .admin-layout{grid-template-columns:1fr;}
+  .admin-mobile-topbar{display:flex;}
   .sidebar{display:none;}
+  .sidebar.mobile-open{display:flex;position:fixed;top:0;left:0;bottom:0;width:min(280px,82vw);z-index:1999;box-shadow:0 0 40px rgba(0,0,0,0.5);}
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .balance-display{grid-template-columns:1fr;}
   .grid-2,.grid-3,.form-row{grid-template-columns:1fr;}
@@ -258,10 +274,21 @@ window._feedbackLoaded = false;
 
 <!-- ADMIN APP -->
 <div id="admin-app">
+  <!-- MOBILE TOPBAR — stands in for the sidebar below 900px, where the
+       sidebar itself is hidden and only reachable via this hamburger. -->
+  <div class="admin-mobile-topbar">
+    <button class="admin-hamburger-btn" onclick="toggleAdminSidebar()" aria-label="Open menu">☰</button>
+    <div>
+      <div class="sidebar-logo-text">AfriVid</div>
+      <div class="sidebar-logo-sub">ADMIN PANEL</div>
+    </div>
+  </div>
+  <div class="admin-sidebar-backdrop" id="admin-sidebar-backdrop" onclick="closeAdminSidebar()"></div>
+
   <div class="admin-layout">
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
+    <div class="sidebar" id="admin-sidebar" onclick="if(event.target.closest('.nav-item'))closeAdminSidebar()">
       <div class="sidebar-logo">
         <div class="sidebar-logo-text">AfriVid</div>
         <div class="sidebar-logo-sub">ADMIN PANEL</div>
@@ -1652,6 +1679,19 @@ window.showPage = function(page, el) {
   if(page==='balance') { loadTransactions().then(()=>loadBalanceSheet()); }
 };
 
+// Mobile hamburger nav — see .admin-mobile-topbar / .admin-sidebar-backdrop
+// in <style>. The sidebar's own click handler already closes it on a
+// nav-item tap (see the "sidebar" div's onclick); these cover the
+// hamburger button itself and tapping the dark backdrop outside it.
+window.toggleAdminSidebar = function() {
+  document.getElementById('admin-sidebar').classList.toggle('mobile-open');
+  document.getElementById('admin-sidebar-backdrop').classList.toggle('active');
+};
+window.closeAdminSidebar = function() {
+  document.getElementById('admin-sidebar').classList.remove('mobile-open');
+  document.getElementById('admin-sidebar-backdrop').classList.remove('active');
+};
+
 // ── UTILS ──
 window.showToast = function(msg, type='success') {
   const t = document.getElementById('toast');
@@ -1864,7 +1904,7 @@ window.loadFeedback = async function() {
 </script>
 
 <!-- Admin Error Panel -->
-<div id="admin-error-panel-wrap" style="position:fixed;bottom:1rem;right:1rem;width:380px;z-index:9999;display:none;">
+<div id="admin-error-panel-wrap" style="position:fixed;bottom:1rem;right:1rem;left:1rem;width:380px;max-width:calc(100vw - 2rem);margin-left:auto;z-index:9999;display:none;">
   <div style="background:#0D1117;border:1px solid rgba(230,51,41,0.3);border-radius:10px;overflow:hidden;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:rgba(230,51,41,0.1);border-bottom:1px solid rgba(230,51,41,0.2);">
       <span style="color:#EA564E;font-size:0.72rem;font-weight:800;font-family:monospace;">⚠ ERROR LOG <span id="admin-error-count" style="color:rgba(255,255,255,0.65);font-weight:400;"></span></span>
