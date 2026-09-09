@@ -21,6 +21,18 @@
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
 
+# Every shared same-origin script this site loads (paystack.js, chatbot.js,
+# limits.js, upload.js, afribrain.js, filename.js, ...). Found while fixing
+# sw.js above: Cloudflare's default is to edge-cache by extension regardless
+# of anything the origin says, which is exactly what let a stale paystack.js
+# keep serving real users all of yesterday even after the real file changed
+# server-side — sw.js was one half of that bug, this was the other half,
+# just not yet visible because sw.js's own bytes hadn't changed in a while.
+# Chatbot.js just got rebuilt; this is what makes sure it actually reaches
+# anyone, not only new visitors with no edge cache entry yet.
+/*.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
 /*.html
   Cache-Control: no-cache, no-store, must-revalidate
 
