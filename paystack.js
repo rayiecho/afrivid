@@ -662,19 +662,20 @@
   // ── The sitewide Upgrade button ─────────────────────────────────────────────
   // The markup is one <a class="av-upgrade"> in each page's nav; the styling is
   // defined once, here, because those navs are eleven separate <style> blocks and
-  // the button has to look the same on all of them. Solid amber reads correctly on
-  // both the light marketing bars and the dark editor bars, so it needs no theme
-  // variant.
+  // the button has to look the same on all of them. Solid amber needs dark text —
+  // white on this amber only measures ~2.7:1, effectively invisible to anyone with
+  // low vision — so it matches the dark-ink-on-amber pattern used for every other
+  // amber CTA on the site, on both the light marketing bars and the dark editor bars.
   function upgradeStyle() {
     if (document.getElementById('av-upgrade-style')) return;
     var s = document.createElement('style');
     s.id = 'av-upgrade-style';
     s.textContent =
-      '.av-upgrade{display:inline-block;background:#E08A2E;color:#fff;' +
+      '.av-upgrade{display:inline-block;background:#E08A2E;color:#050A14;' +
       'font-family:Syne,system-ui,sans-serif;font-weight:800;font-size:0.8rem;' +
       'padding:0.45rem 1rem;border-radius:9px;border:none;text-decoration:none;' +
       'white-space:nowrap;cursor:pointer;transition:background 0.18s;}' +
-      '.av-upgrade:hover{background:#C4701E;color:#fff;}';
+      '.av-upgrade:hover{background:#C4701E;color:#050A14;}';
     document.head.appendChild(s);
   }
 
