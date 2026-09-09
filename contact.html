@@ -42,7 +42,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .card-icon{font-size:1.75rem;margin-bottom:0.75rem;}
 .card-title{font-weight:800;font-size:0.95rem;margin-bottom:0.4rem;}
 .card-desc{color:rgba(255,255,255,0.65);font-size:0.78rem;margin-bottom:1rem;line-height:1.5;}
-.card-btn{display:inline-block;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.4rem 1rem;border-radius:8px;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.2s;}
+.card-btn{display:inline-block;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);color:#F5A623;padding:0.65rem 1rem;border-radius:8px;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.2s;}
 .card-btn:hover{background:rgba(245,166,35,0.2);}
 .form-section{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;margin-bottom:3rem;}
 .form-title{font-weight:800;font-size:1.2rem;margin-bottom:0.4rem;}
@@ -51,6 +51,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
 .form-group{margin-bottom:1rem;}
 label{display:block;font-size:0.7rem;color:rgba(255,255,255,0.65);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;}
+.req{color:#F5A623;}
 input,select,textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;padding:0.75rem 1rem;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
 input:focus,select,textarea:focus{border-color:rgba(245,166,35,0.3);}
 select option{background:#111;}
@@ -128,16 +129,16 @@ footer a:hover{color:#F5A623;}
     <form onsubmit="sendMessage(event)">
       <div class="form-row">
         <div class="form-group">
-          <label>YOUR NAME</label>
+          <label>YOUR NAME <span class="req">*</span></label>
           <input type="text" id="contact-name" placeholder="Regan Ayiecho" required>
         </div>
         <div class="form-group">
-          <label>EMAIL ADDRESS</label>
+          <label>EMAIL ADDRESS <span class="req">*</span></label>
           <input type="email" id="contact-email" placeholder="you@example.com" required>
         </div>
       </div>
       <div class="form-group">
-        <label>SUBJECT</label>
+        <label>SUBJECT <span style="color:rgba(255,255,255,0.65);font-weight:400;">(optional)</span></label>
         <select id="contact-subject">
           <option value="bug">🐛 Bug Report</option>
           <option value="feature">✨ Feature Request</option>
@@ -148,7 +149,7 @@ footer a:hover{color:#F5A623;}
         </select>
       </div>
       <div class="form-group">
-        <label>MESSAGE</label>
+        <label>MESSAGE <span class="req">*</span></label>
         <textarea id="contact-message" placeholder="Tell us what's on your mind..." required></textarea>
       </div>
       <button type="submit" class="submit-btn">Send Message →</button>
@@ -245,15 +246,15 @@ async function sendMessage(e) {
     <a href="contact.html">Contact</a>
   </div>
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Facebook</a>
+      <a href="https://www.facebook.com/profile.php?id=61590870207039" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Facebook</a>
       <span style="color:rgba(255,255,255,0.65);">·</span>
-      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Instagram</a>
+      <a href="https://instagram.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Instagram</a>
       <span style="color:rgba(255,255,255,0.65);">·</span>
-      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">TikTok</a>
+      <a href="https://www.tiktok.com/@afrividstudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">TikTok</a>
       <span style="color:rgba(255,255,255,0.65);">·</span>
-      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Twitter</a>
+      <a href="https://x.com/afrividstudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">Twitter</a>
       <span style="color:rgba(255,255,255,0.65);">·</span>
-      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">YouTube</a>
+      <a href="https://www.youtube.com/@AfrividStudio" target="_blank" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.75rem;font-family:'Space Mono',monospace;" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">YouTube</a>
     </div>
     © 2026 AfriVid Studio · Built in Africa 🌍
 </footer>
