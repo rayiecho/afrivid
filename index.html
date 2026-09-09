@@ -842,7 +842,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="login-modal">
   <div class="login-box">
-    <button class="modal-close" onclick="hideLogin()"></button>
+    <button class="modal-close" onclick="hideLogin()" aria-label="Close">×</button>
     <div class="login-header">
       <div class="login-icon">A</div>
       <div class="login-title">AfriVid <span>Studio</span></div>
@@ -896,6 +896,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 
       <div style="text-align:center;margin-top:1.25rem;font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;">v1.0 · Free plan available</div>
     </div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
