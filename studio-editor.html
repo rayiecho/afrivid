@@ -1226,6 +1226,52 @@ function anchorToFrame(a, crop) {
 // what "the mic escapes above the mouth" was: not a mic in the wrong place so much as a mic
 // measured by the wrong edge. mouth is estimated from the head's own height — top of head to
 // neck — rather than from the person's bounding box, whose bottom is a desk.
+//
+// THE STAND HAS TO FIT. drawMic() renders three slices: a fixed-height head (capsule + body +
+// clamp), a fixed-height tripod, and — between them — a rod that is whatever vertical space is
+// LEFT OVER between the capsule and the ground anchor. That leftover is not guaranteed to be
+// positive. Put the capsule's top on the real mouth and size the mic off the head, and on a
+// normal head-and-shoulders shot the head slice plus the tripod alone (MIC_HEAD_FRAC +
+// MIC_FOOT_FRAC ≈ 1.36 × size) eat nearly the whole run from the mouth down to the bottom of
+// the person — so the rod collapses to drawMic()'s minimum and the tripod is drawn jammed
+// into the mic's own clamp. That is what "the thickness became abnormal, it looks generic"
+// was: not a scaling bug in the 3-slice render, which is intact, but this function handing it
+// a stand that cannot physically exist, at which point all you see is a fat capsule with a
+// tripod stuck to it and no pole — and moving the Height slider can't rescue it, because the
+// ground anchor is fixed and every position along the slider is equally starved.
+//
+// So the geometry is closed here, where the numbers are known, in two steps:
+//   1. cap the size so a stand with a real rod fits on the ground (never below MIC_MIN_SCALE
+//      of the wanted size, or a tight shot would get a toy mic);
+//   2. guarantee a rod anyway by letting the ground anchor slide DOWN when the slider pushes
+//      the mic low — the feet go under the bottom edge and get cropped, which is exactly what
+//      a real desk mic looks like in a tight webcam frame, and is never a collision.
+// The 3-slice measurements, read directly off the two source photos. Module scope, not local
+// to drawMic(), because the geometry below has to reason about them too.
+// micImg (392x420): rows 0-335 capsule+body+clamp — never stretched.
+//                   rows 335-370 plain pole — the only part that stretches.
+// micBaseImg (482x340): rows 62-340 tripod hub+legs+feet (62 skips a thin connector stub at
+//                   the very top that has nothing to align to).
+// ROD_CENTER_FRAC / BASE_CENTER_FRAC are each image's own post/rod centre as a fraction of its
+// width: the pole's rod is NOT centred in its 392px frame (camera angle), so centering both
+// images independently leaves a visible gap. Aligning THOSE is what makes pole and tripod post
+// line up at any `size`. BASE_SCALE_RATIO shrinks the tripod photo so its post reads as the
+// same thickness as the pole it attaches to.
+const MIC_SRC_W = 392, MIC_TOP_PX = 335, MIC_MID_PX = 35;
+const MIC_ROD_CENTER_FRAC = 133.5 / 392;
+const MIC_BASE_SRC_W = 482, MIC_BASE_SY = 62, MIC_BASE_SH = 278;
+const MIC_BASE_CENTER_FRAC = 240 / 482;
+const MIC_BASE_SCALE_RATIO = 25 / 58;
+
+const MIC_HEAD_FRAC = 1;                 // drawMic's top slice height, in units of `size`
+const MIC_FOOT_FRAC = MIC_BASE_SH * MIC_BASE_SCALE_RATIO / MIC_TOP_PX;   // ≈ 0.358
+const MIC_ROD_WANT  = 0.85;              // rod length we size FOR — matches the approved render
+const MIC_ROD_MIN   = 0.35;              // rod length we never go below — below this the stand
+                                         // stops reading as a stand at all
+const MIC_MIN_SCALE = 0.75;              // floor on shrinking, as a fraction of the wanted size
+const MIC_STACK_WANT = MIC_HEAD_FRAC + MIC_FOOT_FRAC + MIC_ROD_WANT;
+const MIC_STACK_MIN  = MIC_HEAD_FRAC + MIC_FOOT_FRAC + MIC_ROD_MIN;
+
 function anchorFromLM(lm) {
   if (!lm) return null;
   const headTop = lm.headTop, chin = lm.chin, base = Math.max(lm.chin + 0.02, lm.base);
@@ -1235,7 +1281,10 @@ function anchorFromLM(lm) {
   // Size follows the HEAD, not the bounding box. A desk mic is a little shorter than a head;
   // deriving it from the box meant a full-body shot (box = the whole frame) got a mic taller
   // than the person, and an oversized capsule is the other half of why it covered her face.
-  const s = Math.min(0.42, Math.max(0.08, headH * 0.85)) * S.mic.size;
+  const want = Math.min(0.42, Math.max(0.08, headH * 0.78)) * S.mic.size;
+  // Step 1: shrink toward a size whose whole stand fits between the mouth and the ground.
+  const fits = (base - mouth) / MIC_STACK_WANT;
+  const s = Math.max(want * MIC_MIN_SCALE, Math.min(want, fits));
 
   // Height slider: 0 (the default, dead centre of -50..50) puts the capsule's top exactly on
   // the mouth. Up from there it can rise a little — never above the nose. Down from there it
@@ -1248,12 +1297,21 @@ function anchorFromLM(lm) {
     ? topAtMouth + (topHighest - topAtMouth) * ((t - 0.5) * 2)
     : topLowest + (topAtMouth - topLowest) * (t * 2);
 
+  // Step 2: the ground the stand rises from. Normally the tracked floor/desk line; pushed
+  // below it (and so below the frame, where it is simply cropped) only when the slider has
+  // dropped the capsule so low that a stand with a real rod could not otherwise reach.
+  const standBase = Math.max(base, top + s * MIC_STACK_MIN);
+
   const y = top + s / 2;
   const x = lm.x + lm.w * S.mic.side * 0.42;
   return {
     x: Math.min(0.97, Math.max(0.03, x)),
     y: Math.min(0.97, Math.max(0.03, y)),
-    baseY: Math.min(0.99, Math.max(0.03, base)),
+    // Deliberately NOT clamped to the frame: a ground anchor under the bottom edge is a real
+    // answer here (the desk is out of shot), and clamping it back to 0.99 would re-create the
+    // impossible stand this whole block exists to prevent. Both the preview canvas and the
+    // export's rect crop the artwork to the frame already.
+    baseY: Math.min(3, Math.max(0.03, standBase)),
     s,
   };
 }
@@ -1312,32 +1370,22 @@ function drawMic(ctx, cx, cy, size, style, baseY) {
   // real photo of a three-legged tripod base (micBaseImg) in place of the original's round
   // disc foot. A vector-drawn tripod (three plain lines) was tried first and reported as not
   // photorealistic and not well attached — this replaces it with an actual photographed
-  // tripod, aligned to the pole by real measurement rather than naive centering: the pole's
-  // own rod is NOT centred in its 392px frame (camera angle), so centering both images
-  // independently left a visible gap/misalignment. ROD_CENTER_FRAC / BASE_CENTER_FRAC below
-  // are each image's own post/rod centre as a fraction of its width, measured directly off
-  // the source photos — aligning THOSE (not the image edges) is what makes the pole and the
-  // tripod's mounting post actually line up regardless of `size`.
-  // micImg source rows (392x420): 0-335 capsule+body+clamp — never stretched.
-  //                                335-370 plain pole — the only part that stretches.
-  // micBaseImg source rows (482x340): 62-340 tripod hub+legs+feet (62 skips a thin connector
-  //                                stub at the very top that has nothing to align to).
-  const SRC_W = 392, TOP_PX = 335, MID_PX = 35;
-  const ROD_CENTER_FRAC = 133.5 / 392;      // pole rod's own centre line, near the bottom of the stretch region
-  const BASE_SRC_W = 482, BASE_SY = 62, BASE_SH = 278;
-  const BASE_CENTER_FRAC = 240 / 482;       // tripod post's own centre line, near the top of its crop
-  const BASE_SCALE_RATIO = 25 / 58;         // shrinks the tripod photo so its post reads as the same
-                                             // thickness as the pole it's attaching to
+  // tripod, aligned to the pole by real measurement rather than naive centering.
+  //
+  // The slice measurements live at module scope (see MIC_SRC_W above anchorFromLM) because
+  // anchorFromLM has to know how much vertical run the fixed head and tripod slices consume
+  // before it can promise the stretchable rod any room. They were local to this function
+  // once, which is precisely how the two ended up disagreeing.
   ctx.save();
   ctx.translate(cx, cy);
   ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = size * 0.15; ctx.shadowOffsetY = size * 0.04;
   if (style === 'boom') ctx.rotate(-0.09); // pivoting near the mount point, close to the origin here — rotates pole+base together, so alignment holds at any angle
-  const scale = size / TOP_PX;
-  const dw = Math.max(4, SRC_W * scale);
-  const topH = TOP_PX * scale; // == size
-  const baseScale = scale * BASE_SCALE_RATIO;
-  const dwBase = Math.max(4, BASE_SRC_W * baseScale);
-  const botH = BASE_SH * baseScale;
+  const scale = size / MIC_TOP_PX;
+  const dw = Math.max(4, MIC_SRC_W * scale);
+  const topH = MIC_TOP_PX * scale; // == size
+  const baseScale = scale * MIC_BASE_SCALE_RATIO;
+  const dwBase = Math.max(4, MIC_BASE_SRC_W * baseScale);
+  const botH = MIC_BASE_SH * baseScale;
   // Head is centred on cy (top edge at -topH/2), so the pole below it must cover
   // topH/2 + midH + botH to reach baseLocal exactly — otherwise the base drifts off the
   // ground anchor by however much this is wrong, which is exactly the clipping/floating bug
@@ -1347,12 +1395,12 @@ function drawMic(ctx, cx, cy, size, style, baseY) {
   const dx = -dw / 2;
   // Where the pole's rod centre actually renders, in this call's local coordinates — the
   // tripod's own post centre gets placed at this exact x, not at local 0.
-  const rodLocalX = dw * (ROD_CENTER_FRAC - 0.5);
-  const dxBase = rodLocalX - BASE_CENTER_FRAC * dwBase;
+  const rodLocalX = dw * (MIC_ROD_CENTER_FRAC - 0.5);
+  const dxBase = rodLocalX - MIC_BASE_CENTER_FRAC * dwBase;
   let y = -topH / 2;
   if (micImg.complete && micImg.naturalWidth) {
-    ctx.drawImage(micImg, 0, 0, SRC_W, TOP_PX, dx, y, dw, topH); y += topH;
-    ctx.drawImage(micImg, 0, TOP_PX, SRC_W, MID_PX, dx, y, dw, midH); y += midH;
+    ctx.drawImage(micImg, 0, 0, MIC_SRC_W, MIC_TOP_PX, dx, y, dw, topH); y += topH;
+    ctx.drawImage(micImg, 0, MIC_TOP_PX, MIC_SRC_W, MIC_MID_PX, dx, y, dw, midH); y += midH;
   } else {
     // Only a placeholder for the handful of frames before the image decodes.
     ctx.fillStyle = '#2C2C31';
@@ -1360,7 +1408,7 @@ function drawMic(ctx, cx, cy, size, style, baseY) {
     y += midH;
   }
   if (micBaseImg.complete && micBaseImg.naturalWidth) {
-    ctx.drawImage(micBaseImg, 0, BASE_SY, BASE_SRC_W, BASE_SH, dxBase, y, dwBase, botH);
+    ctx.drawImage(micBaseImg, 0, MIC_BASE_SY, MIC_BASE_SRC_W, MIC_BASE_SH, dxBase, y, dwBase, botH);
   } else {
     ctx.fillStyle = '#1C1C20';
     ctx.beginPath(); ctx.roundRect(dxBase, y, dwBase, botH, dwBase * 0.1); ctx.fill();
@@ -2344,7 +2392,11 @@ function buildPlan() {
       // The stand runs down to the tracked ground point, wherever that is — off the bottom of
       // a cropped frame included. Only a base that would end up ABOVE the capsule is nudged.
       const baseAbs = Math.max(capsuleCyAbs + px * 1.0, a.baseY * out.h);
-      const halfW = Math.round(px * 1.4) / 2;
+      // Wide enough for the artwork (drawMic draws SRC_W/TOP_PX = 1.17 x px across) PLUS its
+      // drop shadow (shadowBlur = 0.15 x px). At 1.4 the shadow was sliced off down both
+      // sides, which is a hard vertical seam in the exported file that the preview — drawn
+      // straight onto the frame with nothing to clip it — never shows.
+      const halfW = Math.round(px * 1.56) / 2;
       const rect = {
         x0: Math.max(0, Math.floor(a.x * out.w - halfW)),
         x1: Math.min(out.w, Math.ceil(a.x * out.w + halfW)),
