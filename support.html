@@ -56,7 +56,13 @@ a{color:inherit;}
 .wrap{max-width:900px;margin:0 auto;padding:0 1.5rem;}
 .hero{text-align:center;padding:4.5rem 0 2.5rem;}
 .eyebrow{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-text);margin-bottom:1rem;}
-h1{font-size:clamp(2.1rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.02em;line-height:1.08;margin-bottom:1rem;}
+/* clamp()'s floor (2.1rem) was still wide enough that "infrastructure" ran
+   off the right edge of a real 375px phone screen, uncorrected by wrap since
+   nothing here allowed breaking a single long word. overflow-wrap is the
+   real fix (guarantees no overflow regardless of word length or viewport);
+   a lower floor on top of that just keeps it reading as one deliberate size
+   rather than an emergency shrink. */
+h1{font-size:clamp(1.85rem,7vw,3.2rem);font-weight:800;letter-spacing:-0.02em;line-height:1.08;margin-bottom:1rem;overflow-wrap:break-word;}
 h1 em{font-style:normal;color:var(--amber-deep);}
 .hero p{color:var(--ink-64);font-size:1.02rem;line-height:1.65;max-width:600px;margin:0 auto;}
 
