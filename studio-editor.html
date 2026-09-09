@@ -176,6 +176,12 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 .tword:hover{background:rgba(224,138,46,0.18);}
 .tword.deleted{color:rgba(23,20,15,0.75);text-decoration:line-through;background:rgba(230,51,41,0.14);}
 .tword.deleted:hover{background:rgba(230,51,41,0.22);}
+/* A pause between words — width is scaled per-instance (inline style) by the real gap
+   duration, so a longer silence literally reads as a longer dash. */
+.tgap{display:inline-block;vertical-align:middle;height:0.3rem;margin:0 3px;border-radius:3px;background:rgba(23,20,15,0.28);cursor:pointer;transition:background .1s;}
+.tgap:hover{background:rgba(224,138,46,0.55);}
+.tgap.deleted{background:rgba(230,51,41,0.6);}
+.tgap.deleted:hover{background:rgba(230,51,41,0.75);}
 
 .btn-export{width:100%;background:var(--gradient-gold);color:#17140F;border:none;padding:0.95rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
 .btn-export:hover{box-shadow:var(--glow-gold);}
@@ -1757,7 +1763,7 @@ window.keepSelection = () => {
 };
 window.clearCuts = () => {
   S.cuts = []; S.sel = null;
-  deletedWords.clear(); renderTranscript();
+  deletedWords.clear(); deletedGaps.clear(); renderTranscript();
   renderTimeline(); updateSummary();
 };
 
@@ -1770,7 +1776,23 @@ window.clearCuts = () => {
 // already handle it correctly with no changes anywhere else.
 let transcriptWords = null;      // [{word, start, end}, ...] once fetched
 const deletedWords = new Set();  // indices into transcriptWords currently marked for removal
+const deletedGaps = new Set();   // indices i currently marked for removal, meaning: the pause
+                                  // between transcriptWords[i] and transcriptWords[i+1]
 let wordDragStart = null, dragToggleTo = null;
+
+// Pauses between words are only worth showing above a "real pause" threshold — normal speech
+// has natural micro-gaps between every word and visualizing those would just be noise. Above
+// the threshold, the dash's width scales with the gap's actual duration up to a cap, so one
+// enormous pause doesn't blow out the transcript layout.
+const GAP_THRESHOLD = 0.4;  // seconds — gaps at/below this render as a plain space, not a dash
+const GAP_VISUAL_CAP = 3.0; // seconds — gaps at/above this render at max dash width
+const GAP_MIN_W = 14;       // px — dash width just above threshold
+const GAP_MAX_W = 70;       // px — dash width at/above the cap
+
+function gapDashWidth(gap) {
+  const frac = Math.max(0, Math.min(1, (gap - GAP_THRESHOLD) / (GAP_VISUAL_CAP - GAP_THRESHOLD)));
+  return Math.round(GAP_MIN_W + frac * (GAP_MAX_W - GAP_MIN_W));
+}
 
 function escHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1818,7 +1840,7 @@ window.generateTranscript = async function() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     transcriptWords = (data.words || []).filter((w) => w.word && w.word.trim());
-    deletedWords.clear();
+    deletedWords.clear(); deletedGaps.clear();
     renderTranscript();
     $('transcript-note').textContent = transcriptWords.length
       ? 'Click a word — or drag across several — to cut that part.'
@@ -1834,33 +1856,53 @@ function renderTranscript() {
   const box = $('transcript-text');
   if (!transcriptWords || !transcriptWords.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
   box.style.display = 'block';
-  box.innerHTML = transcriptWords.map((w, i) =>
-    `<span class="tword${deletedWords.has(i) ? ' deleted' : ''}" data-i="${i}">${escHtml(w.word)}</span>`
-  ).join(' ');
+  // Tokens are rendered in one flat left-to-right order — a .tword for every word, and a
+  // .tgap dash between two words wherever the real gap between them (transcriptWords[i+1]
+  // .start - transcriptWords[i].end — already sitting in the data) is a real pause rather
+  // than normal speech's natural micro-gaps. Each token gets a sequential data-order so
+  // drag-selection can walk both kinds together exactly like it already walks words.
+  let html = '', order = 0;
+  transcriptWords.forEach((w, i) => {
+    html += `<span class="tword${deletedWords.has(i) ? ' deleted' : ''}" data-i="${i}" data-order="${order++}">${escHtml(w.word)}</span>`;
+    if (i < transcriptWords.length - 1) {
+      const gap = transcriptWords[i + 1].start - w.end;
+      if (gap > GAP_THRESHOLD) {
+        const width = gapDashWidth(gap);
+        html += `<span class="tgap${deletedGaps.has(i) ? ' deleted' : ''}" data-i="${i}" data-order="${order++}" style="width:${width}px" title="${gap.toFixed(1)}s pause"></span>`;
+      } else {
+        html += ' ';
+      }
+    }
+  });
+  box.innerHTML = html;
 }
 
-function toggleWord(i, deleted) {
-  if (deleted) deletedWords.add(i); else deletedWords.delete(i);
-  const el = $('transcript-text').querySelector(`.tword[data-i="${i}"]`);
-  if (el) el.classList.toggle('deleted', deleted);
-}
-
-// Click toggles one word; mousedown-drag across several toggles the whole span to match
-// whatever the first word's NEW state is, so dragging over a mix of kept/deleted words gives
-// one consistent result instead of flipping each one individually.
-$('transcript-text').addEventListener('mousedown', (e) => {
-  const el = e.target.closest('.tword'); if (!el) return;
+function toggleToken(el, deleted) {
   const i = +el.dataset.i;
-  dragToggleTo = !deletedWords.has(i);
-  toggleWord(i, dragToggleTo);
-  wordDragStart = i;
+  if (el.classList.contains('tgap')) { if (deleted) deletedGaps.add(i); else deletedGaps.delete(i); }
+  else { if (deleted) deletedWords.add(i); else deletedWords.delete(i); }
+  el.classList.toggle('deleted', deleted);
+}
+
+// Click toggles one token (word or gap); mousedown-drag across several toggles the whole span
+// to match whatever the first token's NEW state is, so dragging over a mix of kept/deleted
+// tokens gives one consistent result instead of flipping each one individually. Words and
+// gaps share the same data-order sequence, so a drag can sweep across both.
+$('transcript-text').addEventListener('mousedown', (e) => {
+  const el = e.target.closest('.tword,.tgap'); if (!el) return;
+  const i = +el.dataset.i;
+  const alreadyDeleted = el.classList.contains('tgap') ? deletedGaps.has(i) : deletedWords.has(i);
+  dragToggleTo = !alreadyDeleted;
+  toggleToken(el, dragToggleTo);
+  wordDragStart = +el.dataset.order;
 });
 $('transcript-text').addEventListener('mouseover', (e) => {
   if (wordDragStart == null) return;
-  const el = e.target.closest('.tword'); if (!el) return;
-  const i = +el.dataset.i;
-  const [lo, hi] = i < wordDragStart ? [i, wordDragStart] : [wordDragStart, i];
-  for (let k = lo; k <= hi; k++) toggleWord(k, dragToggleTo);
+  const el = e.target.closest('.tword,.tgap'); if (!el) return;
+  const order = +el.dataset.order;
+  const [lo, hi] = order < wordDragStart ? [order, wordDragStart] : [wordDragStart, order];
+  const tokens = [...$('transcript-text').querySelectorAll('.tword,.tgap')];
+  for (let k = lo; k <= hi; k++) toggleToken(tokens[k], dragToggleTo);
 });
 window.addEventListener('mouseup', () => {
   if (wordDragStart != null) { wordDragStart = null; applyTranscriptCuts(); }
@@ -1868,16 +1910,29 @@ window.addEventListener('mouseup', () => {
 
 function applyTranscriptCuts() {
   S.cuts = S.cuts.filter((c) => !c.fromTranscript);
-  // Consecutive deleted words become one cut range (bridging the small gap between them so
-  // the join doesn't leave a sliver of silence/frame behind); isolated deleted words
-  // elsewhere become their own separate ranges.
-  const idx = [...deletedWords].sort((a, b) => a - b);
-  let i = 0;
-  while (i < idx.length) {
-    let j = i;
-    while (j + 1 < idx.length && idx[j + 1] === idx[j] + 1) j++;
-    S.cuts.push({ start: transcriptWords[idx[i]].start, end: transcriptWords[idx[j]].end, fromTranscript: true });
-    i = j + 1;
+  // Every deleted word and every deleted gap becomes its own raw cut range, using the gap's
+  // own real start/end timestamps (word.end -> next word.start) rather than word boundaries.
+  // mergeCuts() (called below) already knows how to fuse touching/overlapping ranges into one,
+  // so pushing them all in unsorted and letting it merge avoids re-implementing that here.
+  const sortedWords = [...deletedWords].sort((a, b) => a - b);
+  for (const i of sortedWords) {
+    S.cuts.push({ start: transcriptWords[i].start, end: transcriptWords[i].end, fromTranscript: true });
+  }
+  for (const i of deletedGaps) {
+    S.cuts.push({ start: transcriptWords[i].end, end: transcriptWords[i + 1].start, fromTranscript: true });
+  }
+  // Two adjacent deleted words whose gap sits at/below the visualization threshold never got
+  // a dash to act on — bridge that tiny sliver automatically so it doesn't survive the cut.
+  // A gap ABOVE the threshold is left alone here: it has its own dash, and if the user didn't
+  // mark it deleted that's a deliberate choice to keep that pause.
+  for (let k = 0; k + 1 < sortedWords.length; k++) {
+    const a = sortedWords[k], b = sortedWords[k + 1];
+    if (b === a + 1) {
+      const gap = transcriptWords[b].start - transcriptWords[a].end;
+      if (gap <= GAP_THRESHOLD) {
+        S.cuts.push({ start: transcriptWords[a].end, end: transcriptWords[b].start, fromTranscript: true });
+      }
+    }
   }
   mergeCuts();
   renderTimeline();
