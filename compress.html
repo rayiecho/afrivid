@@ -104,6 +104,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .btn-download{width:100%;margin-top:1.2rem;text-align:center;display:block;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:0.8rem;border-radius:var(--radius-md);font-weight:700;font-size:0.9rem;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:none;transition:var(--transition);}
 .btn-download:hover{border-color:rgba(224,138,46,0.4);color:#925616;}
 
+/* Compact "done" bar shown right in the Compress card as soon as the job finishes —
+   the fuller Original/Compressed comparison card below can end up below the fold,
+   so the download action itself must not depend on scrolling to reach it. */
+.inline-result{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);animation:slideUp 0.25s ease both;}
+.inline-result-text{font-size:0.82rem;color:var(--text-muted);font-family:'Space Mono',monospace;margin-bottom:0.7rem;}
+.inline-result-text b{color:var(--text);}
+.inline-result .btn-download{margin-top:0;background:var(--gradient-gold);border-color:transparent;color:#17140F;}
+.inline-result .btn-download:hover{box-shadow:var(--glow-gold);color:#17140F;}
+
 /* LOGIN MODAL */
 .modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);padding:2rem;}
 .modal-overlay.active{display:flex;}
@@ -123,6 +132,28 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .modal-close{position:absolute;top:-40px;right:0;background:none;border:none;color:rgba(23,20,15,0.75);font-size:1.5rem;cursor:pointer;font-family:'Syne',sans-serif;padding:0.4rem 0.6rem;}
 .av-upgrade{display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,#F5A623,#E08A2E);color:#17140F;padding:0.5rem 1.1rem;border-radius:999px;font-weight:800;font-size:0.8rem;font-family:'Syne',sans-serif;text-decoration:none;white-space:nowrap;transition:all 0.2s;}
 .av-upgrade:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(224,138,46,0.35);}
+
+/* Tighter vertical rhythm on small phones — frees up enough height that the
+   inline download bar (see .inline-result) lands on-screen without scrolling
+   on short devices too, not just full-size ones. Placed last so it wins over
+   the base rules above at this breakpoint. */
+@media(max-width:480px){
+  .main{padding-top:1.75rem;}
+  .page-title{font-size:1.3rem;margin-bottom:0.3rem;}
+  .page-sub{font-size:0.85rem;margin-bottom:1rem;}
+  .card{padding:1.25rem;}
+  .card-title{margin-bottom:0.9rem;}
+  .file-chip{padding:0.7rem 0.9rem;}
+  .form-label{margin-top:0.9rem;margin-bottom:0.4rem;}
+  .level-opt{padding:0.55rem 0.3rem;}
+  .level-opt-title{font-size:0.74rem;}
+  .level-opt-sub{font-size:0.64rem;}
+  .btn-generate{margin-top:1rem;padding:0.75rem;}
+  .progress-track{margin-top:0.75rem;}
+  .inline-result{margin-top:0.75rem;padding-top:0.75rem;}
+  .inline-result-text{margin-bottom:0.5rem;}
+  .inline-result .btn-download{padding:0.65rem;}
+}
 </style>
 </head>
 <body>
@@ -183,6 +214,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
     <button class="btn-generate" id="compress-btn" onclick="startCompress()" disabled>Compress Video</button>
     <div class="progress-track" id="progress-track" style="display:none;"><div class="progress-fill" id="progress-fill"></div></div>
     <div class="progress-status" id="progress-status"></div>
+
+    <!-- Shown the moment a job completes, right next to "Done!" — no scrolling
+         needed to reach the download action. The fuller before/after comparison
+         still lives in the Result card below for anyone who wants it. -->
+    <div class="inline-result" id="inline-result" style="display:none;">
+      <div class="inline-result-text" id="inline-result-text"></div>
+      <a class="btn-download" id="download-btn-inline" onclick="downloadResult();return false;">Download Compressed Video</a>
+    </div>
   </div>
 
   <div class="card" id="result-card" style="display:none;">
@@ -392,6 +431,7 @@ window.startCompress = async function() {
   const btn = document.getElementById('compress-btn');
   btn.disabled = true;
   document.getElementById('result-card').style.display = 'none';
+  document.getElementById('inline-result').style.display = 'none';
   const originalSize = chosenFile.size;
 
   try {
@@ -451,6 +491,10 @@ window.startCompress = async function() {
         document.getElementById('stat-original').textContent = fmtSize(originalSize);
         document.getElementById('stat-compressed').textContent = compressedSize ? fmtSize(compressedSize) : 'Ready';
         document.getElementById('result-card').style.display = 'block';
+        document.getElementById('inline-result-text').innerHTML = compressedSize
+          ? `<b>${fmtSize(compressedSize)}</b> (from ${fmtSize(originalSize)}) — ready to download`
+          : 'Ready to download';
+        document.getElementById('inline-result').style.display = 'block';
         done = true;
       } else if (s.status === 'failed') {
         setProgress(0, s.stage || 'Compression failed', true);
