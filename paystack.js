@@ -13,7 +13,7 @@
 // <head>: most visitors never click Upgrade, and they should not pay for the
 // script's download.
 (function () {
-  var API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+  var API = 'https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io';
 
   // Fire-and-forget: send a checkout failure's REAL message and the real
   // browser's user-agent to the server, since a checkout failure reported

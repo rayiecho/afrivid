@@ -1104,7 +1104,7 @@ async function runStudioUpgrade(actionKey, panelName, extra) {
     const presignTimeout = setTimeout(() => presignController.abort(), 20000);
     let signRes;
     try {
-      signRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/presign-upload', {
+      signRes = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/presign-upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: currentVideoFile.name, contentType: currentVideoFile.type || 'video/mp4' }),
@@ -1128,7 +1128,7 @@ async function runStudioUpgrade(actionKey, panelName, extra) {
       job_id, input_url: public_url, actions: [actionKey],
       user_email: window.currentUser.email, user_id: window.currentUser.uid,
     }, extra || {});
-    const processRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/process', {
+    const processRes = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/process', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -2648,7 +2648,7 @@ window.uploadToServer = async function() {
     const trimStart = 0, trimEnd = null;
 
     // Step 1: Get presigned URL from Fly.io
-    const signRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/presign-upload', {
+    const signRes = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/presign-upload', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({filename: file.name, contentType: file.type || 'video/mp4'})
@@ -2673,7 +2673,7 @@ window.uploadToServer = async function() {
     // Step 3: Notify Fly.io to start processing
     document.getElementById('phase2-stage').textContent = 'Starting processing...';
     try {
-      const processRes = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/process', {
+      const processRes = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/process', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -2698,7 +2698,7 @@ window.uploadToServer = async function() {
       console.error('[Phase2] Failed to notify server:', processErr);
       // Retry once
       await new Promise(r => setTimeout(r, 3000));
-      await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/process', {
+      await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/process', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({

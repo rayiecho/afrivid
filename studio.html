@@ -954,7 +954,7 @@ onAuthStateChanged(auth, async (user) => {
 // The real credits/tier ledger (credits.py, afrivid-processor's own Firestore
 // — a deliberately different project than studio_users above; see credits.py's
 // own docstring). Not the same source as stat-plan up top, which is legacy.
-const BILLING_API = 'https://afrivid-processor-222827815864.africa-south1.run.app';
+const BILLING_API = 'https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io';
 let billingUser = null;
 let studioUserCreatedAt = null; // studio_users.createdAt, Date — used to tell a still-running
                                   // free-tier trial window apart from time added by a real purchase

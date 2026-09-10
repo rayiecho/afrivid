@@ -576,7 +576,7 @@ window.generateEpisode = async function() {
   if (window.currentUser.email) document.getElementById('gen-email-txt').textContent='Will email '+window.currentUser.email+' when ready';
   try {
     const jobId = 'wh_s'+meta.season+'ep'+meta.epNum+'_'+Date.now();
-    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-comedy', {
+    const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/generate-comedy', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ job_id:jobId, script, characters, meta:{ seriesName:'Watering Hole', epNum:meta.epNum, epTitle:meta.epTitle, length:meta.length, season:meta.season }, user_email:window.currentUser.email, user_id:window.currentUser.uid })
     });
@@ -757,7 +757,7 @@ async function generateDating() {
   document.getElementById('dating-status-text').textContent = 'Starting Dating Files generation...';
   document.getElementById('dating-progress-bar').style.width = '5%';
   try {
-    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-dating', {
+    const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/generate-dating', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({job_id: jobId, episode: _selectedDatingEp, user_email: window.currentUser.email})
@@ -795,7 +795,7 @@ window.cutDatingTikTok = async function() {
   const url = document.getElementById('dating-video').src;
   if (!url) return;
   const jobId = 'tiktok_dating_' + Date.now();
-  const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+  const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/cut-tiktok', {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({job_id: jobId, video_url: url, clip_duration: 58})
   });
@@ -948,7 +948,7 @@ window.cutTikTok = async function() {
   document.getElementById('tiktok-status-text').textContent = 'Sending to cutter...';
   const jobId = 'tiktok_' + Date.now();
   try {
-    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+    const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/cut-tiktok', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({job_id: jobId, video_url: url, title: window._scriptData?.title || 'Watering Hole', clip_duration: 58})
@@ -1059,7 +1059,7 @@ async function generatePodcast() {
   document.getElementById('pod-progress-bar').style.width = '5%';
 
   try {
-    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/generate-podcast', {
+    const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/generate-podcast', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({job_id: jobId, episode: _selectedPodcastEp, user_email: window.currentUser.email})
@@ -1106,7 +1106,7 @@ window.cutYouTube = async function() {
   document.getElementById('youtube-status-text').textContent = 'Cutting YouTube clips (8 min max)...';
   const jobId = 'yt_' + Date.now();
   try {
-    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+    const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/cut-tiktok', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({job_id: jobId, video_url: url, title: window._scriptData?.title || 'Watering Hole', clip_duration: 480})
@@ -1149,7 +1149,7 @@ window.cutPodcastYouTube = async function() {
   document.getElementById('pod-youtube-btn').textContent = '▶️ Cutting...';
   document.getElementById('pod-youtube-btn').disabled = true;
   try {
-    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+    const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/cut-tiktok', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({job_id: jobId, video_url: url, title: 'Watering Hole Podcast', clip_duration: 480})
@@ -1188,7 +1188,7 @@ window.cutPodcastTikTok = async function() {
   document.getElementById('pod-tiktok-btn').textContent = '✂️ Cutting...';
   document.getElementById('pod-tiktok-btn').disabled = true;
   try {
-    const res = await fetch('https://afrivid-processor-222827815864.africa-south1.run.app/cut-tiktok', {
+    const res = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/cut-tiktok', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({job_id: jobId, video_url: url, title: 'Watering Hole Podcast EP' + ep, clip_duration: 58})
