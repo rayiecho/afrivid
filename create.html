@@ -204,7 +204,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
 .form-group{display:flex;flex-direction:column;gap:0.5rem;}
 .form-group.full{grid-column:span 2;}
-.form-label{font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#9B5B17;font-family:'Space Mono',monospace;}
+.form-label{font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A4410;font-family:'Space Mono',monospace;}
 .form-input,.form-select,.form-textarea{background:var(--surface-2);border:1px solid var(--border-gold);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;transition:var(--transition);width:100%;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(245,166,35,0.5);}
 .form-textarea{resize:vertical;min-height:120px;line-height:1.6;}
@@ -283,7 +283,25 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .auth-tabs{display:flex;background:rgba(23,20,15,0.05);border-radius:var(--radius-md);padding:3px;margin-bottom:1.75rem;}
 .auth-tab{flex:1;padding:0.65rem;background:transparent;color:rgba(23,20,15,0.75);border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Syne',sans-serif;transition:var(--transition);}
 .auth-tab.active{background:var(--gradient-gold);color:#17140F;}
-.form-label-m{font-size:0.72rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
+.form-label-m{font-size:0.72rem;font-weight:700;color:rgba(23,20,15,0.92);font-family:'Space Mono',monospace;letter-spacing:1px;display:block;margin-bottom:0.5rem;}
+
+/* TUTORIAL SCRIPT REVIEW — the editable preview of the AI's script that now
+   sits between "generate the outline" and "render the video". Every field in
+   here is a real input whose value is read back into the scene objects that
+   get POSTed to the renderer (see collectEditedTutorialScenes). */
+.tut-review-head{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:12px;padding:1rem;margin-bottom:1rem;}
+.tut-scene-card{border:1px solid rgba(23,20,15,0.12);border-radius:12px;padding:1rem;margin-bottom:0.85rem;background:rgba(23,20,15,0.015);}
+.tut-scene-top{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}
+.tut-scene-num{font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;color:rgba(23,20,15,0.92);letter-spacing:1px;}
+.tut-type-badge{font-family:'Space Mono',monospace;font-size:0.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(23,20,15,0.08);color:#4A4034;}
+.tut-type-badge.is-code{background:#1e1b16;color:#F5A623;}
+.tut-field-label{font-family:'Space Mono',monospace;font-size:0.64rem;font-weight:700;letter-spacing:1px;color:rgba(23,20,15,0.82);display:block;margin:0.6rem 0 0.3rem;}
+.tut-input,.tut-textarea{width:100%;background:#fff;border:1px solid rgba(23,20,15,0.16);color:#17140F;padding:0.55rem 0.65rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.86rem;outline:none;box-sizing:border-box;line-height:1.5;}
+.tut-input:focus,.tut-textarea:focus{border-color:#F5A623;}
+.tut-textarea{resize:vertical;min-height:76px;}
+.tut-textarea.is-code{font-family:'Space Mono',monospace;font-size:0.8rem;background:#1e1b16;color:#e8e4da;border-color:rgba(255,255,255,0.15);white-space:pre;overflow-x:auto;}
+.tut-wordcount{font-family:'Space Mono',monospace;font-size:0.66rem;color:rgba(23,20,15,0.7);margin-top:0.3rem;}
+.tut-review-actions{display:flex;gap:0.6rem;flex-wrap:wrap;position:sticky;bottom:0;background:#FBF8F3;padding:0.85rem 0 0.5rem;border-top:1px solid rgba(23,20,15,0.12);box-shadow:0 -10px 18px rgba(251,248,243,0.96);}
 .form-input-m{width:100%;background:rgba(23,20,15,0.03);border:1px solid var(--border);color:var(--text);padding:0.85rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;outline:none;font-family:'Syne',sans-serif;box-sizing:border-box;margin-bottom:1rem;transition:var(--transition);}
 .form-input-m:focus{border-color:rgba(224,138,46,0.6);}
 .btn-auth{width:100%;background:var(--gradient-gold);color:#17140F;border:none;padding:0.9rem;border-radius:var(--radius-md);font-weight:800;font-size:0.95rem;cursor:pointer;font-family:'Syne',sans-serif;transition:var(--transition);}
@@ -880,12 +898,12 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
     <div class="card">
       <div class="card-title"><div class="card-title-icon"></div>AI Tutorial Maker</div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.4rem;">WHAT DO YOU WANT TO TEACH? *</div>
+        <div class="form-label-m">WHAT DO YOU WANT TO TEACH? *</div>
         <input id="tutorial-topic" type="text" placeholder="e.g. Introduction to Python, How to use Google Docs, Financial Literacy basics" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">DURATION</div>
+          <div class="form-label-m">DURATION</div>
           <select id="tutorial-duration" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="1">1 minute</option>
             <option value="2">2 minutes</option>
@@ -896,7 +914,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">SLIDE STYLE</div>
+          <div class="form-label-m">SLIDE STYLE</div>
           <select id="tutorial-style" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="classic">Classic (AfriVid)</option>
             <option value="cameroon_slide">Cameroon Slide</option>
@@ -905,7 +923,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LEVEL</div>
+          <div class="form-label-m">LEVEL</div>
           <select id="tutorial-level" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
@@ -913,7 +931,7 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
           </select>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">LANGUAGE</div>
+          <div class="form-label-m">LANGUAGE</div>
           <select id="tutorial-language" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.6rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
             <option value="English">English</option>
             <option value="French">French</option>
@@ -924,17 +942,35 @@ function sendFeedback(){ if(window._sendFeedback) window._sendFeedback(); }
         </div>
       </div>
       <div style="margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">TUTORIAL MODE</div>
+        <div class="form-label-m">TUTORIAL MODE</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
           <button onclick="setTutorialMode('concept')" id="tmode-concept" style="background:#F5A623;border:none;color:#050A14;padding:0.6rem;border-radius:8px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Concept Slides</button>
           <button onclick="setTutorialMode('browser')" id="tmode-browser" style="background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.18);color:rgba(23,20,15,0.75);padding:0.6rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.8rem;">Browser Demo</button>
         </div>
       </div>
       <div id="tutorial-url-row" style="display:none;margin-bottom:1rem;">
-        <div style="font-size:0.65rem;color:rgba(23,20,15,0.75);font-family:'Space Mono',monospace;margin-bottom:0.4rem;">WEBSITE URL TO DEMO</div>
+        <div class="form-label-m">WEBSITE URL TO DEMO</div>
         <input id="tutorial-url" type="text" placeholder="e.g. https://docs.google.com" style="width:100%;background:rgba(23,20,15,0.04);border:1px solid rgba(23,20,15,0.12);color:#17140F;padding:0.75rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;">
       </div>
       <button onclick="generateTutorial()" id="tutorial-generate-btn" style="width:100%;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:0.75rem;">Generate Tutorial Video</button>
+
+      <!-- SCRIPT REVIEW — shown after the AI writes the scene plan and before
+           anything is rendered. Nothing is sent to the renderer until the user
+           presses "Looks good". -->
+      <div id="tutorial-review" style="display:none;">
+        <div class="tut-review-head">
+          <div style="color:#8D5A06;font-weight:900;font-size:0.95rem;font-family:'Syne',sans-serif;margin-bottom:0.25rem;">Review your script before we make the video</div>
+          <div style="color:rgba(23,20,15,0.8);font-size:0.78rem;font-family:'Space Mono',monospace;line-height:1.5;">This is exactly what will be narrated and shown on screen. Edit anything you want — your changes are what gets rendered.</div>
+          <div id="tutorial-review-meta" style="color:rgba(23,20,15,0.7);font-size:0.72rem;font-family:'Space Mono',monospace;margin-top:0.5rem;"></div>
+        </div>
+        <div id="tutorial-review-scenes"></div>
+        <div class="tut-review-actions">
+          <button onclick="startTutorialRender()" id="tutorial-confirm-btn" style="flex:1;min-width:200px;background:#F5A623;border:none;color:#050A14;padding:0.85rem;border-radius:10px;font-weight:900;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.95rem;">Looks good — Generate the video</button>
+          <button onclick="regenerateTutorialScript()" id="tutorial-regen-btn" style="background:rgba(23,20,15,0.05);border:1px solid rgba(23,20,15,0.2);color:#17140F;padding:0.85rem 1.1rem;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Rewrite script</button>
+          <button onclick="cancelTutorialReview()" style="background:transparent;border:1px solid rgba(23,20,15,0.2);color:rgba(23,20,15,0.8);padding:0.85rem 1.1rem;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem;">Start over</button>
+        </div>
+      </div>
+
       <div id="tutorial-status" style="display:none;">
         <div style="background:rgba(116,198,157,0.05);border:1px solid rgba(116,198,157,0.2);border-radius:12px;padding:1.25rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
@@ -6956,20 +6992,186 @@ window.generateTutorial = async function() {
   const bar = document.getElementById('tutorial-bar');
   const pct = document.getElementById('tutorial-pct');
 
-  btn.disabled = true; btn.textContent = 'Generating...';
+  btn.disabled = true; btn.textContent = 'Writing script...';
   status.style.display = 'block';
+  document.getElementById('tutorial-review').style.display = 'none';
   stage.textContent = 'Creating tutorial outline...';
   bar.style.width = '10%'; pct.textContent = '10%';
 
   try {
     // Step 1: Generate tutorial scenes with Claude
     const sceneCount = duration === 1 ? 3 : duration === 2 ? 4 : duration === 5 ? 8 : duration === 10 ? 15 : duration === 15 ? 20 : duration === 20 ? 25 : 22;
+    // How many of this tutorial's scenes should be real code scenes WHEN the
+    // topic is genuinely code-related. Without an explicit number here, the
+    // model reliably produced exactly one "Example Code" scene no matter how
+    // code-centric the topic was — measured live across repeated runs of
+    // "How a for loop works in Python" (1 of 8) and "JavaScript async await
+    // explained" (1 of 15) — because every other instruction in this prompt
+    // pushes toward "content" and only the shape example mentions code, so
+    // the model copied that example literally, title and all. Roughly half
+    // the explanatory scenes is what makes a programming tutorial actually
+    // teach with code instead of talking about code.
+    const codeSceneTarget = Math.max(1, Math.min(
+      Math.round((sceneCount - 3) * 0.5),
+      Math.max(1, sceneCount - 3)
+    ));
+
+    // Asking the same call to BOTH judge whether the topic is code-related and
+    // then honour a code-scene quota does not work — measured live, repeatedly:
+    // even with "include AT LEAST 3 scenes of type code" stated as a CRITICAL
+    // rule, a "How a for loop works in Python" run still came back with exactly
+    // one code scene out of eight, because the shape example shows one and a
+    // dozen other rules push toward "content". So decide it here instead: one
+    // cheap yes/no classification, then hand the writer a fixed per-scene type
+    // plan it only has to fill in. Nothing is left to the model's discretion.
+    stage.textContent = 'Planning the tutorial...';
+    const isCodeTopic = await window._classifyCodeTopic(topic);
+    const typePlan = window._tutorialTypePlan(sceneCount, isCodeTopic ? codeSceneTarget : 0);
+    stage.textContent = 'Writing the script...';
+    const scenes = await window._writeTutorialScript({ topic, duration, level, tutorialLanguage, sceneCount, codeSceneTarget, isCodeTopic, typePlan });
+
+    bar.style.width = '45%'; pct.textContent = '45%';
+    stage.textContent = 'Script ready — review it below';
+
+    // Everything the render step needs, held while the user edits. The scene
+    // objects in here are the ONLY source of truth for what gets rendered:
+    // startTutorialRender reads the edited values back into them.
+    window._tutorialCtx = { topic, duration, style, level, tutorialLanguage, sceneCount, codeSceneTarget, isCodeTopic, typePlan, user, scenes };
+
+    status.style.display = 'none';
+    window.renderTutorialScriptReview(scenes);
+    btn.textContent = 'Generate Tutorial Video';
+    btn.disabled = false;
+  } catch(e) {
+    stage.textContent = 'Error: ' + e.message;
+    btn.textContent = 'Generate Tutorial Video';
+    btn.disabled = false;
+  }
+};
+
+// One cheap, isolated yes/no: is this topic actually about writing code? On its
+// own, with nothing else competing for the model's attention, this is reliable —
+// which is the whole reason it is a separate call rather than a clause inside
+// the big script prompt. Defaults to "not code" if the call is unusable, so an
+// unrelated topic can never be pushed into code scenes by a failed request.
+window._classifyCodeTopic = async function(topic) {
+  try {
     const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001', max_tokens: 6000,
-        messages: [{role:'user', content:`Create a ${duration}-minute ${level} tutorial on "${topic}" in ${tutorialLanguage}. Every "voiceover" field must be written in ${tutorialLanguage}.
-First, decide: is "${topic}" fundamentally about programming, software, or writing code? Most topics are NOT (finance, health, cooking, history, business, marketing, etc.) — only treat it as code-related if code is actually central to explaining it.
+        model: 'claude-haiku-4-5-20251001', max_tokens: 8,
+        messages: [{role:'user', content:`Is "${topic}" a tutorial topic about programming, software development, or writing code — where showing and explaining actual source code is essential to teaching it?
+Answer with exactly one word: YES or NO.
+YES for things like: Python for loops, JavaScript promises, SQL joins, building a REST API, git branching, React hooks, data structures, regular expressions.
+NO for everything else, including topics that merely use technology: financial literacy, digital marketing, using Excel, social media growth, cooking, health, history, how to use Google Docs, starting a business.`}]
+      })
+    });
+    const data = await res.json();
+    const answer = (data?.content?.[0]?.text || '').trim().toUpperCase();
+    return answer.startsWith('YES');
+  } catch (e) {
+    return false;
+  }
+};
+
+// The exact type of every scene, decided here rather than by the model.
+// Scene 1 is the title, scene 2 the table of contents, the last one the
+// summary, and `codeCount` of the explanatory scenes in between become code
+// scenes, spread evenly through the middle so they land where they are
+// relevant instead of clustering. At least one explanatory scene always stays
+// "content" so a code scene has something setting it up.
+window._tutorialTypePlan = function(sceneCount, codeCount) {
+  const plan = new Array(sceneCount).fill('content');
+  plan[0] = 'title';
+  if (sceneCount >= 4) plan[1] = 'toc';
+  if (sceneCount >= 3) plan[sceneCount - 1] = 'summary';
+
+  const first = sceneCount >= 4 ? 2 : 1;
+  const last = sceneCount >= 3 ? sceneCount - 2 : sceneCount - 1;
+  const slots = last - first + 1;
+  if (slots <= 0) return plan;
+  // Keep one explanatory scene as prose to set the code up — but only when
+  // there is more than one middle scene to go around. A 1-minute programming
+  // tutorial has exactly one scene between the title and the summary, and that
+  // scene being the code is the whole point of it.
+  const n = Math.max(0, Math.min(codeCount, slots > 1 ? slots - 1 : slots));
+  if (n <= 0) return plan;
+
+  const from = slots > n ? first + 1 : first;
+  const span = last - from + 1;
+  const taken = new Set();
+  for (let k = 0; k < n; k++) {
+    // The +0.5 centres each code scene inside its share of the remaining
+    // slots, which interleaves them with the content scenes instead of
+    // packing them against one end.
+    let idx = from + Math.floor(((k + 0.5) * span) / n);
+    idx = Math.min(last, Math.max(from, idx));
+    while (taken.has(idx) && idx < last) idx++;
+    while (taken.has(idx) && idx > from) idx--;
+    if (taken.has(idx)) continue;
+    taken.add(idx);
+    plan[idx] = 'code';
+  }
+  return plan;
+};
+
+// A code scene's "code"/"output" fields are the one place raw source text with
+// its own quote characters gets embedded in the JSON the model writes, and it
+// does sometimes emit them unescaped — measured live: a Python f-string,
+// print(f'{student["name"]}: ...'), came back with bare double quotes inside
+// the "code" value and blew up JSON.parse, which used to surface to the user
+// as a raw "Expected ',' or '}' after property value in JSON at position 6377".
+// Asking for more code scenes makes hitting this more likely, so repair it.
+//
+// The value's real end is the first quote followed by whitespace and then a
+// comma or closing brace; every other bare quote inside it belongs to the code
+// and gets escaped. Not bulletproof (code containing a literal `",` sequence
+// can still end the match early), which is exactly why the caller retries the
+// whole generation if this doesn't produce something parseable.
+function _repairCodeJson(text) {
+  return text.replace(/"(code|output)"\s*:\s*"([\s\S]*?)"(\s*[,}])/g, (m, key, val, tail) => {
+    const escaped = val.replace(/\\"/g, '"').replace(/"/g, '\\"');
+    return `"${key}":"${escaped}"${tail}`;
+  });
+}
+
+function _parseTutorialScenes(text) {
+  const match = text && text.match(/\[[\s\S]*\]/);
+  if (!match) return null;
+  let scenes = null;
+  try {
+    scenes = JSON.parse(match[0]);
+  } catch (e) {
+    try { scenes = JSON.parse(_repairCodeJson(match[0])); } catch (e2) { return null; }
+  }
+  return (Array.isArray(scenes) && scenes.length) ? scenes : null;
+}
+
+// Asks the model for the scene plan and returns the parsed array. Split out of
+// generateTutorial so "Rewrite script" can re-run exactly this step without
+// touching the review UI's own state handling. Retries once on an unparseable
+// reply — the failure mode is non-deterministic formatting, not a bad request,
+// so a second attempt almost always lands.
+window._writeTutorialScript = async function(ctx) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const scenes = await window._requestTutorialScript(ctx);
+    if (scenes) return scenes;
+  }
+  throw new Error('The script came back malformed twice. Please try again.');
+};
+
+window._requestTutorialScript = async function({ topic, duration, level, tutorialLanguage, sceneCount, codeSceneTarget, isCodeTopic, typePlan }) {
+  const plan = Array.isArray(typePlan) && typePlan.length === sceneCount
+    ? typePlan
+    : window._tutorialTypePlan(sceneCount, 0);
+  const planLines = plan.map((t, i) => `Scene ${i + 1}: "${t}"`).join('\n');
+  const res = await fetch('https://afrivid-tts.reaganayiecho.workers.dev/ai-generate', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001', max_tokens: 6000,
+      messages: [{role:'user', content:`Create a ${duration}-minute ${level} tutorial on "${topic}" in ${tutorialLanguage}. Every "voiceover" field must be written in ${tutorialLanguage}.
+The type of every scene has ALREADY been decided for you. Use exactly these types, in exactly this order, one scene each — do not add, drop, reorder, or substitute a type:
+${planLines}
 Generate exactly ${sceneCount} scenes as a JSON array using this shape:
 [
   {"title":"Scene Title","type":"title","voiceover":"narrator script 40-60 words","duration":${Math.round(duration*60/sceneCount)}},
@@ -6978,12 +7180,14 @@ Generate exactly ${sceneCount} scenes as a JSON array using this shape:
   {"title":"Another Section","type":"content","voiceover":"narrator script 40-60 words","points":[{"text":"a short bullet point","icon":"growth","detail":"a short 8-15 word elaboration on this specific point"},{"text":"another short bullet point","icon":"time","detail":"a short 8-15 word elaboration on this specific point"}],"duration":${Math.round(duration*60/sceneCount)}},
   {"title":"Impact","type":"stat","voiceover":"narrator script explaining this figure","value":"85%","label":"a short phrase explaining what this number means","icon":"growth","duration":${Math.round(duration*60/sceneCount)}},
   {"title":"How It Works","type":"content","voiceover":"narrator script 40-60 words","layout":"flow","points":[{"text":"Step one"},{"text":"Step two"},{"text":"Step three"}],"duration":${Math.round(duration*60/sceneCount)}},
-  {"title":"Example Code","type":"code","voiceover":"narrator script explaining this code","code":"the actual code snippet, with real newlines","language":"python","output":"the EXACT real output of running this code","duration":${Math.round(duration*60/sceneCount)}},
+  {"title":"a specific title naming what THIS snippet does","type":"code","voiceover":"narrator script walking through this code","code":"the actual code snippet, with real newlines","language":"python","output":"the EXACT real output of running this code","duration":${Math.round(duration*60/sceneCount)}},
   ...more scenes...
   {"title":"Summary","type":"summary","voiceover":"narrator script","points":["key takeaway 1","key takeaway 2"],"duration":${Math.round(duration*60/sceneCount)}}
 ]
-Types: title(first), toc(second), content(regular explanation), code(ONLY if the topic is actually about programming/software AND this specific scene is showing real code — omit entirely otherwise — must include an "output" field with the EXACT correct printed result of actually running that code, worked out precisely, never guessed), stat(use ONLY when the topic naturally has one striking number/statistic worth dwelling on — needs "value" like "85%" or "3x" or "10,000+", plus a short "label"), summary(last).
-CRITICAL: If "${topic}" is not code-related, do not include any "code" type scenes at all — use "content" for every explanatory scene instead.
+What each type means: title(opening), toc(table of contents), content(regular explanation), code(this scene shows and explains one real snippet — must include a "code" field, a "language" field, and an "output" field with the EXACT correct printed result of actually running that code, worked out precisely, never guessed), stat(a striking real number — needs "value" like "85%" or "3x", plus a short "label"), summary(closing recap).
+CRITICAL: The type list above is fixed. A scene assigned "content" must never contain code, and a scene assigned "code" must never be turned into prose — write whatever that scene's assigned type requires.${isCodeTopic ? `
+CRITICAL: This is a programming tutorial, and its ${codeSceneTarget} "code" scenes are the heart of it. Each one renders as a full-screen live code editor that types the snippet out line by line and then runs it in a real terminal panel showing the output, so it is the most valuable teaching moment in the whole video. Write them as a PROGRESSION, each advancing the lesson — for example the simplest working version, then a variation showing the key idea, then a realistic use, then a common mistake and its fix. Never repeat a snippet, and never use a generic placeholder title like "Example Code": title each scene after what that specific snippet actually does. Every code scene's voiceover must be an unhurried walkthrough — what the code does AND why, line by line where it matters — with enough words and "duration" to match that depth. The "content" scenes around them set each snippet up and explain what just happened.` : `
+CRITICAL: This topic is not about programming, so no scene contains code — every explanatory scene is a "content" scene.`}
 CRITICAL: "voiceover" is spoken narration only, never shown on screen — it can be a full paragraph. Any "content" scene without "points" MUST also include a separate "caption" field: a short 10-15 word on-screen highlight, NOT a copy or truncation of the voiceover. Never put the full voiceover text into "caption".
 CRITICAL: A "content" scene describing a sequence of steps or a process (like "how it works" or "the 3 steps to X") should set "layout":"flow" and give "points" as SHORT step labels (2-4 words each, e.g. "Sign up", "Pick a topic") — not full sentences, since they display inside small connected nodes. Use "flow" for at most 2-4 points; more than that, use the regular icon-list layout instead.
 CRITICAL: Only use "stat" if "${topic}" genuinely has a real, sensible number to highlight — never invent a fake statistic just to use this scene type.
@@ -6991,24 +7195,178 @@ CRITICAL: If a "content" scene uses "points" instead of a caption, each point mu
 CRITICAL: A "content" scene using the regular icon-list "points" (i.e. NOT "layout":"flow") should have however many real, distinct points the topic actually supports — typically 4-8, up to 5 per on-screen column. Never pad with weak or repetitive points just to hit a count; a genuine 4-point list beats a stretched 10-point one. Depth belongs in each point's "detail" field, not in inflating the count.
 CRITICAL: Prefer giving a "content" scene real "points" over leaving it caption-only — almost any informational topic breaks into concrete points (steps, benefits, reasons, examples, features) if you look for them. Caption-only is the exception, reserved for a genuinely narrative or scene-setting moment where forcing a list would feel artificial, never the default just because writing a caption is less work.
 CRITICAL: A "content" scene with NO "points" (caption-only) can run long when the topic genuinely needs it — that's fine — its screen is a live rotating sequence of AI-generated images related to the topic while the narrator talks, not one static line, so never worry about that scene "looking empty".
-CRITICAL: If "${topic}" is code-related, place "code" scenes right where that code is actually relevant in the tutorial's flow (not clustered near the end), and make each code scene's voiceover a genuine, unhurried walkthrough — what the code does AND why, line by line where it matters — not a quick pass over it. Give it enough duration/words to match that depth.
+CRITICAL: The "code" and "output" fields are JSON strings, so inside them use SINGLE quotes for any string literal the code contains (both Python and JavaScript accept single quotes everywhere) — e.g. print('Total:', total), not print("Total:", total) — and never write a bare double-quote character inside "code" or "output". This keeps the JSON parseable.
+CRITICAL: Scene ORDER is fixed and must be exactly: the "title" scene first, the "toc" scene second, then every explanatory scene, and the "summary" scene LAST. Nothing may come after the summary — it is the final scene of the video.
 CRITICAL: Each voiceover must be AT LEAST ${Math.round(duration*60/sceneCount*2.8)} words (the voice speaks at roughly 2.8 words per second) — never fewer, that's what makes the video the requested total length. If the scene's content (a long caption-only section, a rich points list, or an unhurried code walkthrough) genuinely needs more, use more and scale that scene's "duration" up to match, even if that shifts time from other scenes. Count carefully — the sum of every scene's "duration" must equal ${duration*60} seconds.
 Make voiceover natural and educational. Return ONLY valid JSON array.`}]
-      })
+    })
+  });
+  const data = await res.json();
+  const text = data?.content?.[0]?.text;
+  if (!text) return null;
+  return _parseTutorialScenes(text);
+};
+
+function _tutEsc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+}
+function _tutWords(s) { return String(s || '').trim().split(/\s+/).filter(Boolean).length; }
+
+// Builds the editable review of the real script. Every visible string the
+// video will use — the slide title, the on-screen caption or bullet points,
+// the code and its terminal output, and the spoken narration — gets its own
+// real input, keyed by data-scene/data-field so collectEditedTutorialScenes
+// can read it straight back onto the scene object.
+window.renderTutorialScriptReview = function(scenes) {
+  const wrap = document.getElementById('tutorial-review-scenes');
+  const meta = document.getElementById('tutorial-review-meta');
+  const codeCount = scenes.filter(s => s.type === 'code').length;
+  const words = scenes.reduce((n, s) => n + _tutWords(s.voiceover || s.text), 0);
+  meta.textContent = `${scenes.length} scenes · ${words} narrated words · ~${Math.max(1, Math.round(words / 2.8 / 60))} min`
+    + (codeCount ? ` · ${codeCount} live code scene${codeCount > 1 ? 's' : ''}` : '');
+
+  wrap.innerHTML = scenes.map((s, i) => {
+    const type = s.type || 'content';
+    const parts = [];
+    parts.push(`<div class="tut-scene-card">
+      <div class="tut-scene-top">
+        <span class="tut-scene-num">SCENE ${i + 1}</span>
+        <span class="tut-type-badge${type === 'code' ? ' is-code' : ''}">${_tutEsc(type)}</span>
+      </div>
+      <label class="tut-field-label">SLIDE TITLE (on screen)</label>
+      <input class="tut-input" type="text" data-scene="${i}" data-field="title" value="${_tutEsc(s.title)}">`);
+
+    if (Array.isArray(s.points) && s.points.length) {
+      parts.push(`<label class="tut-field-label">ON-SCREEN POINTS</label>`);
+      s.points.forEach((p, j) => {
+        const isObj = p && typeof p === 'object';
+        parts.push(`<input class="tut-input" style="margin-bottom:0.3rem;" type="text" data-scene="${i}" data-field="point" data-point="${j}" value="${_tutEsc(isObj ? p.text : p)}">`);
+        if (isObj && p.detail != null) {
+          parts.push(`<input class="tut-input" style="margin-bottom:0.45rem;font-size:0.78rem;opacity:0.9;" type="text" data-scene="${i}" data-field="pointDetail" data-point="${j}" value="${_tutEsc(p.detail)}">`);
+        }
+      });
+    } else if (type === 'content') {
+      parts.push(`<label class="tut-field-label">ON-SCREEN CAPTION</label>
+        <input class="tut-input" type="text" data-scene="${i}" data-field="caption" value="${_tutEsc(s.caption)}">`);
+    }
+
+    if (type === 'stat') {
+      parts.push(`<label class="tut-field-label">BIG NUMBER</label>
+        <input class="tut-input" type="text" data-scene="${i}" data-field="value" value="${_tutEsc(s.value)}">
+        <label class="tut-field-label">WHAT IT MEANS</label>
+        <input class="tut-input" type="text" data-scene="${i}" data-field="label" value="${_tutEsc(s.label)}">`);
+    }
+
+    if (type === 'code') {
+      const lines = String(s.code || '').split('\n').length;
+      parts.push(`<label class="tut-field-label">CODE (typed out live on screen)</label>
+        <textarea class="tut-textarea is-code" rows="${Math.min(20, Math.max(4, lines))}" data-scene="${i}" data-field="code">${_tutEsc(s.code)}</textarea>
+        <label class="tut-field-label">TERMINAL OUTPUT (what running it prints)</label>
+        <textarea class="tut-textarea is-code" rows="3" data-scene="${i}" data-field="output">${_tutEsc(s.output)}</textarea>`);
+    }
+
+    parts.push(`<label class="tut-field-label">NARRATION (spoken aloud, not shown)</label>
+      <textarea class="tut-textarea" rows="4" data-scene="${i}" data-field="voiceover">${_tutEsc(s.voiceover || s.text)}</textarea>
+      <div class="tut-wordcount" data-wc="${i}">${_tutWords(s.voiceover || s.text)} words · about ${Math.max(1, Math.round(_tutWords(s.voiceover || s.text) / 2.8))}s</div>
+    </div>`);
+    return parts.join('');
+  }).join('');
+
+  // Live word/second readout, so shortening a narration visibly shortens that
+  // scene rather than silently changing the video's length.
+  wrap.querySelectorAll('textarea[data-field="voiceover"]').forEach(ta => {
+    ta.addEventListener('input', () => {
+      const i = ta.dataset.scene;
+      const n = _tutWords(ta.value);
+      const el = wrap.querySelector(`[data-wc="${i}"]`);
+      if (el) el.textContent = `${n} words · about ${Math.max(1, Math.round(n / 2.8))}s`;
     });
-    bar.style.width = '30%'; pct.textContent = '30%';
-    stage.textContent = 'Building tutorial script...';
+  });
 
-    const data = await res.json();
-    const text = data.content[0].text;
-    const match = text.match(/\[[\s\S]*\]/);
-    if (!match) throw new Error('Failed to generate tutorial script');
-    const scenes = JSON.parse(match[0]);
+  document.getElementById('tutorial-review').style.display = 'block';
+  document.getElementById('tutorial-review').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
-    bar.style.width = '50%'; pct.textContent = '50%';
-    stage.textContent = 'Sending to AfriVid Cloud...';
+// Reads every edited field back onto the scene objects. This is what makes the
+// preview real rather than cosmetic — the array it returns is exactly what is
+// POSTed to /generate-video.
+window.collectEditedTutorialScenes = function() {
+  const ctx = window._tutorialCtx;
+  if (!ctx) return [];
+  const scenes = ctx.scenes.map(s => JSON.parse(JSON.stringify(s)));
+  document.querySelectorAll('#tutorial-review-scenes [data-scene]').forEach(el => {
+    const s = scenes[parseInt(el.dataset.scene, 10)];
+    if (!s) return;
+    const f = el.dataset.field;
+    const v = el.value;
+    if (f === 'point' || f === 'pointDetail') {
+      const j = parseInt(el.dataset.point, 10);
+      if (!Array.isArray(s.points) || s.points[j] === undefined) return;
+      if (s.points[j] && typeof s.points[j] === 'object') {
+        s.points[j][f === 'point' ? 'text' : 'detail'] = v;
+      } else {
+        s.points[j] = v;
+      }
+      return;
+    }
+    if (f === 'voiceover') { s.voiceover = v; if ('text' in s) s.text = v; return; }
+    s[f] = v;
+  });
+  // A scene the user emptied out entirely has no narration to speak, and the
+  // backend drops silent scenes anyway — filter here so the count the user
+  // was shown matches what actually renders.
+  return scenes.filter(s => _tutWords(s.voiceover) > 0);
+};
 
-    // Step 2: Send to Fly.io for video generation
+window.cancelTutorialReview = function() {
+  document.getElementById('tutorial-review').style.display = 'none';
+  window._tutorialCtx = null;
+};
+
+window.regenerateTutorialScript = async function() {
+  const ctx = window._tutorialCtx;
+  if (!ctx) return;
+  const rb = document.getElementById('tutorial-regen-btn');
+  rb.disabled = true; rb.textContent = 'Rewriting...';
+  try {
+    ctx.scenes = await window._writeTutorialScript(ctx);
+    window.renderTutorialScriptReview(ctx.scenes);
+  } catch(e) {
+    alert('Could not rewrite the script: ' + e.message);
+  }
+  rb.disabled = false; rb.textContent = 'Rewrite script';
+};
+
+// Step 2 + 3: send the USER'S edited scenes to the renderer, then poll.
+window.startTutorialRender = async function() {
+  const ctx = window._tutorialCtx;
+  if (!ctx) { alert('Please generate a script first'); return; }
+  const scenes = window.collectEditedTutorialScenes();
+  if (!scenes.length) { alert('Every scene is empty — add some narration first.'); return; }
+
+  const { topic, duration, style, level, tutorialLanguage, user } = ctx;
+  const btn = document.getElementById('tutorial-generate-btn');
+  const confirmBtn = document.getElementById('tutorial-confirm-btn');
+  const status = document.getElementById('tutorial-status');
+  const stage = document.getElementById('tutorial-stage');
+  const bar = document.getElementById('tutorial-bar');
+  const pct = document.getElementById('tutorial-pct');
+
+  confirmBtn.disabled = true; confirmBtn.textContent = 'Sending...';
+  btn.disabled = true; btn.textContent = 'Generating...';
+  document.getElementById('tutorial-review').style.display = 'none';
+  status.style.display = 'block';
+  bar.style.width = '50%'; pct.textContent = '50%';
+  stage.textContent = 'Sending to AfriVid Cloud...';
+
+  const resetButtons = () => {
+    btn.textContent = 'Generate Tutorial Video'; btn.disabled = false;
+    confirmBtn.disabled = false; confirmBtn.textContent = 'Looks good — Generate the video';
+  };
+
+  try {
     const jobId = `tut_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
     const r = await fetch('https://afrivid-processor.gentlefield-6efe15ff.southafricanorth.azurecontainerapps.io/generate-video', {
       method: 'POST', headers: await window.avAuthHeaders(),
@@ -7025,7 +7383,6 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
     bar.style.width = '60%'; pct.textContent = '60%';
     stage.textContent = 'Processing tutorial video...';
 
-    // Step 3: Poll for completion
     const onVisibleTut = () => { if (document.visibilityState === 'visible') checkTutorialConceptStatus(); };
     document.addEventListener('visibilitychange', onVisibleTut);
     async function checkTutorialConceptStatus() {
@@ -7048,15 +7405,13 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
           const tvp2 = document.getElementById('tutorial-video-player');
           if (tvp2) tvp2.src = sd.output_url;
           document.getElementById('tutorial-download-link').dataset.url = sd.output_url;
-          btn.textContent = 'Generate Tutorial Video';
-          btn.disabled = false;
+          resetButtons();
         }
         if (sd.status === 'failed') {
           clearInterval(window._tutorialPoll);
           document.removeEventListener('visibilitychange', onVisibleTut);
           stage.textContent = 'Generation failed. Please try again.';
-          btn.textContent = 'Generate Tutorial Video';
-          btn.disabled = false;
+          resetButtons();
         }
       } catch(e) { console.log('Poll error:', e); }
     }
@@ -7065,8 +7420,8 @@ Make voiceover natural and educational. Return ONLY valid JSON array.`}]
 
   } catch(e) {
     stage.textContent = 'Error: ' + e.message;
-    btn.textContent = 'Generate Tutorial Video';
-    btn.disabled = false;
+    resetButtons();
+    document.getElementById('tutorial-review').style.display = 'block';
   }
 };
 
